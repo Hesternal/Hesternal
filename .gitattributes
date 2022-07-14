@@ -1,0 +1,17 @@
+*.h    text
+*.hpp  text
+*.ixx  text
+*.cpp  text
+*.glsl text
+*.hlsl text
+*.json text
+*.md   text
+*.py   text
+*.txt  text
+*.yml  text
+
+.clang-format  text
+.gitattributes text
+.gitignore     text
+
+LICENSE text

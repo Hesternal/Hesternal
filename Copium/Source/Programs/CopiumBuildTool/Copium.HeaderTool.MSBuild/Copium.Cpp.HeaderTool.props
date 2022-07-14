@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemDefinitionGroup>
+    <CopiumHeaderTool>
+      <CopiumConfigDir    Condition="'%(CopiumHeaderTool.CopiumConfigDir)'    == ''">$(CopiumConfigDir)</CopiumConfigDir>
+      <TargetName         Condition="'%(CopiumHeaderTool.TargetName)'         == ''">$(CopiumTargetName)</TargetName>
+      <TargetDir          Condition="'%(CopiumHeaderTool.TargetDir)'          == ''">$(CopiumTargetSourceDir)</TargetDir>
+      <TargetGeneratedDir Condition="'%(CopiumHeaderTool.TargetGeneratedDir)' == ''">$(CopiumTargetGeneratedDir)</TargetGeneratedDir>
+    </CopiumHeaderTool>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <CopiumHeaderTool Include="$(ProjectName)" />
+  </ItemGroup>
+
+</Project>

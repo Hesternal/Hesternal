@@ -1,0 +1,238 @@
+{
+    "Cpp": {
+        "std:c++latest": {
+            "Name": "LanguageStandard",
+            "Value": "stdcpplatest"
+        },
+        "nologo": {
+            "Name": "SuppressStartupBanner",
+            "Value": "true"
+        },
+        "W0": {
+            "Name": "WarningLevel",
+            "Value": "TurnOffAllWarnings"
+        },
+        "W1": {
+            "Name": "WarningLevel",
+            "Value": "Level1"
+        },
+        "W2": {
+            "Name": "WarningLevel",
+            "Value": "Level2"
+        },
+        "W3": {
+            "Name": "WarningLevel",
+            "Value": "Level3"
+        },
+        "W4": {
+            "Name": "WarningLevel",
+            "Value": "Level4"
+        },
+        "Wall": {
+            "Name": "WarningLevel",
+            "Value": "EnableAllWarnings"
+        },
+        "WX-": {
+            "Name": "TreatWarningAsError",
+            "Value": "false"
+        },
+        "WX": {
+            "Name": "TreatWarningAsError",
+            "Value": "true"
+        },
+        "MP": {
+            "Name": "MultiProcessorCompilation",
+            "Value": "true"
+        },
+        "permissive-": {
+            "Name": "ConformanceMode",
+            "Value": "true"
+        },
+        "permissive": {
+            "Name": "ConformanceMode",
+            "Value": "false"
+        },
+        "Zi": {
+            "Name": "DebugInformationFormat",
+            "Value": "ProgramDatabase"
+        },
+        "Od": {
+            "Name": "Optimization",
+            "Value": "Disabled"
+        },
+        "O1": {
+            "Name": "Optimization",
+            "Value": "MinSpace"
+        },
+        "O2": {
+            "Name": "Optimization",
+            "Value": "MaxSpeed"
+        },
+        "Ox": {
+            "Name": "Optimization",
+            "Value": "Full"
+        },
+        "Ob0": {
+            "Name": "InlineFunctionExpansion",
+            "Value": "Disabled"
+        },
+        "Ob1": {
+            "Name": "InlineFunctionExpansion",
+            "Value": "OnlyExplicitInline"
+        },
+        "Ob2": {
+            "Name": "InlineFunctionExpansion",
+            "Value": "AnySuitable"
+        },
+        "Gy-": {
+            "Name": "WholeProgramOptimization",
+            "Value": "false"
+        },
+        "Gy": {
+            "Name": "WholeProgramOptimization",
+            "Value": "true"
+        },
+        "Oi": {
+            "Name": "IntrinsicFunctions",
+            "Value": "true"
+        },
+        "Os": {
+            "Name": "FavorSizeOrSpeed",
+            "Value": "Size"
+        },
+        "Ot": {
+            "Name": "FavorSizeOrSpeed",
+            "Value": "Speed"
+        },
+        "GL-": {
+            "Name": "FunctionLevelLinking",
+            "Value": "false"
+        },
+        "GL": {
+            "Name": "FunctionLevelLinking",
+            "Value": "true"
+        },
+        "RTCs": {
+            "Name": "BasicRuntimeChecks",
+            "Value": "StackFrameRuntimeCheck"
+        },
+        "RTCu": {
+            "Name": "BasicRuntimeChecks",
+            "Value": "UninitializedLocalUsageCheck"
+        },
+        "RTC1": {
+            "Name": "BasicRuntimeChecks",
+            "Value": "EnableFastChecks"
+        },
+        "RTCsu": {
+            "Name": "BasicRuntimeChecks",
+            "Value": "EnableFastChecks"
+        },
+        "MT": {
+            "Name": "RuntimeLibrary",
+            "Value": "MultiThreaded"
+        },
+        "MTd": {
+            "Name": "RuntimeLibrary",
+            "Value": "MultiThreadedDebug"
+        },
+        "MD": {
+            "Name": "RuntimeLibrary",
+            "Value": "MultiThreadedDLL"
+        },
+        "MDd": {
+            "Name": "RuntimeLibrary",
+            "Value": "MultiThreadedDebugDLL"
+        },
+        "Zc:preprocessor-": {
+            "Name": "UseStandardPreprocessor",
+            "Value": "false"
+        },
+        "Zc:preprocessor": {
+            "Name": "UseStandardPreprocessor",
+            "Value": "true"
+        }
+    },
+    "Link": {
+        "INCREMENTAL:NO": {
+            "Name": "LinkIncremental",
+            "Value": "false"
+        },
+        "INCREMENTAL": {
+            "Name": "LinkIncremental",
+            "Value": "true"
+        },
+        "DEBUG:NONE": {
+            "Name": "GenerateDebugInformation",
+            "Value": "false"
+        },
+        "DEBUG": {
+            "Name": "GenerateDebugInformation",
+            "Value": "true"
+        },
+        "DEBUG:FASTLINK": {
+            "Name": "GenerateDebugInformation",
+            "Value": "DebugFastLink"
+        },
+        "DEBUG:FULL": {
+            "Name": "GenerateDebugInformation",
+            "Value": "DebugFull"
+        },
+        "SUBSYSTEM:CONSOLE": {
+            "Name": "SubSystem",
+            "Value": "Console"
+        },
+        "SUBSYSTEM:WINDOWS": {
+            "Name": "SubSystem",
+            "Value": "Windows"
+        },
+        "SUBSYSTEM:NATIVE": {
+            "Name": "SubSystem",
+            "Value": "Native"
+        },
+        "SUBSYSTEM:EFI_APPLICATION": {
+            "Name": "SubSystem",
+            "Value": "EFI Application"
+        },
+        "SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER": {
+            "Name": "SubSystem",
+            "Value": "EFI Boot Service Driver"
+        },
+        "SUBSYSTEM:EFI_ROM": {
+            "Name": "SubSystem",
+            "Value": "EFI ROM"
+        },
+        "SUBSYSTEM:EFI_RUNTIME_DRIVER": {
+            "Name": "SubSystem",
+            "Value": "EFI Runtime"
+        },
+        "SUBSYSTEM:POSIX": {
+            "Name": "SubSystem",
+            "Value": "POSIX"
+        },
+        "OPT:NOREF": {
+            "Name": "OptimizeReferences",
+            "Value": "false"
+        },
+        "OPT:REF": {
+            "Name": "OptimizeReferences",
+            "Value": "true"
+        },
+        "OPT:NOICF": {
+            "Name": "EnableCOMDATFolding",
+            "Value": "false"
+        },
+        "OPT:ICF": {
+            "Name": "EnableCOMDATFolding",
+            "Value": "true"
+        },
+        "LTCG:incremental": {
+            "Name": "LinkTimeCodeGeneration",
+            "Value": "UseFastLinkTimeCodeGeneration"
+        },
+        "LTCG": {
+            "Name": "LinkTimeCodeGeneration",
+            "Value": "UseLinkTimeCodeGeneration"
+        }
+    }
+}

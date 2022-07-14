@@ -1,0 +1,39 @@
+{
+    "Sdk": "Microsoft.NET.Sdk",
+    "ToolsVersion": "17.0",
+    "DefaultTargets":"Build",
+    "Properties": [
+        {
+            "Name": "OutputType",
+            "Value": "Library"
+        },
+        {
+            "Name": "TargetFramework",
+            "Value": "net7.0"
+        },
+        {
+            "Name": "ImplicitUsings",
+            "Value": "disable"
+        },
+        {
+            "Name": "Nullable",
+            "Value": "enable"
+        },
+        {
+            "Name": "Optimize",
+            "Value": "true"
+        },
+        {
+            "Name": "DebugSymbols",
+            "Value": "false"
+        },
+        {
+            "Name": "DebugType",
+            "Value": "None"
+        },
+        {
+            "Name": "AppendTargetFrameworkToOutputPath",
+            "Value": "false"
+        }
+    ]
+}

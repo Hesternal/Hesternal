@@ -1,0 +1,9 @@
+.conan/
+.idea/
+.vs/
+.vscode/
+
+/build
+
+# Visual Studio
+*.user

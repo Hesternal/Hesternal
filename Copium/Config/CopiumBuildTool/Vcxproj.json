@@ -1,0 +1,30 @@
+{
+    "ToolsVersion": "Current",
+    "DefaultTargets": "Build",
+    "OutDir": "$(CopiumBinDir)\\$(Configuration)\\",
+    "IntDir": "$(CopiumIntermediateDir)\\$(Configuration)\\$(ProjectName)\\",
+    "Globals": [
+        {
+            "Name": "Keyword",
+            "Value": "Win32Proj"
+        },
+        {
+            "Name": "WindowsTargetPlatformVersion",
+            "Value": "10.0"
+        }
+    ],
+    "DefaultProps": [
+        {
+            "Name": "PlatformToolset",
+            "Value": "v143"
+        },
+        {
+            "Name": "PreferredToolArchitecture",
+            "Value": "x64"
+        },
+        {
+            "Name": "CharacterSet",
+            "Value": "Unicode"
+        }
+    ]
+}

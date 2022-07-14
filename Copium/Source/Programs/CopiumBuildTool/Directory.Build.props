@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <CopiumBuildDir>..\..\..\..\..\build</CopiumBuildDir>
+    <CopiumBinDir>$(CopiumBuildDir)\bin\dotnet</CopiumBinDir>
+    <CopiumDotnetIntermediateDir>$(CopiumBuildDir)\intermediate\dotnet</CopiumDotnetIntermediateDir>
+
+    <BaseIntermediateOutputPath>$(CopiumDotnetIntermediateDir)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(CopiumDotnetIntermediateDir)\$(MSBuildProjectName)\bin\</BaseOutputPath>
+    <PublishDir>$(CopiumBuildDir)\bin\dotnet\</PublishDir>
+    <!-- <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath> -->
+    <!-- <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> -->
+  </PropertyGroup>
+</Project>
