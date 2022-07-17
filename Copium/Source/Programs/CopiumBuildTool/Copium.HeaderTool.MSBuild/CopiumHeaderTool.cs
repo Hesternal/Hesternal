@@ -22,16 +22,12 @@ namespace Copium.HeaderTool.MSBuild
     {
         private sealed class MSBuildHeaderToolTaskItem : HeaderToolTaskItem
         {
-            private readonly FileInfo m_headerFile;
-
             public readonly ITaskItem HeaderItem;
 
-            public override FileInfo HeaderFile => m_headerFile;
-
             public MSBuildHeaderToolTaskItem(ITaskItem headerItem, FileInfo headerFile)
+                : base(headerFile)
             {
                 HeaderItem = headerItem;
-                m_headerFile = headerFile;
             }
         }
 
@@ -124,7 +120,7 @@ namespace Copium.HeaderTool.MSBuild
             {
                 Log.LogError("CopiumHeaderTool", string.Empty, string.Empty, e.FilePath, e.Line, e.Column, 0, 0, e.Message);
                 // NOTE(v.matushkin): Sometimes needed for debug
-                // Log.LogErrorFromException(e, true);
+                Log.LogErrorFromException(e, true);
                 return false;
             }
             catch (Exception e)
@@ -181,7 +177,7 @@ namespace Copium.HeaderTool.MSBuild
 
         private void _RunHeaderTool(MSBuildHeaderToolTaskItem[] headerTasks)
         {
-            var chtGenerator = new HeaderTool(m_targetDir, m_targetGeneratedDir, BaseGeneratedIncludeDir, m_copiumConfigDir);
+            var chtGenerator = new HeaderTool(HeaderToolOptions.Create(m_targetDir, m_copiumConfigDir, m_targetGeneratedDir, BaseGeneratedIncludeDir));
             chtGenerator.Generate(headerTasks);
 
             m_msbuildDummyCppFile = new FileInfo(Path.Combine(chtGenerator.GeneratedSourcesDir.FullName, m_msbuildDummyCppName));
