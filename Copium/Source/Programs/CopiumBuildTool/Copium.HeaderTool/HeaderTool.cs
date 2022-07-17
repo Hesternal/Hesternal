@@ -27,11 +27,53 @@ namespace Copium.HeaderTool
     }
 
 
-    public abstract class HeaderToolTaskItem
+    public class HeaderToolTaskItem
     {
+        public readonly FileInfo HeaderFile;
+
         public HeaderToolResult? Result { get; internal set; }
 
-        public abstract FileInfo HeaderFile { get; }
+        public HeaderToolTaskItem(FileInfo headerFile)
+        {
+            HeaderFile = headerFile;
+        }
+    }
+
+
+    public sealed class HeaderToolOptions
+    {
+        public readonly bool bDryRun;
+
+        public readonly DirectoryInfo TargetDir;
+        public readonly DirectoryInfo CopiumConfigDir;
+
+        public readonly DirectoryInfo TargetGeneratedDir;
+        public readonly string BaseGeneratedIncludeDir;
+
+
+        public static HeaderToolOptions Create(DirectoryInfo targetDir, DirectoryInfo copiumConfigDir, DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir)
+        {
+            return new HeaderToolOptions(false, targetDir, copiumConfigDir, targetGeneratedDir, baseGeneratedIncludeDir);
+        }
+
+        public static HeaderToolOptions CreateDryRun(DirectoryInfo targetDir, DirectoryInfo copiumConfigDir)
+        {
+            return new HeaderToolOptions(true, targetDir, copiumConfigDir, null, null);
+        }
+
+
+        private HeaderToolOptions(
+            bool dryRun,
+            DirectoryInfo targetDir, DirectoryInfo copiumConfigDir,
+            DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir
+            )
+        {
+            bDryRun = dryRun;
+            TargetDir = targetDir;
+            CopiumConfigDir = copiumConfigDir;
+            TargetGeneratedDir = targetGeneratedDir;
+            BaseGeneratedIncludeDir = baseGeneratedIncludeDir;
+        }
     }
 
 
@@ -42,21 +84,29 @@ namespace Copium.HeaderTool
 
         private static CopiumHeaderToolConfig s_Config;
 
+        private readonly bool m_bDryRun;
         private readonly DirectoryInfo m_targetDir;
         private readonly DirectoryInfo m_generatedHeadersDir;
         public readonly DirectoryInfo GeneratedSourcesDir;
 
 
-        public HeaderTool(
-            DirectoryInfo targetDir, DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir,
-            DirectoryInfo copiumConfigDir
-            )
+        public HeaderTool(HeaderToolOptions options)
         {
-            m_targetDir = targetDir;
-            m_generatedHeadersDir = new DirectoryInfo(Path.Combine(targetGeneratedDir.FullName, "Include", baseGeneratedIncludeDir));
-            GeneratedSourcesDir = new DirectoryInfo(Path.Combine(targetGeneratedDir.FullName, "Source"));
+            m_bDryRun = options.bDryRun;
+            m_targetDir = options.TargetDir;
 
-            s_Config = CopiumHeaderToolConfig.LoadConfig(copiumConfigDir);
+            if (options.bDryRun)
+            {
+                m_generatedHeadersDir = null;
+                GeneratedSourcesDir = null;
+            }
+            else
+            {
+                m_generatedHeadersDir = new DirectoryInfo(Path.Combine(options.TargetGeneratedDir.FullName, "Include", options.BaseGeneratedIncludeDir));
+                GeneratedSourcesDir = new DirectoryInfo(Path.Combine(options.TargetGeneratedDir.FullName, "Source"));
+            }
+
+            s_Config = CopiumHeaderToolConfig.LoadConfig(options.CopiumConfigDir);
             EnumGenerator.SetConfig(s_Config.EnumGenerator);
             StructGenerator.SetConfig(s_Config.StructGenerator);
         }
@@ -64,8 +114,11 @@ namespace Copium.HeaderTool
 
         public void Generate(HeaderToolTaskItem[] taskItems)
         {
-            m_generatedHeadersDir.Create();
-            GeneratedSourcesDir.Create();
+            if (m_bDryRun == false)
+            {
+                m_generatedHeadersDir.Create();
+                GeneratedSourcesDir.Create();
+            }
 
             foreach (HeaderToolTaskItem taskItem in taskItems)
             {
@@ -77,7 +130,7 @@ namespace Copium.HeaderTool
                     continue;
                 }
 
-                if (cppHeaderDesc.Enums.Count != 0 || cppHeaderDesc.Structs.Count != 0)
+                if (m_bDryRun == false)
                 {
                     taskItem.Result = _GenerateSourcesForHeader(cppHeaderDesc);
                 }
@@ -132,8 +185,8 @@ namespace Copium.HeaderTool
                     moduleImports = moduleImports.Concat(EnumGenerator.CppImports);
                 }
 
-                var stdIncludesArray = stdIncludes.Distinct().ToArray();
-                var moduleImportsArray = moduleImports.Distinct().ToArray();
+                string[] stdIncludesArray = stdIncludes.Distinct().ToArray();
+                string[] moduleImportsArray = moduleImports.Distinct().ToArray();
 
                 Array.Sort(stdIncludesArray);
                 Array.Sort(moduleImportsArray);

@@ -103,6 +103,7 @@ namespace Copium.HeaderTool.Generator
         }
 
 
+        // NOTE(v.matushkin): And why did I choose to pass the config dir instead of the config file path?
         public static CopiumHeaderToolConfig LoadConfig(DirectoryInfo copiumConfigDir)
         {
             var configFile = new FileInfo(Path.Combine(copiumConfigDir.FullName, "CopiumHeaderTool.json"));

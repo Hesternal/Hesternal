@@ -5,10 +5,4 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <Target Name="CopyDLLs" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
-    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll;$(TargetDir)$(ProjectName).pdb"
-          DestinationFolder="$(CopiumBinDir)"
-          />
-  </Target>
-
 </Project>

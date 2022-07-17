@@ -13,10 +13,4 @@
     <ProjectReference Include="..\Copium.Core\Copium.Core.csproj" />
   </ItemGroup>
 
-  <Target Name="CopyDLLs" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
-    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll;$(TargetDir)$(ProjectName).pdb"
-          DestinationFolder="$(CopiumBinDir)"
-          />
-  </Target>
-
 </Project>
