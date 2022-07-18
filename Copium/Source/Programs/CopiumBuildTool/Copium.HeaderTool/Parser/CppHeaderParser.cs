@@ -16,11 +16,17 @@ namespace Copium.HeaderTool.Parser
             public const string Constexpr = "constexpr";
             public const string Enum      = "enum";
             public const string Export    = "export";
+            public const string Final     = "final";
             public const string Inline    = "inline";
             public const string Module    = "module";
             public const string Namespace = "namespace";
+            public const string Private   = "private";
+            public const string Protected = "protected";
+            public const string Public    = "public";
             public const string Static    = "static";
             public const string Struct    = "struct";
+            public const string Template  = "template";
+            public const string Virtual   = "virtual";
         }
 
         private static class ChtIdentifier
@@ -154,7 +160,7 @@ namespace Copium.HeaderTool.Parser
                         }
                         else
                         {
-                            throw ParserError.Message(m_filePath, token, "CHT_PROPERTY macro can only be used inside CHT_STRUCT or CHT_CLASS");
+                            throw ParserError.Message(m_filePath, token, "CHT_PROPERTY macro can only be used inside CHT_STRUCT");
                         }
                     }
                     else if (token.IsValue(ChtIdentifier.Struct))
@@ -164,7 +170,7 @@ namespace Copium.HeaderTool.Parser
                     // CppIdentifiers
                     else if (token.IsValue(CppIdentifier.Class))
                     {
-                        _ParseClass();
+                        _ParseStructOrClass(false);
                     }
                     else if (token.IsValue(CppIdentifier.Enum))
                     {
@@ -176,7 +182,11 @@ namespace Copium.HeaderTool.Parser
                     }
                     else if (token.IsValue(CppIdentifier.Struct))
                     {
-                        _ParseStruct();
+                        _ParseStructOrClass(true);
+                    }
+                    else if (token.IsValue(CppIdentifier.Template))
+                    {
+                        _ParseTemplate();
                     }
                 }
                 else if (token.IsSymbol())
@@ -240,7 +250,7 @@ namespace Copium.HeaderTool.Parser
                     AdvanceToken();
                     Token enumVariableValueToken = ExpectNumber();
                     enumVariableValueStr = enumVariableValueToken.Value;
-                    enumVariableValue = enumVariableValueToken.GetNumber();
+                    enumVariableValue = enumVariableValueToken.AsNumber();
                 }
                 else
                 {
@@ -281,6 +291,7 @@ namespace Copium.HeaderTool.Parser
             return new CppPropertyDesc(propertyName, propertyType);
         }
 
+        // TODO(v.matushkin): Parsing of CHT_STRUCT is lagging behind of parsing usual struct
         /// <summary>
         /// <para>
         ///   Parse struct name and type qualifier(optional)<br/>
@@ -311,47 +322,6 @@ namespace Copium.HeaderTool.Parser
         }
 
 
-        private void _ParseClass()
-        {
-            Token classNameToken = ExpectIdentifier();
-
-            Token nextToken = PeekToken();
-            if (nextToken.IsSymbol(';'))
-            {
-                AdvanceToken();
-                return;
-            }
-            if (nextToken.IsSymbol('{') == false)
-            {
-                if (nextToken.IsIdentifier("final"))
-                {
-                    AdvanceToken();
-                    nextToken = NextToken();
-                }
-
-                if (nextToken.IsSymbol(':'))
-                {
-                    // TODO(v.matushkin): Support nested class type and 'virtual'
-                    ExpectIdentifier(); // inheritance access-specifier
-                    ExpectIdentifier(); // inheritance class
-
-                    nextToken = NextToken();
-                }
-
-                if (nextToken.IsSymbol('{') == false)
-                {
-                    throw ParserError.Message(m_filePath, nextToken, "Expected \"class-inheritance(optional) '{'\"");
-                }
-            }
-            else
-            {
-                AdvanceToken();
-            }
-
-            m_parsingContext.PushContext_Class();
-            m_cppTypeScope.Push(classNameToken.Value);
-        }
-
         private void _ParseDeclaration()
         {
             int openBrackets = 1;
@@ -369,12 +339,11 @@ namespace Copium.HeaderTool.Parser
                 {
                     if (token.IsValue('{'))
                     {
-                        ++openBrackets;
+                        openBrackets++;
                     }
                     else if (token.IsValue('}'))
                     {
-                        --openBrackets;
-                        if (openBrackets == 0)
+                        if (--openBrackets == 0)
                         {
                             break;
                         }
@@ -420,47 +389,93 @@ namespace Copium.HeaderTool.Parser
             m_cppTypeScope.Push(namespaceName);
         }
 
-        // TODO(v.matushkin): Parse inheritance and '{' ?
-        //  What about forward declarations?
-        private void _ParseStruct()
+        private void _ParseStructOrClass(bool isStruct)
         {
-            Token structNameToken = ExpectIdentifier();
+            // Potential struct declaration to parse
+            // struct is_basic_string<std::basic_string<Ch, Tr, Al>> final : std::true_type {};
 
+            string type = _ParseType();
+
+            // At this point it could be either Identifier("final") or Symbol(':'(inheritance) or ';'(forward declaration) or '{'), so I need to Peek()
             Token nextToken = PeekToken();
-            if (nextToken.IsSymbol(';'))
+
+            // If "final" identifier (optional)
+            if (nextToken.IsIdentifier(CppIdentifier.Final))
             {
                 AdvanceToken();
-                return;
+                // Next token should be symbol, so there is no need to Peek()
+                // Not using ExpectSymbol() since this is optional path and I need to check TokenType later anyway
+                nextToken = NextToken();
             }
-            if (nextToken.IsSymbol('{') == false)
+
+            if (nextToken.IsSymbol() == false)
             {
-                if (nextToken.IsIdentifier("final"))
+                throw ParserError.UnexpectedToken(m_filePath, nextToken, TokenType.Symbol);
+            }
+
+            // If inheritance (optional)
+            if (nextToken.IsValue(':'))
+            {
+                AdvanceToken();
+
+                // Virtual (optional)
+                if (PeekToken().IsIdentifier(CppIdentifier.Virtual))
                 {
                     AdvanceToken();
-                    nextToken = NextToken();
                 }
 
-                if (nextToken.IsSymbol(':'))
+                // Inheritance access-specifier (public, private, protected) (optional)
+                Token accessToken = PeekToken();
+                if (accessToken.IsIdentifier())
                 {
-                    // TODO(v.matushkin): Support nested struct type and 'virtual'
-                    ExpectIdentifier(); // inheritance access-specifier
-                    ExpectIdentifier(); // inheritance class
-
-                    nextToken = NextToken();
+                    string accessStr = accessToken.Value;
+                    if (accessStr == CppIdentifier.Public || accessStr == CppIdentifier.Private || accessStr == CppIdentifier.Protected)
+                    {
+                        AdvanceToken();
+                    }
                 }
 
-                if (nextToken.IsSymbol('{') == false)
-                {
-                    throw ParserError.Message(m_filePath, nextToken, "Expected \"struct-inheritance(optional) '{'\"");
-                }
+                _ = _ParseType();
+                // At this point there could only be Symbol tokens, so use ExpectSymbol()
+                nextToken = ExpectSymbol();
             }
-            else
+
+            if (nextToken.IsValue('{'))
             {
-                AdvanceToken();
+                if (isStruct)
+                {
+                    m_parsingContext.PushContext_Struct();
+                }
+                else
+                {
+                    m_parsingContext.PushContext_Class();
+                }
+
+                // NOTE(v.matushkin): I think I can't just push this struct type to the type scope and there are cases where this will break things
+                m_cppTypeScope.Push(type);
+            }
+            else if (nextToken.IsValue(';') == false)
+            {
+                throw ParserError.Message(m_filePath, nextToken, $"Expected either ';' or '{{' symbol, got {nextToken.AsSymbol()}");
             }
 
-            m_parsingContext.PushContext_Struct();
-            m_cppTypeScope.Push(structNameToken.Value);
+            // If there were no "final" keyword or inheritance, we are still peeking the token, so need to advance
+            AdvanceToken();
+        }
+
+        // NOTE(v.matushkin): This function exists only because I don't wanna deal with usage of "class" instead of "typename" in "template<...>" expression
+        /// <summary>
+        /// Skip "<...>" part of the "template<...>" expression
+        /// </summary>
+        private void _ParseTemplate()
+        {
+            Token openAngleBracketToken = PeekToken();
+            if (openAngleBracketToken.IsValue('<') == false)
+            {
+                throw ParserError.UnexpectedSymbol(m_filePath, openAngleBracketToken, '<');
+            }
+
+            _ParseTypeTemplatedPart();
         }
 
 
@@ -506,38 +521,7 @@ namespace Copium.HeaderTool.Parser
                 return new CppType(typeToken.Value);
             }
 
-            _ParseQualifiedIdentifier(m_stringBuilder);
-
-            int angleBrackets = 0;
-            while (PeekToken().IsSymbol('<'))
-            {
-                AdvanceToken();
-                ++angleBrackets;
-                m_stringBuilder.Append('<');
-
-                _ParseQualifiedIdentifier(m_stringBuilder);
-                while (PeekToken().IsSymbol(','))
-                {
-                    AdvanceToken();
-                    m_stringBuilder.Append('<');
-                    _ParseQualifiedIdentifier(m_stringBuilder);
-                }
-
-                if (PeekToken().IsSymbol('>'))
-                {
-                    m_stringBuilder.Append('>');
-                    --angleBrackets;
-                    if (angleBrackets == 0)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (angleBrackets != 0)
-            {
-                throw ParserError.Message(m_filePath, typeToken, "Amount of '<' and '>' were not the same");
-            }
+            string variableType = _ParseType();
 
             Token tokenAfterType = PeekToken();
             switch (tokenAfterType.Type)
@@ -553,11 +537,24 @@ namespace Copium.HeaderTool.Parser
                     break;
             }
 
-            return new CppType(m_stringBuilder.ToStringAndClear());
+            return new CppType(variableType);
 
             // throw ParserError.Message(m_filePath, typeToken, "Unsupported Property type");
         }
 
+
+        private string _ParseType()
+        {
+            return _ParseType(m_stringBuilder);
+        }
+
+        private string _ParseType(StringBuilder stringBuilder)
+        {
+            _ParseQualifiedIdentifier(stringBuilder);
+            _ParseTypeTemplatedPart(stringBuilder);
+
+            return stringBuilder.ToStringAndClear();
+        }
 
         /// <summary>
         /// Parse expressions like 'type' or 'namespace::namespace::class::type'<br/>
@@ -577,11 +574,107 @@ namespace Copium.HeaderTool.Parser
         {
             stringBuilder.Append(ExpectIdentifier().Value);
 
-            while (PeekToken().IsSymbol(':'))
+            while (PeekToken().IsDoubleSymbol(DoubleSymbol.Colon))
             {
                 AdvanceToken();
-                ExpectSymbol(':');
+                stringBuilder.Append(DoubleSymbol.Colon);
                 stringBuilder.Append(ExpectIdentifier().Value);
+            }
+        }
+
+        /// <summary>
+        /// Should be called to skip templated part of the type
+        /// </summary>
+        private void _ParseTypeTemplatedPart()
+        {
+            Token openAngleBracketToken = PeekToken();
+
+            if (openAngleBracketToken.IsValue('<') == false)
+            {
+                return;
+            }
+
+            AdvanceToken();
+            int openAngleBrackets = 1;
+
+            while (true)
+            {
+                Token token = NextToken();
+
+                if (token.IsEndOfFile())
+                {
+                    throw ParserError.UnexpectedEndOfFile(m_filePath, token);
+                }
+
+                if (token.IsSymbol())
+                {
+                    if (token.IsValue('<'))
+                    {
+                        openAngleBrackets++;
+                    }
+                    else if (token.IsValue('>'))
+                    {
+                        if (--openAngleBrackets == 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (openAngleBrackets != 0)
+            {
+                throw ParserError.Message(m_filePath, openAngleBracketToken, "Amount of '<' and '>' were not the same");
+            }
+        }
+
+        /// <summary>
+        /// Should be called to append templated part of the type to <see cref="StringBuilder"/><br/>
+        /// Appends nothing if type was not templated
+        /// </summary>
+        private void _ParseTypeTemplatedPart(StringBuilder stringBuilder)
+        {
+            Token openAngleBracketToken = PeekToken();
+
+            if (openAngleBracketToken.IsValue('<') == false)
+            {
+                return;
+            }
+
+            AdvanceToken();
+            stringBuilder.Append('<');
+            int openAngleBrackets = 1;
+
+            while (true)
+            {
+                Token token = NextToken();
+
+                if (token.IsEndOfFile())
+                {
+                    throw ParserError.UnexpectedEndOfFile(m_filePath, token);
+                }
+
+                stringBuilder.Append(token.Value);
+
+                if (token.IsSymbol())
+                {
+                    if (token.IsValue('<'))
+                    {
+                        openAngleBrackets++;
+                    }
+                    else if (token.IsValue('>'))
+                    {
+                        if (--openAngleBrackets == 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (openAngleBrackets != 0)
+            {
+                throw ParserError.Message(m_filePath, openAngleBracketToken, "Amount of '<' and '>' were not the same");
             }
         }
 
