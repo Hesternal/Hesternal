@@ -6,13 +6,19 @@ namespace Copium.HeaderTool.Parser
 {
     internal enum TokenType
     {
+        None,
         Identifier,
         Symbol,
+        DoubleSymbol,
         Number,
         String,
         EndOfFile,
     }
 
+    internal static class DoubleSymbol
+    {
+        public const string Colon = "::";
+    }
 
     internal sealed class Token
     {
@@ -32,12 +38,15 @@ namespace Copium.HeaderTool.Parser
         public bool IsValue(char symbol)            => Value[0] == symbol;
         public bool IsValue(string str)             => str == Value;
         public bool IsSymbol()                      => Type == TokenType.Symbol;
-        public bool IsSymbol(char symbol)           => Type == TokenType.Symbol && IsValue(symbol);
+        public bool IsSymbol(char symbol)           => IsSymbol() && IsValue(symbol);
+        public bool IsDoubleSymbol()                => Type == TokenType.DoubleSymbol;
+        public bool IsDoubleSymbol(string symbol)   => IsDoubleSymbol() && IsValue(symbol);
         public bool IsIdentifier()                  => Type == TokenType.Identifier;
         public bool IsIdentifier(string identifier) => IsIdentifier() && IsValue(identifier);
         public bool IsEndOfFile()                   => Type == TokenType.EndOfFile;
 
-        public long GetNumber() => long.Parse(Value);
+        public char AsSymbol() => Value[0];
+        public long AsNumber() => long.Parse(Value);
     }
 
 
@@ -54,6 +63,8 @@ namespace Copium.HeaderTool.Parser
         protected readonly string m_filePath;
 
         protected bool bEndOfStream { get; private set; } = false;
+        protected Token CurrentToken { get; private set; } = new Token(string.Empty, 0, 0, TokenType.None);
+        protected Token PreviousToken { get; private set; } = new Token(string.Empty, 0, 0, TokenType.None);
 
 
         protected BaseParser(string filePath, string input)
@@ -66,9 +77,15 @@ namespace Copium.HeaderTool.Parser
 
         protected Token NextToken()
         {
+            PreviousToken = CurrentToken;
+            return CurrentToken = _NextTokenInternal();
+        }
+
+        private Token _NextTokenInternal()
+        {
             if (bEndOfStream)
             {
-                throw new ApplicationException("Calling NextToken when the end was reached");
+                throw new InvalidOperationException("Calling NextToken when the end of stream was reached");
             }
 
             if (m_peekToken != null)
@@ -101,8 +118,19 @@ namespace Copium.HeaderTool.Parser
                 return _ParseString();
             }
 
-            m_input.MoveNext();
             int tokenColumn = m_column++;
+            bool notTheEnd = _MoveNext();
+
+            if (currentChar == ':' && notTheEnd)
+            {
+                if (m_input.Current == ':')
+                {
+                    m_column++;
+                    _ = _MoveNext();
+
+                    return new Token(DoubleSymbol.Colon, m_line, tokenColumn, TokenType.DoubleSymbol);
+                }
+            }
 
             return new Token(currentChar.ToString(), m_line, tokenColumn, TokenType.Symbol);
         }
@@ -137,11 +165,12 @@ namespace Copium.HeaderTool.Parser
         }
 
         protected Token ExpectIdentifier() => ExpectToken(TokenType.Identifier);
+        protected Token ExpectSymbol()     => ExpectToken(TokenType.Symbol);
         protected Token ExpectNumber()     => ExpectToken(TokenType.Number);
 
         protected Token ExpectSymbol(char symbol)
         {
-            Token token = ExpectToken(TokenType.Symbol);
+            Token token = ExpectSymbol();
             if (token.IsValue(symbol) == false)
             {
                 throw ParserError.UnexpectedSymbol(m_filePath, token, symbol);
@@ -380,6 +409,25 @@ namespace Copium.HeaderTool.Parser
             ++m_column;
 
             return new Token(m_stringBuilder.ToStringAndClear(), m_line, tokenColumn, TokenType.String);
+        }
+
+
+        private bool _MoveNext()
+        {
+            bool notTheEnd = m_input.MoveNext();
+
+            if (notTheEnd)
+            {
+                bEndOfStream = false;
+                m_inputCurrent = m_input.Current;
+            }
+            else
+            {
+                bEndOfStream = true;
+                m_inputCurrent = char.MaxValue;
+            }
+
+            return notTheEnd;
         }
     }
 }
