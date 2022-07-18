@@ -56,6 +56,7 @@ namespace Copium.HeaderTool.Parser
         private readonly StringBuilder m_stringBuilder = new StringBuilder();
 
         private CharEnumerator m_input;
+        private char m_inputCurrent;
         private Token m_peekToken = null;
         private int m_line = 1;
         private int m_column = 0;
@@ -69,9 +70,9 @@ namespace Copium.HeaderTool.Parser
 
         protected BaseParser(string filePath, string input)
         {
-            m_input = input.GetEnumerator();
-            m_input.MoveNext();
             m_filePath = filePath;
+            m_input = input.GetEnumerator();
+            _ = _MoveNext();
         }
 
 
@@ -103,7 +104,7 @@ namespace Copium.HeaderTool.Parser
                 return new Token(string.Empty, m_line, m_column, TokenType.EndOfFile);
             }
 
-            char currentChar = m_input.Current;
+            char currentChar = m_inputCurrent;
 
             if (char.IsLetter(currentChar) || currentChar == '_')
             {
@@ -123,7 +124,7 @@ namespace Copium.HeaderTool.Parser
 
             if (currentChar == ':' && notTheEnd)
             {
-                if (m_input.Current == ':')
+                if (m_inputCurrent == ':')
                 {
                     m_column++;
                     _ = _MoveNext();
@@ -211,107 +212,101 @@ namespace Copium.HeaderTool.Parser
 
         private void _SkipWhitespaceAndComments()
         {
-            try
+            var inputPrevious = (CharEnumerator)m_input.Clone();
+
+            do
             {
-                var inputNext = (CharEnumerator)m_input.Clone();
-
-                do
+                // WhiteSpace
+                if (m_inputCurrent == ' ' || m_inputCurrent == '\t' || m_inputCurrent == '\r')
                 {
-                    if (m_input.Current == ' ' || m_input.Current == '\t' || m_input.Current == '\r')
+                    m_column++;
+                }
+                // NewLine
+                else if (m_inputCurrent == '\n')
+                {
+                    m_column = 0;
+                    m_line++;
+                }
+                // Comment
+                else if (m_inputCurrent == '/')
+                {
+                    if (_MoveNext())
                     {
-                        ++m_column;
-                    }
-                    else if (m_input.Current == '\n')
-                    {
-                        m_column = 0;
-                        ++m_line;
-                    }
-                    // Check for comment
-                    else if (m_input.Current == '/')
-                    {
-                        if (m_input.MoveNext())
+                        // Single line comment "//"
+                        if (m_inputCurrent == '/')
                         {
-                            // Check for single line comment ("//")
-                            if (m_input.Current == '/')
+                            m_column++;
+                            while (_MoveNext())
                             {
-                                ++m_column;
-                                while (m_input.MoveNext())
+                                if (m_inputCurrent == '\n')
                                 {
-                                    if (m_input.Current == '\n')
-                                    {
-                                        m_column = 0;
-                                        ++m_line;
-                                        break;
-                                    }
-                                    ++m_column; // NOTE(v.matushkin): No need to count columns since we are skipping until new line anyway?
+                                    m_column = 0;
+                                    m_line++;
+                                    break;
                                 }
+                                m_column++; // NOTE(v.matushkin): No need to count columns since we are skipping until new line anyway?
                             }
-                            // Check for c-style multi-lines comment ("/**/")
-                            else if (m_input.Current == '*')
-                            {
-                                ++m_column;
-                                bool foundCommentEnd = false;
+                        }
+                        // C-style multi-lines comment "/**/"
+                        else if (m_inputCurrent == '*')
+                        {
+                            m_column++;
+                            bool foundCommentEnd = false;
 
-                                while (m_input.MoveNext())
+                            while (_MoveNext())
+                            {
+                                if (m_inputCurrent == '*')
                                 {
-                                    if (m_input.Current == '*')
+                                    if (_MoveNext())
                                     {
-                                        if (m_input.MoveNext())
+                                        if (m_inputCurrent == '/')
                                         {
-                                            if (m_input.Current == '/')
-                                            {
-                                                m_input.MoveNext();
-                                                ++m_column;
-                                                foundCommentEnd = true;
-                                                break;
-                                            }
+                                            _MoveNext();
+                                            m_column++;
+                                            foundCommentEnd = true;
+                                            break;
                                         }
-                                        else
-                                        {
-                                            throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
-                                        }
-                                    }
-                                    else if (m_input.Current == '\n')
-                                    {
-                                        m_column = 0;
-                                        ++m_line;
                                     }
                                     else
                                     {
-                                        ++m_column;
+                                        throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
                                     }
                                 }
-
-                                if (foundCommentEnd)
+                                else if (m_inputCurrent == '\n')
                                 {
-                                    throw ParserError.Message(m_filePath, m_line, m_column, "Couldn't find the end of a multi line comment");
+                                    m_column = 0;
+                                    m_line++;
+                                }
+                                else
+                                {
+                                    m_column++;
                                 }
                             }
-                        }
-                        else
-                        {
-                            m_input = inputNext;
-                            break;
+
+                            if (foundCommentEnd)
+                            {
+                                throw ParserError.Message(m_filePath, m_line, m_column, "Couldn't find the end of a multi line comment");
+                            }
                         }
                     }
+                    // Reached the EndOfStream, it was not a comment, just a '/' symbol, backtrack and stop
                     else
                     {
-                        m_input = inputNext;
+                        m_input = inputPrevious;
                         break;
                     }
+                }
+                // TODO(v.matushkin): Do I even need to backtrack here?
+                // Stop, current symbol is not a whitespace
+                else
+                {
+                    m_input = inputPrevious;
+                    break;
+                }
 
-                    inputNext = m_input;
+                inputPrevious = m_input;
 
-                } while (m_input.MoveNext());
-
-                // Test if the end was reached
-                _ = m_input.Current;
-            }
-            catch (InvalidOperationException)
-            {
-                // NOTE: What fucking retard didn't add a way for CharEnumerator to check if the end is reached
-                bEndOfStream = true;
-            }
+            } while (_MoveNext());
         }
 
 
@@ -321,12 +316,12 @@ namespace Copium.HeaderTool.Parser
             //  but I see no way to create string from 2 CharEnumerators and I'm lazy to think of anything else
             int tokenColumn = ++m_column;
 
-            m_stringBuilder.Append(m_input.Current);
+            m_stringBuilder.Append(m_inputCurrent);
 
-            while (m_input.MoveNext() && (char.IsLetterOrDigit(m_input.Current) || m_input.Current == '_'))
+            while (_MoveNext() && (char.IsLetterOrDigit(m_inputCurrent) || m_inputCurrent == '_'))
             {
-                m_stringBuilder.Append(m_input.Current);
-                ++m_column;
+                m_stringBuilder.Append(m_inputCurrent);
+                m_column++;
             }
 
             return new Token(m_stringBuilder.ToStringAndClear(), m_line, tokenColumn, TokenType.Identifier);
@@ -336,19 +331,19 @@ namespace Copium.HeaderTool.Parser
         {
             int tokenColumn = m_column++;
 
-            m_stringBuilder.Append(m_input.Current);
+            m_stringBuilder.Append(m_inputCurrent);
 
-            if (m_input.Current == '-' || m_input.Current == '+')
+            if (m_inputCurrent == '-' || m_inputCurrent == '+')
             {
-                m_input.MoveNext();
-                m_stringBuilder.Append(m_input.Current);
-                ++m_column;
+                _ = _MoveNext();
+                m_stringBuilder.Append(m_inputCurrent);
+                m_column++;
             }
 
-            while (m_input.MoveNext() && char.IsDigit(m_input.Current))
+            while (_MoveNext() && char.IsDigit(m_inputCurrent))
             {
-                m_stringBuilder.Append(m_input.Current);
-                ++m_column;
+                m_stringBuilder.Append(m_inputCurrent);
+                m_column++;
             }
 
             return new Token(m_stringBuilder.ToStringAndClear(), m_line, tokenColumn, TokenType.Number);
@@ -357,39 +352,39 @@ namespace Copium.HeaderTool.Parser
         private Token _ParseString()
         {
             // Skip '"' symbol
-            if (m_input.MoveNext() == false)
+            if (_MoveNext() == false)
             {
                 throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
             }
 
             int tokenColumn = ++m_column;
 
-            m_stringBuilder.Append(m_input.Current);
+            m_stringBuilder.Append(m_inputCurrent);
 
             bool foundStringEnd = false;
 
-            while (m_input.MoveNext())
+            while (_MoveNext())
             {
-                if (m_input.Current == '"')
+                if (m_inputCurrent == '"')
                 {
                     foundStringEnd = true;
                     break;
                 }
 
-                m_stringBuilder.Append(m_input.Current);
-                ++m_column;
+                m_stringBuilder.Append(m_inputCurrent);
+                m_column++;
 
                 // NOTE(v.matushkin): I think this checks for '\\' and '\0' are bugged
-                if (m_input.Current == '\\')
+                if (m_inputCurrent == '\\')
                 {
-                    if (m_input.MoveNext() == false)
+                    if (_MoveNext() == false)
                     {
                         throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
                     }
 
-                    m_stringBuilder.Append(m_input.Current);
-                    ++m_column;
-                    if (m_input.Current == '\0')
+                    m_stringBuilder.Append(m_inputCurrent);
+                    m_column++;
+                    if (m_inputCurrent == '\0')
                     {
                         break;
                     }
@@ -401,12 +396,12 @@ namespace Copium.HeaderTool.Parser
                 throw ParserError.Message(m_filePath, m_line, m_column, "Couldn't find the end of a string");
             }
             // Skip '"' symbol
-            if (m_input.MoveNext() == false)
+            if (_MoveNext() == false)
             {
                 throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
             }
 
-            ++m_column;
+            m_column++;
 
             return new Token(m_stringBuilder.ToStringAndClear(), m_line, tokenColumn, TokenType.String);
         }
