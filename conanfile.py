@@ -22,7 +22,7 @@ class Copium(ConanFile):
     #generators = 'cmake_find_package_multi'
 
     requires = [
-        #  'assimp/5.2.2',
+          'assimp/5.2.2',
          'cxxopts/3.0.0',
             'entt/3.10.0',
             'glfw/3.3.7',

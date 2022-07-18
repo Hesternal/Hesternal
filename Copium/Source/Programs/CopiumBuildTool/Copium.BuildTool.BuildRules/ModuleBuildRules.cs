@@ -5,6 +5,7 @@ namespace Copium.BuildTool.BuildRules;
 
 public enum ConanLibrary
 {
+    assimp,
     cxxopts,
     entt,
     glfw,
