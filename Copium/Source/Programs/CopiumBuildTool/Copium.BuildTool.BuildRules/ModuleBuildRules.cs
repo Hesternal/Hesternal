@@ -10,6 +10,7 @@ public enum ConanLibrary
     glfw,
     simdjson,
     spdlog,
+    stb,
 }
 
 public sealed class LibraryDependencies
