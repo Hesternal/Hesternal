@@ -27,6 +27,13 @@
 #endif
 
 
+#if defined(COP_PLATFORM_WINDOWS)
+
+#else
+    #error Unsupported platform
+#endif
+
+
 #if defined(COP_COMPILER_MSVC)
 
     #define COP_DEBUG_BREAK() __debugbreak()
