@@ -2,6 +2,7 @@ module;
 
 #include "Engine/Core/Defines.hpp"
 
+#include <memory>
 #include <string>
 
 export module CopiumEngine.Graphics.GraphicsTypes;
@@ -20,6 +21,7 @@ export namespace Copium
 
     enum class ShaderHandle    : uint32 { Invalid = k_InvalidHandle };
     enum class SwapchainHandle : uint32 { Invalid = k_InvalidHandle };
+    enum class TextureHandle   : uint32 { Invalid = k_InvalidHandle };
 
 
     // TODO(v.matushkin): Add Default color/depth formats that depends on the current platform
@@ -49,6 +51,35 @@ export namespace Copium
         OneMinusSrc1Alpha,
     };
 
+    enum class TextureFormat : uint8
+    {
+        R8,
+        RG8,
+        RGBA8,
+    };
+
+    enum class TextureWrapMode : uint8
+    {
+        ClampToEdge,
+        ClampToBorder,
+        MirroredOnce,
+        MirroredRepeat,
+        Repeat,
+    };
+
+
+    struct TextureDesc
+    {
+        uint32          Width;
+        uint32          Height;
+        TextureFormat   Format;
+        TextureWrapMode WrapMode;
+    };
+
+    struct TextureData
+    {
+        std::unique_ptr<uint8[]> Data;
+    };
 
     struct ShaderDesc
     {
