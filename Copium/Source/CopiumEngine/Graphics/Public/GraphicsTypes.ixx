@@ -70,6 +70,7 @@ export namespace Copium
 
     struct TextureDesc
     {
+        std::string     Name;
         uint32          Width;
         uint32          Height;
         TextureFormat   Format;

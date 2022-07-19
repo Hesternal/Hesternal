@@ -12,6 +12,11 @@ export namespace Copium
         Texture(TextureDesc&& textureDesc, TextureData&& textureData);
         ~Texture();
 
+        Texture(const Texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
+        Texture(Texture&& other) noexcept = default;
+        Texture& operator=(Texture&& other) noexcept = default;
+
         [[nodiscard]] TextureHandle GetHandle() const { return m_textureHandle; }
 
     private:
