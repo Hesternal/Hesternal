@@ -4,6 +4,7 @@ module;
 
 #include <memory>
 #include <string>
+#include <vector>
 
 export module CopiumEngine.Graphics.GraphicsTypes;
 
@@ -19,6 +20,7 @@ namespace Copium
 export namespace Copium
 {
 
+    enum class MeshHandle      : uint32 { Invalid = k_InvalidHandle };
     enum class ShaderHandle    : uint32 { Invalid = k_InvalidHandle };
     enum class SwapchainHandle : uint32 { Invalid = k_InvalidHandle };
     enum class TextureHandle   : uint32 { Invalid = k_InvalidHandle };
@@ -67,6 +69,48 @@ export namespace Copium
         Repeat,
     };
 
+    enum class VertexAttribute : uint8
+    {
+        Position,
+        Normal,
+        UV0,
+    };
+
+    // NOTE(v.matushkin): Seems like OpenGL/Vulkan support more formats (VK_FORMAT_R64_SFLOAT for example)
+    enum class VertexAttributeFormat : uint8
+    {
+        SInt8,
+        SInt16,
+        SInt32,
+        UInt8,
+        UInt16,
+        UInt32,
+        SNorm8,
+        SNorm16,
+        UNorm8,
+        UNorm16,
+        Float16,
+        Float32,
+    };
+
+
+    struct VertexAttributeDesc
+    {
+        uint32                Offset;
+        uint8                 Dimension;
+        VertexAttribute       Attribute;
+        VertexAttributeFormat Format;
+    };
+
+    struct MeshDesc
+    {
+        std::string                      Name;
+        std::vector<VertexAttributeDesc> VertexLayout;
+        std::unique_ptr<uint8[]>         IndexData;
+        std::unique_ptr<uint8[]>         VertexData;
+        uint32                           IndexCount;
+        uint32                           VertexCount;
+    };
 
     struct TextureDesc
     {
