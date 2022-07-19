@@ -19,36 +19,45 @@ namespace Copium
 {
 
     EditorApplication::EditorApplication(int32 argc, const char* const* argv)
+        : m_editorInitialized(false)
+        , m_editorClosed(false)
     {
-        const std::string argumentCreateProject = "createProject";
-        const std::string argumentOpenProject   = "openProject";
+        // const std::string createProjectOption = "create-project";
+        const std::string openProjectOption   = "open-project";
 
         cxxopts::Options cmdArguments("test", "A brief description");
 
         cmdArguments.add_options()
-            (argumentCreateProject, "Create an empty project at the given path", cxxopts::value<std::string>())
-            (argumentOpenProject, "Open the project at the given path. If the pathname contains spaces, enclose it in quotes.", cxxopts::value<std::string>());
+            // (createProjectOption, "Create an empty project at the given path", cxxopts::value<std::string>())
+            (openProjectOption, "Open the project at the given path.", cxxopts::value<std::string>());
 
         cxxopts::ParseResult cmdResult = cmdArguments.parse(argc, argv);
 
-        // bool usedCreateProject = cmdResult.count(argumentCreateProject);
-        // bool usedOpenProject   = cmdResult.count(argumentOpenProject);
-        // 
-        // // Order of checks matters
+        bool usedCreateProjectOption = cmdResult.count(openProjectOption);
+        // bool usedOpenProject   = cmdResult.count(createProjectOption);
+
+        // Order of checks matters
+        COP_ASSERT_MSG(usedCreateProjectOption, "Option --open-project should be specified");
+
         // COP_ASSERT(usedCreateProject || usedOpenProject,
         //            "Either '-{:s}' or '-{:s}' should be specified", argumentCreateProject, argumentOpenProject
         // );
         // COP_ASSERT(usedCreateProject != usedOpenProject,
         //            "Both '-{:s}' and '-{:s}' shouldn't be used at the same time",argumentCreateProject, argumentOpenProject
         // );
-        // 
-        // m_projectPath = cmdResult[usedCreateProject ? argumentCreateProject : argumentOpenProject].as<std::string>();
-        // 
+
+        m_projectPath = cmdResult[openProjectOption].as<std::string>();
+
         // if (usedCreateProject)
         // {
         //     _CreateProject();
         // }
         // _OpenProject();
+    }
+
+    EditorApplication::~EditorApplication()
+    {
+        ShutdownSystems();
     }
 
 
@@ -61,6 +70,21 @@ namespace Copium
         engineSettings.WindowTitle  = L"CopiumEngine";
         engineSettings.WindowWidth  = 1280;
         engineSettings.WindowHeight = 720;
+    }
+
+    void EditorApplication::InitSystems()
+    {
+        m_editorInitialized = true;
+    }
+
+    void EditorApplication::ShutdownSystems()
+    {
+        if (m_editorInitialized == false || m_editorClosed)
+        {
+            return;
+        }
+
+        m_editorClosed = true;
     }
 
 

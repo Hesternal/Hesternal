@@ -1,6 +1,6 @@
 module;
 
-// #include <filesystem>
+#include <filesystem>
 
 export module CopiumEditor.EditorApplication;
 
@@ -15,17 +15,23 @@ export namespace Copium
     {
     public:
         EditorApplication(int32 argc, const char* const* argv);
-        ~EditorApplication() = default;
+        ~EditorApplication();
 
         // Application protected
+    private:
         void InitSettings(EngineSettings& engineSettings) override;
+        void InitSystems() override;
+        void ShutdownSystems() override;
 
     private:
         // void _CreateProject();
         // void _OpenProject();
 
     private:
-        // std::filesystem::path m_projectPath;
+        std::filesystem::path m_projectPath;
+
+        bool                  m_editorInitialized;
+        bool                  m_editorClosed;
     };
 
 } // export namespace Copium

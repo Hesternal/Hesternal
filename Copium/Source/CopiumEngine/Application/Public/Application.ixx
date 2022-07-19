@@ -28,9 +28,12 @@ export namespace Copium
 
     protected:
         virtual void InitSettings(EngineSettings& engineSettings) = 0;
+        virtual void InitSystems() = 0;
+        virtual void ShutdownSystems() = 0;
 
     private:
         void _EngineInit();
+        void _EngineShutdown();
         void _EngineLoop();
 
     private:
@@ -39,6 +42,9 @@ export namespace Copium
         IGraphicsDevice*        m_graphicsDevice;
         std::unique_ptr<Window> m_mainWindow;
         ShaderHandle            m_triangleShaderHandle;
+
+        bool                    m_engineInitialized;
+        bool                    m_engineClosed;
     };
 
 
