@@ -1,6 +1,7 @@
 module;
 
 #include "Engine/Core/Defines.hpp"
+#include "EngineCht/GraphicsTypes.cht.hpp"
 
 #include <memory>
 #include <string>
@@ -9,6 +10,7 @@ module;
 export module CopiumEngine.Graphics.GraphicsTypes;
 
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Core.Serialization.IBinaryConverter;
 
 
 namespace Copium
@@ -69,6 +71,12 @@ export namespace Copium
         Repeat,
     };
 
+    enum class IndexFormat : uint8
+    {
+        UInt16,
+        UInt32,
+    };
+
     enum class VertexAttribute : uint8
     {
         Position,
@@ -94,36 +102,65 @@ export namespace Copium
     };
 
 
+    CHT_STRUCT()
     struct VertexAttributeDesc
     {
+        CHT_GENERATED_BODY()
+
+        CHT_PROPERTY()
         uint32                Offset;
+        CHT_PROPERTY()
         uint8                 Dimension;
-        VertexAttribute       Attribute;
+        CHT_PROPERTY()
+        uint8                 Stream;
+        CHT_PROPERTY()
+        VertexAttribute       Attribute; // NOTE(v.matushkin): Do I need this?
+        CHT_PROPERTY()
         VertexAttributeFormat Format;
     };
 
+    CHT_STRUCT()
     struct MeshDesc
     {
-        std::string                      Name;
-        std::vector<VertexAttributeDesc> VertexLayout;
-        std::unique_ptr<uint8[]>         IndexData;
-        std::unique_ptr<uint8[]>         VertexData;
-        uint32                           IndexCount;
-        uint32                           VertexCount;
+        CHT_GENERATED_BODY()
+
+        CHT_PROPERTY()
+        std::string         Name;
+        CHT_PROPERTY()
+        VertexAttributeDesc Position;
+        CHT_PROPERTY()
+        VertexAttributeDesc Normal;
+        CHT_PROPERTY()
+        VertexAttributeDesc UV0;
+        CHT_PROPERTY()
+        uint32              IndexCount;
+        CHT_PROPERTY()
+        uint32              VertexCount;
+        CHT_PROPERTY()
+        std::vector<uint8>  IndexData;
+        CHT_PROPERTY()
+        std::vector<uint8>  VertexData;
     };
 
+    CHT_STRUCT()
     struct TextureDesc
     {
-        std::string     Name;
-        uint32          Width;
-        uint32          Height;
-        TextureFormat   Format;
-        TextureWrapMode WrapMode;
-    };
+        CHT_GENERATED_BODY()
 
-    struct TextureData
-    {
-        std::unique_ptr<uint8[]> Data;
+        CHT_PROPERTY()
+        std::string        Name;
+        CHT_PROPERTY()
+        uint32             Width;
+        CHT_PROPERTY()
+        uint32             Height;
+        CHT_PROPERTY()
+        TextureFormat      Format;
+        CHT_PROPERTY()
+        TextureWrapMode    WrapModeU;
+        CHT_PROPERTY()
+        TextureWrapMode    WrapModeV;
+        CHT_PROPERTY()
+        std::vector<uint8> Data;
     };
 
     struct ShaderDesc
