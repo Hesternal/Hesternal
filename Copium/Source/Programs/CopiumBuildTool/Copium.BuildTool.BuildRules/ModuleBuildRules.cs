@@ -5,11 +5,13 @@ namespace Copium.BuildTool.BuildRules;
 
 public enum ConanLibrary
 {
+    assimp,
     cxxopts,
     entt,
     glfw,
     simdjson,
     spdlog,
+    stb,
 }
 
 public sealed class LibraryDependencies

@@ -14,6 +14,8 @@ namespace Copium
 {
 
     Application::Application()
+        : m_engineInitialized(false)
+        , m_engineClosed(false)
     {
         Debug::Init();
         COP_LOG_TRACE("Application()");
@@ -22,10 +24,7 @@ namespace Copium
     Application::~Application()
     {
         COP_LOG_TRACE("~Application()");
-
-        m_graphicsDevice->DestroyShader(m_triangleShaderHandle);
-        m_mainWindow.reset();
-        Graphics::Shutdown();
+        _EngineShutdown();
     }
 
 
@@ -34,7 +33,12 @@ namespace Copium
         InitSettings(m_engineSettings);
 
         _EngineInit();
+        InitSystems();
+
         _EngineLoop();
+
+        ShutdownSystems();
+        _EngineShutdown();
     }
 
 
@@ -95,6 +99,22 @@ namespace Copium
             .Height = m_engineSettings.WindowHeight,
         };
         m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
+
+        m_engineInitialized = true;
+    }
+
+    void Application::_EngineShutdown()
+    {
+        if (m_engineInitialized == false || m_engineClosed)
+        {
+            return;
+        }
+
+        m_engineClosed = true;
+
+        m_graphicsDevice->DestroyShader(m_triangleShaderHandle);
+        m_mainWindow.reset();
+        Graphics::Shutdown();
     }
 
     void Application::_EngineLoop()

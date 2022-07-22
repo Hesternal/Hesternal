@@ -21,18 +21,20 @@ class Copium(ConanFile):
 
     #generators = 'cmake_find_package_multi'
 
-    requires = [    
-        #  'assimp/5.2.2',
+    requires = [
+          'assimp/5.2.2',
          'cxxopts/3.0.0',
             'entt/3.10.0',
             'glfw/3.3.7',
         'simdjson/2.0.1',
           'spdlog/1.10.0',
+             'stb/cci.20210910',
     ]
 
     default_options = (
         'cxxopts:unicode=False',
-         'spdlog:wchar_support=True'
+         'spdlog:wchar_support=True',
+            'stb:with_deprecated=False'
     )
 
     # def configure(self):

@@ -1,6 +1,7 @@
 module;
 
 #include <filesystem>
+#include <string>
 
 export module CopiumEngine.Core.Serialization.FileBinaryConverter;
 
@@ -15,6 +16,7 @@ export namespace Copium
     class FileBinarySerializer final : public IBinaryConverter
     {
     public:
+        FileBinarySerializer(const std::string& filePath);
         FileBinarySerializer(const std::filesystem::path& filePath);
 
         bool IsSerializing() const override { return true; };
@@ -29,6 +31,7 @@ export namespace Copium
     class FileBinaryDeserializer final : public IBinaryConverter
     {
     public:
+        FileBinaryDeserializer(const std::string& filePath);
         FileBinaryDeserializer(const std::filesystem::path& filePath);
 
         bool IsSerializing() const override { return false; };
