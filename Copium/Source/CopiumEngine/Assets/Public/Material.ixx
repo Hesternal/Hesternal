@@ -6,25 +6,27 @@ module;
 
 export module CopiumEngine.Assets.Material;
 
-import CopiumEngine.Graphics.GraphicsTypes;
-
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
+import CopiumEngine.Core.Object;
+import CopiumEngine.Graphics.GraphicsTypes;
 
 
 export namespace Copium
 {
 
-    class Material final
+    class Material final : public Object
     {
     public:
         Material(std::string&& materialName, std::shared_ptr<Shader> shader);
         ~Material();
 
-        Material(const Material&) = delete;
-        Material& operator=(const Material&) = delete;
         Material(Material&& other) noexcept = default;
         Material& operator=(Material&& other) noexcept = default;
+
+        //< Object Interface
+        [[nodiscard]] std::string GetName() const override { return m_materialName; }
+        //> Object Interface
 
         [[nodiscard]] const std::shared_ptr<Shader>& GetShader() const { return m_shader; }
 

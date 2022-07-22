@@ -8,9 +8,8 @@ module CopiumEngine.Assets.Texture;
 namespace Copium
 {
 
-    Texture::Texture(TextureDesc&& textureDesc, TextureData&& textureData)
+    Texture::Texture(TextureDesc&& textureDesc)
         : m_textureDesc(std::move(textureDesc))
-        , m_textureData(std::move(textureData))
     {
     }
 

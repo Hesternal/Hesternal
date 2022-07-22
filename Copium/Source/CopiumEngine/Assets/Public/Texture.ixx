@@ -1,27 +1,33 @@
+module;
+
+#include <string>
+
 export module CopiumEngine.Assets.Texture;
 
+import CopiumEngine.Core.Object;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 
 export namespace Copium
 {
 
-    class Texture final
+    class Texture final : public Object
     {
     public:
-        Texture(TextureDesc&& textureDesc, TextureData&& textureData);
+        Texture(TextureDesc&& textureDesc);
         ~Texture();
 
-        Texture(const Texture&) = delete;
-        Texture& operator=(const Texture&) = delete;
         Texture(Texture&& other) noexcept = default;
         Texture& operator=(Texture&& other) noexcept = default;
+
+        //< Object Interface
+        [[nodiscard]] std::string GetName() const override { return m_textureDesc.Name; }
+        //> Object Interface
 
         [[nodiscard]] TextureHandle GetHandle() const { return m_textureHandle; }
 
     private:
         TextureDesc   m_textureDesc;
-        TextureData   m_textureData;
         TextureHandle m_textureHandle;
     };
 

@@ -1,21 +1,28 @@
+module;
+
+#include <string>
+
 export module CopiumEngine.Assets.Mesh;
 
+import CopiumEngine.Core.Object;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 
 export namespace Copium
 {
 
-    class Mesh final
+    class Mesh final : public Object
     {
     public:
         Mesh(MeshDesc&& meshDesc);
         ~Mesh();
 
-        Mesh(const Mesh&) = delete;
-        Mesh& operator=(const Mesh&) = delete;
         Mesh(Mesh&& other) noexcept = default;
         Mesh& operator=(Mesh&& other) noexcept = default;
+
+        //< Object Interface
+        [[nodiscard]] std::string GetName() const override { return m_meshDesc.Name; }
+        //> Object Interface
 
         [[nodiscard]] MeshHandle GetHandle() const { return m_meshHandle; }
 
