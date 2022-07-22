@@ -70,12 +70,13 @@ namespace Copium.HeaderTool.Parser
 
         private CppHeaderDesc _ParseHeader()
         {
-            _ParseFileHeader();
-            if (bEndOfStream)
+            // If header is empty or if it containts only whitespaces/comments
+            if (bEndOfStream || PeekToken().IsEndOfFile())
             {
                 return null;
             }
 
+            _ParseFileHeader();
             _ParseFileBody();
 
             foreach (CppStructDesc cppStructDesc in m_cppStructs)
@@ -94,18 +95,9 @@ namespace Copium.HeaderTool.Parser
 
         private void _ParseFileHeader()
         {
-            Token token = PeekToken();
-
-            // NOTE(v.matushkin): Idk if I should handle this, but the whole header could be commented out or may be it's empty
-            //  May be just return null in _ParseHeader() ?
-            if (token.IsEndOfFile())
-            {
-                return;
-            }
-
             while (true)
             {
-                token = NextToken();
+                Token token = NextToken();
 
                 if (token.IsEndOfFile())
                 {
