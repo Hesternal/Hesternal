@@ -1,6 +1,7 @@
 module;
 
 #include <filesystem>
+#include <string>
 
 module CopiumEngine.Core.Serialization.FileBinaryConverter;
 
@@ -10,9 +11,15 @@ import CopiumEngine.Core.Platform.File;
 namespace Copium
 {
 
+    FileBinarySerializer::FileBinarySerializer(const std::string& filePath)
+        : m_fileWriter(filePath, true)
+    {
+    }
+
     FileBinarySerializer::FileBinarySerializer(const std::filesystem::path& filePath)
         : m_fileWriter(filePath, true)
-    {}
+    {
+    }
 
     void FileBinarySerializer::Convert(void* data, int64 length)
     {
@@ -20,9 +27,15 @@ namespace Copium
     }
 
 
+    FileBinaryDeserializer::FileBinaryDeserializer(const std::string& filePath)
+        : m_fileReader(filePath, true)
+    {
+    }
+
     FileBinaryDeserializer::FileBinaryDeserializer(const std::filesystem::path& filePath)
         : m_fileReader(filePath, true)
-    {}
+    {
+    }
 
     void FileBinaryDeserializer::Convert(void* data, int64 length)
     {
