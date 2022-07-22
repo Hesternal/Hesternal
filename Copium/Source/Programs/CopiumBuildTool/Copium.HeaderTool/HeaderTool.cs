@@ -158,7 +158,14 @@ namespace Copium.HeaderTool
 
                 if (cppHeaderDesc.Structs.Count != 0)
                 {
-                    headerWriter.WriteLine("namespace Copium { struct IBinaryConverter; }");
+                    headerWriter.WriteLine(
+                        @"// NOTE(v.matushkin): Module consumer can't use serialization methods if I just forward declare IBinaryConverter.
+//  So I either need to export forward declaration ""namespace Copium { export struct IBinaryConverter; }""
+//   or import IBinaryConverter module.
+//  Exporting forward declaration will break if module consumer also imports IBinaryConverter module.
+//  So importing IBinaryConverter in the header seems like my only choice, although this potentially lead to
+//   circular dependencies. Especially if I add something more than just serialization.");
+                    headerWriter.WriteLine("import CopiumEngine.Core.Serialization.IBinaryConverter;");
                     headerWriter.WriteLine();
 
                     StructGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
