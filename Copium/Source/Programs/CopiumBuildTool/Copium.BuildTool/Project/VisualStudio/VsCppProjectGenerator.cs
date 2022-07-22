@@ -130,7 +130,8 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
         propsFileWriter.BeginImportGroup(VcxprojLabel.PropertySheets);
         foreach (ConanLibrary library in m_cppTarget.PublicConanLibs)
         {
-            propsFileWriter.Import(VsGenerationContext.GetConanLibPropsPath(library));
+            var propsImport = VsGenerationContext.GetConanLibPropsImportInfo(library);
+            propsFileWriter.Import(propsImport.project, null, propsImport.condition);
         }
         propsFileWriter.EndElement();
 
@@ -319,8 +320,8 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
 
         foreach (ConanLibrary library in m_cppTarget.PrivateConanLibs)
         {
-            // TODO(v.matushkin): Compiler shouldn't be hardcoded
-            m_projectWriter.Import(VsGenerationContext.GetConanLibPropsPath(library));
+            var propsImport = VsGenerationContext.GetConanLibPropsImportInfo(library);
+            m_projectWriter.Import(propsImport.project, null, propsImport.condition);
         }
 
         // TODO(v.matushkin): Shouldn't be hardcoded?

@@ -84,9 +84,14 @@ internal sealed class VsGenerationContext
     }
 
 
-    public static string GetConanLibPropsPath(ConanLibrary library)
+    public static (string project, string condition) GetConanLibPropsImportInfo(ConanLibrary library)
     {
-        return @"$(CopiumConanDir)\conan_" + library.ToString() + VsFileExtension.Props;
+        string conanPropsFileName = "conan_" + library.ToString();
+
+        string conanImportProject = @"$(CopiumConanDir)\" + conanPropsFileName + VsFileExtension.Props;
+        string conanImportCondition = $"'$({conanPropsFileName}_props_imported)' != 'True'";
+
+        return (conanImportProject, conanImportCondition);
     }
 
 
