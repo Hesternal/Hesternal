@@ -8,6 +8,8 @@ module;
 
 module CopiumEditor.EditorApplication;
 
+import CopiumEditor.Assets.AssetDatabase;
+
 
 std::unique_ptr<Copium::Application> Copium::CreateApplication(Copium::int32 argc, const char* const* argv)
 {
@@ -74,6 +76,8 @@ namespace Copium
 
     void EditorApplication::InitSystems()
     {
+        AssetDatabase::Init(m_projectPath);
+
         m_editorInitialized = true;
     }
 
