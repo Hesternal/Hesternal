@@ -14,15 +14,17 @@
         {
             foreach (CppStructDesc cppStructDesc in cppHeaderDesc.Structs)
             {
+                // #define ${ChtFilePathMacro}_${GeneratedBodyMacroLine} \
                 cppWriter.Write("#define ");
                 cppWriter.Write(chtFilePathMacro);
                 cppWriter.Write('_');
                 cppWriter.Write(cppStructDesc.GeneratedBodyMacroLine);
                 cppWriter.WriteLine(@" \");
 
-                cppWriter.Write("    friend IBinaryConverter& operator<<(IBinaryConverter& bc, ");
+                // _CHT_DECLARE_CONVERTER(${StructName})\
+                cppWriter.Write("    _CHT_DECLARE_CONVERTER(");
                 cppWriter.Write(cppStructDesc.Type.BaseType);
-                cppWriter.WriteLine("& value);");
+                cppWriter.WriteLine(')');
             }
         }
 

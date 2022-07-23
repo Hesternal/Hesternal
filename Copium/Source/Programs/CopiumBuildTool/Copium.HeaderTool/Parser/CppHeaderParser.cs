@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -39,6 +38,11 @@ namespace Copium.HeaderTool.Parser
             public const string GeneratedBody = "CHT_GENERATED_BODY";
         }
 
+        private static class ChtFlag
+        {
+            public const string Abstract = "abstract";
+        }
+
 
         private readonly CppTypeScope m_cppTypeScope = new CppTypeScope();
         private readonly ParsingContext m_parsingContext = new ParsingContext();
@@ -50,6 +54,7 @@ namespace Copium.HeaderTool.Parser
         private string m_module;
         private readonly List<CppEnumDesc> m_cppEnums = new List<CppEnumDesc>();
         private readonly List<CppStructDesc> m_cppStructs = new List<CppStructDesc>();
+        private readonly List<CppClassDesc> m_cppClasses = new List<CppClassDesc>();
 
 
         public static CppHeaderDesc Parse(FileInfo headerFile)
@@ -88,8 +93,8 @@ namespace Copium.HeaderTool.Parser
                 }
             }
 
-            return m_cppEnums.Count != 0 || m_cppStructs.Count != 0
-                ? new CppHeaderDesc(m_headerFile, m_module, m_cppEnums, m_cppStructs)
+            return m_cppEnums.Count != 0 || m_cppStructs.Count != 0 || m_cppClasses.Count != 0
+                ? new CppHeaderDesc(m_headerFile, m_module, m_cppEnums, m_cppStructs, m_cppClasses)
                 : null;
         }
 
@@ -138,7 +143,7 @@ namespace Copium.HeaderTool.Parser
                     // ChtIdentifiers
                     if (token.IsValue(ChtIdentifier.Class))
                     {
-                        _ParseMacroClass();
+                        _ParseMacroStructOrClass(false);
                     }
                     else if (token.IsValue(ChtIdentifier.Enum))
                     {
@@ -150,14 +155,18 @@ namespace Copium.HeaderTool.Parser
                         {
                             cppStructDesc.Properties.Add(_ParseMacroProperty());
                         }
+                        else if (m_parsingContext.TryGetCppClassDesc(out CppClassDesc cppClassDesc))
+                        {
+                            cppClassDesc.Properties.Add(_ParseMacroProperty());
+                        }
                         else
                         {
-                            throw ParserError.Message(m_filePath, token, "CHT_PROPERTY macro can only be used inside CHT_STRUCT");
+                            throw ParserError.Message(m_filePath, token, "CHT_PROPERTY macro can only be used inside CHT_STRUCT or CHT_CLASS");
                         }
                     }
                     else if (token.IsValue(ChtIdentifier.Struct))
                     {
-                        _ParseMacroStruct();
+                        _ParseMacroStructOrClass(true);
                     }
                     // CppIdentifiers
                     else if (token.IsValue(CppIdentifier.Class))
@@ -201,11 +210,6 @@ namespace Copium.HeaderTool.Parser
             }
         }
 
-
-        private void _ParseMacroClass()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// <para>Parse enum name, enum underlying type and enum variables</para>
@@ -283,21 +287,21 @@ namespace Copium.HeaderTool.Parser
             return new CppPropertyDesc(propertyName, propertyType);
         }
 
-        // TODO(v.matushkin): Parsing of CHT_STRUCT is lagging behind of parsing usual struct
         /// <summary>
         /// <para>
-        ///   Parse struct name and type qualifier(optional)<br/>
+        ///   Parse struct/class name and type qualifier(optional)<br/>
         ///   Adds it to <see cref="m_cppTypeScope"/> and <see cref="m_parsingContext"/>
         /// </para>
-        /// Should be called after <see cref="ChtIdentifier.Struct"/> macro was parsed
+        /// Should be called after <see cref="ChtIdentifier.Struct"/> or <see cref="ChtIdentifier.Class"/> macro was parsed
         /// </summary>
-        private void _ParseMacroStruct()
+        private void _ParseMacroStructOrClass(bool isStruct)
         {
-            ExpectSymbol('(');
-            ExpectSymbol(')');
-            ExpectIdentifier(CppIdentifier.Struct);
+            ClassFlags classFlags = _ParseClassFlags();
+            ExpectIdentifier(isStruct ? CppIdentifier.Struct : CppIdentifier.Class);
 
-            Token structNameToken = ExpectIdentifier();
+            Token nameToken = ExpectIdentifier();
+
+            string baseClass = _ParseInheritance();
 
             ExpectSymbol('{');
 
@@ -305,12 +309,40 @@ namespace Copium.HeaderTool.Parser
             ExpectSymbol('(');
             ExpectSymbol(')');
 
-            var structCppType = new CppType(m_cppTypeScope.GetCurrent(), structNameToken.Value);
-            var cppStructDesc = new CppStructDesc(structCppType, generatedBodyMacroLine);
-            m_cppStructs.Add(cppStructDesc);
+            var cppType = new CppType(m_cppTypeScope.GetCurrent(), nameToken.Value);
 
-            m_parsingContext.PushContext(cppStructDesc);
-            m_cppTypeScope.Push(structCppType.BaseType);
+            if (isStruct)
+            {
+                var cppStructDesc = new CppStructDesc(cppType, generatedBodyMacroLine);
+                m_cppStructs.Add(cppStructDesc);
+                m_parsingContext.PushContext(cppStructDesc);
+            }
+            else
+            {
+                var cppClassDesc = new CppClassDesc(cppType, baseClass, classFlags, generatedBodyMacroLine);
+                m_cppClasses.Add(cppClassDesc);
+                m_parsingContext.PushContext(cppClassDesc);
+            }
+
+            m_cppTypeScope.Push(cppType.BaseType);
+        }
+
+
+        private ClassFlags _ParseClassFlags()
+        {
+            ExpectSymbol('(');
+
+            ClassFlags classFlags = ClassFlags.None;
+
+            if (PeekToken().IsIdentifier(ChtFlag.Abstract))
+            {
+                AdvanceToken();
+                classFlags = ClassFlags.Abstract;
+            }
+
+            ExpectSymbol(')');
+
+            return classFlags;
         }
 
 
@@ -383,56 +415,16 @@ namespace Copium.HeaderTool.Parser
 
         private void _ParseStructOrClass(bool isStruct)
         {
-            // Potential struct declaration to parse
-            // struct is_basic_string<std::basic_string<Ch, Tr, Al>> final : std::true_type {};
+            // Potential declaration to parse
+            // struct is_basic_string<std::basic_string<Ch, Tr, Al>> final : virtual public std::true_type {};
 
             string type = _ParseType();
 
-            // At this point it could be either Identifier("final") or Symbol(':'(inheritance) or ';'(forward declaration) or '{'), so I need to Peek()
-            Token nextToken = PeekToken();
+            _ = _ParseInheritance();
 
-            // If "final" identifier (optional)
-            if (nextToken.IsIdentifier(CppIdentifier.Final))
-            {
-                AdvanceToken();
-                // Next token should be symbol, so there is no need to Peek()
-                // Not using ExpectSymbol() since this is optional path and I need to check TokenType later anyway
-                nextToken = NextToken();
-            }
+            Token token = NextToken();
 
-            if (nextToken.IsSymbol() == false)
-            {
-                throw ParserError.UnexpectedToken(m_filePath, nextToken, TokenType.Symbol);
-            }
-
-            // If inheritance (optional)
-            if (nextToken.IsValue(':'))
-            {
-                AdvanceToken();
-
-                // Virtual (optional)
-                if (PeekToken().IsIdentifier(CppIdentifier.Virtual))
-                {
-                    AdvanceToken();
-                }
-
-                // Inheritance access-specifier (public, private, protected) (optional)
-                Token accessToken = PeekToken();
-                if (accessToken.IsIdentifier())
-                {
-                    string accessStr = accessToken.Value;
-                    if (accessStr == CppIdentifier.Public || accessStr == CppIdentifier.Private || accessStr == CppIdentifier.Protected)
-                    {
-                        AdvanceToken();
-                    }
-                }
-
-                _ = _ParseType();
-                // At this point there could only be Symbol tokens, so use ExpectSymbol()
-                nextToken = ExpectSymbol();
-            }
-
-            if (nextToken.IsValue('{'))
+            if (token.IsValue('{'))
             {
                 if (isStruct)
                 {
@@ -443,16 +435,13 @@ namespace Copium.HeaderTool.Parser
                     m_parsingContext.PushContext_Class();
                 }
 
-                // NOTE(v.matushkin): I think I can't just push this struct type to the type scope and there are cases where this will break things
+                // NOTE(v.matushkin): I think I can't just push this struct/class type to the type scope and there are cases where this will break things
                 m_cppTypeScope.Push(type);
             }
-            else if (nextToken.IsValue(';') == false)
+            else if (token.IsValue(';') == false)
             {
-                throw ParserError.Message(m_filePath, nextToken, $"Expected either ';' or '{{' symbol, got {nextToken.AsSymbol()}");
+                throw ParserError.Message(m_filePath, token, $"Expected either ';' or '{{' symbol, got {token.Value}");
             }
-
-            // If there were no "final" keyword or inheritance, we are still peeking the token, so need to advance
-            AdvanceToken();
         }
 
         // NOTE(v.matushkin): This function exists only because I don't wanna deal with usage of "class" instead of "typename" in "template<...>" expression
@@ -532,6 +521,58 @@ namespace Copium.HeaderTool.Parser
             return new CppType(variableType);
 
             // throw ParserError.Message(m_filePath, typeToken, "Unsupported Property type");
+        }
+
+
+        // TODO(v.matushkin): Multiple inheritance
+        // TODO(v.matushkin): Template inheritance
+        private string _ParseInheritance()
+        {
+            string baseClass = null;
+
+            // At this point it could be either Identifier("final") or Symbol(':'(inheritance) or ';'(forward declaration) or '{'), so I need to Peek()
+            Token nextToken = PeekToken();
+
+            // If "final" identifier (optional)
+            if (nextToken.IsIdentifier(CppIdentifier.Final))
+            {
+                AdvanceToken();
+                // Next token should be symbol, so there is no need to Peek()
+                // Not using ExpectSymbol() since this is optional path and I need to check TokenType later anyway
+                nextToken = PeekToken();
+            }
+
+            if (nextToken.IsSymbol() == false)
+            {
+                throw ParserError.UnexpectedToken(m_filePath, CurrentToken, TokenType.Symbol);
+            }
+
+            // If inheritance (optional)
+            if (nextToken.IsValue(':'))
+            {
+                AdvanceToken();
+
+                // virtual (optional)
+                if (PeekToken().IsIdentifier(CppIdentifier.Virtual))
+                {
+                    AdvanceToken();
+                }
+
+                // Inheritance access-specifier (public, private, protected) (optional)
+                Token accessToken = PeekToken();
+                if (accessToken.IsIdentifier())
+                {
+                    string accessStr = accessToken.Value;
+                    if (accessStr == CppIdentifier.Public || accessStr == CppIdentifier.Private || accessStr == CppIdentifier.Protected)
+                    {
+                        AdvanceToken();
+                    }
+                }
+
+                baseClass = _ParseType();
+            }
+
+            return baseClass;
         }
 
 

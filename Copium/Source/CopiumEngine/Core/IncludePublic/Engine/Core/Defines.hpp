@@ -58,5 +58,10 @@
 #define CHT_ENUM(...) _CHT_COMBINE_FILE_PATH_AND_LINE(CHT_FILE_PATH, __LINE__);
 #define CHT_PROPERTY(...)
 #define CHT_STRUCT(...)
+#define CHT_CLASS(...)
 
 #define CHT_GENERATED_BODY() _CHT_COMBINE_FILE_PATH_AND_LINE(CHT_FILE_PATH, __LINE__);
+
+
+#define _CHT_DECLARE_CONVERTER(Type)\
+    friend IBinaryConverter& operator<<(IBinaryConverter& bc, Type& value);

@@ -37,6 +37,12 @@ namespace Copium.HeaderTool.Parser
                 CppDescObject = cppStructDesc;
                 Type = ParsingContextType.ChtStruct;
             }
+
+            public Context(CppClassDesc cppClassDesc)
+            {
+                CppDescObject = cppClassDesc;
+                Type = ParsingContextType.ChtClass;
+            }
         }
 
 
@@ -45,11 +51,17 @@ namespace Copium.HeaderTool.Parser
 
         public bool IsNoneContext      => m_currentContext.Type == ParsingContextType.None;
         public bool IsChtStructContext => m_currentContext.Type == ParsingContextType.ChtStruct;
+        public bool IsChtClassContext  => m_currentContext.Type == ParsingContextType.ChtClass;
 
 
         public bool TryGetCppStructDesc(out CppStructDesc cppStructDesc)
         {
             return _TryGetCppDescObject(IsChtStructContext, out cppStructDesc);
+        }
+
+        public bool TryGetCppClassDesc(out CppClassDesc cppClassDesc)
+        {
+            return _TryGetCppDescObject(IsChtClassContext, out cppClassDesc);
         }
 
         private bool _TryGetCppDescObject<TCppDesc>(bool canGet, out TCppDesc cppDescObject)
@@ -76,6 +88,16 @@ namespace Copium.HeaderTool.Parser
             }
 
             m_currentContext = new Context(cppStructDesc);
+        }
+
+        public void PushContext(CppClassDesc cppClassDesc)
+        {
+            if (IsNoneContext == false)
+            {
+                m_contextStack.Push(m_currentContext);
+            }
+
+            m_currentContext = new Context(cppClassDesc);
         }
 
         private void _PushContext(ParsingContextType type)
