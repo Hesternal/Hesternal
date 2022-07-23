@@ -149,14 +149,14 @@ namespace Copium.HeaderTool
 
             using (var headerWriter = new CppWriter(generatedHppFile))
             {
-                string[] includes = cppHeaderDesc.Enums.Count != 0 ? EnumGenerator.HppIncludes : null;
+                string[] includes = cppHeaderDesc.HasEnums ? EnumGenerator.HppIncludes : null;
                 headerWriter.WriteFileHeader_Hpp(includes);
 
                 headerWriter.Write("#define CHT_FILE_PATH ");
                 headerWriter.WriteLine(chtFilePathMacro);
                 headerWriter.WriteLine();
 
-                if (cppHeaderDesc.Structs.Count != 0)
+                if (cppHeaderDesc.HasStructsOrClasses)
                 {
                     headerWriter.WriteLine(
                         @"// NOTE(v.matushkin): Module consumer can't use serialization methods if I just forward declare IBinaryConverter.
@@ -167,14 +167,11 @@ namespace Copium.HeaderTool
 //   circular dependencies. Especially if I add something more than just serialization.");
                     headerWriter.WriteLine("import CopiumEngine.Core.Serialization.IBinaryConverter;");
                     headerWriter.WriteLine();
-
-                    StructGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
                 }
 
-                if (cppHeaderDesc.Enums.Count != 0)
-                {
-                    EnumGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
-                }
+                ClassGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
+                StructGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
+                EnumGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
             }
 
             using (var cppWriter = new CppWriter(generatedCppFile))
@@ -182,11 +179,11 @@ namespace Copium.HeaderTool
                 IEnumerable<string> stdIncludes = Enumerable.Empty<string>();
                 IEnumerable<string> moduleImports = Enumerable.Empty<string>();
 
-                if (cppHeaderDesc.Structs.Count != 0)
+                if (cppHeaderDesc.HasStructsOrClasses)
                 {
                     moduleImports = StructGenerator.CppImports;
                 }
-                if (cppHeaderDesc.Enums.Count != 0)
+                if (cppHeaderDesc.HasEnums)
                 {
                     stdIncludes = EnumGenerator.CppStdIncludes;
                     moduleImports = moduleImports.Concat(EnumGenerator.CppImports);
@@ -201,6 +198,7 @@ namespace Copium.HeaderTool
                 cppWriter.WriteFileHeader_ModuleImplementation(cppHeaderDesc.Module, null, stdIncludesArray, moduleImportsArray);
                 cppWriter.BeginNamespace("Copium");
 
+                ClassGenerator.WriteCpp(cppHeaderDesc, cppWriter);
                 StructGenerator.WriteCpp(cppHeaderDesc, cppWriter);
                 EnumGenerator.WriteCpp(cppHeaderDesc, cppWriter);
 

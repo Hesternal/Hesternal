@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Copium.HeaderTool
@@ -51,7 +52,7 @@ namespace Copium.HeaderTool
     {
         public readonly CppType Type;
         /// <summary>
-        /// Struct field declared with a CHT_PROPERTY macro
+        /// Struct fields declared with a CHT_PROPERTY macro
         /// </summary>
         public readonly List<CppPropertyDesc> Properties = new List<CppPropertyDesc>();
         /// <summary>
@@ -65,6 +66,44 @@ namespace Copium.HeaderTool
             Type = type;
             GeneratedBodyMacroLine = generatedBodyMacroLine;
         }
+    }
+
+
+    [Flags]
+    enum ClassFlags : uint
+    {
+        None     = 0,
+        Abstract = 1 << 0,
+    }
+
+    // NOTE(v.matushkin): I'm not sure how should I handle this struct/class thing, they are identical, at least for now.
+    //  Completely different classes better for the type safety, since I handle struc/class as a different entities.
+    //  But may the thing is that I shouldn't and should unify them somehow.
+    internal sealed class CppClassDesc
+    {
+        public readonly CppType Type;
+        public readonly string BaseClass;
+        public readonly ClassFlags Flags;
+        /// <summary>
+        /// Class fields declared with a CHT_PROPERTY macro
+        /// </summary>
+        public readonly List<CppPropertyDesc> Properties = new List<CppPropertyDesc>();
+        /// <summary>
+        /// Line with a CHT_GENERATED_BODY macro
+        /// </summary>
+        public readonly int GeneratedBodyMacroLine;
+
+
+        public CppClassDesc(CppType type, string baseClass, ClassFlags flags, int generatedBodyMacroLine)
+        {
+            Type = type;
+            BaseClass = baseClass;
+            Flags = flags;
+            GeneratedBodyMacroLine = generatedBodyMacroLine;
+        }
+
+
+        public bool HasFlag(ClassFlags flag) => (Flags & flag) != 0;
     }
 
 
@@ -83,14 +122,31 @@ namespace Copium.HeaderTool
         /// Structs declared with CHT_STRUCT macro
         /// </summary>
         public readonly List<CppStructDesc> Structs;
+        /// <summary>
+        /// Classes declared with CHT_CLASS macro
+        /// </summary>
+        public readonly List<CppClassDesc> Classes;
+
+        public readonly bool HasEnums;
+        public readonly bool HasStructs;
+        public readonly bool HasClasses;
+        public readonly bool HasStructsOrClasses;
 
 
-        public CppHeaderDesc(FileInfo headerFile, string module, List<CppEnumDesc> enums, List<CppStructDesc> structs)
+        public CppHeaderDesc(
+            FileInfo headerFile, string module, List<CppEnumDesc> enums, List<CppStructDesc> structs, List<CppClassDesc> classes
+            )
         {
             HeaderFile = headerFile;
             Module = module;
             Enums = enums;
             Structs = structs;
+            Classes = classes;
+
+            HasEnums = Enums.Count != 0;
+            HasStructs = Structs.Count != 0;
+            HasClasses = Classes.Count != 0;
+            HasStructsOrClasses = HasStructs || HasClasses;
         }
     }
 }
