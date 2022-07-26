@@ -8,30 +8,32 @@ import CopiumEngine.Core.Object;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 
-namespace Copium
-{
-    class AssetManager;
-}
-
-
 export namespace Copium
 {
 
     class Shader final : public Object
     {
-        friend AssetManager;
-
     public:
+        Shader(ShaderDesc&& shaderDesc);
         ~Shader();
 
-        //< Object Interface
-        [[nodiscard]] std::string GetName() const override { return m_shaderDesc.Name; }
-        //> Object Interface
+        Shader(Shader&& other) noexcept;
+        Shader& operator=(Shader&& other) noexcept;
+
+        //< Object Interface Public
+        [[nodiscard]] const std::string& GetName() const override { return m_shaderDesc.Name; }
+        //> Object Interface Public
 
         [[nodiscard]] ShaderHandle GetHandle() const { return m_shaderHandle; }
 
     private:
-        Shader(ShaderDesc&& shaderDesc);
+        //< Object Interface Protected
+        [[nodiscard]] ClassID GetClassID() const override { return ClassID::Shader; }
+        void Convert(IBinaryConverter& bc) override;
+        void OnAfterDeserealize() override;
+        //> Object Interface Protected
+
+        void _InitGpuResource();
 
     private:
         ShaderDesc   m_shaderDesc;

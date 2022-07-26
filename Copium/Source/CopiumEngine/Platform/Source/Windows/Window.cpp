@@ -19,7 +19,7 @@ namespace
     static const wchar_t* k_ClassName = L"CopiumWindowClass";
 
     static const uint8               k_SwapchainBufferCount = 3;
-    static const RenderTextureFormat k_SwapchainFormat      = RenderTextureFormat::BGRA32;
+    static const RenderTextureFormat k_SwapchainFormat      = RenderTextureFormat::BGRA8;
 
 } // namespace
 

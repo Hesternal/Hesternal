@@ -9,6 +9,8 @@ module;
 export module CopiumEngine.Core.Serialization.IBinaryConverter;
 
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Core.ForwardDeclaration;
+import CopiumEngine.Core.Serialization.ObjectSerializationContext;
 
 
 // TODO(v.matushkin): Need type trait for CHT_STRUCT
@@ -20,6 +22,8 @@ export namespace Copium
     struct IBinaryConverter
     {
         virtual ~IBinaryConverter() = default;
+
+        void SetObjectSerializationContext(ObjectSerializationContext* context) { m_objectSerializationContext = context; }
 
         virtual bool IsSerializing() const = 0;
 
@@ -37,6 +41,8 @@ export namespace Copium
         IBinaryConverter& operator<<(uint64& value)  { Convert(&value, sizeof(uint64));  return *this; }
         IBinaryConverter& operator<<(float32& value) { Convert(&value, sizeof(float32)); return *this; }
         IBinaryConverter& operator<<(float64& value) { Convert(&value, sizeof(float64)); return *this; }
+
+        IBinaryConverter& operator<<(Object& object);
 
         // NOTE(v.matushkin): No reason to make it for scoped enums only?
         template<typename TEnum> requires std::is_scoped_enum_v<TEnum>
@@ -169,6 +175,9 @@ export namespace Copium
 
             return *this;
         }
+
+    private:
+        ObjectSerializationContext* m_objectSerializationContext;
     };
 
 } // export namespace Copium

@@ -17,14 +17,28 @@ export namespace Copium
         Texture(TextureDesc&& textureDesc);
         ~Texture();
 
-        Texture(Texture&& other) noexcept = default;
-        Texture& operator=(Texture&& other) noexcept = default;
+        // Default constructor for serialization
+        Texture();
+        // This is for asset import
+        Texture(DoNotInitialize, TextureDesc&& textureDesc);
 
-        //< Object Interface
-        [[nodiscard]] std::string GetName() const override { return m_textureDesc.Name; }
-        //> Object Interface
+        Texture(Texture&& other) noexcept;
+        Texture& operator=(Texture&& other) noexcept;
+
+        //< Object Interface Public
+        [[nodiscard]] const std::string& GetName() const override { return m_textureDesc.Name; }
+        //> Object Interface Public
 
         [[nodiscard]] TextureHandle GetHandle() const { return m_textureHandle; }
+
+    private:
+        //< Object Interface Protected
+        [[nodiscard]] ClassID GetClassID() const override { return ClassID::Texture2D; }
+        void Convert(IBinaryConverter& bc) override;
+        void OnAfterDeserealize() override;
+        //> Object Interface Protected
+
+        void _InitGpuResource();
 
     private:
         TextureDesc   m_textureDesc;
