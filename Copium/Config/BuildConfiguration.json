@@ -19,7 +19,8 @@
                 "WX",
                 "MP",
                 "permissive-",
-                "Zc:preprocessor"
+                "Zc:preprocessor",
+                "scanDependencies"
             ],
             "Debug": [
                 "Zi",
