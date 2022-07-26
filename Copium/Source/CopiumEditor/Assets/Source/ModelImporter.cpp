@@ -6,10 +6,6 @@ module;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <filesystem>
-#include <memory>
-#include <string>
-
 module CopiumEditor.Assets.ModelImporter;
 
 import CopiumEngine.Assets.Mesh;
@@ -21,6 +17,10 @@ import CopiumEngine.ECS.Entity;
 import CopiumEngine.Graphics;
 
 import CopiumEditor.Assets.AssetDatabase;
+
+import <filesystem>;
+import <memory>;
+import <string>;
 
 namespace fs = std::filesystem;
 

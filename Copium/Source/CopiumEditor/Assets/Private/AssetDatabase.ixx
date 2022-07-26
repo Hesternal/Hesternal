@@ -1,15 +1,13 @@
-module;
-
-#include <filesystem>
-#include <memory>
-#include <string>
-#include <unordered_map>
-
 export module CopiumEditor.Assets.AssetDatabase;
 
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Core.Object;
 import CopiumEngine.ECS.Entity;
+
+import <filesystem>;
+import <memory>;
+import <string>;
+import <unordered_map>;
 
 
 export namespace Copium

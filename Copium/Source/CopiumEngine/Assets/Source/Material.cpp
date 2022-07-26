@@ -1,8 +1,6 @@
-module;
-
-#include <string>
-
 module CopiumEngine.Assets.Material;
+
+import <string>;
 
 
 namespace Copium

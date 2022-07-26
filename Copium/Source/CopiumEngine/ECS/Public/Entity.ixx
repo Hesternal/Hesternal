@@ -1,15 +1,13 @@
-module;
-
-#include <memory>
-#include <string>
-#include <vector>
-#include <utility>
-
 export module CopiumEngine.ECS.Entity;
 
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
 import CopiumEngine.Core.Object;
+
+import <memory>;
+import <string>;
+import <vector>;
+import <utility>;
 
 
 export namespace Copium

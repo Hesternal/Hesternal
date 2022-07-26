@@ -1,10 +1,8 @@
-module;
-
-#include <memory>
-
 export module CopiumEngine.ECS.Scene;
 
 import CopiumEngine.ECS.Entity;
+
+import <memory>;
 
 
 export namespace Copium

@@ -2,9 +2,9 @@ module;
 
 #include "Engine/Core/CopiumHeaderTool.hpp"
 
-#include <string_view>
-
 export module CopiumEngine.Utils.EnumUtils;
+
+import <string_view>;
 
 
 export namespace Copium::EnumUtils

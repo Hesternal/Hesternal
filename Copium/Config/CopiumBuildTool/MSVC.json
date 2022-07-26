@@ -151,6 +151,10 @@
         "Zc:preprocessor": {
             "Name": "UseStandardPreprocessor",
             "Value": "true"
+        },
+        "scanDependencies": {
+            "Name": "ScanSourceForModuleDependencies",
+            "Value": "true"
         }
     },
     "Link": {

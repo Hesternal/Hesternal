@@ -1,15 +1,13 @@
-module;
-
-#include <memory>
-#include <string>
-#include <utility>
-
 export module CopiumEngine.Assets.Material;
 
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Core.Object;
 import CopiumEngine.Graphics.GraphicsTypes;
+
+import <memory>;
+import <string>;
+import <utility>;
 
 
 export namespace Copium

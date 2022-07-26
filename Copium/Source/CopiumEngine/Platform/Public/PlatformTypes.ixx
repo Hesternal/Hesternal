@@ -1,10 +1,8 @@
-module;
-
-#include <string>
-
 export module CopiumEngine.Platform.PlatformTypes;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <string>;
 
 
 namespace Copium

@@ -1,10 +1,8 @@
-module;
-
-#include <utility>
-
 module CopiumEngine.Graphics.GraphicsTypes;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <utility>;
 
 
 namespace Copium

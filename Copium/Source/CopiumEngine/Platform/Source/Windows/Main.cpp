@@ -1,7 +1,7 @@
 import CopiumEngine.Application;
 import CopiumEngine.Core.CoreTypes;
 
-#include <memory>
+import <memory>;
 
 using namespace Copium;
 

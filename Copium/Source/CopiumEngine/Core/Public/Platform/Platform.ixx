@@ -1,10 +1,6 @@
 export module CopiumEngine.Core.Platform;
 
-
-export namespace Copium
-{
-    struct Guid;
-}
+import CopiumEngine.Core.ForwardDeclaration;
 
 
 // NOTE(v.matushkin): Module and namespace naming is shit

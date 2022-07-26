@@ -2,11 +2,11 @@ module;
 
 #include "Engine/Core/Defines.hpp"
 
-#include <string>
-
 export module CopiumEngine.Engine.EngineSettings;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <string>;
 
 
 export namespace Copium

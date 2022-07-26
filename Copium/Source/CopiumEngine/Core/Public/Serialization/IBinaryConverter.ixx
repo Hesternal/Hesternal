@@ -1,16 +1,14 @@
-module;
-
-#include <string>
-#include <type_traits>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-
 export module CopiumEngine.Core.Serialization.IBinaryConverter;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
 import CopiumEngine.Core.Serialization.ObjectSerializationContext;
+
+import <string>;
+import <type_traits>;
+import <unordered_map>;
+import <utility>;
+import <vector>;
 
 
 // TODO(v.matushkin): Need type trait for CHT_STRUCT

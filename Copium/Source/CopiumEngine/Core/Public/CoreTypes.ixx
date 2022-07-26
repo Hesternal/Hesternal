@@ -1,8 +1,6 @@
-module;
-
-#include <cstdint>
-
 export module CopiumEngine.Core.CoreTypes;
+
+import <cstdint>;
 
 
 export namespace Copium

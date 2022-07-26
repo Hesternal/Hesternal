@@ -2,10 +2,10 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
-#include <filesystem>
-#include <fstream>
-
 module CopiumEngine.Core.Platform.File;
+
+import <filesystem>;
+import <fstream>;
 
 
 // NOTE(v.matushkin): Error handling is very robust right now

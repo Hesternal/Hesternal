@@ -4,12 +4,12 @@ module;
 
 #include <dxgiformat.h>
 
-#include <utility>
-
 module CopiumEngine.Graphics.DXCommon;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
+
+import <utility>;
 
 
 namespace Copium

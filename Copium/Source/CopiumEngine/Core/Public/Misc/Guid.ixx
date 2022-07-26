@@ -1,10 +1,8 @@
-module;
-
-#include <functional>
-
 export module CopiumEngine.Core.Misc.Guid;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <functional>;
 
 
 export namespace Copium

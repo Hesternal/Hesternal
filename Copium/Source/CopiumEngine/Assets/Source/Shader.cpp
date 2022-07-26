@@ -1,10 +1,8 @@
-module;
-
-#include <utility>
-
 module CopiumEngine.Assets.Shader;
 
 import CopiumEngine.Assets.AssetManager;
+
+import <utility>;
 
 
 namespace Copium

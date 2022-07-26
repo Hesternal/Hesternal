@@ -12,14 +12,14 @@
 
     #define LOG_FUNCTION_DEFINITION ;
 
+    #include <cstdlib>
+    #include <memory>
+
 #else
 
     #define LOG_FUNCTION_DEFINITION {}
 
 #endif // COP_ENABLE_LOGGING
-
-#include <cstdlib>
-#include <memory>
 
 
 namespace Copium

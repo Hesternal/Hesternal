@@ -1,14 +1,12 @@
-module;
-
-#include <optional>
-#include <functional>
-#include <unordered_map>
-#include <vector>
-
 export module CopiumEngine.Event.EventManager;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Platform.PlatformTypes;
+
+import <functional>;
+import <optional>;
+import <unordered_map>;
+import <vector>;
 
 
 export namespace Copium

@@ -1,11 +1,9 @@
-module;
-
-#include <filesystem>
-
 export module CopiumEditor.EditorApplication;
 
 import CopiumEngine.Application;
 import CopiumEngine.Core.CoreTypes;
+
+import <filesystem>;
 
 
 export namespace Copium

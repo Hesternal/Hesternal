@@ -1,9 +1,7 @@
-module;
-
-#include <optional>
-#include <utility>
-
 module CopiumEngine.Event.EventManager;
+
+import <optional>;
+import <utility>;
 
 
 namespace Copium
