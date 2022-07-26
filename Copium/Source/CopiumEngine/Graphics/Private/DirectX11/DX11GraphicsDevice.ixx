@@ -7,13 +7,18 @@ module;
 #include <dxgidebug.h>
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
-#include <unordered_map>
-
+// NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
+COP_WARNING_PUSH
+COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module CopiumEngine.Graphics.DX11GraphicsDevice;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Graphics.IGraphicsDevice;
+
+import <unordered_map>;
+COP_WARNING_POP
 
 
 export namespace Copium

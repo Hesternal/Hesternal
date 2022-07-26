@@ -1,13 +1,11 @@
-module;
-
-#include <memory>
-#include <utility>
-#include <vector>
-
 module CopiumEngine.Graphics;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.DX11GraphicsDevice;
+
+import <memory>;
+import <utility>;
+import <vector>;
 
 
 namespace Copium

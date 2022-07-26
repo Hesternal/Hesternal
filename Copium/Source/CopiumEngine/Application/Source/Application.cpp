@@ -2,16 +2,16 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
-#include <cmath>
-#include <memory>
-#include <utility>
-
 module CopiumEngine.Application;
 
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.Scene;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math.Matrix;
+
+import <cmath>;
+import <memory>;
+import <utility>;
 
 
 namespace Copium

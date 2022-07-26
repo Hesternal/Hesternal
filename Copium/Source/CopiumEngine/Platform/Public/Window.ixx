@@ -1,8 +1,14 @@
 module;
 
+#include "Engine/Core/Defines.hpp"
+
 // TODO(v.matushkin): Probably shouldn't leak windows.h like this, although it's modules now, idk how much damage it does
 #include <Windows.h>
 
+// NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
+COP_WARNING_PUSH
+COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module CopiumEngine.Platform.Window;
 
 import CopiumEngine.Core.CoreTypes;
@@ -18,6 +24,7 @@ export namespace Copium
     {
     public:
         Window(WindowDesc&& windowDesc);
+COP_WARNING_POP
         ~Window();
 
         // [[nodiscard]] uint64 GetNativeHandle() { return reinterpret_cast<uint64>(m_hWnd); }

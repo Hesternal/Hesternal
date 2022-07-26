@@ -3,14 +3,14 @@ module;
 #include "Engine/Core/Defines.hpp"
 // #include "EngineCht/Object.cht.hpp"
 
-#include <string>
-#include <type_traits>
-
 export module CopiumEngine.Core.Object;
 
 import CopiumEngine.Core.ClassID;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
+
+import <string>;
+import <type_traits>;
 
 
 export namespace Copium

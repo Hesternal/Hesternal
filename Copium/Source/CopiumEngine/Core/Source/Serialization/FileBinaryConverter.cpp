@@ -1,11 +1,9 @@
-module;
-
-#include <filesystem>
-#include <string>
-
 module CopiumEngine.Core.Serialization.FileBinaryConverter;
 
 import CopiumEngine.Core.Platform.File;
+
+import <filesystem>;
+import <string>;
 
 
 namespace Copium

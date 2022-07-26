@@ -4,13 +4,13 @@ module;
 
 #include <cxxopts.hpp>
 
-#include <filesystem>
-
 module CopiumEditor.EditorApplication;
 
 import CopiumEditor.Assets.AssetDatabase;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.Scene;
+
+import <filesystem>;
 
 
 std::unique_ptr<Copium::Application> Copium::CreateApplication(Copium::int32 argc, const char* const* argv)

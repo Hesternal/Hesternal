@@ -1,7 +1,3 @@
-module;
-
-#include <memory>
-
 export module CopiumEngine.Graphics;
 
 export import CopiumEngine.Graphics.GraphicsTypes;
@@ -9,6 +5,8 @@ export import CopiumEngine.Graphics.IGraphicsDevice;
 
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
+
+import <memory>;
 
 
 export namespace Copium

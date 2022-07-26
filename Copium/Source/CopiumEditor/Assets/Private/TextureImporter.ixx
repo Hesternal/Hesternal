@@ -1,10 +1,8 @@
-module;
-
-#include <string>
-
 export module CopiumEditor.Assets.TextureImporter;
 
 import CopiumEngine.Assets.Texture;
+
+import <string>;
 
 
 export namespace Copium

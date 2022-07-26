@@ -1,10 +1,8 @@
-module;
-
-#include <vector>
-
 export module CopiumEngine.Core.Serialization.ObjectSerializationContext;
 
 import CopiumEngine.Core.ForwardDeclaration;
+
+import <vector>;
 
 
 export namespace Copium

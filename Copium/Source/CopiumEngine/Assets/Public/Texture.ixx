@@ -1,11 +1,9 @@
-module;
-
-#include <string>
-
 export module CopiumEngine.Assets.Texture;
 
 import CopiumEngine.Core.Object;
 import CopiumEngine.Graphics.GraphicsTypes;
+
+import <string>;
 
 
 export namespace Copium

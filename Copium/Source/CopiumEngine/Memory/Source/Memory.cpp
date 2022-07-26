@@ -1,11 +1,9 @@
-module;
-
-#include <cstdlib>
-#include <new>
-
 module CopiumEngine.Memory;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <cstdlib>;
+import <new>;
 
 
 void* operator new(Copium::uint64 size)

@@ -1,12 +1,10 @@
-module;
-
-#include <filesystem>
-#include <fstream>
-#include <string>
-
 export module CopiumEngine.Core.Platform.File;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <filesystem>;
+import <fstream>;
+import <string>;
 
 
 export namespace Copium

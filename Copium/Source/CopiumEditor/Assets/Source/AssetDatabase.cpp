@@ -2,15 +2,15 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
-#include <filesystem>
-#include <utility>
-#include <vector>
-
 module CopiumEditor.Assets.AssetDatabase;
 
 import CopiumEditor.Assets.ModelImporter;
 import CopiumEditor.Assets.TextureImporter;
 import CopiumEngine.Core.Object;
+
+import <filesystem>;
+import <utility>;
+import <vector>;
 
 namespace fs = std::filesystem;
 

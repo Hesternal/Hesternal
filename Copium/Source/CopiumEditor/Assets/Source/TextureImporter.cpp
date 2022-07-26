@@ -20,13 +20,13 @@ module;
 #undef STBI_NO_FAILURE_STRINGS
 #endif
 
-#include <string>
-#include <utility>
-#include <vector>
-
 module CopiumEditor.Assets.TextureImporter;
 
 import CopiumEngine.Core.CoreTypes;
+
+import <string>;
+import <utility>;
+import <vector>;
 
 
 // NOTE(v.matushkin): There is STBI_WINDOWS_UTF8 and stbi_convert_wchar_to_utf8

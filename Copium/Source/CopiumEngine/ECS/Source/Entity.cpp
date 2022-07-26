@@ -1,9 +1,7 @@
-module;
-
-#include <string>
-#include <utility>
-
 module CopiumEngine.ECS.Entity;
+
+import <string>;
+import <utility>;
 
 
 namespace Copium

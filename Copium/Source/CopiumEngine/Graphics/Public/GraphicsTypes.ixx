@@ -3,14 +3,14 @@ module;
 #include "Engine/Core/Defines.hpp"
 #include "EngineCht/GraphicsTypes.cht.hpp"
 
-#include <memory>
-#include <string>
-#include <vector>
-
 export module CopiumEngine.Graphics.GraphicsTypes;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
+
+import <memory>;
+import <string>;
+import <vector>;
 
 
 namespace Copium

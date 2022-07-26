@@ -1,13 +1,11 @@
-module;
-
-#include <memory>
-
 export module CopiumEngine.Application;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics;
 import CopiumEngine.Platform.Window;
+
+import <memory>;
 
 
 export namespace Copium
