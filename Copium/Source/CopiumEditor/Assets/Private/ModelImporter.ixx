@@ -4,7 +4,7 @@ module;
 
 export module CopiumEditor.Assets.ModelImporter;
 
-import CopiumEngine.Assets.NativeAsset;
+import CopiumEngine.ECS.Entity;
 
 
 export namespace Copium
@@ -13,7 +13,7 @@ export namespace Copium
     class ModelImporter final
     {
     public:
-        [[nodiscard]] static ModelAsset Import(const std::string& meshPath);
+        [[nodiscard]] static Entity Import(const std::string& modelPath);
     };
 
 } // export namespace Copium
