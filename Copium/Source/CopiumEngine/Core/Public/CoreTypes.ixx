@@ -22,7 +22,3 @@ export namespace Copium
     using float64 = double;
 
 } // export namespace Copium
-
-
-static_assert(sizeof(Copium::float32) == 4);
-static_assert(sizeof(Copium::float64) == 8);
