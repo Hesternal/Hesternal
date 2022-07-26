@@ -41,7 +41,6 @@ export namespace Copium
 
         IGraphicsDevice*        m_graphicsDevice;
         std::unique_ptr<Window> m_mainWindow;
-        ShaderHandle            m_triangleShaderHandle;
 
         bool                    m_engineInitialized;
         bool                    m_engineClosed;
