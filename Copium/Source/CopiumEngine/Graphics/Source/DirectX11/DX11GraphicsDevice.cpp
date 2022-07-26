@@ -415,13 +415,13 @@ namespace Copium
         COP_ASSERT(dx11NormalTextureIterator != m_textures.end());
 
         DX11Texture2D& dx11BaseColorTexture = dx11BaseColorTextureIterator->second;
-        // DX11Texture2D& dx11NormalTexture = dx11NormalTextureIterator->second;
+        DX11Texture2D& dx11NormalTexture = dx11NormalTextureIterator->second;
 
-        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.Srv };
-        ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler };
+        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.Srv, dx11NormalTexture.Srv };
+        ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler, dx11NormalTexture.Sampler };
 
-        m_deviceContext->PSSetShaderResources(0, 1, materialTextures);
-        m_deviceContext->PSSetSamplers(0, 1, textureSamplers);
+        m_deviceContext->PSSetShaderResources(0, 2, materialTextures);
+        m_deviceContext->PSSetSamplers(0, 2, textureSamplers);
     }
 
 

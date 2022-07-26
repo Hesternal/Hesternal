@@ -64,6 +64,9 @@ namespace Copium
             Texture2D _BaseColorMap : register(t0);
             sampler   sampler_BaseColorMap : register(s0);
 
+            Texture2D _NormalMap : register(t1);
+            sampler   sampler_NormalMap : register(s1);
+
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
@@ -76,6 +79,9 @@ namespace Copium
             {
                 float4 baseColor = _BaseColorMap.Sample(sampler_BaseColorMap, input.uv0);
                 return baseColor;
+
+                // float3 normalMap = _NormalMap.Sample(sampler_NormalMap, input.uv0);
+                // return float4(normalMap, 1.0f);
 
                 // float3 normalWS = normalize(input.normalWS);
                 // return float4(normalWS, 1);
