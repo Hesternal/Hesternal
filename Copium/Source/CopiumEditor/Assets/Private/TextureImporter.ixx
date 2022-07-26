@@ -4,7 +4,7 @@ module;
 
 export module CopiumEditor.Assets.TextureImporter;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import CopiumEngine.Assets.Texture;
 
 
 export namespace Copium
@@ -13,7 +13,7 @@ export namespace Copium
     class TextureImporter final
     {
     public:
-        [[nodiscard]] static TextureDesc Import(const std::string& texturePath);
+        [[nodiscard]] static Texture Import(const std::string& texturePath);
     };
 
 } // export namespace Copium

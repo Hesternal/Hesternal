@@ -17,14 +17,28 @@ export namespace Copium
         Mesh(MeshDesc&& meshDesc);
         ~Mesh();
 
-        Mesh(Mesh&& other) noexcept = default;
-        Mesh& operator=(Mesh&& other) noexcept = default;
+        // Default constructor for serialization
+        Mesh();
+        // This is for asset import
+        Mesh(DoNotInitialize, MeshDesc&& textureDesc);
 
-        //< Object Interface
-        [[nodiscard]] std::string GetName() const override { return m_meshDesc.Name; }
-        //> Object Interface
+        Mesh(Mesh&& other) noexcept;
+        Mesh& operator=(Mesh&& other) noexcept;
+
+        //< Object Interface Public
+        [[nodiscard]] const std::string& GetName() const override { return m_meshDesc.Name; }
+        //> Object Interface Public
 
         [[nodiscard]] MeshHandle GetHandle() const { return m_meshHandle; }
+
+    private:
+        //< Object Interface Protected
+        [[nodiscard]] ClassID GetClassID() const override { return ClassID::Mesh; }
+        void Convert(IBinaryConverter& bc) override;
+        void OnAfterDeserealize() override;
+        //> Object Interface Protected
+
+        void _InitGpuResource();
 
     private:
         MeshDesc   m_meshDesc;

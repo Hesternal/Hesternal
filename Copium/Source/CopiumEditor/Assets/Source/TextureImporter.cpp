@@ -5,22 +5,23 @@ module;
 // NOTE(v.matushkin): Put stb in a normal conan package? not this fucking trash that I get rn
 // NOTE(v.matushkin): It's kinda dumb that stb error checking depends on 'COP_ENABLE_ASSERTS'
 #if COP_ENABLE_ASSERTS
-    #define STBI_FAILURE_USERMSG
+#define STBI_FAILURE_USERMSG
 #else
-    #define STBI_NO_FAILURE_STRINGS
+#define STBI_NO_FAILURE_STRINGS
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
-    #include <stb_image.h>
+#include <stb_image.h>
 #undef STB_IMAGE_IMPLEMENTATION
 
 #ifdef COP_ENABLE_ASSERTS
-    #undef STBI_FAILURE_USERMSG
+#undef STBI_FAILURE_USERMSG
 #else
-    #undef STBI_NO_FAILURE_STRINGS
+#undef STBI_NO_FAILURE_STRINGS
 #endif
 
 #include <string>
+#include <utility>
 #include <vector>
 
 module CopiumEditor.Assets.TextureImporter;
@@ -37,7 +38,7 @@ namespace
     using namespace Copium;
 
 
-    static TextureFormat NumComponentsToTextureFormat(int32 numComponents)
+    [[nodiscard]] static TextureFormat NumComponentsToTextureFormat(int32 numComponents)
     {
         if (numComponents == 1)
         {
@@ -50,13 +51,13 @@ namespace
         return TextureFormat::RGBA8;
     }
 
-}
+} // namespace
 
 
 namespace Copium
 {
 
-    TextureDesc TextureImporter::Import(const std::string& texturePath)
+    Texture TextureImporter::Import(const std::string& texturePath)
     {
         stbi_set_flip_vertically_on_load(true); // TODO(v.matushkin): Set only once
 
@@ -82,7 +83,7 @@ namespace Copium
 
         stbi_image_free(stbImageData);
 
-        return textureDesc;
+        return Texture(std::move(textureDesc));
     }
 
 } // namespace Copium

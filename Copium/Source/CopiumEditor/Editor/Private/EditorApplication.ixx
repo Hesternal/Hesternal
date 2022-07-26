@@ -29,7 +29,6 @@ export namespace Copium
 
     private:
         std::filesystem::path m_projectPath;
-
         bool                  m_editorInitialized;
         bool                  m_editorClosed;
     };

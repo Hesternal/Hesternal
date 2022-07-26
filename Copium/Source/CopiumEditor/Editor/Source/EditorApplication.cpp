@@ -9,6 +9,8 @@ module;
 module CopiumEditor.EditorApplication;
 
 import CopiumEditor.Assets.AssetDatabase;
+import CopiumEngine.ECS.Entity;
+import CopiumEngine.ECS.Scene;
 
 
 std::unique_ptr<Copium::Application> Copium::CreateApplication(Copium::int32 argc, const char* const* argv)
@@ -71,12 +73,14 @@ namespace Copium
 
         engineSettings.WindowTitle  = L"CopiumEngine";
         engineSettings.WindowWidth  = 1280;
-        engineSettings.WindowHeight = 720;
+        engineSettings.WindowHeight = 1000;
     }
 
     void EditorApplication::InitSystems()
     {
         AssetDatabase::Init(m_projectPath);
+
+        Scene::SponzaRootEntity = AssetDatabase::LoadAsset<Entity>("Assets/Sponza/sponza.obj");
 
         m_editorInitialized = true;
     }
@@ -87,6 +91,10 @@ namespace Copium
         {
             return;
         }
+
+        Scene::SponzaRootEntity.reset();
+
+        AssetDatabase::Shutdown();
 
         m_editorClosed = true;
     }

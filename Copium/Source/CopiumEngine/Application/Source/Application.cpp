@@ -2,12 +2,16 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
+#include <cmath>
 #include <memory>
 #include <utility>
 
 module CopiumEngine.Application;
 
+import CopiumEngine.ECS.Entity;
+import CopiumEngine.ECS.Scene;
 import CopiumEngine.Event.EventManager;
+import CopiumEngine.Math.Matrix;
 
 
 namespace Copium
@@ -47,52 +51,6 @@ namespace Copium
         Graphics::Init();
         m_graphicsDevice = Graphics::GetGraphicsDevice();
 
-        ShaderDesc shaderDesc;
-        shaderDesc.VertexSource = R"(
-            struct Attributes
-            {
-                uint vertexID : SV_VertexID;
-            };
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-                float3 color      : TEXCOORD0;
-            };
-
-            static const float2 vertices[] = {
-                 0.0f,  0.5f,
-                 0.5f, -0.5f,
-                -0.5f, -0.5f,
-            };
-
-            static const float3 colors[] = {
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f
-            };
-
-            Varyings main(Attributes IN)
-            {
-                Varyings OUT;
-                OUT.positionCS = float4(vertices[IN.vertexID], 0, 1);
-                OUT.color      = colors[IN.vertexID];
-                return OUT;
-            }
-        )";
-        shaderDesc.FragmentSource = R"(
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-                float3 color      : TEXCOORD0;
-            };
-
-            float4 main(Varyings IN) : SV_Target
-            {
-                return float4(IN.color, 1);
-            }
-        )";
-        m_triangleShaderHandle = m_graphicsDevice->CreateShader(shaderDesc);
-
         WindowDesc windowDesc = {
             .Title  = m_engineSettings.WindowTitle,
             .Width  = m_engineSettings.WindowWidth,
@@ -112,13 +70,54 @@ namespace Copium
 
         m_engineClosed = true;
 
-        m_graphicsDevice->DestroyShader(m_triangleShaderHandle);
         m_mainWindow.reset();
         Graphics::Shutdown();
     }
 
     void Application::_EngineLoop()
     {
+        const ShaderHandle defaultShaderHandle = Graphics::GetDefaultShader()->GetHandle();
+        const Entity* sponzaRootEntity = Scene::SponzaRootEntity.get();
+
+        Matrix4x4f sponzaTransform(
+            0.005f,   0.0f,   0.0f, 0.0f,
+              0.0f, 0.005f,   0.0f, 0.0f,
+              0.0f,   0.0f, 0.005f, 0.0f,
+              0.0f,   0.0f,   0.0f, 1.0f
+        );
+
+        // 90.0f, f32(renderWidth) / renderHeight, 0.1f, 100.0f
+        // constexpr float32 fovy = 90.0f;
+        // float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
+        // constexpr float32 zNear = 0.1f;
+        // constexpr float32 zFar = 100.0f;
+        // 
+        // float32 tanHalfFovy = std::tan(fovy / 2.0f);
+        // float32 projection00 = 1.0f / (aspect * tanHalfFovy);
+        // float32 projection11 = 1.0f / (tanHalfFovy);
+        // float32 projection22 = zFar / (zNear - zFar);
+        // float32 projection23 = -1.0f;
+        // float32 projection32 = -(zFar * zNear) / (zFar - zNear);
+        // 
+        // Matrix4x4f cameraProjection(
+        //     projection00,         0.0f,         0.0f,         0.0f,
+        //             0.0f, projection11,         0.0f,         0.0f,
+        //             0.0f,         0.0f, projection22, projection23,
+        //             0.0f,         0.0f, projection32,          0.0f
+        // );
+
+        Matrix4x4f cameraProjection(
+            0.78125f, 0.0f,     0.0f,  0.0f,
+                0.0f, 1.0f,     0.0f,  0.0f,
+                0.0f, 0.0f,  -1.002f, -1.0f,
+                0.0f, 0.0f, -0.2002f,  0.0f
+        );
+
+        Matrix4x4f cameraView = Matrix4x4f::Identity();
+
+        TextureHandle currentBaseColorTexture = TextureHandle::Invalid;
+        TextureHandle currentNormalTexture = TextureHandle::Invalid;
+
         while (true)
         {
             m_mainWindow->ProcessEvents();
@@ -130,9 +129,26 @@ namespace Copium
                 break;
             }
 
-            m_graphicsDevice->BeginFrame();
-            m_graphicsDevice->BindShader(m_triangleShaderHandle);
-            m_graphicsDevice->DrawProcedural(3);
+            m_graphicsDevice->BeginFrame(sponzaTransform, cameraView, cameraProjection);
+            m_graphicsDevice->BindShader(defaultShaderHandle);
+
+            for (const Entity& entity : sponzaRootEntity->GetChildren())
+            {
+                const Material* entityMaterial = entity.GetMaterial();
+                const TextureHandle baseColorTextureHandle = entityMaterial->GetBaseColorMap()->GetHandle();
+                const TextureHandle normalTextureHandle = entityMaterial->GetNormalMap()->GetHandle();
+
+                if (baseColorTextureHandle != currentBaseColorTexture || normalTextureHandle != currentNormalTexture)
+                {
+                    currentBaseColorTexture = baseColorTextureHandle;
+                    currentNormalTexture = normalTextureHandle;
+
+                    m_graphicsDevice->BindMaterial(baseColorTextureHandle, normalTextureHandle);
+                }
+
+                m_graphicsDevice->DrawMesh(entity.GetMesh()->GetHandle());
+            }
+
             m_graphicsDevice->EndFrame();
         }
     }

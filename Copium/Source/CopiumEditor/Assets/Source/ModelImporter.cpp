@@ -6,13 +6,23 @@ module;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <filesystem>
 #include <memory>
 #include <string>
 
 module CopiumEditor.Assets.ModelImporter;
 
-import CopiumEngine.Assets.NativeAsset;
+import CopiumEngine.Assets.Mesh;
+import CopiumEngine.Assets.Material;
+import CopiumEngine.Assets.Texture;
+import CopiumEngine.Assets.Shader;
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.ECS.Entity;
+import CopiumEngine.Graphics;
+
+import CopiumEditor.Assets.AssetDatabase;
+
+namespace fs = std::filesystem;
 
 
 namespace AssimpConstants
@@ -49,19 +59,110 @@ namespace AssimpConstants
 };
 
 
+namespace
+{
+
+    using namespace Copium;
+
+
+    [[nodiscard]] static std::string GetAssimpMaterialTexturePath(const fs::path& modelDirPath, const aiMaterial* material, aiTextureType textureType)
+    {
+        aiString texturePath;
+        const aiReturn error = material->GetTexture(textureType, 0, &texturePath);
+        COP_ASSERT_MSG(error == aiReturn::aiReturn_SUCCESS, error == aiReturn_FAILURE ? "aiReturn_FAILURE" : "aiReturn_OUTOFMEMORY");
+
+        // NOTE(v.matushkin): This dances with pathes is so fucking dumb
+        std::string projectDirRelativePath = (modelDirPath / std::string(texturePath.C_Str(), texturePath.length)).string();
+
+        return projectDirRelativePath;
+    }
+
+    [[nodiscard]] static std::vector<std::shared_ptr<Material>> GetAssimpMaterials(const std::string& modelPath, const aiScene* assimpScene)
+    {
+        COP_ASSERT_MSG(assimpScene->HasMaterials(), "Mesh without materials");
+
+        const fs::path modelDirPath = fs::path(modelPath).parent_path();
+
+        std::vector<std::shared_ptr<Material>> materials;
+        const uint32 numMaterials = assimpScene->mNumMaterials;
+
+        const std::shared_ptr<Shader>& defaultShader = Graphics::GetDefaultShader();
+        const std::shared_ptr<Texture>& blackTexture = Graphics::GetBlackTexture();
+        const std::shared_ptr<Texture>& normalTexture = Graphics::GetNormalTexture();
+
+        for (uint32 materialIndex = 0; materialIndex < numMaterials; materialIndex++)
+        {
+            const aiMaterial* const assimpMaterial = assimpScene->mMaterials[materialIndex];
+            const char* const assimpMaterialName = assimpMaterial->GetName().C_Str();
+
+            auto material = std::make_shared<Material>(std::string(assimpMaterialName, assimpMaterial->GetName().length), defaultShader);
+
+            // Get Material BaseColorMap
+            const uint32 diffuseTexturesCount = assimpMaterial->GetTextureCount(aiTextureType::aiTextureType_DIFFUSE);
+            if (diffuseTexturesCount > 0)
+            {
+                const std::string texturePath = GetAssimpMaterialTexturePath(modelDirPath, assimpMaterial, aiTextureType::aiTextureType_DIFFUSE);
+                material->SetBaseColorMap(AssetDatabase::LoadAsset<Texture>(texturePath));
+
+                if (diffuseTexturesCount != 1)
+                {
+                    COP_LOG_WARN("Material: {}, has {} BaseColor textures", assimpMaterialName, diffuseTexturesCount);
+                }
+            }
+            else
+            {
+                COP_LOG_WARN("Material: {}, has 0 baseColor textures, using default Black texture", assimpMaterialName);
+                material->SetBaseColorMap(blackTexture);
+            }
+            // Get Material NormalMap
+            const uint32 normalTexturesCount = assimpMaterial->GetTextureCount(aiTextureType::aiTextureType_NORMALS);
+            if (normalTexturesCount > 0)
+            {
+                const std::string texturePath = GetAssimpMaterialTexturePath(modelDirPath, assimpMaterial, aiTextureType::aiTextureType_NORMALS);
+                material->SetNormalMap(AssetDatabase::LoadAsset<Texture>(texturePath));
+
+                if (normalTexturesCount != 1)
+                {
+                    COP_LOG_WARN("Material: {}, has {} Normal textures", assimpMaterialName, diffuseTexturesCount);
+                }
+            }
+            else
+            {
+                COP_LOG_WARN("Material: {}, has 0 normal textures, using default Normal texture", assimpMaterialName);
+                material->SetNormalMap(normalTexture);
+            }
+
+            materials.push_back(std::move(material));
+        }
+
+        return materials;
+    }
+
+}
+
+
 namespace Copium
 {
 
-    ModelAsset ModelImporter::Import(const std::string& meshPath)
+    Entity ModelImporter::Import(const std::string& modelPath)
     {
         Assimp::Importer assimpImporter;
         // TODO(v.matushkin): Learn more about aiPostProcessSteps
         const aiScene* assimpScene = assimpImporter.ReadFile(
-            meshPath,
+            modelPath,
             aiPostProcessSteps::aiProcess_Triangulate
             | aiPostProcessSteps::aiProcess_GenNormals
+            // | aiPostProcessSteps::aiProcess_GenUVCoords
             // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
             // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
+            // | aiPostProcessSteps::aiProcess_MakeLeftHanded
+            // Optimization
+            // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
+            // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
+            // Validation
+            // | aiPostProcessSteps::aiProcess_FindDegenerates
+            // | aiPostProcessSteps::aiProcess_FindInvalidData
+            // | aiPostProcessSteps::aiProcess_ValidateDataStructure
         );
 
         // TODO(v.matushkin): This will break when asserts turned off
@@ -71,11 +172,12 @@ namespace Copium
                 "Got an error while loading Mesh"
                 "\t\nPath: {0}"
                 "\t\nAssimp error message: {1}",
-                meshPath, assimpImporter.GetErrorString());
+                modelPath, assimpImporter.GetErrorString());
             COP_ASSERT(false);
         }
 
-        ModelAsset modelAsset;
+        Entity parentEntity;
+        const std::vector<std::shared_ptr<Material>> materials = GetAssimpMaterials(modelPath, assimpScene);
 
         std::vector<uint32> indexData;
         std::vector<float32> uv0Data;
@@ -98,9 +200,14 @@ namespace Copium
 
             const uint32 numFaces    = assimpMesh->mNumFaces;
             const uint32 numVertices = assimpMesh->mNumVertices;
+            std::string meshName(assimpMesh->mName.C_Str(), assimpMesh->mName.length);
 
             MeshDesc meshDesc = {
-                .Name        = std::string(assimpMesh->mName.C_Str(), assimpMesh->mName.length),
+                .Name        = meshName,
+                .Position    = VertexAttributeDesc::Position(),
+                .Normal      = VertexAttributeDesc::Normal(),
+                .UV0         = VertexAttributeDesc::UV0(),
+                .IndexFormat = IndexFormat::UInt32,
                 .IndexCount  = numFaces * AssimpConstants::IndicesPerFace,
                 .VertexCount = numVertices,
             };
@@ -153,10 +260,14 @@ namespace Copium
 
             std::memcpy(vertexDataPtr, uv0Data.data(), uv0DataSize);
 
-            modelAsset.Meshes.push_back(std::move(meshDesc));
+            Entity childEntity(std::move(meshName));
+            childEntity.SetMesh(std::make_shared<Mesh>(std::move(meshDesc)));
+            childEntity.SetMaterial(materials[assimpMesh->mMaterialIndex]);
+
+            parentEntity.AddChild(std::move(childEntity));
         }
 
-        return modelAsset;
+        return parentEntity;
     }
 
 } // namespace Copium
