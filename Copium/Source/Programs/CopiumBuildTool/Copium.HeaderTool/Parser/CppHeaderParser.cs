@@ -402,12 +402,24 @@ namespace Copium.HeaderTool.Parser
             ExpectSymbol(';');
         }
 
-        // TODO(v.matushkin): What about unnamed namespaces?
         private void _ParseNamespace()
         {
-            string namespaceName = _ParseQualifiedIdentifier();
+            string namespaceName;
 
-            ExpectSymbol('{');
+            // If anonymous namespace
+            if (PeekToken().IsSymbol('{'))
+            {
+                AdvanceToken();
+                // NOTE(v.matushkin): I don't know how should I handle anonymous namespace, since it doesn't have a name,
+                //  but right now I'm not using these names anyway. May be just assign empty string,
+                //  or doesn't push anything to type scope at all?
+                namespaceName = "ANON";
+            }
+            else
+            {
+                namespaceName = _ParseQualifiedIdentifier();
+                ExpectSymbol('{');
+            }
 
             m_parsingContext.PushContext_Namespace();
             m_cppTypeScope.Push(namespaceName);
