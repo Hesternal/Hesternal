@@ -461,7 +461,7 @@ namespace Copium.HeaderTool.Parser
 
 
         /// <summary>
-        /// Parse module declaration, eg. expressions like 'A.ModuleB.ModuleB'
+        /// Parse module declaration, eg. expressions like 'A.ModuleB.ModuleC' or 'A.ModuleB:Partition'
         /// </summary>
         private string _ParseModuleDeclaration()
         {
@@ -471,6 +471,13 @@ namespace Copium.HeaderTool.Parser
             {
                 AdvanceToken();
                 m_stringBuilder.Append('.').Append(ExpectIdentifier().Value);
+            }
+
+            // Check for module partition
+            if (PeekToken().IsSymbol(':'))
+            {
+                AdvanceToken();
+                m_stringBuilder.Append(':').Append(ExpectIdentifier().Value);
             }
 
             ExpectSymbol(';');
