@@ -19,6 +19,7 @@ import CopiumEngine.Graphics;
 import CopiumEditor.Assets.AssetDatabase;
 
 import <filesystem>;
+import <limits>;
 import <memory>;
 import <string>;
 
@@ -30,9 +31,7 @@ namespace AssimpConstants
     using namespace Copium;
 
     // Index
-    static constexpr int32 IndexTypeSize = sizeof(uint32);
     static constexpr int32 IndicesPerFace = 3;
-    static constexpr int32 IndexSize = IndicesPerFace * IndexTypeSize;
     // Position
     static constexpr int32 PositionDimension = 3;
     static constexpr int32 PositionTypeSize = sizeof(float32);
@@ -41,7 +40,7 @@ namespace AssimpConstants
     static constexpr int32 NormalDimension = 3;
     static constexpr int32 NormalTypeSize = sizeof(float32);
     static constexpr int32 NormalSize = NormalDimension * NormalTypeSize;
-    // TexCoord0
+    // UV0
     static constexpr int32 UV0Dimension = 2;
     static constexpr int32 UV0TypeSize = sizeof(float32);
     static constexpr int32 UV0Size = UV0Dimension * UV0TypeSize;
@@ -52,7 +51,6 @@ namespace AssimpConstants
 #undef MEMBER_SIZEOF
 
 #define ARRAY_MEMBER_SIZEOF(type, member) sizeof(((type *)0)->member[0])
-    static_assert(ARRAY_MEMBER_SIZEOF(aiFace, mIndices)  == IndexTypeSize);
     static_assert(ARRAY_MEMBER_SIZEOF(aiMesh, mVertices) == PositionSize);
     static_assert(ARRAY_MEMBER_SIZEOF(aiMesh, mNormals)  == NormalSize);
 #undef ARRAY_MEMBER_SIZEOF
@@ -106,12 +104,12 @@ namespace
 
                 if (diffuseTexturesCount != 1)
                 {
-                    COP_LOG_WARN("Material: {}, has {} BaseColor textures", assimpMaterialName, diffuseTexturesCount);
+                    COP_LOG_WARN("Material has {:d} BaseColorMaps. [{:s}]", diffuseTexturesCount, assimpMaterialName);
                 }
             }
             else
             {
-                COP_LOG_WARN("Material: {}, has 0 baseColor textures, using default Black texture", assimpMaterialName);
+                COP_LOG_WARN("Material doesn't have BaseColorMap, using default Black texture. [{:s}]", assimpMaterialName);
                 material->SetBaseColorMap(blackTexture);
             }
             // Get Material NormalMap
@@ -123,12 +121,12 @@ namespace
 
                 if (normalTexturesCount != 1)
                 {
-                    COP_LOG_WARN("Material: {}, has {} Normal textures", assimpMaterialName, diffuseTexturesCount);
+                    COP_LOG_WARN("Material has {:d} NormalMaps. [{:s}]", diffuseTexturesCount, assimpMaterialName);
                 }
             }
             else
             {
-                COP_LOG_WARN("Material: {}, has 0 normal textures, using default Normal texture", assimpMaterialName);
+                COP_LOG_WARN("Material doesn't have NormalMap, using default Normal texture. [{:s}]", assimpMaterialName);
                 material->SetNormalMap(normalTexture);
             }
 
@@ -136,6 +134,80 @@ namespace
         }
 
         return materials;
+    }
+
+
+    [[nodiscard]] static IndexFormat CopyIndexData(const aiMesh* assimpMesh, std::vector<uint8>& indexData)
+    {
+        const uint32 numFaces = assimpMesh->mNumFaces;
+        const uint32 numIndices = numFaces * AssimpConstants::IndicesPerFace;
+       
+        const aiFace* const assimpFaces = assimpMesh->mFaces;
+
+        uint32 indexDataSize;
+        IndexFormat indexFormat;
+
+        if (numIndices > std::numeric_limits<uint16>::max())
+        {
+            indexDataSize = numIndices * sizeof(uint32);
+            indexFormat = IndexFormat::UInt32;
+        }
+        else
+        {
+            indexDataSize = numIndices * sizeof(uint16);
+            indexFormat = IndexFormat::UInt16;
+        }
+
+        indexData.resize(indexDataSize);
+        uint8* indexDataPtr = indexData.data();
+
+        if (numIndices > std::numeric_limits<uint16>::max())
+        {
+            for (uint32 i = 0; i < numFaces; i++)
+            {
+                const aiFace& assimpFace = assimpFaces[i];
+                const uint32 indices[3] = {
+                    assimpFace.mIndices[0],
+                    assimpFace.mIndices[1],
+                    assimpFace.mIndices[2],
+                };
+
+                std::memcpy(indexDataPtr, indices, sizeof(indices));
+                indexDataPtr += sizeof(indices);
+            }
+        }
+        else
+        {
+            for (uint32 i = 0; i < numFaces; i++)
+            {
+                const aiFace& assimpFace = assimpFaces[i];
+                const uint16 indices[3] = {
+                    static_cast<uint16>(assimpFace.mIndices[0]),
+                    static_cast<uint16>(assimpFace.mIndices[1]),
+                    static_cast<uint16>(assimpFace.mIndices[2]),
+                };
+
+                std::memcpy(indexDataPtr, indices, sizeof(indices));
+                indexDataPtr += sizeof(indices);
+            }
+        }
+
+        return indexFormat;
+    }
+
+    [[nodiscard]] static void CopyUV0Data(const aiMesh* assimpMesh, uint8* vertexDataPtr)
+    {
+        const uint32 numVertices = assimpMesh->mNumVertices;
+        const aiVector3D* const assimpUV0Data = assimpMesh->mTextureCoords[0];
+
+        for (uint32 uv0Index = 0; uv0Index < numVertices; uv0Index++)
+        {
+            const aiVector3D vertexUV0 = assimpUV0Data[uv0Index];
+            const float32 uv0[2] = { vertexUV0.x, vertexUV0.y };
+
+            std::memcpy(vertexDataPtr, uv0, sizeof(uv0));
+            vertexDataPtr += sizeof(uv0);
+        }
     }
 
 }
@@ -176,58 +248,72 @@ namespace Copium
             COP_ASSERT(false);
         }
 
+        if (assimpScene->HasAnimations())
+        {
+            COP_LOG_WARN("Model has {:d} animations", assimpScene->mNumAnimations);
+        }
+        if (assimpScene->HasCameras())
+        {
+            COP_LOG_WARN("Model has {:d} cameras", assimpScene->mNumCameras);
+        }
+        if (assimpScene->HasLights())
+        {
+            COP_LOG_WARN("Model has {:d} lights", assimpScene->mNumLights);
+        }
+
+        const aiNode* const* const rootChildren = assimpScene->mRootNode->mChildren;
+        const uint32 rootNumChildren = assimpScene->mRootNode->mNumChildren;
+
+        for (uint32 i = 0; i < rootNumChildren; ++i)
+        {
+            if (rootChildren[i]->mNumChildren != 0)
+            {
+                COP_LOG_WARN("Model has more complex hierarchy than I support");
+                break;
+            }
+        }
+
+        const aiMesh* const* const assimpMeshes = assimpScene->mMeshes;
+        const uint32 numMeshes = assimpScene->mNumMeshes;
+
+        COP_LOG_INFO("Meshes: {:d} | Materials: {:d} | Embeded Textures: {:d}",
+            numMeshes, assimpScene->mNumMaterials, assimpScene->mNumTextures);
+
         Entity parentEntity;
         const std::vector<std::shared_ptr<Material>> materials = GetAssimpMaterials(modelPath, assimpScene);
 
-        std::vector<uint32> indexData;
-        std::vector<float32> uv0Data;
-        indexData.reserve(100);
-        uv0Data.reserve(100);
-
-        for (uint32 meshIndex = 0; meshIndex < assimpScene->mNumMeshes; meshIndex++)
+        for (uint32 meshIndex = 0; meshIndex < numMeshes; meshIndex++)
         {
-            const aiMesh* const assimpMesh = assimpScene->mMeshes[meshIndex];
+            const aiMesh* const assimpMesh = assimpMeshes[meshIndex];
 
             COP_ASSERT(assimpMesh->HasFaces());
             COP_ASSERT(assimpMesh->HasPositions());
-            COP_ASSERT(assimpMesh->HasNormals());
 
-            // COP_ASSERT(assimpMesh->HasTextureCoords(0));
+            std::string meshName(assimpMesh->mName.C_Str(), assimpMesh->mName.length);
+
+            if (assimpMesh->HasNormals() == false)
+            {
+                COP_LOG_WARN("Mesh doesn't have Normals. [{:s}]", meshName);
+                continue;
+            }
             if (assimpMesh->HasTextureCoords(0) == false)
             {
+                COP_LOG_WARN("Mesh doesn't have UV0. [{:s}]", meshName);
                 continue;
             }
 
             const uint32 numFaces    = assimpMesh->mNumFaces;
             const uint32 numVertices = assimpMesh->mNumVertices;
-            std::string meshName(assimpMesh->mName.C_Str(), assimpMesh->mName.length);
 
             MeshDesc meshDesc = {
                 .Name        = meshName,
                 .Position    = VertexAttributeDesc::Position(),
                 .Normal      = VertexAttributeDesc::Normal(),
                 .UV0         = VertexAttributeDesc::UV0(),
-                .IndexFormat = IndexFormat::UInt32,
                 .IndexCount  = numFaces * AssimpConstants::IndicesPerFace,
                 .VertexCount = numVertices,
             };
-
-            //- IndexData
-            indexData.clear();
-            for (uint32 faceIndex = 0; faceIndex < numFaces; faceIndex++)
-            {
-                const aiFace& face = assimpMesh->mFaces[faceIndex];
-
-                COP_ASSERT(face.mNumIndices == 3);
-
-                indexData.push_back(face.mIndices[0]);
-                indexData.push_back(face.mIndices[1]);
-                indexData.push_back(face.mIndices[2]);
-            }
-
-            const uint32 indexDataSize = numFaces * AssimpConstants::IndexSize;
-            meshDesc.IndexData.resize(indexDataSize);
-            std::memcpy(meshDesc.IndexData.data(), indexData.data(), indexDataSize);
+            meshDesc.IndexFormat = CopyIndexData(assimpMesh, meshDesc.IndexData);
 
             //- VertexData
             const uint32 positionDataSize = numVertices * AssimpConstants::PositionSize;
@@ -241,24 +327,11 @@ namespace Copium
             //-- Position
             std::memcpy(vertexDataPtr, assimpMesh->mVertices, positionDataSize);
             vertexDataPtr += positionDataSize;
-
             //-- Normal
             std::memcpy(vertexDataPtr, assimpMesh->mNormals, normalDataSize);
             vertexDataPtr += normalDataSize;
 
-            //-- UV0
-            const aiVector3D* assimpUV0Data = assimpMesh->mTextureCoords[0];
-
-            // Transform (3 * float32) -> (2 * float32)
-            uv0Data.clear();
-            for (uint32 uv0Index = 0; uv0Index < numVertices; uv0Index++)
-            {
-                const aiVector3D vertexUV0 = assimpUV0Data[uv0Index];
-                uv0Data.push_back(vertexUV0.x);
-                uv0Data.push_back(vertexUV0.y);
-            }
-
-            std::memcpy(vertexDataPtr, uv0Data.data(), uv0DataSize);
+            CopyUV0Data(assimpMesh, vertexDataPtr);
 
             Entity childEntity(std::move(meshName));
             childEntity.SetMesh(std::make_shared<Mesh>(std::move(meshDesc)));
