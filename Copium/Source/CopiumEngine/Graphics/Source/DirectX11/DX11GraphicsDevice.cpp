@@ -259,7 +259,7 @@ namespace Copium
             };
 
             D3D11_BUFFER_DESC d3dPerMeshBufferDesc = {
-                .ByteWidth           = sizeof(Matrix4x4f),
+                .ByteWidth           = sizeof(Float4x4),
                 .Usage               = D3D11_USAGE_DYNAMIC,
                 .BindFlags           = D3D11_BIND_CONSTANT_BUFFER,
                 .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
@@ -332,7 +332,7 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::BeginFrame(const Matrix4x4f& objectToWorld, const Matrix4x4f& cameraView, const Matrix4x4f& cameraProjection)
+    void DX11GraphicsDevice::BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection)
     {
         //- Update constant buffers
         {
@@ -354,7 +354,7 @@ namespace Copium
 
             //-- PerMesh
             m_deviceContext->Map(m_cbPerMesh, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, &objectToWorld, sizeof(Matrix4x4f));
+            std::memcpy(d3dMappedSubresource.pData, &objectToWorld, sizeof(Float4x4));
             m_deviceContext->Unmap(m_cbPerMesh, 0);
         }
 

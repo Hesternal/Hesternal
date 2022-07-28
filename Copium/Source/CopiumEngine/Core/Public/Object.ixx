@@ -9,8 +9,8 @@ import CopiumEngine.Core.ClassID;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
 
+import <concepts>;
 import <string>;
-import <type_traits>;
 
 
 export namespace Copium

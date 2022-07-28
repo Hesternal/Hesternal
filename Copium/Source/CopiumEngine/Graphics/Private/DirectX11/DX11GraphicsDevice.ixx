@@ -87,8 +87,8 @@ export namespace Copium
 
         struct PerCamera
         {
-            Matrix4x4f _CameraView;
-            Matrix4x4f _CameraProjection;
+            Float4x4 _CameraView;
+            Float4x4 _CameraProjection;
         };
 
     public:
@@ -98,7 +98,7 @@ export namespace Copium
         DX11GraphicsDevice(DX11GraphicsDevice&& other) noexcept = default;
         DX11GraphicsDevice& operator=(DX11GraphicsDevice&& other) noexcept = default;
 
-        void BeginFrame(const Matrix4x4f& objectToWorld, const Matrix4x4f& cameraView, const Matrix4x4f& cameraProjection) override;
+        void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
         void EndFrame() override;
 
         void BindShader(ShaderHandle shaderHandle) override;

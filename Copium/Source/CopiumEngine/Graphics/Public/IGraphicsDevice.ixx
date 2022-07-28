@@ -2,7 +2,7 @@ export module CopiumEngine.Graphics.IGraphicsDevice;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Math.Matrix;
+import CopiumEngine.Math;
 
 
 export namespace Copium
@@ -16,7 +16,7 @@ export namespace Copium
         IGraphicsDevice(const IGraphicsDevice&) = delete;
         IGraphicsDevice& operator=(const IGraphicsDevice&) = delete;
 
-        virtual void BeginFrame(const Matrix4x4f& objectToWorld, const Matrix4x4f& cameraView, const Matrix4x4f& cameraProjection) = 0;
+        virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;
         virtual void EndFrame() = 0;
 
         virtual void BindShader(ShaderHandle shaderHandle) = 0;

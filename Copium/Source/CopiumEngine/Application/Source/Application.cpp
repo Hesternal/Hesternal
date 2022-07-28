@@ -7,9 +7,8 @@ module CopiumEngine.Application;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.Scene;
 import CopiumEngine.Event.EventManager;
-import CopiumEngine.Math.Matrix;
+import CopiumEngine.Math;
 
-import <cmath>;
 import <memory>;
 import <utility>;
 
@@ -79,41 +78,15 @@ namespace Copium
         const ShaderHandle defaultShaderHandle = Graphics::GetDefaultShader()->GetHandle();
         const Entity* sponzaRootEntity = Scene::SponzaRootEntity.get();
 
-        Matrix4x4f sponzaTransform(
-            0.005f,   0.0f,   0.0f, 0.0f,
-              0.0f, 0.005f,   0.0f, 0.0f,
-              0.0f,   0.0f, 0.005f, 0.0f,
-              0.0f,   0.0f,   0.0f, 1.0f
-        );
+        Float4x4 sponzaTransform = Float4x4::Scale(0.005f);
 
-        // 90.0f, f32(renderWidth) / renderHeight, 0.1f, 100.0f
-        // constexpr float32 fovy = 90.0f;
-        // float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
-        // constexpr float32 zNear = 0.1f;
-        // constexpr float32 zFar = 100.0f;
-        // 
-        // float32 tanHalfFovy = std::tan(fovy / 2.0f);
-        // float32 projection00 = 1.0f / (aspect * tanHalfFovy);
-        // float32 projection11 = 1.0f / (tanHalfFovy);
-        // float32 projection22 = zFar / (zNear - zFar);
-        // float32 projection23 = -1.0f;
-        // float32 projection32 = -(zFar * zNear) / (zFar - zNear);
-        // 
-        // Matrix4x4f cameraProjection(
-        //     projection00,         0.0f,         0.0f,         0.0f,
-        //             0.0f, projection11,         0.0f,         0.0f,
-        //             0.0f,         0.0f, projection22, projection23,
-        //             0.0f,         0.0f, projection32,          0.0f
-        // );
+        constexpr float32 verticalFov = Math::Radians(90.0f);
+        constexpr float32 near = 0.1f;
+        constexpr float32 far = 100.0f;
+        float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
 
-        Matrix4x4f cameraProjection(
-            0.78125f, 0.0f,     0.0f,  0.0f,
-                0.0f, 1.0f,     0.0f,  0.0f,
-                0.0f, 0.0f,  -1.002f, -1.0f,
-                0.0f, 0.0f, -0.2002f,  0.0f
-        );
-
-        Matrix4x4f cameraView = Matrix4x4f::Identity();
+        Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
+        Float4x4 cameraView = Float4x4::Identity();
 
         TextureHandle currentBaseColorTexture = TextureHandle::Invalid;
         TextureHandle currentNormalTexture = TextureHandle::Invalid;
