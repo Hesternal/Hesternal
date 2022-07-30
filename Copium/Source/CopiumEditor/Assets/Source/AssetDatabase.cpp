@@ -138,12 +138,12 @@ namespace Copium
     }
 
     template<>
-    std::shared_ptr<Entity> AssetDatabase::LoadAsset(const std::string& assetPath)
+    std::shared_ptr<ModelScene> AssetDatabase::LoadAsset(const std::string& assetPath)
     {
         auto mapIterator = m_models.find(assetPath);
         if (mapIterator == m_models.end())
         {
-            mapIterator = m_models.emplace(assetPath, std::make_shared<Entity>(ModelImporter::Import(assetPath))).first;
+            mapIterator = m_models.emplace(assetPath, std::make_shared<ModelScene>(ModelImporter::Import(assetPath))).first;
         }
 
         return mapIterator->second;

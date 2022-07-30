@@ -2,15 +2,23 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
+COP_WARNING_PUSH
+COP_WARNING_DISABLE_MSVC(4996)
+#include <entt/container/dense_map.hpp>
+#include <entt/entity/view.hpp>
+COP_WARNING_POP
+
 module CopiumEngine.Application;
 
+import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
+import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.Scene;
+import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Event.EventManager;
-import CopiumEngine.Math.Matrix;
+import CopiumEngine.Math;
+import CopiumEngine.Graphics;
 
-import <cmath>;
-import <memory>;
 import <utility>;
 
 
@@ -49,7 +57,7 @@ namespace Copium
     void Application::_EngineInit()
     {
         Graphics::Init();
-        m_graphicsDevice = Graphics::GetGraphicsDevice();
+        WorldManager::Init();
 
         WindowDesc windowDesc = {
             .Title  = m_engineSettings.WindowTitle,
@@ -71,52 +79,29 @@ namespace Copium
         m_engineClosed = true;
 
         m_mainWindow.reset();
+
+        WorldManager::Shutdown();
         Graphics::Shutdown();
     }
 
     void Application::_EngineLoop()
     {
-        const ShaderHandle defaultShaderHandle = Graphics::GetDefaultShader()->GetHandle();
-        const Entity* sponzaRootEntity = Scene::SponzaRootEntity.get();
+        World* defaultWorld = WorldManager::GetDefaultWorld();
+        EntityManager& entityManager = defaultWorld->GetEntityManager();
 
-        Matrix4x4f sponzaTransform(
-            0.005f,   0.0f,   0.0f, 0.0f,
-              0.0f, 0.005f,   0.0f, 0.0f,
-              0.0f,   0.0f, 0.005f, 0.0f,
-              0.0f,   0.0f,   0.0f, 1.0f
-        );
+        Float4x4 sponzaTransform = Float4x4::Scale(0.005f);
 
-        // 90.0f, f32(renderWidth) / renderHeight, 0.1f, 100.0f
-        // constexpr float32 fovy = 90.0f;
-        // float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
-        // constexpr float32 zNear = 0.1f;
-        // constexpr float32 zFar = 100.0f;
-        // 
-        // float32 tanHalfFovy = std::tan(fovy / 2.0f);
-        // float32 projection00 = 1.0f / (aspect * tanHalfFovy);
-        // float32 projection11 = 1.0f / (tanHalfFovy);
-        // float32 projection22 = zFar / (zNear - zFar);
-        // float32 projection23 = -1.0f;
-        // float32 projection32 = -(zFar * zNear) / (zFar - zNear);
-        // 
-        // Matrix4x4f cameraProjection(
-        //     projection00,         0.0f,         0.0f,         0.0f,
-        //             0.0f, projection11,         0.0f,         0.0f,
-        //             0.0f,         0.0f, projection22, projection23,
-        //             0.0f,         0.0f, projection32,          0.0f
-        // );
+        constexpr float32 verticalFov = Math::Radians(90.0f);
+        constexpr float32 near = 0.1f;
+        constexpr float32 far = 100.0f;
+        float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
 
-        Matrix4x4f cameraProjection(
-            0.78125f, 0.0f,     0.0f,  0.0f,
-                0.0f, 1.0f,     0.0f,  0.0f,
-                0.0f, 0.0f,  -1.002f, -1.0f,
-                0.0f, 0.0f, -0.2002f,  0.0f
-        );
+        Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
+        Float4x4 cameraView = Float4x4::Identity();
 
-        Matrix4x4f cameraView = Matrix4x4f::Identity();
-
-        TextureHandle currentBaseColorTexture = TextureHandle::Invalid;
-        TextureHandle currentNormalTexture = TextureHandle::Invalid;
+        Entity cameraEntity = entityManager.CreateEntity();
+        entityManager.AddComponent<LocalToWorld>(cameraEntity, LocalToWorld{ .Value = cameraView });
+        entityManager.AddComponent<Camera>(cameraEntity, Camera{ .Projection = cameraProjection });
 
         while (true)
         {
@@ -129,28 +114,10 @@ namespace Copium
                 break;
             }
 
-            m_graphicsDevice->BeginFrame(sponzaTransform, cameraView, cameraProjection);
-            m_graphicsDevice->BindShader(defaultShaderHandle);
-
-            for (const Entity& entity : sponzaRootEntity->GetChildren())
-            {
-                const Material* entityMaterial = entity.GetMaterial();
-                const TextureHandle baseColorTextureHandle = entityMaterial->GetBaseColorMap()->GetHandle();
-                const TextureHandle normalTextureHandle = entityMaterial->GetNormalMap()->GetHandle();
-
-                if (baseColorTextureHandle != currentBaseColorTexture || normalTextureHandle != currentNormalTexture)
-                {
-                    currentBaseColorTexture = baseColorTextureHandle;
-                    currentNormalTexture = normalTextureHandle;
-
-                    m_graphicsDevice->BindMaterial(baseColorTextureHandle, normalTextureHandle);
-                }
-
-                m_graphicsDevice->DrawMesh(entity.GetMesh()->GetHandle());
-            }
-
-            m_graphicsDevice->EndFrame();
+            defaultWorld->Update();
         }
+
+        entityManager.DestroyEntity(cameraEntity);
     }
 
 } // namespace Copium

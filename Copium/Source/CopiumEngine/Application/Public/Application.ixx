@@ -2,7 +2,6 @@ export module CopiumEngine.Application;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Graphics;
 import CopiumEngine.Platform.Window;
 
 import <memory>;
@@ -37,7 +36,6 @@ export namespace Copium
     private:
         EngineSettings          m_engineSettings;
 
-        IGraphicsDevice*        m_graphicsDevice;
         std::unique_ptr<Window> m_mainWindow;
 
         bool                    m_engineInitialized;

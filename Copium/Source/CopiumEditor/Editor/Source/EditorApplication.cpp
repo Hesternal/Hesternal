@@ -7,8 +7,7 @@ module;
 module CopiumEditor.EditorApplication;
 
 import CopiumEditor.Assets.AssetDatabase;
-import CopiumEngine.ECS.Entity;
-import CopiumEngine.ECS.Scene;
+import CopiumEngine.ECS.WorldManager;
 
 import <filesystem>;
 
@@ -80,7 +79,8 @@ namespace Copium
     {
         AssetDatabase::Init(m_projectPath);
 
-        Scene::SponzaRootEntity = AssetDatabase::LoadAsset<Entity>("Assets/Sponza/sponza.obj");
+        const auto sponzaModel = AssetDatabase::LoadAsset<ModelScene>("Assets/Sponza/sponza.obj");
+        WorldManager::GetDefaultWorld()->GetDefaultScene()->AddModel(sponzaModel.get());
 
         m_editorInitialized = true;
     }
@@ -91,8 +91,6 @@ namespace Copium
         {
             return;
         }
-
-        Scene::SponzaRootEntity.reset();
 
         AssetDatabase::Shutdown();
 
