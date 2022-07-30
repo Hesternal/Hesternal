@@ -15,11 +15,12 @@ export namespace Copium
         EditorApplication(int32 argc, const char* const* argv);
         ~EditorApplication();
 
-        // Application protected
     private:
+        //< Application Interface Protected
         void InitSettings(EngineSettings& engineSettings) override;
         void InitSystems() override;
         void ShutdownSystems() override;
+        //> Application Interface Protected
 
     private:
         // void _CreateProject();

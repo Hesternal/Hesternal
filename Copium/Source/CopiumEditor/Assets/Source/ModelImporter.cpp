@@ -8,12 +8,12 @@ module;
 
 module CopiumEditor.Assets.ModelImporter;
 
-import CopiumEngine.Assets.Mesh;
 import CopiumEngine.Assets.Material;
+import CopiumEngine.Assets.Mesh;
+import CopiumEngine.Assets.Model;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.ECS.Entity;
 import CopiumEngine.Graphics;
 
 import CopiumEditor.Assets.AssetDatabase;
@@ -21,13 +21,17 @@ import CopiumEditor.Assets.AssetDatabase;
 import <filesystem>;
 import <limits>;
 import <memory>;
+import <queue>;
 import <string>;
+import <string_view>;
+import <utility>;
 
 namespace fs = std::filesystem;
 
 
 namespace AssimpConstants
 {
+
     using namespace Copium;
 
     // Index
@@ -54,7 +58,8 @@ namespace AssimpConstants
     static_assert(ARRAY_MEMBER_SIZEOF(aiMesh, mVertices) == PositionSize);
     static_assert(ARRAY_MEMBER_SIZEOF(aiMesh, mNormals)  == NormalSize);
 #undef ARRAY_MEMBER_SIZEOF
-};
+
+} // namespace AssimpConstants
 
 
 namespace
@@ -165,7 +170,7 @@ namespace
         {
             for (uint32 i = 0; i < numFaces; i++)
             {
-                const aiFace& assimpFace = assimpFaces[i];
+                const aiFace assimpFace = assimpFaces[i];
                 const uint32 indices[3] = {
                     assimpFace.mIndices[0],
                     assimpFace.mIndices[1],
@@ -180,7 +185,7 @@ namespace
         {
             for (uint32 i = 0; i < numFaces; i++)
             {
-                const aiFace& assimpFace = assimpFaces[i];
+                const aiFace assimpFace = assimpFaces[i];
                 const uint16 indices[3] = {
                     static_cast<uint16>(assimpFace.mIndices[0]),
                     static_cast<uint16>(assimpFace.mIndices[1]),
@@ -200,9 +205,9 @@ namespace
         const uint32 numVertices = assimpMesh->mNumVertices;
         const aiVector3D* const assimpUV0Data = assimpMesh->mTextureCoords[0];
 
-        for (uint32 uv0Index = 0; uv0Index < numVertices; uv0Index++)
+        for (uint32 i = 0; i < numVertices; i++)
         {
-            const aiVector3D vertexUV0 = assimpUV0Data[uv0Index];
+            const aiVector3D vertexUV0 = assimpUV0Data[i];
             const float32 uv0[2] = { vertexUV0.x, vertexUV0.y };
 
             std::memcpy(vertexDataPtr, uv0, sizeof(uv0));
@@ -210,81 +215,15 @@ namespace
         }
     }
 
-}
-
-
-namespace Copium
-{
-
-    Entity ModelImporter::Import(const std::string& modelPath)
+    [[nodiscard]] static std::vector<ModelMesh> GetAssimpMeshes(const aiMesh* const* assimpMeshes, uint32 numMeshes)
     {
-        Assimp::Importer assimpImporter;
-        // TODO(v.matushkin): Learn more about aiPostProcessSteps
-        const aiScene* assimpScene = assimpImporter.ReadFile(
-            modelPath,
-            aiPostProcessSteps::aiProcess_Triangulate
-            | aiPostProcessSteps::aiProcess_GenNormals
-            // | aiPostProcessSteps::aiProcess_GenUVCoords
-            // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
-            // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
-            // | aiPostProcessSteps::aiProcess_MakeLeftHanded
-            // Optimization
-            // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
-            // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
-            // Validation
-            // | aiPostProcessSteps::aiProcess_FindDegenerates
-            // | aiPostProcessSteps::aiProcess_FindInvalidData
-            // | aiPostProcessSteps::aiProcess_ValidateDataStructure
-        );
+        std::vector<ModelMesh> meshes;
+        // NOTE(v.matushkin): Can be reserved for more than needed if I encounter broken/unsupported meshes
+        meshes.reserve(numMeshes);
 
-        // TODO(v.matushkin): This will break when asserts turned off
-        if (assimpScene == nullptr)
+        for (uint32 i = 0; i < numMeshes; i++)
         {
-            COP_LOG_CRITICAL(
-                "Got an error while loading Mesh"
-                "\t\nPath: {0}"
-                "\t\nAssimp error message: {1}",
-                modelPath, assimpImporter.GetErrorString());
-            COP_ASSERT(false);
-        }
-
-        if (assimpScene->HasAnimations())
-        {
-            COP_LOG_WARN("Model has {:d} animations", assimpScene->mNumAnimations);
-        }
-        if (assimpScene->HasCameras())
-        {
-            COP_LOG_WARN("Model has {:d} cameras", assimpScene->mNumCameras);
-        }
-        if (assimpScene->HasLights())
-        {
-            COP_LOG_WARN("Model has {:d} lights", assimpScene->mNumLights);
-        }
-
-        const aiNode* const* const rootChildren = assimpScene->mRootNode->mChildren;
-        const uint32 rootNumChildren = assimpScene->mRootNode->mNumChildren;
-
-        for (uint32 i = 0; i < rootNumChildren; ++i)
-        {
-            if (rootChildren[i]->mNumChildren != 0)
-            {
-                COP_LOG_WARN("Model has more complex hierarchy than I support");
-                break;
-            }
-        }
-
-        const aiMesh* const* const assimpMeshes = assimpScene->mMeshes;
-        const uint32 numMeshes = assimpScene->mNumMeshes;
-
-        COP_LOG_INFO("Meshes: {:d} | Materials: {:d} | Embeded Textures: {:d}",
-            numMeshes, assimpScene->mNumMaterials, assimpScene->mNumTextures);
-
-        Entity parentEntity;
-        const std::vector<std::shared_ptr<Material>> materials = GetAssimpMaterials(modelPath, assimpScene);
-
-        for (uint32 meshIndex = 0; meshIndex < numMeshes; meshIndex++)
-        {
-            const aiMesh* const assimpMesh = assimpMeshes[meshIndex];
+            const aiMesh* const assimpMesh = assimpMeshes[i];
 
             COP_ASSERT(assimpMesh->HasFaces());
             COP_ASSERT(assimpMesh->HasPositions());
@@ -302,25 +241,25 @@ namespace Copium
                 continue;
             }
 
-            const uint32 numFaces    = assimpMesh->mNumFaces;
             const uint32 numVertices = assimpMesh->mNumVertices;
-
-            MeshDesc meshDesc = {
-                .Name        = meshName,
-                .Position    = VertexAttributeDesc::Position(),
-                .Normal      = VertexAttributeDesc::Normal(),
-                .UV0         = VertexAttributeDesc::UV0(),
-                .IndexCount  = numFaces * AssimpConstants::IndicesPerFace,
-                .VertexCount = numVertices,
-            };
-            meshDesc.IndexFormat = CopyIndexData(assimpMesh, meshDesc.IndexData);
-
-            //- VertexData
             const uint32 positionDataSize = numVertices * AssimpConstants::PositionSize;
             const uint32 normalDataSize   = numVertices * AssimpConstants::NormalSize;
             const uint32 uv0DataSize      = numVertices * AssimpConstants::UV0Size;
             const uint32 vertexDataSize = positionDataSize + normalDataSize + uv0DataSize;
 
+            MeshDesc meshDesc = {
+                .Name        = std::move(meshName),
+                .Position    = VertexAttributeDesc::Position(),
+                .Normal      = VertexAttributeDesc::Normal(),
+                .UV0         = VertexAttributeDesc::UV0(),
+                .IndexCount  = assimpMesh->mNumFaces * AssimpConstants::IndicesPerFace,
+                .VertexCount = numVertices,
+            };
+
+            //- IndexData
+            meshDesc.IndexFormat = CopyIndexData(assimpMesh, meshDesc.IndexData);
+
+            //- VertexData
             meshDesc.VertexData.resize(vertexDataSize);
             uint8* vertexDataPtr = meshDesc.VertexData.data();
 
@@ -330,17 +269,168 @@ namespace Copium
             //-- Normal
             std::memcpy(vertexDataPtr, assimpMesh->mNormals, normalDataSize);
             vertexDataPtr += normalDataSize;
-
+            //-- UV0
             CopyUV0Data(assimpMesh, vertexDataPtr);
 
-            Entity childEntity(std::move(meshName));
-            childEntity.SetMesh(std::make_shared<Mesh>(std::move(meshDesc)));
-            childEntity.SetMaterial(materials[assimpMesh->mMaterialIndex]);
-
-            parentEntity.AddChild(std::move(childEntity));
+            meshes.push_back(ModelMesh{
+                .Mesh          = std::make_shared<Mesh>(std::move(meshDesc)),
+                .MaterialIndex = assimpMesh->mMaterialIndex,
+            });
         }
 
-        return parentEntity;
+        return meshes;
+    }
+
+
+    [[nodiscard]] static std::unique_ptr<ModelNode> GetAssimpModelHierarchy(const aiNode* assimpRootNode)
+    {
+        auto modelRootNode = std::make_unique<ModelNode>(ModelNode{
+            .Name = std::string(assimpRootNode->mName.C_Str(), assimpRootNode->mName.length),
+        });
+
+        const uint32 rootNumMeshes = assimpRootNode->mNumMeshes;
+        if (rootNumMeshes != 0)
+        {
+            COP_LOG_WARN("Assimp root node has {:d} meshes", rootNumMeshes);
+        }
+        for (uint32 i = 0; i < rootNumMeshes; i++)
+        {
+            modelRootNode->MeshIndices.push_back(assimpRootNode->mMeshes[i]);
+        }
+
+        // TODO(v.matushkin): Sort nodes by name?
+        std::queue<std::pair<ModelNode*, const aiNode*>> assimpParentNodeQueue;
+
+        if (assimpRootNode->mNumChildren == 0)
+        {
+            COP_LOG_WARN("Assimp root node has 0 children");
+        }
+        else
+        {
+            assimpParentNodeQueue.push(std::make_pair(modelRootNode.get(), assimpRootNode));
+        }
+
+        while (assimpParentNodeQueue.empty() == false)
+        {
+            const auto [modelParentNode, assimpParentNode] = assimpParentNodeQueue.front();
+            assimpParentNodeQueue.pop();
+
+            const uint32 parentNumChildren = assimpParentNode->mNumChildren;
+
+            for (uint32 i = 0; i < parentNumChildren; i++)
+            {
+                const aiNode* const assimpChildrenNode = assimpParentNode->mChildren[i];
+                const uint32 childNumChildren = assimpChildrenNode->mNumChildren;
+                const uint32 childNumMeshes = assimpChildrenNode->mNumMeshes;
+
+                std::string_view childrenNodeName(assimpChildrenNode->mName.C_Str(), assimpChildrenNode->mName.length);
+
+                if (assimpChildrenNode->mMetaData != nullptr)
+                {
+                    COP_LOG_WARN("Node has metadata. [{:s}] | NumProperties: {:d}", childrenNodeName, assimpChildrenNode->mMetaData->mNumProperties);
+                }
+
+                if (childNumChildren == 0 && childNumMeshes == 0)
+                {
+                    continue;
+                }
+
+                auto modelChildrenNode = std::make_unique<ModelNode>(ModelNode{ .Name = std::string(childrenNodeName) });
+
+                if (childNumMeshes > 1)
+                {
+                    COP_LOG_WARN("Assimp node has {:d} meshes. [{:s}]", childNumMeshes, childrenNodeName);
+                }
+                for (uint32 j = 0; j < childNumMeshes; j++)
+                {
+                    modelChildrenNode->MeshIndices.push_back(assimpChildrenNode->mMeshes[j]);
+                }
+
+                if (childNumChildren != 0)
+                {
+                    assimpParentNodeQueue.emplace(modelChildrenNode.get(), assimpChildrenNode);
+                }
+
+                modelParentNode->Children.push_back(std::move(modelChildrenNode));
+            }
+        }
+
+        return modelRootNode;
+    }
+
+} // namespace
+
+
+namespace Copium
+{
+
+    ModelScene ModelImporter::Import(const std::string& modelPath)
+    {
+        Assimp::Importer assimpImporter;
+
+        // TODO(v.matushkin): Learn more about aiPostProcessSteps
+        const uint32 assimpPostProcessFlags =
+            aiPostProcessSteps::aiProcess_Triangulate
+            | aiPostProcessSteps::aiProcess_GenNormals
+            // | aiPostProcessSteps::aiProcess_GenUVCoords
+            // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
+            // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
+            // | aiPostProcessSteps::aiProcess_MakeLeftHanded
+            // Optimization
+            // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
+            // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
+            // Validation
+            // | aiPostProcessSteps::aiProcess_FindDegenerates
+            // | aiPostProcessSteps::aiProcess_FindInvalidData
+            // | aiPostProcessSteps::aiProcess_ValidateDataStructure
+            ;
+        COP_ASSERT_MSG(assimpImporter.ValidateFlags(assimpPostProcessFlags), "Invalid set of Assimp PostProcess flags");
+
+        const aiScene* const assimpScene = assimpImporter.ReadFile(modelPath, assimpPostProcessFlags);
+
+        // TODO(v.matushkin): This will break when asserts turned off
+        if (assimpScene == nullptr)
+        {
+            COP_LOG_CRITICAL(
+                "Got an error while loading Mesh"
+                "\t\nPath: {:s}"
+                "\t\nAssimp error message: {:s}",
+                modelPath, assimpImporter.GetErrorString());
+            COP_ASSERT(false);
+        }
+
+        if (assimpScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+        {
+            COP_ASSERT_MSG(false, "AI_SCENE_FLAGS_INCOMPLETE");
+        }
+        if (assimpScene->mFlags & AI_SCENE_FLAGS_VALIDATION_WARNING)
+        {
+            COP_LOG_WARN("AI_SCENE_FLAGS_VALIDATION_WARNING");
+        }
+
+        COP_LOG_INFO("Meshes: {:d} | Materials: {:d} | Embeded Textures: {:d}",
+            assimpScene->mNumMeshes, assimpScene->mNumMaterials, assimpScene->mNumTextures);
+
+        if (assimpScene->HasAnimations())
+        {
+            COP_LOG_WARN("Model has {:d} animations", assimpScene->mNumAnimations);
+        }
+        if (assimpScene->HasCameras())
+        {
+            COP_LOG_WARN("Model has {:d} cameras", assimpScene->mNumCameras);
+        }
+        if (assimpScene->HasLights())
+        {
+            COP_LOG_WARN("Model has {:d} lights", assimpScene->mNumLights);
+        }
+
+        ModelScene modelScene = {
+            .Materials = GetAssimpMaterials(modelPath, assimpScene),
+            .Meshes    = GetAssimpMeshes(assimpScene->mMeshes, assimpScene->mNumMeshes),
+            .RootNode  = GetAssimpModelHierarchy(assimpScene->mRootNode),
+        };
+
+        return modelScene;
     }
 
 } // namespace Copium

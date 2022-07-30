@@ -1,8 +1,9 @@
 export module CopiumEngine.ECS.Scene;
 
+import CopiumEngine.Assets.Model;
 import CopiumEngine.ECS.Entity;
 
-import <memory>;
+import <vector>;
 
 
 export namespace Copium
@@ -11,7 +12,19 @@ export namespace Copium
     class Scene final
     {
     public:
-        static inline std::shared_ptr<Entity> SponzaRootEntity;
+        Scene() = default;
+        ~Scene();
+
+        Scene(const Scene&) = delete;
+        Scene& operator=(const Scene&) = delete;
+
+        Scene(Scene&& other) noexcept = default;
+        Scene& operator=(Scene&& other) noexcept = default;
+
+        void AddModel(const ModelScene* modelScene);
+
+    private:
+        std::vector<Entity> m_rootEntities;
     };
 
 } // export namespace Copium
