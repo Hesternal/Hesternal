@@ -32,12 +32,14 @@ export namespace Copium
     //- Shader states
 
     //-- RasterizerState
+    CHT_ENUM()
     enum class PolygonMode : uint8
     {
         Fill,
         Wireframe,
     };
 
+    CHT_ENUM()
     enum class CullMode : uint8
     {
         Off,
@@ -46,6 +48,7 @@ export namespace Copium
         // OpenGl and Vulkan have FrontAndBack
     };
 
+    CHT_ENUM()
     enum class TriangleFrontFace : uint8
     {
         Clockwise,
@@ -53,6 +56,9 @@ export namespace Copium
     };
 
     //-- DepthStencilState
+    // TODO(v.matushkin): What the fuck is this? I don't remember making it.
+    //  It's just true/false for DepthStencilState.
+    //  Looks like this was made to set depth RenderTexture access in RenderPasses may be?
     enum class DepthTest : uint8
     {
         Off,
@@ -60,6 +66,7 @@ export namespace Copium
         ReadWrite,
     };
 
+    CHT_ENUM()
     enum class CompareFunction : uint8
     {
         Never,
@@ -73,6 +80,7 @@ export namespace Copium
     };
 
     //-- BlendState
+    CHT_ENUM()
     enum class BlendMode : uint8
     {
         Off,
@@ -80,6 +88,7 @@ export namespace Copium
         LogicOp,
     };
 
+    CHT_ENUM()
     enum class BlendOp : uint8
     {
         Add,
@@ -89,6 +98,7 @@ export namespace Copium
         Max,
     };
 
+    CHT_ENUM()
     enum class BlendFactor : uint8
     {
         Zero,
@@ -109,6 +119,7 @@ export namespace Copium
         OneMinusSrc1Alpha,
     };
 
+    CHT_ENUM()
     enum class BlendLogicOp : uint8
     {
         Clear,
