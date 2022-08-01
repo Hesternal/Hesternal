@@ -35,4 +35,13 @@ export namespace Copium
         std::ofstream m_fileOutputStream;
     };
 
+
+    namespace File
+    {
+
+        [[nodiscard]] inline std::string ReadAllText(const std::string& filePath);
+        [[nodiscard]] inline std::string ReadAllText(const std::filesystem::path& filePath);
+
+    }; // namespace File
+
 } // export namespace Copium

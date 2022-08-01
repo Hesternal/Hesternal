@@ -6,9 +6,25 @@ module CopiumEngine.Core.Platform.File;
 
 import <filesystem>;
 import <fstream>;
+import <sstream>;
 
 
 // NOTE(v.matushkin): Error handling is very robust right now
+
+
+namespace
+{
+
+    [[nodiscard]] static std::string ReadAllTextInternal(const std::ifstream& file)
+    {
+        COP_ASSERT(file.fail() == false);
+
+        std::stringstream fileContent;
+        fileContent << file.rdbuf();
+        return fileContent.str();
+    }
+
+}
 
 
 namespace Copium
@@ -47,6 +63,17 @@ namespace Copium
     void FileWriter::Write(const void* data, int64 length)
     {
         m_fileOutputStream.write(reinterpret_cast<const char*>(data), length);
+    }
+
+
+    std::string File::ReadAllText(const std::string& filePath)
+    {
+        return ReadAllTextInternal(std::ifstream(filePath));
+    }
+
+    std::string File::ReadAllText(const std::filesystem::path& filePath)
+    {
+        return ReadAllTextInternal(std::ifstream(filePath));
     }
 
 } // namespace Copium
