@@ -1,6 +1,7 @@
 export module CopiumEditor.Assets.AssetDatabase;
 
 import CopiumEngine.Assets.Model;
+import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Core.Object;
 
@@ -23,7 +24,7 @@ export namespace Copium
         // };
 
     public:
-        static void Init(const std::filesystem::path& projectPath);
+        static void Init(const std::filesystem::path& projectPath, const std::filesystem::path& shaderDirPath);
         static void Shutdown();
 
         // /// Returns zero Guid if assetPath is invalid
@@ -40,8 +41,11 @@ export namespace Copium
         // static inline std::unordered_map<Guid, std::string>      m_guidToPath;
         // static inline std::unordered_map<Guid, std::string> m_guidToArtifactPath;
 
-        static inline std::unordered_map<std::string, std::shared_ptr<Texture>>    m_textures;
+        static inline std::filesystem::path m_shaderDirPath;
+
         static inline std::unordered_map<std::string, std::shared_ptr<ModelScene>> m_models;
+        static inline std::unordered_map<std::string, std::shared_ptr<Shader>>     m_shaders;
+        static inline std::unordered_map<std::string, std::shared_ptr<Texture>>    m_textures;
     };
 
 } // export namespace Copium

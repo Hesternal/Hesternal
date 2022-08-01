@@ -2,6 +2,8 @@
 using System.Text;
 using Copium.Core;
 
+// TODO(v.matushkin): Not all changes were transfered from C++ version of BaseParser class
+
 namespace Copium.HeaderTool.Parser
 {
     internal enum TokenType
@@ -59,7 +61,7 @@ namespace Copium.HeaderTool.Parser
         private char m_inputCurrent;
         private Token m_peekToken = null;
         private int m_line = 1;
-        private int m_column = 0;
+        private int m_column = 1;
 
         protected readonly string m_filePath;
 
@@ -110,7 +112,7 @@ namespace Copium.HeaderTool.Parser
             {
                 return _ParseIdentifier();
             }
-            else if (_IsNumber(currentChar))
+            else if (_IsNumber())
             {
                 return _ParseNumber();
             }
@@ -138,12 +140,10 @@ namespace Copium.HeaderTool.Parser
 
         protected Token PeekToken()
         {
-            if (m_peekToken != null)
+            if (m_peekToken == null)
             {
-                return m_peekToken;
+                m_peekToken = NextToken();
             }
-
-            m_peekToken = NextToken();
 
             return m_peekToken;
         }
@@ -192,18 +192,28 @@ namespace Copium.HeaderTool.Parser
         }
 
 
-        private bool _IsNumber(char currentChar)
+        private bool _IsNumber()
         {
-            if (char.IsDigit(currentChar))
-                return true;
+            char symbolToCheck;
 
-            if (currentChar == '-' || currentChar == '+')
+            if (m_inputCurrent == '-' || m_inputCurrent == '+')
             {
                 var nextChar = (CharEnumerator)m_input.Clone();
-                if (nextChar.MoveNext() && char.IsDigit(nextChar.Current))
+                if (nextChar.MoveNext() == false)
                 {
-                    return true;
+                    return false;
                 }
+
+                symbolToCheck = nextChar.Current;
+            }
+            else
+            {
+                symbolToCheck = m_inputCurrent;
+            }
+
+            if (char.IsDigit(symbolToCheck))
+            {
+                return true;
             }
 
             return false;
@@ -224,7 +234,7 @@ namespace Copium.HeaderTool.Parser
                 // NewLine
                 else if (m_inputCurrent == '\n')
                 {
-                    m_column = 0;
+                    m_column = 1;
                     m_line++;
                 }
                 // Comment
@@ -240,7 +250,7 @@ namespace Copium.HeaderTool.Parser
                             {
                                 if (m_inputCurrent == '\n')
                                 {
-                                    m_column = 0;
+                                    m_column = 1;
                                     m_line++;
                                     break;
                                 }
@@ -274,7 +284,7 @@ namespace Copium.HeaderTool.Parser
                                 }
                                 else if (m_inputCurrent == '\n')
                                 {
-                                    m_column = 0;
+                                    m_column = 1;
                                     m_line++;
                                 }
                                 else
@@ -314,9 +324,8 @@ namespace Copium.HeaderTool.Parser
         {
             // NOTE(v.matushkin): No need to append chars one by one,
             //  but I see no way to create string from 2 CharEnumerators and I'm lazy to think of anything else
-            int tokenColumn = ++m_column;
-
             m_stringBuilder.Append(m_inputCurrent);
+            int tokenColumn = m_column++;
 
             while (_MoveNext() && (char.IsLetterOrDigit(m_inputCurrent) || m_inputCurrent == '_'))
             {
@@ -329,12 +338,12 @@ namespace Copium.HeaderTool.Parser
 
         private Token _ParseNumber()
         {
-            int tokenColumn = m_column++;
-
             m_stringBuilder.Append(m_inputCurrent);
+            int tokenColumn = m_column++;
 
             if (m_inputCurrent == '-' || m_inputCurrent == '+')
             {
+                // No need to check for EndOfStream, it was already done in _IsNumber()
                 _ = _MoveNext();
                 m_stringBuilder.Append(m_inputCurrent);
                 m_column++;
@@ -357,15 +366,15 @@ namespace Copium.HeaderTool.Parser
                 throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
             }
 
+            m_stringBuilder.Append(m_inputCurrent);
             int tokenColumn = ++m_column;
 
-            m_stringBuilder.Append(m_inputCurrent);
-
             bool foundStringEnd = false;
+            bool notEscapedChar = true;
 
             while (_MoveNext())
             {
-                if (m_inputCurrent == '"')
+                if (notEscapedChar && m_inputCurrent == '"')
                 {
                     foundStringEnd = true;
                     break;
@@ -373,34 +382,19 @@ namespace Copium.HeaderTool.Parser
 
                 m_stringBuilder.Append(m_inputCurrent);
                 m_column++;
-
-                // NOTE(v.matushkin): I think this checks for '\\' and '\0' are bugged
-                if (m_inputCurrent == '\\')
-                {
-                    if (_MoveNext() == false)
-                    {
-                        throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
-                    }
-
-                    m_stringBuilder.Append(m_inputCurrent);
-                    m_column++;
-                    if (m_inputCurrent == '\0')
-                    {
-                        break;
-                    }
-                }
+                notEscapedChar = m_inputCurrent != '\\';
             }
 
             if (foundStringEnd == false)
             {
-                throw ParserError.Message(m_filePath, m_line, m_column, "Couldn't find the end of a string");
+                throw ParserError.Message(m_filePath, m_line, tokenColumn, "Couldn't find the end of a string literal");
             }
+
             // Skip '"' symbol
             if (_MoveNext() == false)
             {
                 throw ParserError.UnexpectedEndOfFile(m_filePath, m_line, m_column);
             }
-
             m_column++;
 
             return new Token(m_stringBuilder.ToStringAndClear(), m_line, tokenColumn, TokenType.String);
