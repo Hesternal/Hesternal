@@ -7,7 +7,9 @@ module;
 module CopiumEditor.EditorApplication;
 
 import CopiumEditor.Assets.AssetDatabase;
+import CopiumEngine.Assets.Shader;
 import CopiumEngine.ECS.WorldManager;
+import CopiumEngine.Graphics;
 
 import <filesystem>;
 
@@ -26,22 +28,25 @@ namespace Copium
         , m_editorClosed(false)
     {
         // const std::string createProjectOption = "create-project";
-        const std::string openProjectOption   = "open-project";
+        const std::string openProjectOption = "open-project";
+        const std::string shaderDirOption = "shader-dir";
 
         cxxopts::Options cmdArguments("test", "A brief description");
 
         cmdArguments.add_options()
             // (createProjectOption, "Create an empty project at the given path", cxxopts::value<std::string>())
-            (openProjectOption, "Open the project at the given path.", cxxopts::value<std::string>());
+            (openProjectOption, "Open the project at the given path.", cxxopts::value<std::string>())
+            (shaderDirOption, "Path to the Engine shader directory.", cxxopts::value<std::string>());
 
         cxxopts::ParseResult cmdResult = cmdArguments.parse(argc, argv);
 
-        bool usedCreateProjectOption = cmdResult.count(openProjectOption);
-        // bool usedOpenProject   = cmdResult.count(createProjectOption);
+        // bool usedCreateProjectOption = cmdResult.count(createProjectOption);
+        bool usedOpenProjectOption = cmdResult.count(openProjectOption);
+
+        COP_ASSERT_MSG(usedOpenProjectOption, "Option --open-project should be specified");
+        COP_ASSERT_MSG(cmdResult.count(shaderDirOption), "Option --shader-dir should be specified");
 
         // Order of checks matters
-        COP_ASSERT_MSG(usedCreateProjectOption, "Option --open-project should be specified");
-
         // COP_ASSERT(usedCreateProject || usedOpenProject,
         //            "Either '-{:s}' or '-{:s}' should be specified", argumentCreateProject, argumentOpenProject
         // );
@@ -50,6 +55,7 @@ namespace Copium
         // );
 
         m_projectPath = cmdResult[openProjectOption].as<std::string>();
+        m_shaderDirPath = cmdResult[shaderDirOption].as<std::string>();
 
         // if (usedCreateProject)
         // {
@@ -77,7 +83,10 @@ namespace Copium
 
     void EditorApplication::InitSystems()
     {
-        AssetDatabase::Init(m_projectPath);
+        AssetDatabase::Init(m_projectPath, m_shaderDirPath);
+
+        // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no Idea how else
+        Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("Main.shader"));
 
         const auto sponzaModel = AssetDatabase::LoadAsset<ModelScene>("Assets/Sponza/sponza.obj");
         WorldManager::GetDefaultWorld()->GetDefaultScene()->AddModel(sponzaModel.get());

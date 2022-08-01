@@ -28,6 +28,7 @@ export namespace Copium
 
     private:
         std::filesystem::path m_projectPath;
+        std::filesystem::path m_shaderDirPath;
         bool                  m_editorInitialized;
         bool                  m_editorClosed;
     };
