@@ -1,6 +1,8 @@
 export module CopiumEngine.Event.EventManager;
 
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Event.EventTypes;
+import CopiumEngine.Math;
 import CopiumEngine.Platform.PlatformTypes;
 
 import <functional>;
@@ -11,13 +13,6 @@ import <vector>;
 
 export namespace Copium
 {
-
-    struct WindowResizeEvent
-    {
-        uint16 Width;
-        uint16 Height;
-    };
-
 
     class EventManager final
     {
@@ -51,6 +46,10 @@ export namespace Copium
 
         static void SendWindowCloseEvent(WindowHandle windowHandle);
         static void SendWindowResizeEvent(WindowHandle windowHandle, WindowResizeEvent&& evt);
+
+        static void SendMouseButtonEvent(MouseButtonEvent event);
+        static void SendMousePositionEvent(MousePositionEvent event);
+        static void SendKeyboardEvent(KeyboardEvent event);
 
     private:
         static inline std::unordered_map<WindowHandle, WindowCloseCallback>  m_windowCloseCallbacks;

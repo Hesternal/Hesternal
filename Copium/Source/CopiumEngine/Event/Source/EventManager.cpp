@@ -1,5 +1,7 @@
 module CopiumEngine.Event.EventManager;
 
+import CopiumEngine.Event.Input;
+
 import <optional>;
 import <utility>;
 
@@ -47,6 +49,22 @@ namespace Copium
         {
             it->second = std::move(evt);
         }
+    }
+
+
+    void EventManager::SendMouseButtonEvent(MouseButtonEvent event)
+    {
+        Input::OnMouseButton(event);
+    }
+
+    void EventManager::SendMousePositionEvent(MousePositionEvent event)
+    {
+        Input::OnMousePosition(event);
+    }
+
+    void EventManager::SendKeyboardEvent(KeyboardEvent event)
+    {
+        Input::OnKeyboard(event);
     }
 
 } // namespace Copium

@@ -24,7 +24,7 @@ namespace Copium
         {
             return Shader(ShaderParser::Parse(shaderFileContent));
         }
-        catch (const ParserError& e)
+        catch ([[maybe_unused]] const ParserError& e)
         {
             COP_LOG_CRITICAL(e.Message);
             throw;

@@ -9,6 +9,8 @@ import <cmath>;
 export namespace Copium::Math
 {
 
+    constexpr float32 Rcp(float32 x) { return 1.0f / x; }
+
     void SinCos(float32 x, float32& sin, float32& cos) { sin = std::sin(x); cos = std::cos(x); }
 
     [[nodiscard]] constexpr float32 Radians(float32 degrees) { return degrees * k_DegreeToRadians; }

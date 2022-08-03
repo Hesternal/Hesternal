@@ -15,26 +15,58 @@ export namespace Copium
     struct Quaternion;
 
 
+    struct Int2 final
+    {
+        int32 X, Y;
+
+
+        constexpr Int2() = default;
+        constexpr Int2(const Int2& v) = default;
+
+        explicit constexpr Int2(int32 scalar);
+        constexpr Int2(int32 x, int32 y);
+
+        constexpr Int2& operator+=(int32 rhs);
+        constexpr Int2& operator-=(int32 rhs);
+        constexpr Int2& operator*=(int32 rhs);
+        constexpr Int2& operator+=(Int2 rhs);
+        constexpr Int2& operator-=(Int2 rhs);
+        constexpr Int2& operator*=(Int2 rhs);
+
+        [[nodiscard]] static constexpr Int2 Zero() { return Int2(0); }
+        [[nodiscard]] static constexpr Int2 One()  { return Int2(1); }
+    };
+
+
     struct Float2 final
     {
         float32 X, Y;
+
 
         constexpr Float2() = default;
         constexpr Float2(const Float2& v) = default;
 
         explicit constexpr Float2(float32 scalar);
         constexpr Float2(float32 x, float32 y);
+
+        [[nodiscard]] static constexpr Float2 Zero() { return Float2(0.0f); }
+        [[nodiscard]] static constexpr Float2 One()  { return Float2(1.0f); }
     };
+
 
     struct Double2 final
     {
         float64 X, Y;
+
 
         constexpr Double2() = default;
         constexpr Double2(const Double2& v) = default;
 
         explicit constexpr Double2(float64 scalar);
         constexpr Double2(float64 x, float64 y);
+
+        [[nodiscard]] static constexpr Double2 Zero() { return Double2(0.0); }
+        [[nodiscard]] static constexpr Double2 One()  { return Double2(1.0); }
     };
 
 
@@ -57,6 +89,7 @@ export namespace Copium
         constexpr Float3& operator*=(const Float3& rhs);
 
         [[nodiscard]] static constexpr Float3 Zero() { return Float3(0.0f); }
+        [[nodiscard]] static constexpr Float3 One()  { return Float3(1.0f); }
     };
 
 
@@ -80,6 +113,7 @@ export namespace Copium
         constexpr Float4& operator*=(const Float4& rhs);
 
         [[nodiscard]] static constexpr Float4 Zero() { return Float4(0.0f); }
+        [[nodiscard]] static constexpr Float4 One()  { return Float4(1.0f); }
     };
 
 
@@ -101,6 +135,9 @@ export namespace Copium
         constexpr Float3x3& operator+=(const Float3x3& rhs);
         constexpr Float3x3& operator-=(const Float3x3& rhs);
         constexpr Float3x3& operator*=(const Float3x3& rhs);
+
+        [[nodiscard]] static constexpr Float3x3 Zero();
+        [[nodiscard]] static constexpr Float3x3 Identity();
     };
 
 
@@ -129,6 +166,7 @@ export namespace Copium
         [[nodiscard]] static constexpr Float4x4 Translate(const Float3& translation);
         [[nodiscard]] static constexpr Float4x4 Scale(float32 scale);
         [[nodiscard]] static constexpr Float4x4 Scale(const Float3& scale);
+        [[nodiscard]] static constexpr Float4x4 TR(const Float3& translation, const Quaternion& rotation);
         [[nodiscard]] static constexpr Float4x4 TRS(const Float3& translation, const Quaternion& rotation, const Float3& scale);
 
         /// verticalFov in radians
@@ -148,16 +186,24 @@ export namespace Copium
         constexpr Quaternion(const Float3& xyz, float32 w);
         constexpr Quaternion(const Float4& value);
 
+        [[nodiscard]] static constexpr Quaternion Identity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); }
+
+        [[nodiscard]] static constexpr Quaternion Conjugate(const Quaternion& q);
+        // TODO(v.matushkin): Not tested
+        [[nodiscard]] static constexpr Quaternion Inverse(const Quaternion& q);
+
         /// <summary>Returns the result of transforming the quaternion b by the quaternion a.</summary>
         [[nodiscard]] static constexpr Quaternion Mul(const Quaternion& lhs, const Quaternion& rhs);
         /// <summary>Returns the result of rotating a vector by a unit quaternion.</summary>
         [[nodiscard]] static constexpr Float3 Mul(const Quaternion& lhs, const Float3& rhs);
-
-        [[nodiscard]] static constexpr Quaternion Identity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); }
+        [[nodiscard]] static constexpr Float3 Mul(const Float3& rhs, const Quaternion& lhs);
 
         /// <param name="axis">The unit axis of rotation.</param>
         /// <param name="angle">The angle of rotation in radians( ARE YOU SURE? ).</param>
         [[nodiscard]] static Quaternion AxisAngle(const Float3& axis, float32 angle);
+
+        // TODO(v.matushkin): Not tested
+        [[nodiscard]] static Quaternion Euler(float32 roll, float32 yaw, float32 pitch);
     };
 
 } // export namespace Copium
@@ -170,8 +216,9 @@ export namespace Copium::Math
     [[nodiscard]] constexpr Float3 Down()    { return Float3( 0.0f, -1.0f,  0.0f); }
     [[nodiscard]] constexpr Float3 Forward() { return Float3( 0.0f,  0.0f,  1.0f); }
     [[nodiscard]] constexpr Float3 Back()    { return Float3( 0.0f,  0.0f, -1.0f); }
-    [[nodiscard]] constexpr Float3 Left()    { return Float3(-1.0f,  0.0f,  0.0f); }
-    [[nodiscard]] constexpr Float3 Right()   { return Float3( 1.0f,  0.0f,  0.0f); }
+    // TODO(v.matushkin): Not usre why my Left and Right are the opposite of what they're supposed to be
+    [[nodiscard]] constexpr Float3 Left()    { return Float3( 1.0f,  0.0f,  0.0f); }
+    [[nodiscard]] constexpr Float3 Right()   { return Float3(-1.0f,  0.0f,  0.0f); }
 
     [[nodiscard]] constexpr Float3 Radians(const Float3& degrees);
     [[nodiscard]] constexpr Float4 Radians(const Float4& degrees);
@@ -179,8 +226,11 @@ export namespace Copium::Math
     [[nodiscard]] constexpr Float3 Degrees(const Float3& radians);
     [[nodiscard]] constexpr Float4 Degrees(const Float4& radians);
 
+    [[nodiscard]] void SinCos(const Float3&, Float3& sin, Float3& cos);
+
     [[nodiscard]] constexpr float32 Dot(const Float3& lhs, const Float3& rhs);
     [[nodiscard]] constexpr float32 Dot(const Float4& lhs, const Float4& rhs);
+    [[nodiscard]] constexpr float32 Dot(const Quaternion& lhs, const Quaternion& rhs);
 
     [[nodiscard]] constexpr Float3 Cross(const Float3& lhs, const Float3& rhs);
 
@@ -189,6 +239,59 @@ export namespace Copium::Math
 
 export namespace Copium
 {
+
+    // ========================================================================
+    // ================================= Int2 =================================
+    // ========================================================================
+
+    constexpr Int2::Int2(int32 scalar)
+        : X(scalar)
+        , Y(scalar)
+    {
+    }
+
+    constexpr Int2::Int2(int32 x, int32 y)
+        : X(x)
+        , Y(y)
+    {
+    }
+
+
+    constexpr bool operator==(Int2 lhs, Int2 rhs) { return lhs.X == rhs.X && lhs.Y == rhs.Y; }
+    constexpr bool operator!=(Int2 lhs, Int2 rhs) { return lhs.X != rhs.X || lhs.Y != rhs.Y; }
+
+    //- Unary
+
+    constexpr Int2 operator-(Int2 value) { return Int2(-value.X, -value.Y); }
+
+    //- Compound
+
+    //-- Vector | Scalar
+    constexpr Int2& Int2::operator+=(int32 rhs) { X += rhs; Y += rhs; return *this; }
+    constexpr Int2& Int2::operator-=(int32 rhs) { X -= rhs; Y -= rhs; return *this; }
+    constexpr Int2& Int2::operator*=(int32 rhs) { X *= rhs; Y *= rhs; return *this; }
+    //-- Vector | Vector
+    constexpr Int2& Int2::operator+=(Int2 rhs) { X += rhs.X; Y += rhs.Y; return *this; }
+    constexpr Int2& Int2::operator-=(Int2 rhs) { X -= rhs.X; Y -= rhs.Y; return *this; }
+    constexpr Int2& Int2::operator*=(Int2 rhs) { X *= rhs.X; Y *= rhs.Y; return *this; }
+
+    //- Binary
+
+    //-- Vector | Scalar
+    constexpr Int2 operator+(Int2 lhs, int32 rhs) { return Int2(lhs.X + rhs, lhs.Y + rhs); }
+    constexpr Int2 operator-(Int2 lhs, int32 rhs) { return Int2(lhs.X - rhs, lhs.Y - rhs); }
+    constexpr Int2 operator*(Int2 lhs, int32 rhs) { return Int2(lhs.X * rhs, lhs.Y * rhs); }
+
+    //-- Scalar | Vector
+    constexpr Int2 operator+(int32 lhs, Int2 rhs) { return Int2(lhs + rhs.X, lhs + rhs.Y); }
+    constexpr Int2 operator-(int32 lhs, Int2 rhs) { return Int2(lhs - rhs.X, lhs - rhs.Y); }
+    constexpr Int2 operator*(int32 lhs, Int2 rhs) { return Int2(lhs * rhs.X, lhs * rhs.Y); }
+
+    //-- Vector | Vector
+    constexpr Int2 operator+(Int2 lhs, Int2 rhs) { return Int2(lhs.X + rhs.X, lhs.Y + rhs.Y); }
+    constexpr Int2 operator-(Int2 lhs, Int2 rhs) { return Int2(lhs.X - rhs.X, lhs.Y - rhs.Y); }
+    constexpr Int2 operator*(Int2 lhs, Int2 rhs) { return Int2(lhs.X * rhs.X, lhs.Y * rhs.Y); }
+
 
     // ========================================================================
     // ================================ Float2 ================================
@@ -372,20 +475,35 @@ export namespace Copium
         float32 qwz(q.W * q.Z);
 
         float32 m00 = 1.0f - 2.0f * (qyy + qzz);
-        float32 m01 = 2.0f * (qxy + qwz);
-        float32 m02 = 2.0f * (qxz - qwy);
-
-        float32 m10 = 2.0f * (qxy - qwz);
+        float32 m01 = 2.0f * (qxy - qwz);
+        float32 m02 = 2.0f * (qxz + qwy);
+        
+        float32 m10 = 2.0f * (qxy + qwz);
         float32 m11 = 1.0f - 2.0f * (qxx + qzz);
-        float32 m12 = 2.0f * (qyz + qwx);
-
-        float32 m20 = 2.0f * (qxz + qwy);
-        float32 m21 = 2.0f * (qyz - qwx);
+        float32 m12 = 2.0f * (qyz - qwx);
+        
+        float32 m20 = 2.0f * (qxz - qwy);
+        float32 m21 = 2.0f * (qyz + qwx);
         float32 m22 = 1.0f - 2.0f * (qxx + qyy);
 
         C0 = Float3(m00, m10, m20);
         C1 = Float3(m01, m11, m21);
         C2 = Float3(m02, m12, m22);
+    }
+
+
+    constexpr Float3x3 Float3x3::Zero()
+    {
+        return Float3x3(0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f);
+    }
+
+    constexpr Float3x3 Float3x3::Identity()
+    {
+        return Float3x3(1.0f, 0.0f, 0.0f,
+                        0.0f, 1.0f, 0.0f,
+                        0.0f, 0.0f, 1.0f);
     }
 
 
@@ -402,6 +520,10 @@ export namespace Copium
     constexpr Float3x3 operator+(const Float3x3& lhs, const Float3x3& rhs) { return Float3x3(lhs.C0 + rhs.C0, lhs.C1 + rhs.C1, lhs.C2 + rhs.C2); }
     constexpr Float3x3 operator-(const Float3x3& lhs, const Float3x3& rhs) { return Float3x3(lhs.C0 - rhs.C0, lhs.C1 - rhs.C1, lhs.C2 - rhs.C2); }
     constexpr Float3x3 operator*(const Float3x3& lhs, const Float3x3& rhs) { return Float3x3(lhs.C0 * rhs.C0, lhs.C1 * rhs.C1, lhs.C2 * rhs.C2); }
+
+    //-- Matrix | Vector
+
+    constexpr Float3 operator*(const Float3x3& lhs, const Float3& rhs) { return Float3(lhs.C0 * rhs.X + lhs.C1 * rhs.Y + lhs.C2 * rhs.Z); }
 
 
     // ========================================================================
@@ -484,6 +606,16 @@ export namespace Copium
                            0.0f,    0.0f,    0.0f, 1.0f);
     }
 
+    constexpr Float4x4 Float4x4::TR(const Float3& translation, const Quaternion& rotation)
+    {
+        Float3x3 r(rotation);
+
+        return Float4x4(Float4(r.C0, 0.0f),
+                        Float4(r.C1, 0.0f),
+                        Float4(r.C2, 0.0f),
+                        Float4(r * translation, 1.0f));
+    }
+
     constexpr Float4x4 Float4x4::TRS(const Float3& translation, const Quaternion& rotation, const Float3& scale)
     {
         Float3x3 r(rotation);
@@ -491,7 +623,7 @@ export namespace Copium
         return Float4x4(Float4(r.C0 * scale.X, 0.0f),
                         Float4(r.C1 * scale.Y, 0.0f),
                         Float4(r.C2 * scale.Z, 0.0f),
-                        Float4(translation, 1.0f));
+                        Float4(r * translation, 1.0f));
     }
 
 
@@ -540,6 +672,21 @@ export namespace Copium
     }
 
 
+    constexpr Quaternion Quaternion::Conjugate(const Quaternion& q)
+    {
+        return Quaternion(-q.X, -q.Y, -q.Z, q.W);
+    }
+
+    constexpr Quaternion Quaternion::Inverse(const Quaternion& q)
+    {
+        Float4 qVector = Float4(q.X, q.Y, q.Z, q.W);
+        Float4 qVectorConjugate = Float4(-q.X, -q.Y, -q.Z, q.W);
+        float32 qDot = Math::Dot(qVector, qVector);
+
+        return Quaternion(qVectorConjugate * Math::Rcp(qDot));
+    }
+
+
     constexpr Quaternion Quaternion::Mul(const Quaternion& lhs, const Quaternion& rhs)
     {
         float32 x = lhs.W * rhs.X + lhs.X * rhs.W + lhs.Y * rhs.Z - lhs.Z * rhs.Y;
@@ -558,6 +705,11 @@ export namespace Copium
         return rhs + lhs.W * t + Math::Cross(lhsXYZ, t);
     }
 
+    constexpr Float3 Quaternion::Mul(const Float3& rhs, const Quaternion& lhs)
+    {
+        return Quaternion::Mul(Quaternion::Inverse(lhs), rhs);
+    }
+
 
     Quaternion Quaternion::AxisAngle(const Float3& axis, float32 angle)
     {
@@ -565,6 +717,19 @@ export namespace Copium
         Math::SinCos(angle * 0.5f, angleSin, angleCos);
 
         return Quaternion(axis * angleSin, angleCos);
+    }
+
+
+    Quaternion Quaternion::Euler(float32 roll, float32 yaw, float32 pitch)
+    {
+        Float3 xyz(roll, yaw, pitch);
+        Float3 sin, cos;
+        Math::SinCos(0.5f * xyz, sin, cos);
+
+        return Quaternion(sin.X * cos.Y * cos.Z - sin.Y * sin.Z * cos.X,
+                          sin.Y * cos.X * cos.Z + sin.X * sin.Z * cos.Y,
+                          sin.Z * cos.X * cos.Y - sin.X * sin.Y * cos.Z,
+                          cos.X * cos.Y * cos.Z + sin.Y * sin.Z * sin.X);
     }
 
 } // export namespace Copium
@@ -579,13 +744,21 @@ export namespace Copium
     constexpr Float3 Math::Degrees(const Float3& radians) { return radians * k_RadiansToDegree; }
     constexpr Float4 Math::Degrees(const Float4& radians) { return radians * k_RadiansToDegree; }
 
-    constexpr float32 Math::Dot(const Float3& lhs, const Float3& rhs) { return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z; }
-    constexpr float32 Math::Dot(const Float4& lhs, const Float4& rhs) { return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z + lhs.W * rhs.W; }
+    void Math::SinCos(const Float3& x, Float3& sin, Float3& cos)
+    {
+        Math::SinCos(x.X, sin.X, cos.X);
+        Math::SinCos(x.Y, sin.Y, cos.Y);
+        Math::SinCos(x.Z, sin.Z, cos.Z);
+    }
+
+    constexpr float32 Math::Dot(const Float3& lhs, const Float3& rhs)         { return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z; }
+    constexpr float32 Math::Dot(const Float4& lhs, const Float4& rhs)         { return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z + lhs.W * rhs.W; }
+    constexpr float32 Math::Dot(const Quaternion& lhs, const Quaternion& rhs) { return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z + lhs.W * rhs.W; }
 
     constexpr Float3 Math::Cross(const Float3& lhs, const Float3& rhs)
     {
         return Float3(lhs.Y * rhs.Z - lhs.Z * rhs.Y,
-                      lhs.Z * rhs.X + lhs.X * rhs.Z,
+                      lhs.Z * rhs.X - lhs.X * rhs.Z,
                       lhs.X * rhs.Y - lhs.Y * rhs.X);
     }
 
