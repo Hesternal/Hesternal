@@ -38,6 +38,13 @@ export namespace Copium
         [[nodiscard]] Entity CreateEntity();
         void DestroyEntity(Entity entity);
 
+        // NOTE(v.matushkin): Can return multiple components (creates view internally?)
+        // template<CComponent TComponent>
+        // [[nodiscard]] TComponent GetComponent(Entity entity)
+        // {
+        //     return m_registry.get<TComponent>(entity);
+        // }
+
         template<CComponent TComponent>
         void AddComponent(Entity entity, TComponent&& component)
         {

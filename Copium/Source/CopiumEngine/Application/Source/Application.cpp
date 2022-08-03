@@ -18,6 +18,7 @@ import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
 import CopiumEngine.Graphics;
+import CopiumEngine.Utils.Time;
 
 import <utility>;
 
@@ -56,6 +57,7 @@ namespace Copium
 
     void Application::_EngineInit()
     {
+        Time::Init();
         Graphics::Init();
         WorldManager::Init();
 
@@ -97,14 +99,26 @@ namespace Copium
         float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
 
         Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
-        Float4x4 cameraView = Float4x4::Identity();
 
         Entity cameraEntity = entityManager.CreateEntity();
-        entityManager.AddComponent<LocalToWorld>(cameraEntity, LocalToWorld{ .Value = cameraView });
+        entityManager.AddComponent<Translation>(cameraEntity, Translation{ .Value = Float3::Zero() });
+        entityManager.AddComponent<Rotation>(cameraEntity, Rotation{ .Value = Quaternion::Identity() });
+        entityManager.AddComponent<LocalToWorld>(cameraEntity, LocalToWorld{ .Value = Float4x4::Identity() });
+        entityManager.AddComponent<Controller>(cameraEntity, Controller{
+            .CameraSpeed           = 2.0f,
+            .CameraBoost           = 5.0f,
+            .PreviousMousePosition = Int2::Zero(),
+            .Yaw                   = 0.0f,
+            .Pitch                 = 0.0f,
+        });
         entityManager.AddComponent<Camera>(cameraEntity, Camera{ .Projection = cameraProjection });
 
         while (true)
         {
+            Time::Update();
+
+            //COP_LOG_TRACE("_EngineLoop Cycle");
+
             m_mainWindow->ProcessEvents();
 
             EventManager::DispatchEvents();
