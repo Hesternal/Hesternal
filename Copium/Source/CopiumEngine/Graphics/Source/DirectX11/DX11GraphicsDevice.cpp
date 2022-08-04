@@ -641,10 +641,6 @@ namespace Copium
     {
         // https://github-wiki-see.page/m/Microsoft/DirectXTK/wiki/CommonStates
 
-        static const char* k_ShaderEntryPoint   = "main";
-        static const char* k_VertexShaderTarget = "vs_5_0";
-        static const char* k_PixelShaderTarget  = "ps_5_0";
-
         DX11Shader dx11Shader;
 
         //- Create RasterizerState
@@ -728,62 +724,6 @@ namespace Copium
             COP_LOG_ERROR_COND(dx11Shader.BlendState == nullptr, "Failed to create ID3D11BlendState1 for '{}' shader", shaderDesc.Name);
         }
 
-        ID3DBlob* d3dVertexShaderBlob;
-        {
-            ID3DBlob* d3dShaderStageErrorBlob;
-
-            // TODO(v.matushkin): D3DCompile2 ?
-            const HRESULT d3dCompileResult = D3DCompile(
-                shaderDesc.VertexSource.data(),
-                shaderDesc.VertexSource.length(),
-                "LOL",                // NOTE(v.matushkin): Can be nullptr, don't know where/how it will be used
-                nullptr,
-                nullptr,              // TODO(v.matushkin): I need to use this ID3DInclude
-                k_ShaderEntryPoint,
-                k_VertexShaderTarget,
-                0,                    // TODO(v.matushkin): Use this, especially D3DCOMPILE_OPTIMIZATION_LEVEL* and may be D3DCOMPILE_PACK_MATRIX_ROW_MAJOR
-                0,
-                &d3dVertexShaderBlob,
-                &d3dShaderStageErrorBlob
-            );
-            if (FAILED(d3dCompileResult))
-            {
-                // TODO(v.matushkin): For D3DX11CompileFromFile, vertexErrorBlob == nullptr means shader file wasn't found,
-                //  so with D3DCompile this cannot happen?
-                COP_ASSERT(d3dShaderStageErrorBlob != nullptr); // NOTE(v.matushkin): Could this ever happen?
-                COP_LOG_ERROR("Shader stage compilation error: {}", static_cast<char*>(d3dShaderStageErrorBlob->GetBufferPointer()));
-                d3dShaderStageErrorBlob->Release();
-            }
-        }
-
-        ID3DBlob* d3dPixelShaderBlob;
-        {
-            ID3DBlob* d3dShaderStageErrorBlob;
-
-            // TODO(v.matushkin): D3DCompile2 ?
-            const HRESULT d3dCompileResult = D3DCompile(
-                shaderDesc.FragmentSource.data(),
-                shaderDesc.FragmentSource.length(),
-                "LOL",               // NOTE(v.matushkin): Can be nullptr, don't know where/how it will be used
-                nullptr,
-                nullptr,             // TODO(v.matushkin): I need to use this ID3DInclude
-                k_ShaderEntryPoint,
-                k_PixelShaderTarget,
-                0,                   // TODO(v.matushkin): Use this, especially D3DCOMPILE_OPTIMIZATION_LEVEL* and may be D3DCOMPILE_PACK_MATRIX_ROW_MAJOR
-                0,
-                &d3dPixelShaderBlob,
-                &d3dShaderStageErrorBlob
-            );
-            if (FAILED(d3dCompileResult))
-            {
-                // TODO(v.matushkin): For D3DX11CompileFromFile, vertexErrorBlob == nullptr means shader file wasn't found,
-                //  so with D3DCompile this cannot happen?
-                COP_ASSERT(d3dShaderStageErrorBlob != nullptr); // NOTE(v.matushkin): Could this ever happen?
-                COP_LOG_ERROR("Shader stage compilation error: {}", static_cast<char*>(d3dShaderStageErrorBlob->GetBufferPointer()));
-                d3dShaderStageErrorBlob->Release();
-            }
-        }
-
         //- Create InputLayout
         {
             D3D11_INPUT_ELEMENT_DESC d3dInputElementDesc[] = {
@@ -816,14 +756,11 @@ namespace Copium
                 },
             };
 
-            m_device->CreateInputLayout(d3dInputElementDesc, 3, d3dVertexShaderBlob->GetBufferPointer(), d3dVertexShaderBlob->GetBufferSize(), &dx11Shader.InputLayout);
+            m_device->CreateInputLayout(d3dInputElementDesc, 3, shaderDesc.VertexBlob.Data.get(), shaderDesc.VertexBlob.Size, &dx11Shader.InputLayout);
         }
 
-        m_device->CreateVertexShader(d3dVertexShaderBlob->GetBufferPointer(), d3dVertexShaderBlob->GetBufferSize(), nullptr, &dx11Shader.VertexShader);
-        m_device->CreatePixelShader(d3dPixelShaderBlob->GetBufferPointer(), d3dPixelShaderBlob->GetBufferSize(), nullptr, &dx11Shader.PixelShader);
-
-        d3dVertexShaderBlob->Release();
-        d3dPixelShaderBlob->Release();
+        m_device->CreateVertexShader(shaderDesc.VertexBlob.Data.get(), shaderDesc.VertexBlob.Size, nullptr, &dx11Shader.VertexShader);
+        m_device->CreatePixelShader(shaderDesc.FragmentBlob.Data.get(), shaderDesc.FragmentBlob.Size, nullptr, &dx11Shader.PixelShader);
 
         const auto shaderHandle = static_cast<ShaderHandle>(g_ShaderHandleWorkaround++);
         m_shaders.emplace(shaderHandle, dx11Shader);

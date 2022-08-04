@@ -48,7 +48,7 @@ namespace StateValueIdentifier
 namespace Copium
 {
 
-    ShaderDesc ShaderParser::Parse(std::string_view shaderCode)
+    ParsedShaderDesc ShaderParser::Parse(std::string_view shaderCode)
     {
         return ShaderParser(shaderCode)._Parse();
     }
@@ -60,15 +60,15 @@ namespace Copium
     }
 
 
-    ShaderDesc ShaderParser::_Parse()
+    ParsedShaderDesc ShaderParser::_Parse()
     {
-        ShaderDesc shaderDesc = {
+        ParsedShaderDesc parsedShaderDesc = {
             .RasterizerStateDesc   = RasterizerStateDesc::Default(),
             .DepthStencilStateDesc = DepthStencilStateDesc::Default(),
             .BlendStateDesc        = BlendStateDesc::Default(),
         };
 
-        shaderDesc.Name = _ParseShaderName();
+        parsedShaderDesc.Name = _ParseShaderName();
 
         ExpectSymbol('{');
 
@@ -101,7 +101,7 @@ namespace Copium
                         throw Error_Message("Found more than one State block", token);
                     }
                     foundShaderState = true;
-                    _ParseShaderState(shaderDesc);
+                    _ParseShaderState(parsedShaderDesc);
                 }
                 else if (token.IsValue(ShaderIdentifier::Vertex))
                 {
@@ -110,7 +110,7 @@ namespace Copium
                         throw Error_Message("Found more than one Vertex program", token);
                     }
                     foundVertexProgram = true;
-                    shaderDesc.VertexSource = _ParseShaderProgram();
+                    parsedShaderDesc.VertexSource = _ParseShaderProgram();
                 }
                 else if (token.IsValue(ShaderIdentifier::Fragment))
                 {
@@ -119,7 +119,7 @@ namespace Copium
                         throw Error_Message("Found more than one Fragment program", token);
                     }
                     foundFragmentProgram = true;
-                    shaderDesc.FragmentSource = _ParseShaderProgram();
+                    parsedShaderDesc.FragmentSource = _ParseShaderProgram();
                 }
                 else
                 {
@@ -141,7 +141,7 @@ namespace Copium
             throw ParserError("Fragment program was not defined");
         }
 
-        return shaderDesc;
+        return parsedShaderDesc;
     }
 
     std::string ShaderParser::_ParseShaderName()
@@ -151,7 +151,7 @@ namespace Copium
     }
 
 
-    void ShaderParser::_ParseShaderState(ShaderDesc& shaderDesc)
+    void ShaderParser::_ParseShaderState(ParsedShaderDesc& parsedShaderDesc)
     {
         ExpectSymbol('{');
 
@@ -175,7 +175,7 @@ namespace Copium
                     throw Error_Message("Found more than one Polygon value", token);
                 }
                 foundPolygon = true;
-                shaderDesc.RasterizerStateDesc.PolygonMode = _ParseEnumValue<PolygonMode>();
+                parsedShaderDesc.RasterizerStateDesc.PolygonMode = _ParseEnumValue<PolygonMode>();
             }
             else if (token.IsValue(StateIdentifier::Cull))
             {
@@ -184,7 +184,7 @@ namespace Copium
                     throw Error_Message("Found more than one Cull value", token);
                 }
                 foundCull = true;
-                shaderDesc.RasterizerStateDesc.CullMode = _ParseEnumValue<CullMode>();
+                parsedShaderDesc.RasterizerStateDesc.CullMode = _ParseEnumValue<CullMode>();
             }
             //- DepthStencilState
             else if (token.IsValue(StateIdentifier::DepthTest))
@@ -194,7 +194,7 @@ namespace Copium
                     throw Error_Message("Found more than one DepthTest value", token);
                 }
                 foundDepthTest = true;
-                shaderDesc.DepthStencilStateDesc.DepthTestEnable = _ParseBoolValue();
+                parsedShaderDesc.DepthStencilStateDesc.DepthTestEnable = _ParseBoolValue();
             }
             else if (token.IsValue(StateIdentifier::DepthWrite))
             {
@@ -203,7 +203,7 @@ namespace Copium
                     throw Error_Message("Found more than one DepthWrite value", token);
                 }
                 foundDepthWrite = true;
-                shaderDesc.DepthStencilStateDesc.DepthWriteEnable = _ParseBoolValue();
+                parsedShaderDesc.DepthStencilStateDesc.DepthWriteEnable = _ParseBoolValue();
             }
             else if (token.IsValue(StateIdentifier::DepthCompare))
             {
@@ -212,7 +212,7 @@ namespace Copium
                     throw Error_Message("Found more than one DepthCompare value", token);
                 }
                 foundDepthCompare = true;
-                shaderDesc.DepthStencilStateDesc.DepthCompareFunction = _ParseEnumValue<CompareFunction>();
+                parsedShaderDesc.DepthStencilStateDesc.DepthCompareFunction = _ParseEnumValue<CompareFunction>();
             }
             //- BlendState
             else if (token.IsValue(StateIdentifier::BlendOp))
@@ -222,7 +222,7 @@ namespace Copium
                     throw Error_Message("Found more than one BlendOp value", token);
                 }
                 foundBlendOp = true;
-                _ParseBlendOpValue(shaderDesc.BlendStateDesc);
+                _ParseBlendOpValue(parsedShaderDesc.BlendStateDesc);
             }
             else if (token.IsValue(StateIdentifier::Blend))
             {
@@ -231,7 +231,7 @@ namespace Copium
                     throw Error_Message("Found more than one Blend value", token);
                 }
                 foundBlend = true;
-                _ParseBlendFactorValue(shaderDesc.BlendStateDesc);
+                _ParseBlendFactorValue(parsedShaderDesc.BlendStateDesc);
             }
             else
             {
@@ -244,7 +244,7 @@ namespace Copium
 
         if (foundBlendOp || foundBlend)
         {
-            shaderDesc.BlendStateDesc.BlendMode = BlendMode::BlendOp;
+            parsedShaderDesc.BlendStateDesc.BlendMode = BlendMode::BlendOp;
         }
     }
 

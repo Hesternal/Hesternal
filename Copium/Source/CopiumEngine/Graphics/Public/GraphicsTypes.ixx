@@ -268,6 +268,9 @@ export namespace Copium
         std::vector<uint8>  VertexData;
     };
 
+
+    //- RenderTexture
+
     struct ClearColorValue
     {
         float32 Value[4];
@@ -304,6 +307,9 @@ export namespace Copium
         [[nodiscard]] RenderTextureType RenderTextureType() const;
     };
 
+
+    //- Texture
+
     CHT_STRUCT()
     struct TextureDesc
     {
@@ -324,6 +330,9 @@ export namespace Copium
         CHT_PROPERTY()
         std::vector<uint8> Data;
     };
+
+
+    //- Shader
 
     struct RasterizerStateDesc
     {
@@ -357,23 +366,28 @@ export namespace Copium
         [[nodiscard]] static BlendStateDesc Default();
     };
 
+    struct ShaderBlob
+    {
+        uint64                   Size;
+        std::unique_ptr<uint8[]> Data;
+    };
+
     CHT_STRUCT()
     struct ShaderDesc
     {
         CHT_GENERATED_BODY()
 
         CHT_PROPERTY()
-        std::string Name;
-
+        std::string           Name;
         RasterizerStateDesc   RasterizerStateDesc;
         DepthStencilStateDesc DepthStencilStateDesc;
         BlendStateDesc        BlendStateDesc;
-
-        CHT_PROPERTY()
-        std::string VertexSource;
-        CHT_PROPERTY()
-        std::string FragmentSource;
+        ShaderBlob            VertexBlob;
+        ShaderBlob            FragmentBlob;
     };
+
+
+    //- Swapchain
 
     struct SwapchainDesc
     {
