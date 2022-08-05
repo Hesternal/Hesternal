@@ -17,22 +17,26 @@ namespace Copium
 
         {
             std::vector<uint8> blackTextureData = {
+                // Mip0
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                // Mip1
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                // Mip2
+                0, 0, 0, 0
             };
-            TextureDesc textureDesc = {
-                .Name             = "Black",
-                .Width            = 4,
-                .Height           = 4,
-                .Format           = TextureFormat::RGBA8,
-                .FilterMode       = TextureFilterMode::Anisotropic,
-                .AnisotropicLevel = 16,
-                .WrapModeU        = TextureWrapMode::Repeat,
-                .WrapModeV        = TextureWrapMode::Repeat,
-                .Data             = std::move(blackTextureData),
-            };
+            TextureDesc textureDesc;
+            textureDesc.Name   = "Black";
+            textureDesc.Width  = 4;
+            textureDesc.Height = 4;
+            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Data   = std::move(blackTextureData);
+            textureDesc.GenerateMipmaps(true);
+            textureDesc.SetAnisotropicFilterMode(16);
+            textureDesc.SetWrapMode(TextureWrapMode::Repeat);
 
             m_blackTexture = std::make_shared<Texture>(std::move(textureDesc));
         }
@@ -43,40 +47,48 @@ namespace Copium
                 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
                 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
                 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                // Mip1
+                255, 255, 255, 255, 255, 255, 255, 255,
+                255, 255, 255, 255, 255, 255, 255, 255,
+                // Mip2
+                255, 255, 255, 255, 255, 255, 255, 255
             };
-            TextureDesc textureDesc = {
-                .Name             = "White",
-                .Width            = 4,
-                .Height           = 4,
-                .Format           = TextureFormat::RGBA8,
-                .FilterMode       = TextureFilterMode::Anisotropic,
-                .AnisotropicLevel = 16,
-                .WrapModeU        = TextureWrapMode::Repeat,
-                .WrapModeV        = TextureWrapMode::Repeat,
-                .Data             = std::move(whiteTextureData),
-            };
+            TextureDesc textureDesc;
+            textureDesc.Name   = "White";
+            textureDesc.Width  = 4;
+            textureDesc.Height = 4;
+            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Data   = std::move(whiteTextureData);
+            textureDesc.GenerateMipmaps(true);
+            textureDesc.SetAnisotropicFilterMode(16);
+            textureDesc.SetWrapMode(TextureWrapMode::Repeat);
 
             m_whiteTexture = std::make_shared<Texture>(std::move(textureDesc));
         }
 
         {
+            // NOTE(v.matushkin): Normal with alpha?
             std::vector<uint8> normalTextureData = {
+                // Mip0
                 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255,
                 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255,
                 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255,
                 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255, 127, 127, 255, 255,
+                // Mip1
+                127, 127, 255, 255, 127, 127, 255, 255,
+                127, 127, 255, 255, 127, 127, 255, 255,
+                // Mip2
+                127, 127, 255, 255
             };
-            TextureDesc textureDesc = {
-                .Name             = "Normal",
-                .Width            = 4,
-                .Height           = 4,
-                .Format           = TextureFormat::RGBA8,
-                .FilterMode       = TextureFilterMode::Anisotropic,
-                .AnisotropicLevel = 16,
-                .WrapModeU        = TextureWrapMode::Repeat,
-                .WrapModeV        = TextureWrapMode::Repeat,
-                .Data             = std::move(normalTextureData),
-            };
+            TextureDesc textureDesc;
+            textureDesc.Name   = "White";
+            textureDesc.Width  = 4;
+            textureDesc.Height = 4;
+            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Data   = std::move(normalTextureData);
+            textureDesc.GenerateMipmaps(true);
+            textureDesc.SetAnisotropicFilterMode(16);
+            textureDesc.SetWrapMode(TextureWrapMode::Repeat);
 
             m_normalTexture = std::make_shared<Texture>(std::move(textureDesc));
         }

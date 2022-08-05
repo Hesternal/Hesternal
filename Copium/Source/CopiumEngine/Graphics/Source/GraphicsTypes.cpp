@@ -1,12 +1,29 @@
+module;
+
+#include "Engine/Core/Debug.hpp"
+
 module CopiumEngine.Graphics.GraphicsTypes;
 
 import CopiumEngine.Core.CoreTypes;
 
+import <bit>;
 import <utility>;
 
 
 namespace Copium
 {
+
+    uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat)
+    {
+        static const uint8 bytesPerPixel[] = {
+           1,
+           2,
+           4,
+        };
+
+        return bytesPerPixel[std::to_underlying(textureFormat)];
+    }
+
 
     uint32 VertexAttributeDesc::Stride() const
     {
@@ -91,6 +108,51 @@ namespace Copium
         }
 
         return RenderTextureType::Depth;
+    }
+
+
+    void TextureDesc::GenerateMipmaps(bool value)
+    {
+        if (value)
+        {
+            // NOTE(v.matushkin): https://stackoverflow.com/a/63987820/19262382
+            //  Idk if this will handle all the cases
+            MipmapCount = static_cast<uint8>(std::bit_width(std::max(Width, Height)));
+        }
+        else
+        {
+            MipmapCount = 1;
+        }
+    }
+
+    void TextureDesc::SetFilterMode(TextureFilterMode filterMode)
+    {
+        FilterMode = filterMode;
+
+        if (filterMode == TextureFilterMode::Anisotropic)
+        {
+            AnisotropicLevel = 16;
+            COP_LOG_WARN("It's better to use SetAnisotropicFilterMode for TextureFilterMode::Anisotropic");
+        }
+        else
+        {
+            AnisotropicLevel = 0;
+        }
+    }
+
+    void TextureDesc::SetAnisotropicFilterMode(uint8 anisotropicLevel)
+    {
+        if (anisotropicLevel > 1)
+        {
+            AnisotropicLevel = anisotropicLevel;
+            FilterMode = TextureFilterMode::Anisotropic;
+        }
+        else
+        {
+            AnisotropicLevel = 0;
+            FilterMode = TextureFilterMode::Trilinear;
+            COP_LOG_WARN("No reason to set anisotropicLevel < 2 ? Setting FilterMode to Trilinear");
+        }
     }
 
 
