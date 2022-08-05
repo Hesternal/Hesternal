@@ -68,6 +68,18 @@ namespace
     }
 
     //- Texture
+    [[nodiscard]] static D3D11_FILTER dx11_TextureFilterMode(TextureFilterMode textureFilterMode)
+    {
+        static const D3D11_FILTER d3dTextureFilterMode[] = {
+            D3D11_FILTER_MIN_MAG_MIP_POINT,
+            D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT,
+            D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+            D3D11_FILTER_ANISOTROPIC,
+        };
+
+        return d3dTextureFilterMode[std::to_underlying(textureFilterMode)];
+    }
+
     [[nodiscard]] static D3D11_TEXTURE_ADDRESS_MODE dx11_TextureWrapMode(TextureWrapMode textureWrapMode)
     {
         static const D3D11_TEXTURE_ADDRESS_MODE d3dTextureWrapMode[] = {
@@ -911,13 +923,18 @@ namespace Copium
         }
         //- Create Texture Sampler
         {
+            // NOTE(v.matushkin): I don't know if I should "fix" Filter/MaxAnisotropy in some cases,
+            //  like if AnisotropicLevel==1 -> set FilterMode to Trilinear,
+            //  or if FilterMode != Anisotropic -> set MaxAnisotropy = 0.
+            //  Or may be I should do it at the TextureDesc/Texture level and here assume that everything is already set up properly.
+
             D3D11_SAMPLER_DESC d3dSamplerDesc = {
-                .Filter         = D3D11_FILTER_MIN_MAG_MIP_POINT,
+                .Filter         = dx11_TextureFilterMode(textureDesc.FilterMode),
                 .AddressU       = dx11_TextureWrapMode(textureDesc.WrapModeU),
                 .AddressV       = dx11_TextureWrapMode(textureDesc.WrapModeV),
-                .AddressW       = D3D11_TEXTURE_ADDRESS_CLAMP, // NOTE(v.matushkin): How to handle this for 2D textures?
+                .AddressW       = D3D11_TEXTURE_ADDRESS_CLAMP,  // NOTE(v.matushkin): How to handle this for 2D textures?
                 .MipLODBias     = 0,
-                .MaxAnisotropy  = 0, // NOTE(v.matushkin): Only used for ANISOTROPIC filter?
+                .MaxAnisotropy  = textureDesc.AnisotropicLevel,
                 .ComparisonFunc = D3D11_COMPARISON_NEVER,
                 // .BorderColor      // NOTE(v.matushkin): Only used if D3D11_TEXTURE_ADDRESS_BORDER is specified in Address*
                 .MinLOD         = 0,

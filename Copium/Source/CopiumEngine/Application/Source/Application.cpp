@@ -94,7 +94,7 @@ namespace Copium
         Float4x4 sponzaTransform = Float4x4::Scale(0.005f);
 
         constexpr float32 verticalFov = Math::Radians(90.0f);
-        constexpr float32 near = 0.1f;
+        constexpr float32 near = 0.01f;
         constexpr float32 far = 100.0f;
         float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
 

@@ -72,13 +72,15 @@ namespace Copium
 
         const int32 textureSize = width * height * desiredComponents;
         TextureDesc textureDesc = {
-            .Name      = texturePath, // TODO(v.matushkin): Name, not path
-            .Width     = static_cast<uint32>(width),
-            .Height    = static_cast<uint32>(height),
-            .Format    = NumComponentsToTextureFormat(desiredComponents),
-            .WrapModeU = TextureWrapMode::Repeat,
-            .WrapModeV = TextureWrapMode::Repeat,
-            .Data      = std::vector<uint8>(stbImageData, stbImageData + textureSize),
+            .Name             = texturePath, // TODO(v.matushkin): Name, not path
+            .Width            = static_cast<uint32>(width),
+            .Height           = static_cast<uint32>(height),
+            .Format           = NumComponentsToTextureFormat(desiredComponents),
+            .FilterMode       = TextureFilterMode::Anisotropic,
+            .AnisotropicLevel = 16,
+            .WrapModeU        = TextureWrapMode::Repeat,
+            .WrapModeV        = TextureWrapMode::Repeat,
+            .Data             = std::vector<uint8>(stbImageData, stbImageData + textureSize),
         };
 
         stbi_image_free(stbImageData);

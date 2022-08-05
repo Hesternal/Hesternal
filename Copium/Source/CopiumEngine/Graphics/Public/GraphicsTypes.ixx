@@ -176,6 +176,15 @@ export namespace Copium
         RGBA8,
     };
 
+    // NOTE(v.matushkin): There are a lot more options, but I'm not sure if there is a point of exposing them
+    enum class TextureFilterMode : uint8
+    {
+        Point,       // Min/Mag Point,  Mip Point
+        Bilinear,    // Min/Mag Linear, Mip Point
+        Trilinear,   // Min/Mag Linear, Mip Linear
+        Anisotropic,
+    };
+
     enum class TextureWrapMode : uint8
     {
         ClampToEdge,
@@ -323,6 +332,10 @@ export namespace Copium
         uint32             Height;
         CHT_PROPERTY()
         TextureFormat      Format;
+        CHT_PROPERTY()
+        TextureFilterMode  FilterMode;
+        CHT_PROPERTY()
+        uint8              AnisotropicLevel;
         CHT_PROPERTY()
         TextureWrapMode    WrapModeU;
         CHT_PROPERTY()
