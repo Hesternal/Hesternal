@@ -176,6 +176,17 @@ export namespace Copium
         RGBA8,
     };
 
+    [[nodiscard]] inline uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat);
+
+    // NOTE(v.matushkin): There are a lot more options, but I'm not sure if there is a point of exposing them
+    enum class TextureFilterMode : uint8
+    {
+        Point,       // Min/Mag Point,  Mip Point
+        Bilinear,    // Min/Mag Linear, Mip Point
+        Trilinear,   // Min/Mag Linear, Mip Linear
+        Anisotropic,
+    };
+
     enum class TextureWrapMode : uint8
     {
         ClampToEdge,
@@ -324,11 +335,23 @@ export namespace Copium
         CHT_PROPERTY()
         TextureFormat      Format;
         CHT_PROPERTY()
+        uint8              MipmapCount;
+        CHT_PROPERTY()
+        TextureFilterMode  FilterMode;
+        CHT_PROPERTY()
+        uint8              AnisotropicLevel;
+        CHT_PROPERTY()
         TextureWrapMode    WrapModeU;
         CHT_PROPERTY()
         TextureWrapMode    WrapModeV;
         CHT_PROPERTY()
         std::vector<uint8> Data;
+
+        void GenerateMipmaps(bool value);
+        void SetFilterMode(TextureFilterMode filterMode);
+        void SetAnisotropicFilterMode(uint8 anisotropicLevel);
+        void SetWrapMode(TextureWrapMode uv)                   { WrapModeU = uv; WrapModeV = uv; }
+        void SetWrapMode(TextureWrapMode u, TextureWrapMode v) { WrapModeU = u; WrapModeV = v; }
     };
 
 
