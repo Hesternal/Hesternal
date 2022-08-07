@@ -26,6 +26,7 @@ import CopiumEngine.Core.CoreTypes;
 
 import <bit>;
 import <cstring>;
+import <memory>;
 import <string>;
 import <utility>;
 import <vector>;
