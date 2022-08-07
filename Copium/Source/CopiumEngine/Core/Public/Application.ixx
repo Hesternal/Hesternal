@@ -1,4 +1,4 @@
-export module CopiumEngine.Application;
+export module CopiumEngine.Core.Application;
 
 import CopiumEngine.Core.CoreTypes;
 

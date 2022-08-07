@@ -1,6 +1,6 @@
 export module CopiumEngine.Engine.Application;
 
-import CopiumEngine.Application;
+import CopiumEngine.Core.Application;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Platform.Window;

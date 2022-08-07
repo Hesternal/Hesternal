@@ -2,7 +2,7 @@ module;
 
 #include "Engine/Core/Debug.hpp"
 
-module CopiumEngine.Application;
+module CopiumEngine.Core.Application;
 
 
 namespace Copium
