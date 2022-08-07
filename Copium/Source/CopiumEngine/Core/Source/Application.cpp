@@ -35,6 +35,8 @@ namespace Copium
         Debug::Init();
         COP_LOG_TRACE("Application Init");
 
+        PlatformInit();
+
         //- Derived App Init
         OnApplication_Init(argc, argv);
     }
@@ -60,6 +62,8 @@ namespace Copium
     {
         while (m_shouldClose == false)
         {
+            PumpMessages();
+
             OnApplication_Update();
         }
     }

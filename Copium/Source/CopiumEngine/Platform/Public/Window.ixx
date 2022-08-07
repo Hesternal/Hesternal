@@ -25,8 +25,6 @@ export namespace Copium
         // [[nodiscard]] uint16 GetWidth()  const { return m_desc.Width; }
         // [[nodiscard]] uint16 GetHeight() const { return m_desc.Height; }
 
-        void ProcessEvents();
-
     private:
         void OnWindowClose();
         void OnWindowResize(const WindowResizeEvent& evt);

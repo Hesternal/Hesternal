@@ -29,6 +29,11 @@ export namespace Copium
 
         void Close() { m_shouldClose = true; }
 
+        //< Platform dependant
+        void PlatformInit();
+        void PumpMessages();
+        //> Platform dependant
+
         virtual void OnApplication_Init(int32 argc, const char* const* argv) = 0;
         virtual void OnApplication_Shutdown() = 0;
         virtual void OnApplication_Update() = 0;

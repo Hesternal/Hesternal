@@ -78,7 +78,6 @@ namespace Copium
     {
         Time::Update();
 
-        m_mainWindow->ProcessEvents();
         EventManager::DispatchEvents();
 
         if (m_mainWindow->IsClosing())
