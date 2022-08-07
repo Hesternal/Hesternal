@@ -1,10 +1,6 @@
 export module CopiumEngine.Application;
 
 import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Platform.Window;
-
-import <memory>;
 
 
 export namespace Copium
@@ -13,36 +9,34 @@ export namespace Copium
     class Application
     {
     public:
-        Application();
-        virtual ~Application();
+        [[nodiscard]] static Application* Get();
+
 
         Application(const Application&) = delete;
         Application& operator=(const Application&) = delete;
-        Application(Application&& other) noexcept = default;
-        Application& operator=(Application&& other) noexcept = default;
+        Application(Application&& other) = delete;
+        Application& operator=(Application&& other) = delete;
+
+        // TODO(v.matushkin): Init/Shutdown/Run should be accessible only by main() ?
+        void Init(int32 argc, const char* const* argv);
+        void Shutdown();
 
         void Run();
 
     protected:
-        virtual void InitSettings(EngineSettings& engineSettings) = 0;
-        virtual void InitSystems() = 0;
-        virtual void ShutdownSystems() = 0;
+        Application();
+        ~Application();
+
+        void Close() { m_shouldClose = true; }
+
+        virtual void OnApplication_Init(int32 argc, const char* const* argv) = 0;
+        virtual void OnApplication_Shutdown() = 0;
+        virtual void OnApplication_Update() = 0;
 
     private:
-        void _EngineInit();
-        void _EngineShutdown();
-        void _EngineLoop();
-
-    private:
-        EngineSettings          m_engineSettings;
-
-        std::unique_ptr<Window> m_mainWindow;
-
-        bool                    m_engineInitialized;
-        bool                    m_engineClosed;
+        bool m_applicationInitialized;
+        bool m_applicationClosed;
+        bool m_shouldClose;
     };
-
-
-    extern std::unique_ptr<Application> CreateApplication(int32 argc, const char* const* argv);
 
 } // export namespace Copium

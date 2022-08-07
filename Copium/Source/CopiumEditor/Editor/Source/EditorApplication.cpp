@@ -14,19 +14,50 @@ import CopiumEngine.Graphics;
 import <filesystem>;
 
 
-std::unique_ptr<Copium::Application> Copium::CreateApplication(Copium::int32 argc, const char* const* argv)
+namespace
 {
-    return std::make_unique<Copium::EditorApplication>(argc, argv);
-}
+    using namespace Copium;
+
+
+    static EditorApplication s_EditorApplication;
+
+} // namespace
 
 
 namespace Copium
 {
 
-    EditorApplication::EditorApplication(int32 argc, const char* const* argv)
+
+    Application* Application::Get()
+    {
+        return &s_EditorApplication;
+    }
+
+
+    EditorApplication::EditorApplication()
         : m_editorInitialized(false)
         , m_editorClosed(false)
     {
+    }
+
+    EditorApplication::~EditorApplication()
+    {
+        OnEngine_Shutdown();
+    }
+
+
+    void EditorApplication::OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings)
+    {
+        if (m_editorInitialized)
+        {
+            return;
+        }
+
+        m_editorInitialized = true;
+        m_editorClosed = false;
+
+        COP_LOG_TRACE("EditorApplication Init");
+
         // const std::string createProjectOption = "create-project";
         const std::string openProjectOption = "open-project";
         const std::string shaderDirOption = "shader-dir";
@@ -62,17 +93,7 @@ namespace Copium
         //     _CreateProject();
         // }
         // _OpenProject();
-    }
 
-    EditorApplication::~EditorApplication()
-    {
-        ShutdownSystems();
-    }
-
-
-    void EditorApplication::InitSettings(EngineSettings& engineSettings)
-    {
-        COP_LOG_INFO("EditorApplication::InitSettings()");
 
         engineSettings.GraphicsApi = GraphicsApi::DirectX11;
 
@@ -81,8 +102,10 @@ namespace Copium
         engineSettings.WindowHeight = 1000;
     }
 
-    void EditorApplication::InitSystems()
+    void EditorApplication::OnEngine_SystemsInit()
     {
+        COP_LOG_TRACE("EditorApplication SystemsInit");
+
         AssetDatabase::Init(m_projectPath, m_shaderDirPath);
 
         // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no Idea how else
@@ -90,20 +113,21 @@ namespace Copium
 
         const auto sponzaModel = AssetDatabase::LoadAsset<ModelScene>("Assets/Sponza/sponza.obj");
         WorldManager::GetDefaultWorld()->GetDefaultScene()->AddModel(sponzaModel.get());
-
-        m_editorInitialized = true;
     }
 
-    void EditorApplication::ShutdownSystems()
+    void EditorApplication::OnEngine_Shutdown()
     {
         if (m_editorInitialized == false || m_editorClosed)
         {
             return;
         }
 
+        m_editorInitialized = false;
+        m_editorClosed = true;
+
         AssetDatabase::Shutdown();
 
-        m_editorClosed = true;
+        COP_LOG_TRACE("EditorApplication Shutdown");
     }
 
 

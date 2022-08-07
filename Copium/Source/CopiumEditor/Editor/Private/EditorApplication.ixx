@@ -1,7 +1,7 @@
 export module CopiumEditor.EditorApplication;
 
-import CopiumEngine.Application;
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Engine.Application;
 
 import <filesystem>;
 
@@ -9,18 +9,19 @@ import <filesystem>;
 export namespace Copium
 {
 
-    class EditorApplication final : public Application
+    class EditorApplication final : public EngineApplication
     {
     public:
-        EditorApplication(int32 argc, const char* const* argv);
+        EditorApplication();
         ~EditorApplication();
 
     private:
-        //< Application Interface Protected
-        void InitSettings(EngineSettings& engineSettings) override;
-        void InitSystems() override;
-        void ShutdownSystems() override;
-        //> Application Interface Protected
+        //< EngineApplication Interface Protected
+        void OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings) override;
+        void OnEngine_SystemsInit() override;
+        void OnEngine_Shutdown() override;
+        void OnEngine_Update() override {}
+        //> EngineApplication Interface Protected
 
     private:
         // void _CreateProject();
