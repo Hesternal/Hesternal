@@ -98,6 +98,10 @@ export namespace Copium
         DX11GraphicsDevice(DX11GraphicsDevice&& other) noexcept = default;
         DX11GraphicsDevice& operator=(DX11GraphicsDevice&& other) noexcept = default;
 
+        // TODO(v.matushkin): <ImGui/CustomBackend>
+        [[nodiscard]] ID3D11Device* GetDevice() const { return m_device; }
+        [[nodiscard]] ID3D11DeviceContext* GetDeviceContext() const { return m_deviceContext; }
+
         void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
         void EndFrame() override;
 

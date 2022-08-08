@@ -13,6 +13,10 @@ export namespace Copium
 
     class EngineApplication : public Application
     {
+    public:
+        // NOTE(v.matushkin): Questionable method
+        [[nodiscard]] Window* GetMainWindow() const { return m_mainWindow.get(); }
+
     protected:
         EngineApplication();
         ~EngineApplication();

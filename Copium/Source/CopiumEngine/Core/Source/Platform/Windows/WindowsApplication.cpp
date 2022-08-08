@@ -19,6 +19,10 @@ import CopiumEngine.Event.EventTypes;
 import CopiumEngine.Platform.PlatformTypes;
 
 
+// TODO(v.matushkin): <ImGui/CustomContext>
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
 namespace
 {
     using namespace Copium;
@@ -35,6 +39,11 @@ namespace
 
     static int64 __stdcall WndProc(HWND hWnd, uint32 uMsg, uint64 wParam, int64 lParam)
     {
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+        {
+            return true;
+        }
+
         // NOTE(v.matushkin): Is there a way to handle events for no yet created window?
         WindowHandle windowHandle = static_cast<WindowHandle>(reinterpret_cast<uint64>(hWnd));
 
