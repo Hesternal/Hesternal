@@ -35,21 +35,22 @@ namespace
 namespace Copium
 {
 
-    struct Window::PlatformData
-    {
-        HWND Window;
-    };
+    // struct Window::PlatformData
+    // {
+    //     HWND Window;
+    // };
 
 
     Window::Window(WindowDesc&& windowDesc)
         : m_desc(std::move(windowDesc))
         , m_isClosing(false)
     {
-        PlatformData platformData;
+        // PlatformData platformData;
 
         const HINSTANCE hInstance = GetModuleHandleW(nullptr);
 
         //- Create Window
+        HWND hwnd;
         {
             // https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles
             // https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
@@ -66,7 +67,7 @@ namespace Copium
             const uint32 windowWidth = windowDesc.Width + borderRect.right - borderRect.left;
             const uint32 windowHeight = windowDesc.Height + borderRect.bottom - borderRect.top;
 
-            platformData.Window = CreateWindowExW(
+            hwnd = CreateWindowExW(
                 dwExStyle,
                 k_WindowClassName,
                 windowDesc.Title.c_str(),
@@ -78,11 +79,11 @@ namespace Copium
                 hInstance,
                 nullptr
             );
-            COP_ASSERT(platformData.Window != nullptr);
+            COP_ASSERT(hwnd != nullptr);
         }
 
         SwapchainDesc swapchainDesc = {
-            .WindowNativeHandle = reinterpret_cast<uint64>(platformData.Window),
+            .WindowNativeHandle = reinterpret_cast<uint64>(hwnd),
             .Width              = m_desc.Width,
             .Height             = m_desc.Height,
             .BufferCount        = k_SwapchainBufferCount,
@@ -90,17 +91,17 @@ namespace Copium
         };
         m_swapchainHandle = Graphics::GetGraphicsDevice()->CreateSwapchain(swapchainDesc);
 
-        m_platformData = std::make_unique<PlatformData>(platformData);
+        // m_platformData = std::make_unique<PlatformData>(platformData);
 
-        WindowHandle windowHandle = static_cast<WindowHandle>(reinterpret_cast<uint64>(platformData.Window));
-        EventManager::RegisterWindowCloseCallback(windowHandle, [this]() { OnWindowClose(); });
-        EventManager::RegisterWindowResizeCallback(windowHandle, [this](const WindowResizeEvent& evt) { OnWindowResize(evt); });
+        m_windowHandle = static_cast<WindowHandle>(reinterpret_cast<uint64>(hwnd));
+        EventManager::RegisterWindowCloseCallback(m_windowHandle, [this]() { OnWindowClose(); });
+        EventManager::RegisterWindowResizeCallback(m_windowHandle, [this](const WindowResizeEvent& evt) { OnWindowResize(evt); });
     }
 
     Window::~Window()
     {
         Graphics::GetGraphicsDevice()->DestroySwapchain(m_swapchainHandle);
-        DestroyWindow(m_platformData->Window);
+        DestroyWindow((HWND)m_windowHandle);
         // UnregisterClassW();
     }
 

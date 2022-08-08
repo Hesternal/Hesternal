@@ -5,8 +5,6 @@ import CopiumEngine.Event.EventTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Platform.PlatformTypes;
 
-import <memory>;
-
 
 export namespace Copium
 {
@@ -19,8 +17,8 @@ export namespace Copium
         Window(WindowDesc&& windowDesc);
         ~Window();
 
-        // [[nodiscard]] uint64 GetNativeHandle() { return reinterpret_cast<uint64>(m_hWnd); }
-        [[nodiscard]] bool   IsClosing() const { return m_isClosing; }
+        [[nodiscard]] WindowHandle GetWindowHandle() const { return m_windowHandle; }
+        [[nodiscard]] bool IsClosing() const { return m_isClosing; }
 
         // [[nodiscard]] uint16 GetWidth()  const { return m_desc.Width; }
         // [[nodiscard]] uint16 GetHeight() const { return m_desc.Height; }
@@ -31,7 +29,8 @@ export namespace Copium
 
     private:
         WindowDesc                    m_desc;
-        std::unique_ptr<PlatformData> m_platformData;
+        // std::unique_ptr<PlatformData> m_platformData;
+        WindowHandle                  m_windowHandle;
         SwapchainHandle               m_swapchainHandle;
         bool                          m_isClosing;
     };
