@@ -10,6 +10,11 @@ import CopiumEditor.Assets.AssetDatabase;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Graphics;
+import CopiumEngine.Graphics.EngineRenderPass;
+import CopiumEngine.Graphics.RenderGraph;
+import CopiumEngine.ImGui.ImGuiContext;
+
+import CopiumEditor.Editor.ImGuiRenderPass;
 
 import <filesystem>;
 
@@ -106,10 +111,17 @@ namespace Copium
     {
         COP_LOG_TRACE("EditorApplication SystemsInit");
 
+        ImGuiContext::Init();
         AssetDatabase::Init(m_projectPath, m_shaderDirPath);
 
-        // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no Idea how else
+        // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no idea how else
         Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("Main.shader"));
+
+        auto renderGraph = std::make_unique<RenderGraph>();
+        renderGraph->AddRenderPass(std::make_unique<EngineRenderPass>());
+        renderGraph->AddRenderPass(std::make_unique<ImGuiRenderPass>());
+
+        Graphics::SetRenderGraph(std::move(renderGraph));
 
         const auto sponzaModel = AssetDatabase::LoadAsset<ModelScene>("Assets/Sponza/sponza.obj");
         WorldManager::GetDefaultWorld()->GetDefaultScene()->AddModel(sponzaModel.get());
@@ -126,6 +138,7 @@ namespace Copium
         m_editorClosed = true;
 
         AssetDatabase::Shutdown();
+        ImGuiContext::Shutdown();
 
         COP_LOG_TRACE("EditorApplication Shutdown");
     }

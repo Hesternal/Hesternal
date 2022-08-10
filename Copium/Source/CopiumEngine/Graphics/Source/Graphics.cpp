@@ -2,6 +2,7 @@ module CopiumEngine.Graphics;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.DX11GraphicsDevice;
+import CopiumEngine.Graphics.RenderContext;
 
 import <memory>;
 import <utility>;
@@ -96,6 +97,8 @@ namespace Copium
 
     void Graphics::Shutdown()
     {
+        m_renderGraph.reset();
+
         m_defaultShader.reset();
 
         m_blackTexture.reset();
@@ -103,6 +106,24 @@ namespace Copium
         m_normalTexture.reset();
 
         m_graphicsDevice.reset();
+    }
+
+
+    void Graphics::SetRenderGraph(std::unique_ptr<RenderGraph>&& renderGraph)
+    {
+        m_renderGraph = std::move(renderGraph);
+        m_renderGraph->Build(m_graphicsDevice.get());
+    }
+
+
+    void Graphics::RenderFrame()
+    {
+        m_graphicsDevice->BeginFrame(Float4x4::Scale(0.005f), m_renderData.Camera.LocalToWorld, m_renderData.Camera.Projection);
+
+        RenderContext renderContext(std::move(m_renderData), m_graphicsDevice.get());
+        m_renderGraph->Execute(renderContext);
+
+        m_graphicsDevice->EndFrame();
     }
 
 } // namespace Copium

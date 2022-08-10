@@ -19,7 +19,6 @@ export namespace Copium
 
         World(const World&) = delete;
         World& operator=(const World&) = delete;
-
         World(World&& other) noexcept = default;
         World& operator=(World&& other) noexcept = default;
 

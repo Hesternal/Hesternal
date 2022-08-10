@@ -13,7 +13,6 @@ module CopiumEngine.Engine.Application;
 import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.EntityManager;
-import CopiumEngine.ECS.Scene;
 import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
@@ -87,8 +86,9 @@ namespace Copium
         }
 
         WorldManager::GetDefaultWorld()->Update();
-
         OnEngine_Update();
+
+        Graphics::RenderFrame();
     }
 
 
