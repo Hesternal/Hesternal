@@ -18,6 +18,7 @@ export namespace Copium
         ~Window();
 
         [[nodiscard]] WindowHandle GetWindowHandle() const { return m_windowHandle; }
+        [[nodiscard]] SwapchainHandle GetSwapchainHandle() const { return m_swapchainHandle; }
         [[nodiscard]] bool IsClosing() const { return m_isClosing; }
 
         // [[nodiscard]] uint16 GetWidth()  const { return m_desc.Width; }

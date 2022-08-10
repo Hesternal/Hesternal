@@ -2,6 +2,7 @@ export module CopiumEngine.ECS.System.Graphics;
 
 import CopiumEngine.ECS.ISystem;
 import CopiumEngine.ECS.EntityManager;
+import CopiumEngine.Graphics.GraphicsTypes;
 
 
 export namespace Copium
@@ -21,6 +22,10 @@ export namespace Copium
         void OnDestroy(EntityManager& entityManager) override;
         void OnUpdate(EntityManager& entityManager) override;
         //> ISystem Interface Public
+
+    private:
+        RenderPassHandle    m_renderPassHandle;
+        RenderTextureHandle m_depthRTHandle;
     };
 
 } // export namespace Copium
