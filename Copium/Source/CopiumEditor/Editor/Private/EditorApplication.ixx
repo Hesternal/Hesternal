@@ -2,6 +2,7 @@ export module CopiumEditor.EditorApplication;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.Application;
+import CopiumEngine.Platform.Window;
 
 import <filesystem>;
 
@@ -20,7 +21,7 @@ export namespace Copium
         void OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings) override;
         void OnEngine_SystemsInit() override;
         void OnEngine_Shutdown() override;
-        void OnEngine_Update() override {}
+        void OnEngine_Update() override;
         //> EngineApplication Interface Protected
 
     private:
@@ -28,10 +29,11 @@ export namespace Copium
         // void _OpenProject();
 
     private:
-        std::filesystem::path m_projectPath;
-        std::filesystem::path m_shaderDirPath;
-        bool                  m_editorInitialized;
-        bool                  m_editorClosed;
+        std::filesystem::path   m_projectPath;
+        std::filesystem::path   m_shaderDirPath;
+        std::unique_ptr<Window> m_mainWindow;
+        bool                    m_editorInitialized;
+        bool                    m_editorClosed;
     };
 
 } // export namespace Copium

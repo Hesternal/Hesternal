@@ -8,17 +8,14 @@ module;
 
 module CopiumEngine.ImGui.ImGuiContext;
 
-import CopiumEngine.Core.Application;
-import CopiumEngine.Engine.Application;
 import CopiumEngine.Graphics;
 import CopiumEngine.Graphics.DX11GraphicsDevice;
-import CopiumEngine.Platform.PlatformTypes;
 
 
 namespace Copium
 {
 
-    void ImGuiContext::Init()
+    void ImGuiContext::Init(WindowHandle windowHandle)
     {
         //- Setup ImGui context
         IMGUI_CHECKVERSION();
@@ -31,7 +28,6 @@ namespace Copium
         //- Setup Dear ImGui style
         ImGui::StyleColorsDark(); // NOTE(v.matushkin): Probably not a good idea to set style here, but rn it doesn't matter
 
-        WindowHandle windowHandle = ((EngineApplication*)Application::Get())->GetMainWindow()->GetWindowHandle();
         DX11GraphicsDevice* dx11GraphicsDevice = (DX11GraphicsDevice*)Graphics::GetGraphicsDevice();
 
         ImGui_ImplWin32_Init((void*)windowHandle);

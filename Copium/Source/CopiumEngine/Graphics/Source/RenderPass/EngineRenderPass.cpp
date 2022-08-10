@@ -1,15 +1,14 @@
 module CopiumEngine.Graphics.EngineRenderPass;
 
-import CopiumEngine.Engine.Application;
 import CopiumEngine.Graphics.IGraphicsDevice;
-import CopiumEngine.Platform.Window;
 
 
 namespace Copium
 {
 
-    EngineRenderPass::EngineRenderPass()
-        : m_renderPassHandle(RenderPassHandle::Invalid)
+    EngineRenderPass::EngineRenderPass(SwapchainHandle swapchainHandle)
+        : m_swapchainHandle(swapchainHandle)
+        , m_renderPassHandle(RenderPassHandle::Invalid)
         , m_depthRTHandle(RenderTextureHandle::Invalid)
     {
     }
@@ -17,9 +16,7 @@ namespace Copium
 
     void EngineRenderPass::OnCreate(IGraphicsDevice* graphicsDevice)
     {
-        Window* window = ((EngineApplication*)Application::Get())->GetMainWindow();
-
-        RenderTextureHandle swapchainRTHandle = graphicsDevice->GetSwapchainRenderTexture(window->GetSwapchainHandle());
+        RenderTextureHandle swapchainRTHandle = graphicsDevice->GetSwapchainRenderTexture(m_swapchainHandle);
 
         RenderTextureDesc depthRenderTextureDesc = {
             .Name       = "Engine Depth",

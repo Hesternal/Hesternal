@@ -10,7 +10,7 @@ export namespace Copium
     class EngineRenderPass final : public IRenderPass
     {
     public:
-        EngineRenderPass();
+        EngineRenderPass(SwapchainHandle swapchainHandle);
         ~EngineRenderPass() = default;
 
         EngineRenderPass(EngineRenderPass&& other) noexcept = default;
@@ -20,6 +20,7 @@ export namespace Copium
         void OnRender(const RenderContext& renderContext) override;
 
     private:
+        SwapchainHandle     m_swapchainHandle;
         RenderPassHandle    m_renderPassHandle;
         RenderTextureHandle m_depthRTHandle;
     };

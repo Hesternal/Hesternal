@@ -79,12 +79,6 @@ namespace Copium
 
         EventManager::DispatchEvents();
 
-        if (m_mainWindow->IsClosing())
-        {
-            Close();
-            return;
-        }
-
         WorldManager::GetDefaultWorld()->Update();
         OnEngine_Update();
 
@@ -96,15 +90,7 @@ namespace Copium
     {
         Time::Init();
         Graphics::Init();
-
-        WindowDesc windowDesc = {
-            .Title  = m_engineSettings.WindowTitle,
-            .Width  = m_engineSettings.WindowWidth,
-            .Height = m_engineSettings.WindowHeight,
-        };
-        m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
-
-        WorldManager::Init(); // NOTE(v.matushkin): GraphicsSystem require Window for initialization
+        WorldManager::Init();
 
         // TODO(v.matushkin): Camera initialization shouldn't be here
         {
@@ -134,9 +120,6 @@ namespace Copium
     void EngineApplication::_SystemsShutdown()
     {
         WorldManager::Shutdown();
-
-        m_mainWindow.reset();
-
         Graphics::Shutdown();
     }
 

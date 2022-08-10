@@ -3,7 +3,6 @@ export module CopiumEngine.Engine.Application;
 import CopiumEngine.Core.Application;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Platform.Window;
 
 import <memory>;
 
@@ -13,10 +12,6 @@ export namespace Copium
 
     class EngineApplication : public Application
     {
-    public:
-        // NOTE(v.matushkin): Questionable method
-        [[nodiscard]] Window* GetMainWindow() const { return m_mainWindow.get(); }
-
     protected:
         EngineApplication();
         ~EngineApplication();
@@ -39,10 +34,9 @@ export namespace Copium
         void _SystemsShutdown();
 
     private:
-        EngineSettings          m_engineSettings;
-        std::unique_ptr<Window> m_mainWindow;
-        bool                    m_engineInitialized;
-        bool                    m_engineClosed;
+        EngineSettings m_engineSettings;
+        bool           m_engineInitialized;
+        bool           m_engineClosed;
     };
 
 } // export namespace Copium
