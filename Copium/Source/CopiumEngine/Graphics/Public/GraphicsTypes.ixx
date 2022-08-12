@@ -9,6 +9,7 @@ import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
 
 import <memory>;
+import <optional>;
 import <string>;
 import <vector>;
 
@@ -23,6 +24,7 @@ export namespace Copium
 {
 
     enum class MeshHandle          : uint32 { Invalid = k_InvalidHandle };
+    enum class RenderPassHandle    : uint32 { Invalid = k_InvalidHandle };
     enum class RenderTextureHandle : uint32 { Invalid = k_InvalidHandle };
     enum class ShaderHandle        : uint32 { Invalid = k_InvalidHandle };
     enum class SwapchainHandle     : uint32 { Invalid = k_InvalidHandle };
@@ -141,6 +143,15 @@ export namespace Copium
     };
 
 
+    //- RenderPass
+
+    enum class AttachmentLoadAction : uint8
+    {
+        Clear,
+        DontCare,
+    };
+
+
     //- RenderTexture
 
     // TODO(v.matushkin): Add Default color/depth formats that depends on the current platform
@@ -155,8 +166,8 @@ export namespace Copium
     {
         Color,
         Depth,
-        Stencil,
-        DepthStencil,
+        // Stencil,
+        // DepthStencil,
     };
 
     // NOTE(v.matushkin): Not sure about this enum and the naming
@@ -316,6 +327,28 @@ export namespace Copium
         RenderTextureUsage      Usage;
 
         [[nodiscard]] RenderTextureType RenderTextureType() const;
+    };
+
+
+    //- RenderPass
+
+    struct AttachmentDesc
+    {
+        RenderTextureHandle  RTHandle;
+        AttachmentLoadAction LoadAction;
+    };
+
+    struct SubpassDesc
+    {
+        std::vector<uint8> ColorAttachmentIndices;
+        bool               UseDepthStencilAttachment; // NOTE(v.matushkin): Questionable?
+    };
+
+    struct RenderPassDesc
+    {
+        std::vector<AttachmentDesc>   ColorAttachments;
+        std::optional<AttachmentDesc> DepthStencilAttachment;
+        SubpassDesc                   Subpass; // NOTE(v.matushkin): Only one for now
     };
 
 

@@ -13,8 +13,8 @@ module CopiumEngine.Engine.Application;
 import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.EntityManager;
-import CopiumEngine.ECS.Scene;
 import CopiumEngine.ECS.WorldManager;
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
 import CopiumEngine.Graphics;
@@ -51,7 +51,7 @@ namespace Copium
         COP_LOG_TRACE("EngineApplication Init");
 
         //- Derived App Init
-        OnEngine_Init(argc, argv, m_engineSettings);
+        OnEngine_Init(argc, argv);
 
         //- Systems Init
         _SystemsInit();
@@ -80,15 +80,10 @@ namespace Copium
 
         EventManager::DispatchEvents();
 
-        if (m_mainWindow->IsClosing())
-        {
-            Close();
-            return;
-        }
-
         WorldManager::GetDefaultWorld()->Update();
-
         OnEngine_Update();
+
+        Graphics::RenderFrame();
     }
 
 
@@ -98,19 +93,14 @@ namespace Copium
         Graphics::Init();
         WorldManager::Init();
 
-        WindowDesc windowDesc = {
-            .Title  = m_engineSettings.WindowTitle,
-            .Width  = m_engineSettings.WindowWidth,
-            .Height = m_engineSettings.WindowHeight,
-        };
-        m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
-
         // TODO(v.matushkin): Camera initialization shouldn't be here
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
+
             constexpr float32 verticalFov = Math::Radians(90.0f);
             constexpr float32 near = 0.01f;
             constexpr float32 far = 100.0f;
-            float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
+            float32 aspect = float32(engineSettings.RenderWidth) / engineSettings.RenderHeight;
 
             Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
 
@@ -132,8 +122,6 @@ namespace Copium
 
     void EngineApplication::_SystemsShutdown()
     {
-        m_mainWindow.reset();
-
         WorldManager::Shutdown();
         Graphics::Shutdown();
     }

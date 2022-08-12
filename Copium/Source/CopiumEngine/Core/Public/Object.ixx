@@ -9,7 +9,7 @@ import CopiumEngine.Core.ClassID;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
 
-import <concepts>;
+// import <concepts>;
 import <string>;
 
 
@@ -43,7 +43,10 @@ export namespace Copium
     };
 
 
-    template<typename T>
-    concept CObject = std::derived_from<T, Object>;
+    // NOTE(v.matushkin):
+    //  CopiumEngine\Core\Public\Object.ixx(47,5): fatal  error C1001: Internal compiler error.
+    //  compiler file 'D:\a\_work\1\s\src\vctools\Compiler\CxxFE\sl\p1\c\module\unit.h', line 816)
+    // template<typename T>
+    // concept CObject = std::derived_from<T, Object>;
 
 } // export namespace Copium

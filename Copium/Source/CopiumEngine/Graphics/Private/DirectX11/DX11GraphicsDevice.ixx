@@ -18,6 +18,7 @@ import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Graphics.IGraphicsDevice;
 
 import <unordered_map>;
+import <vector>;
 COP_WARNING_POP
 
 
@@ -26,6 +27,9 @@ export namespace Copium
 
     class DX11GraphicsDevice final : public IGraphicsDevice
     {
+        static constexpr uint8 k_RenderPassColorAttachments = 8;
+
+
         struct DX11Mesh
         {
             ID3D11Buffer* Index;
@@ -40,16 +44,42 @@ export namespace Copium
 
         struct DX11RenderTexture
         {
-            ID3D11Texture2D1*         Texture;
+            ID3D11Texture2D1*          Texture;
             // NOTE(v.matushkin): RTV and DSV should be in a union or std::variant, but it turns into a fuckin mess,
             //  so fuck it, it's easier to leave it like this
-            ID3D11RenderTargetView*   Rtv;
-            ID3D11DepthStencilView*   Dsv;
-            ID3D11ShaderResourceView* Srv;        // NOTE(v.matushkin): Can be null
-            RenderTextureClearValue   ClearValue;
-            RenderTextureType         Type;       // NOTE(v.matushkin): May be store DepthStencilClearFlags instead of type?
+            ID3D11RenderTargetView1*   RTV;
+            ID3D11DepthStencilView*    DSV;
+            ID3D11ShaderResourceView1* SRV;
+            RenderTextureClearValue    ClearValue;
+            RenderTextureType          Type;
 
             void Release();
+        };
+
+        struct DX11Subpass
+        {
+            RenderTextureHandle ColorAttachments[k_RenderPassColorAttachments];
+            RenderTextureHandle DepthStencilAttachment;
+            uint8               NumColorAttachments;
+
+            // std::vector<ID3D11RenderTargetView*> RTVs;
+            // ID3D11DepthStencilView*              DSV;
+        };
+
+        // NOTE(v.matushkin): I can't just save ID3D11RenderTargetView/ID3D11DepthStencilView because
+        //  RenderTexture can change (eg. Swapchain resize).
+        struct DX11RenderPass
+        {
+            RenderTextureHandle ClearColorAttachments[k_RenderPassColorAttachments];
+            RenderTextureHandle ClearDepthStencilAttachment;
+            uint8               NumClearColorAttachments;
+            DX11Subpass         Subpass;
+
+            // std::vector<ID3D11RenderTargetView*> ClearRTVs;
+            // std::vector<ClearColorValue>         ClearColorValues;
+            // ID3D11DepthStencilView*              ClearDSV;
+            // ClearDepthStencilValue               ClearDepthStencilValue;
+            // uint32                               DepthStencilClearFlags;
         };
 
         struct DX11Shader
@@ -66,21 +96,20 @@ export namespace Copium
 
         struct DX11Swapchain
         {
-            IDXGISwapChain4*        Swapchain;
-            ID3D11Texture2D1*       Texture;     // NOTE(v.matushkin): No need to save it?
-            ID3D11RenderTargetView* Rtv;
-            DXGI_FORMAT             Format;
-            DXGI_SWAP_CHAIN_FLAG    Flags;
-            uint8                   BufferCount;
+            IDXGISwapChain4*     Swapchain;
+            DXGI_FORMAT          Format;
+            uint32               Flags; // DXGI_SWAP_CHAIN_FLAG
+            uint8                BufferCount;
+            RenderTextureHandle  SwapchainRTHandle;
 
-            void Release();
+            void Release(DX11GraphicsDevice* dx11GraphicsDevice);
         };
 
         struct DX11Texture2D
         {
-            ID3D11Texture2D1*         Texture;
-            ID3D11ShaderResourceView* Srv;
-            ID3D11SamplerState*       Sampler;
+            ID3D11Texture2D1*          Texture;
+            ID3D11ShaderResourceView1* SRV;
+            ID3D11SamplerState*        Sampler;
 
             void Release();
         };
@@ -98,7 +127,18 @@ export namespace Copium
         DX11GraphicsDevice(DX11GraphicsDevice&& other) noexcept = default;
         DX11GraphicsDevice& operator=(DX11GraphicsDevice&& other) noexcept = default;
 
+        //< For ImGui
+        // ID3D11ShaderResourceView*
+        [[nodiscard]] void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) override;
+        //> For ImGui
+        [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
+
+        // TODO(v.matushkin): <ImGui/CustomBackend>
+        [[nodiscard]] ID3D11Device* GetDevice() const { return m_device; }
+        [[nodiscard]] ID3D11DeviceContext* GetDeviceContext() const { return m_deviceContext; }
+
         void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
+        void BeginRenderPass(RenderPassHandle renderPassHandle) override;
         void EndFrame() override;
 
         void BindShader(ShaderHandle shaderHandle) override;
@@ -108,6 +148,7 @@ export namespace Copium
         void DrawProcedural(uint32 vertexCount) override;
 
         [[nodiscard]] MeshHandle CreateMesh(const MeshDesc& meshDesc) override;
+        [[nodiscard]] RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) override;
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) override;
         [[nodiscard]] ShaderHandle CreateShader(const ShaderDesc& shaderDesc) override;
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
@@ -116,6 +157,7 @@ export namespace Copium
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;
 
         void DestroyMesh(MeshHandle meshHandle) override;
+        void DestroyRenderPass(RenderPassHandle renderPassHandle) override;
         void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) override;
         void DestroyShader(ShaderHandle shaderHandle) override;
         void DestroySwapchain(SwapchainHandle swapchainHandle) override;
@@ -142,9 +184,8 @@ export namespace Copium
         ID3D11Buffer*         m_cbPerCamera;
         ID3D11Buffer*         m_cbPerMesh;
 
-        RenderTextureHandle   m_depthRenderTextureHandle;
-
         std::unordered_map<MeshHandle,          DX11Mesh>          m_meshes;
+        std::unordered_map<RenderPassHandle,    DX11RenderPass>    m_renderPasses;
         std::unordered_map<RenderTextureHandle, DX11RenderTexture> m_renderTextures;
         std::unordered_map<ShaderHandle,        DX11Shader>        m_shaders;
         std::unordered_map<SwapchainHandle,     DX11Swapchain>     m_swapchains;

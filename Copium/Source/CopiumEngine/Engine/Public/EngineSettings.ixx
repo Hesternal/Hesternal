@@ -6,8 +6,6 @@ export module CopiumEngine.Engine.EngineSettings;
 
 import CopiumEngine.Core.CoreTypes;
 
-import <string>;
-
 
 export namespace Copium
 {
@@ -23,11 +21,19 @@ export namespace Copium
 
     struct EngineSettings
     {
-        GraphicsApi  GraphicsApi;
+        // TODO(v.matushkin): Remove, temporary
+        uint16      RenderWidth;
+        uint16      RenderHeight;
 
-        std::wstring WindowTitle;
-        uint16       WindowWidth;
-        uint16       WindowHeight;
+        GraphicsApi GraphicsApi;
+
+
+        [[nodiscard]] static EngineSettings& Get()
+        {
+            static EngineSettings settings;
+            return settings;
+        }
     };
 
 } // export namespace Copium
+ 

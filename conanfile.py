@@ -26,6 +26,7 @@ class Copium(ConanFile):
          'cxxopts/3.0.0',
             'entt/3.10.0',
             'glfw/3.3.7',
+           'imgui/cci.20220621+1.88.docking',
         'simdjson/2.0.1',
           'spdlog/1.10.0',
              'stb/cci.20210910',

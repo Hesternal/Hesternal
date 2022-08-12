@@ -15,10 +15,12 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 module CopiumEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.DXCommon;
 
-import <unordered_map>;
+import <memory>;
 import <string>;
+import <unordered_map>;
 import <utility>;
 
 
@@ -45,7 +47,6 @@ import <utility>;
 
 namespace
 {
-
     using namespace Copium;
 
 
@@ -55,6 +56,7 @@ namespace
 
 
     static uint32 g_MeshHandleWorkaround          = 0;
+    static uint32 g_RenderPassHandleWorkaround    = 0;
     static uint32 g_RenderTextureHandleWorkaround = 0;
     static uint32 g_ShaderHandleWorkaround        = 0;
     static uint32 g_SwapchainHandleWorkaround     = 0;
@@ -65,6 +67,20 @@ namespace
     [[nodiscard]] static DXGI_FORMAT dx11_IndexFormat(IndexFormat indexFormat)
     {
         return indexFormat == IndexFormat::UInt16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+    }
+
+    //- RenderTexture
+    #define DX11_NO_DEPTH_STENCIL 0
+    [[nodiscard]] static uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType)
+    {
+        static const uint32 d3dClearFlags[] = {
+            DX11_NO_DEPTH_STENCIL,
+            D3D11_CLEAR_DEPTH,
+            // D3D11_CLEAR_STENCIL,
+            // D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+        };
+
+        return d3dClearFlags[std::to_underlying(renderTextureType)];
     }
 
     //- Texture
@@ -212,9 +228,9 @@ namespace Copium
     void DX11GraphicsDevice::DX11RenderTexture::Release()
     {
         Texture->Release();
-        RELEASE_COM_PTR(Rtv);
-        RELEASE_COM_PTR(Dsv);
-        RELEASE_COM_PTR(Srv);
+        RELEASE_COM_PTR(RTV);
+        RELEASE_COM_PTR(DSV);
+        RELEASE_COM_PTR(SRV);
     }
 
     void DX11GraphicsDevice::DX11Shader::Release()
@@ -227,10 +243,10 @@ namespace Copium
         BlendState->Release();
     }
 
-    void DX11GraphicsDevice::DX11Swapchain::Release()
+    void DX11GraphicsDevice::DX11Swapchain::Release(DX11GraphicsDevice* dx11GraphicsDevice)
     {
-        Rtv->Release();
-        Texture->Release();
+        dx11GraphicsDevice->DestroyRenderTexture(SwapchainRTHandle);
+
         // NOTE(v.matushkin): IDXGISwapChain->Release() can lead to errors if swapchain will be recreated from the same HWND right after this call,
         //  because swapchain destruction is deffered?
         Swapchain->Release();
@@ -239,7 +255,7 @@ namespace Copium
     void DX11GraphicsDevice::DX11Texture2D::Release()
     {
         Texture->Release();
-        Srv->Release();
+        SRV->Release();
         Sampler->Release();
     }
 
@@ -295,10 +311,18 @@ namespace Copium
     DX11GraphicsDevice::~DX11GraphicsDevice()
     {
         //- Meshes
-        COP_LOG_WARN_COND(m_meshes.size() != 0, "{:d} meshes(s) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
+        COP_LOG_WARN_COND(m_meshes.size() != 0, "{:d} mesh(es) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
         for (auto& handleAndMesh : m_meshes)
         {
             handleAndMesh.second.Release();
+        }
+        //- RenderPasses
+        COP_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} render pass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
+        //- Swapchains (Should be destroyed before RenderTextures)
+        COP_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
+        for (auto& handleAndSwapchain : m_swapchains)
+        {
+            handleAndSwapchain.second.Release(this);
         }
         //- RenderTextures
         COP_LOG_WARN_COND(m_renderTextures.size() != 0, "{:d} render textures(s) were not cleaned up before DX11GraphicsDevice destruction", m_renderTextures.size());
@@ -312,35 +336,45 @@ namespace Copium
         {
             handleAndShader.second.Release();
         }
-        //- Swapchains
-        COP_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
-        for (auto& handleAndSwapchain : m_swapchains)
-        {
-            handleAndSwapchain.second.Release();
-        }
         //- Textures
-        COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
-        for (auto& handleAndTexture2D : m_textures)
-        {
-            handleAndTexture2D.second.Release();
-        }
+COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
+for (auto& handleAndTexture2D : m_textures)
+{
+    handleAndTexture2D.second.Release();
+}
 
-        RELEASE_COM_PTR(m_cbPerCamera);
-        RELEASE_COM_PTR(m_cbPerMesh);
+RELEASE_COM_PTR(m_cbPerCamera);
+RELEASE_COM_PTR(m_cbPerMesh);
 
-        // NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
-        // NOTE(v.matushkin): Probably this should be called for debug only
-        m_deviceContext->ClearState();
-        m_deviceContext->Flush();
-        RELEASE_COM_PTR(m_deviceContext);
+// NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
+// NOTE(v.matushkin): Probably this should be called for debug only
+m_deviceContext->ClearState();
+m_deviceContext->Flush();
+RELEASE_COM_PTR(m_deviceContext);
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
-        _DebugLayer_ReportLiveObjects();
-        RELEASE_COM_PTR(m_dxgiInfoQueue);
+_DebugLayer_ReportLiveObjects();
+RELEASE_COM_PTR(m_dxgiInfoQueue);
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
-        RELEASE_COM_PTR(m_device);
-        RELEASE_COM_PTR(m_factory);
+RELEASE_COM_PTR(m_device);
+RELEASE_COM_PTR(m_factory);
+    }
+
+
+    void* DX11GraphicsDevice::GetNativeRenderTexture(RenderTextureHandle renderTextureHandle)
+    {
+        ID3D11ShaderResourceView* d3dRenderTextureSrv = m_renderTextures.find(renderTextureHandle)->second.SRV;
+        COP_ASSERT_MSG(d3dRenderTextureSrv != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
+        return reinterpret_cast<void*>(d3dRenderTextureSrv);
+    }
+
+    RenderTextureHandle DX11GraphicsDevice::GetSwapchainRenderTexture(SwapchainHandle swapchainHandle)
+    {
+        const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
+        COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
+
+        return dx11SwapchainIterator->second.SwapchainRTHandle;
     }
 
 
@@ -375,17 +409,59 @@ namespace Copium
             ID3D11Buffer* constantBuffers[]{ m_cbPerCamera, m_cbPerMesh };
             m_deviceContext->VSSetConstantBuffers(0, 2, constantBuffers); // NOTE(v.matushkin): VSSetConstantBuffers1 ?
         }
+    }
 
-        // TODO(v.matushkin): Hack
-        DX11Swapchain& dx11Swapchain = m_swapchains.begin()->second;
-        DX11RenderTexture& dx11DepthRenderTexture = m_renderTextures.find(m_depthRenderTextureHandle)->second;
+    void DX11GraphicsDevice::BeginRenderPass(RenderPassHandle renderPassHandle)
+    {
+        const auto dx11RenderPassIterator = m_renderPasses.find(renderPassHandle);
+        COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
 
-        const float32 clearColor[] = { 0.1f, 0.1f, 0.1f, 0.f };
-        const auto depthStencilClearValue = dx11DepthRenderTexture.ClearValue.DepthStencil;
-        m_deviceContext->ClearRenderTargetView(dx11Swapchain.Rtv, clearColor);
-        m_deviceContext->ClearDepthStencilView(dx11DepthRenderTexture.Dsv, D3D11_CLEAR_DEPTH, depthStencilClearValue.Depth, depthStencilClearValue.Stencil);
+        const DX11RenderPass& dx11RenderPass = dx11RenderPassIterator->second;
 
-        m_deviceContext->OMSetRenderTargets(1, &dx11Swapchain.Rtv, dx11DepthRenderTexture.Dsv);
+        //- Clear RenderTargets
+        //-- Color
+        for (uint8 i = 0; i < dx11RenderPass.NumClearColorAttachments; i++)
+        {
+            const DX11RenderTexture& dx11RenderTexture = m_renderTextures.find(dx11RenderPass.ClearColorAttachments[i])->second;
+
+            m_deviceContext->ClearRenderTargetView(dx11RenderTexture.RTV, dx11RenderTexture.ClearValue.Color.Value);
+        }
+        //-- DepthStencil
+        if (dx11RenderPass.ClearDepthStencilAttachment != RenderTextureHandle::Invalid)
+        {
+            const DX11RenderTexture& dx11RenderTexture = m_renderTextures.find(dx11RenderPass.ClearDepthStencilAttachment)->second;
+            const uint32 depthStencilClearFlags = dx11_RenderTextureTypeToClearFlags(dx11RenderTexture.Type);
+            const ClearDepthStencilValue clearDepthStencilValue = dx11RenderTexture.ClearValue.DepthStencil;
+
+            m_deviceContext->ClearDepthStencilView(
+                dx11RenderTexture.DSV,
+                depthStencilClearFlags,
+                clearDepthStencilValue.Depth,
+                clearDepthStencilValue.Stencil
+            );
+        }
+
+        //- Set RenderTargets
+        {
+            ID3D11RenderTargetView* d3dSubpassRTVs[8]; // Actual type -> ID3D11RenderTargetView1
+            ID3D11DepthStencilView* d3dSubpassDSV;
+
+            for (uint8 i = 0; i < dx11RenderPass.Subpass.NumColorAttachments; i++)
+            {
+                d3dSubpassRTVs[i] = m_renderTextures.find(dx11RenderPass.Subpass.ColorAttachments[i])->second.RTV;
+            }
+
+            if (dx11RenderPass.Subpass.DepthStencilAttachment != RenderTextureHandle::Invalid)
+            {
+                d3dSubpassDSV = m_renderTextures.find(dx11RenderPass.Subpass.DepthStencilAttachment)->second.DSV;
+            }
+            else
+            {
+                d3dSubpassDSV = nullptr;
+            }
+
+            m_deviceContext->OMSetRenderTargets(dx11RenderPass.Subpass.NumColorAttachments, d3dSubpassRTVs, d3dSubpassDSV);
+        }
     }
 
     void DX11GraphicsDevice::EndFrame()
@@ -434,7 +510,7 @@ namespace Copium
         DX11Texture2D& dx11BaseColorTexture = dx11BaseColorTextureIterator->second;
         DX11Texture2D& dx11NormalTexture = dx11NormalTextureIterator->second;
 
-        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.Srv, dx11NormalTexture.Srv };
+        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.SRV, dx11NormalTexture.SRV };
         ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler, dx11NormalTexture.Sampler };
 
         m_deviceContext->PSSetShaderResources(0, 2, materialTextures);
@@ -565,6 +641,68 @@ namespace Copium
         return meshHandle;
     }
 
+    RenderPassHandle DX11GraphicsDevice::CreateRenderPass(const RenderPassDesc& renderPassDesc)
+    {
+        DX11RenderPass dx11RenderPass;
+        dx11RenderPass.ClearDepthStencilAttachment = RenderTextureHandle::Invalid;
+        dx11RenderPass.NumClearColorAttachments = 0;
+
+        RenderTextureHandle depthStencilAttachment;
+
+        //- Clear attachments
+        //-- Color
+        for (const AttachmentDesc& colorAttachmentDesc : renderPassDesc.ColorAttachments)
+        {
+            if (colorAttachmentDesc.LoadAction == AttachmentLoadAction::Clear)
+            {
+                dx11RenderPass.ClearColorAttachments[dx11RenderPass.NumClearColorAttachments++] = colorAttachmentDesc.RTHandle;
+            }
+        }
+        for (uint8 i = dx11RenderPass.NumClearColorAttachments; i < k_RenderPassColorAttachments; i++)
+        {
+            dx11RenderPass.ClearColorAttachments[i] = RenderTextureHandle::Invalid;
+        }
+        //-- DepthStencil
+        if (renderPassDesc.DepthStencilAttachment.has_value())
+        {
+            const AttachmentDesc& depthStencilAttachmentDesc = *renderPassDesc.DepthStencilAttachment;
+            depthStencilAttachment = depthStencilAttachmentDesc.RTHandle;
+
+            if (depthStencilAttachmentDesc.LoadAction == AttachmentLoadAction::Clear)
+            {
+                dx11RenderPass.ClearDepthStencilAttachment = depthStencilAttachment;
+            }
+        }
+        else
+        {
+            depthStencilAttachment = RenderTextureHandle::Invalid;
+        }
+
+        //- Subpass Attachments
+        //-- Color
+        dx11RenderPass.Subpass.NumColorAttachments = static_cast<uint8>(renderPassDesc.Subpass.ColorAttachmentIndices.size());
+        for (uint8 i = 0; i < dx11RenderPass.Subpass.NumColorAttachments; i++)
+        {
+            dx11RenderPass.Subpass.ColorAttachments[i] = renderPassDesc.ColorAttachments[renderPassDesc.Subpass.ColorAttachmentIndices[i]].RTHandle;
+        }
+        //-- DepthStencil
+        if (renderPassDesc.Subpass.UseDepthStencilAttachment)
+        {
+            COP_ASSERT_MSG(depthStencilAttachment != RenderTextureHandle::Invalid, "Trying to use DepthStencilAttachment in Subpass while there is no DepthStencil RenderTexture in RenderPass");
+
+            dx11RenderPass.Subpass.DepthStencilAttachment = depthStencilAttachment;
+        }
+        else
+        {
+            dx11RenderPass.Subpass.DepthStencilAttachment = RenderTextureHandle::Invalid;
+        }
+
+        const auto renderPassHandle = static_cast<RenderPassHandle>(g_RenderPassHandleWorkaround++);
+        m_renderPasses.emplace(renderPassHandle, dx11RenderPass);
+
+        return renderPassHandle;
+    }
+
     RenderTextureHandle DX11GraphicsDevice::CreateRenderTexture(const RenderTextureDesc& renderTextureDesc)
     {
         DX11RenderTexture dx11RenderTexture;
@@ -601,19 +739,18 @@ namespace Copium
         //- Create RTV or DSV
         if (isColorRenderTexture)
         {
-            dx11RenderTexture.Dsv = nullptr;
+            dx11RenderTexture.DSV = nullptr;
 
-            // NOTE(v.matushkin): There is a D3D11_RENDER_TARGET_VIEW_DESC1, but it seems useless
-            D3D11_RENDER_TARGET_VIEW_DESC d3dRtvDesc = {
+            D3D11_RENDER_TARGET_VIEW_DESC1 d3dRtvDesc = {
                 .Format        = dxgiRenderTextureFormat,
                 .ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D,
                 .Texture2D     = { .MipSlice = 0 },
             };
-            m_device->CreateRenderTargetView(dx11RenderTexture.Texture, &d3dRtvDesc, &dx11RenderTexture.Rtv);
+            m_device->CreateRenderTargetView1(dx11RenderTexture.Texture, &d3dRtvDesc, &dx11RenderTexture.RTV);
         }
         else
         {
-            dx11RenderTexture.Rtv = nullptr;
+            dx11RenderTexture.RTV = nullptr;
 
             D3D11_DEPTH_STENCIL_VIEW_DESC d3dDsvDesc = {
                 .Format        = dxgiRenderTextureFormat,
@@ -621,26 +758,27 @@ namespace Copium
                 .Flags         = 0, // NOTE(v.matushkin): D3D11_DSV_READ_ONLY_* ?
                 .Texture2D     = { .MipSlice = 0 },
             };
-            m_device->CreateDepthStencilView(dx11RenderTexture.Texture, &d3dDsvDesc, &dx11RenderTexture.Dsv);
+            m_device->CreateDepthStencilView(dx11RenderTexture.Texture, &d3dDsvDesc, &dx11RenderTexture.DSV);
         }
 
         //- Create SRV
         if (isUsageShaderRead)
         {
-            D3D11_TEX2D_SRV d3dSrvTex2D = {
+            D3D11_TEX2D_SRV1 d3dSrvTex2D = {
                 .MostDetailedMip = 0,
                 .MipLevels       = 1,
+                .PlaneSlice      = 0,
             };
-            D3D11_SHADER_RESOURCE_VIEW_DESC d3dSrvDesc = {
+            D3D11_SHADER_RESOURCE_VIEW_DESC1 d3dSrvDesc = {
                 .Format        = dxgiRenderTextureFormat,
                 .ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,
                 .Texture2D     = d3dSrvTex2D,
             };
-            m_device->CreateShaderResourceView(dx11RenderTexture.Texture, &d3dSrvDesc, &dx11RenderTexture.Srv);
+            m_device->CreateShaderResourceView1(dx11RenderTexture.Texture, &d3dSrvDesc, &dx11RenderTexture.SRV);
         }
         else
         {
-            dx11RenderTexture.Srv = nullptr;
+            dx11RenderTexture.SRV = nullptr;
         }
 
         const auto renderTextureHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
@@ -653,6 +791,7 @@ namespace Copium
     {
         // https://github-wiki-see.page/m/Microsoft/DirectXTK/wiki/CommonStates
 
+        // NOTE(v.matushkin): Can Shader State checks for nullptr fail because I'm not initializing them?
         DX11Shader dx11Shader;
 
         //- Create RasterizerState
@@ -782,13 +921,18 @@ namespace Copium
 
     SwapchainHandle DX11GraphicsDevice::CreateSwapchain(const SwapchainDesc& swapchainDesc)
     {
-        IDXGISwapChain4*        dxgiSwapchain4;
-        ID3D11Texture2D1*       d3dRenderTexture;
-        ID3D11RenderTargetView* d3dRtv;
-
-        const DXGI_FORMAT dxgiSwapchainFormat = dx_RenderTextureFormat(swapchainDesc.Format);
         // TODO(v.matushkin): I guess at least I should use DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH flag?
-        const DXGI_SWAP_CHAIN_FLAG dxgiSwapchainFlags = static_cast<DXGI_SWAP_CHAIN_FLAG>(0);
+        DX11Swapchain dx11Swapchain;
+        dx11Swapchain.Format = dx_RenderTextureFormat(swapchainDesc.Format);
+        dx11Swapchain.Flags = 0;
+        dx11Swapchain.BufferCount = swapchainDesc.BufferCount;
+
+        // Dummy Swapchain RenderTexture
+        DX11RenderTexture dx11SwapchainRenderTexture;
+        dx11SwapchainRenderTexture.DSV = nullptr;
+        dx11SwapchainRenderTexture.SRV = nullptr;
+        dx11SwapchainRenderTexture.ClearValue = RenderTextureClearValue::DefaultColor();
+        dx11SwapchainRenderTexture.Type = RenderTextureType::Color;
 
         //- Create Swapchain
         {
@@ -807,7 +951,7 @@ namespace Copium
                 .Width       = swapchainDesc.Width,
                 .Height      = swapchainDesc.Height,
                 // TODO(v.matushkin): <SwapchainCreation/Format>
-                .Format      = dxgiSwapchainFormat,
+                .Format      = dx11Swapchain.Format,
                 .Stereo      = false,
                 .SampleDesc  = dxgiSwapchainSampleDesc,
                 .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
@@ -815,7 +959,7 @@ namespace Copium
                 .Scaling     = DXGI_SCALING_STRETCH,            // TODO(v.matushkin): Play with this
                 .SwapEffect  = DXGI_SWAP_EFFECT_FLIP_DISCARD,
                 .AlphaMode   = DXGI_ALPHA_MODE_IGNORE,          // NOTE(v.matushkin): Don't know
-                .Flags       = dxgiSwapchainFlags,
+                .Flags       = dx11Swapchain.Flags,
             };
 
             IDXGISwapChain1* dxgiSwapchain1;
@@ -828,51 +972,35 @@ namespace Copium
                 nullptr,            // NOTE(v.matushkin): Useless?
                 &dxgiSwapchain1
             );
-            dxgiSwapchain1->QueryInterface(&dxgiSwapchain4);
+            dxgiSwapchain1->QueryInterface(&dx11Swapchain.Swapchain);
             dxgiSwapchain1->Release();
         }
 
         //- Get Swapchain RenderTexture
         {
-            dxgiSwapchain4->GetBuffer(0, IID_PPV_ARGS(&d3dRenderTexture));
+            dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
             // NOTE(v.matushkin): ViewDesc?
-            m_device->CreateRenderTargetView(d3dRenderTexture, nullptr, &d3dRtv);
+            m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
         }
 
         //- Setup Viewport
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
             // TODO(v.matushkin): <Viewport>
             D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(swapchainDesc.Width),
-                .Height   = static_cast<float32>(swapchainDesc.Height),
+                .Width    = static_cast<float32>(engineSettings.RenderWidth),
+                .Height   = static_cast<float32>(engineSettings.RenderHeight),
                 .MinDepth = 0,
                 .MaxDepth = 1,
             };
             m_deviceContext->RSSetViewports(1, &d3dViewport);
         }
 
-        RenderTextureDesc depthRenderTextureDesc = {
-            .Name       = "Swapchain DepthTexture",
-            .ClearValue = RenderTextureClearValue::DefaultDepthStencil(),
-            .Width      = swapchainDesc.Width,
-            .Height     = swapchainDesc.Height,
-            .Format     = RenderTextureFormat::Depth32,
-            .Usage      = RenderTextureUsage::Default,
-        };
-        m_depthRenderTextureHandle = CreateRenderTexture(depthRenderTextureDesc);
+        dx11Swapchain.SwapchainRTHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
+        m_renderTextures.emplace(dx11Swapchain.SwapchainRTHandle, dx11SwapchainRenderTexture);
 
         const auto swapchainHandle = static_cast<SwapchainHandle>(g_SwapchainHandleWorkaround++);
-        m_swapchains.insert(std::pair(
-            swapchainHandle,
-            DX11Swapchain{
-                .Swapchain   = dxgiSwapchain4,
-                .Texture     = d3dRenderTexture,
-                .Rtv         = d3dRtv,
-                .Format      = dxgiSwapchainFormat,
-                .Flags       = dxgiSwapchainFlags,
-                .BufferCount = swapchainDesc.BufferCount,
-            }
-        ));
+        m_swapchains.emplace(swapchainHandle, dx11Swapchain);
 
         return swapchainHandle;
     }
@@ -939,18 +1067,19 @@ namespace Copium
         }
         //- Create Texture SRV
         {
-            D3D11_TEX2D_SRV d3dSrvTex2D = {
+            D3D11_TEX2D_SRV1 d3dSrvTex2D = {
                 .MostDetailedMip = 0,
                 .MipLevels       = textureDesc.MipmapCount, // NOTE(v.matushkin): Can be set to uint32(-1) to use all mipmaps
+                .PlaneSlice      = 0,
             };
             // TODO(v.matushkin): Don't know how to use ID3D11ShaderResourceView1
             //  if m_deviceContext->PSSetShaderResources takes only ID3D11ShaderResourceView
-            D3D11_SHADER_RESOURCE_VIEW_DESC d3dSrvDesc = {
+            D3D11_SHADER_RESOURCE_VIEW_DESC1 d3dSrvDesc = {
                 .Format        = dxgiTextureFormat,
                 .ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,
                 .Texture2D     = d3dSrvTex2D,
             };
-            m_device->CreateShaderResourceView(dx11Texture2D.Texture, &d3dSrvDesc, &dx11Texture2D.Srv);
+            m_device->CreateShaderResourceView1(dx11Texture2D.Texture, &d3dSrvDesc, &dx11Texture2D.SRV);
         }
         //- Create Texture Sampler
         {
@@ -987,22 +1116,24 @@ namespace Copium
         COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
 
         DX11Swapchain& dx11Swapchain = dx11SwapchainIterator->second;
-        dx11Swapchain.Rtv->Release();
-        dx11Swapchain.Texture->Release();
+        DX11RenderTexture& dx11SwapchainRenderTexture = m_renderTextures.find(dx11Swapchain.SwapchainRTHandle)->second;
+        dx11SwapchainRenderTexture.RTV->Release();
+        dx11SwapchainRenderTexture.Texture->Release();
         dx11Swapchain.Swapchain->ResizeBuffers(dx11Swapchain.BufferCount, width, height, dx11Swapchain.Format, dx11Swapchain.Flags);
 
         //- Get Swapchain RenderTexture
         {
-            dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11Swapchain.Texture));
-            m_device->CreateRenderTargetView(dx11Swapchain.Texture, nullptr, &dx11Swapchain.Rtv);
+            dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
+            m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
         }
 
         //- Setup Viewport
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
             // TODO(v.matushkin): <Viewport>
             D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(width),
-                .Height   = static_cast<float32>(height),
+                .Width    = static_cast<float32>(engineSettings.RenderWidth),
+                .Height   = static_cast<float32>(engineSettings.RenderHeight),
                 .MinDepth = 0,
                 .MaxDepth = 1,
             };
@@ -1017,6 +1148,12 @@ namespace Copium
         COP_ASSERT(meshesMapNode.empty() == false);
 
         meshesMapNode.mapped().Release();
+    }
+
+    void DX11GraphicsDevice::DestroyRenderPass(RenderPassHandle renderPassHandle)
+    {
+        auto renderPassesMapNode = m_renderPasses.extract(renderPassHandle);
+        COP_ASSERT(renderPassesMapNode.empty() == false);
     }
 
     void DX11GraphicsDevice::DestroyRenderTexture(RenderTextureHandle renderTextureHandle)
@@ -1040,7 +1177,7 @@ namespace Copium
         auto swapchainsMapNode = m_swapchains.extract(swapchainHandle);
         COP_ASSERT(swapchainsMapNode.empty() == false);
 
-        swapchainsMapNode.mapped().Release();
+        swapchainsMapNode.mapped().Release(this);
     }
 
     void DX11GraphicsDevice::DestroyTexture2D(TextureHandle textureHandle)

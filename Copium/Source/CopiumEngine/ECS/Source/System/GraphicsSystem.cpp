@@ -10,8 +10,12 @@ COP_WARNING_POP
 
 module CopiumEngine.ECS.System.Graphics;
 
+import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.ECS.Components;
 import CopiumEngine.Graphics;
+import CopiumEngine.Graphics.RenderData;
+
+import <unordered_map>;
 
 
 namespace Copium
@@ -35,30 +39,54 @@ namespace Copium
 
         const auto renderMeshView = entityManager.GetView<const LocalToWorld, const RenderMesh>();
 
-        TextureHandle currentBaseColorMap = TextureHandle::Invalid;
-        TextureHandle currentNormalMap = TextureHandle::Invalid;
+        std::unordered_map<std::shared_ptr<Material>, uint32> materialToIndex;
+        std::unordered_map<MeshHandle, uint32> meshToIndex;
 
-        IGraphicsDevice* const graphicsDevice = Graphics::GetGraphicsDevice();
-        graphicsDevice->BeginFrame(Float4x4::Scale(0.005f), cameraLocalToWorld.Value, camera.Projection);
-        graphicsDevice->BindShader(Graphics::GetDefaultShader()->GetHandle());
+        RenderData renderData;
+        renderData.Camera = {
+            .LocalToWorld = cameraLocalToWorld.Value,
+            .Projection   = camera.Projection,
+        };
 
         for (const auto [entity, localToWorld, renderMesh] : renderMeshView.each())
         {
-            const TextureHandle baseColorMapHandle = renderMesh.Material->GetBaseColorMap()->GetHandle();
-            const TextureHandle normalMapHandle = renderMesh.Material->GetNormalMap()->GetHandle();
+            //- Get Material index
+            uint32 materialIndex;
 
-            if (baseColorMapHandle != currentBaseColorMap || normalMapHandle != currentNormalMap)
+            if (const auto materialToIndexIt = materialToIndex.find(renderMesh.Material); materialToIndexIt != materialToIndex.end())
             {
-                currentBaseColorMap = baseColorMapHandle;
-                currentNormalMap = normalMapHandle;
-
-                graphicsDevice->BindMaterial(baseColorMapHandle, normalMapHandle);
+                materialIndex = materialToIndexIt->second;
+            }
+            else
+            {
+                materialIndex = static_cast<uint32>(renderData.Materials.size());
+                materialToIndex.emplace(renderMesh.Material, materialIndex);
+                renderData.Materials.push_back(renderMesh.Material);
             }
 
-            graphicsDevice->DrawMesh(renderMesh.Mesh->GetHandle());
+            //- Get Mesh index
+            const MeshHandle meshHandle = renderMesh.Mesh->GetHandle();
+            uint32 meshIndex;
+
+            if (const auto meshToIndexIt = meshToIndex.find(meshHandle); meshToIndexIt != meshToIndex.end())
+            {
+                meshIndex = meshToIndexIt->second;
+            }
+            else
+            {
+                meshIndex = static_cast<uint32>(renderData.Meshes.size());
+                meshToIndex.emplace(meshHandle, meshIndex);
+                renderData.Meshes.push_back(renderMesh.Mesh);
+            }
+
+            renderData.Entities.push_back(EntityRenderData{
+                .LocalToWorld  = localToWorld.Value,
+                .MaterialIndex = materialIndex,
+                .MeshIndex     = meshIndex,
+            });
         }
 
-        graphicsDevice->EndFrame();
+        Graphics::SetRenderData(std::move(renderData));
     }
 
 } // namespace Copium

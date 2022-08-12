@@ -16,7 +16,14 @@ export namespace Copium
         IGraphicsDevice(const IGraphicsDevice&) = delete;
         IGraphicsDevice& operator=(const IGraphicsDevice&) = delete;
 
+        //< For ImGui
+        // DX11 ID3D11ShaderResourceView*
+        [[nodiscard]] virtual void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) = 0;
+        //> For ImGui
+        [[nodiscard]] virtual RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) = 0;
+
         virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;
+        virtual void BeginRenderPass(RenderPassHandle renderPassHandle) = 0;
         virtual void EndFrame() = 0;
 
         virtual void BindShader(ShaderHandle shaderHandle) = 0;
@@ -26,6 +33,7 @@ export namespace Copium
         virtual void DrawProcedural(uint32 vertexCount) = 0;
 
         [[nodiscard]] virtual MeshHandle CreateMesh(const MeshDesc& meshDesc) = 0;
+        [[nodiscard]] virtual RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) = 0;
         [[nodiscard]] virtual RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) = 0;
         [[nodiscard]] virtual ShaderHandle CreateShader(const ShaderDesc& shaderDesc) = 0;
         [[nodiscard]] virtual SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) = 0;
@@ -34,6 +42,7 @@ export namespace Copium
         virtual void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) = 0;
 
         virtual void DestroyMesh(MeshHandle meshHandle) = 0;
+        virtual void DestroyRenderPass(RenderPassHandle renderPassHandle) = 0;
         virtual void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) = 0;
         virtual void DestroyShader(ShaderHandle shaderHandle) = 0;
         virtual void DestroySwapchain(SwapchainHandle swapchainHandle) = 0;

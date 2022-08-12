@@ -9,6 +9,7 @@ public enum ConanLibrary
     cxxopts,
     entt,
     glfw,
+    imgui,
     simdjson,
     spdlog,
     stb,
