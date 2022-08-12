@@ -1,7 +1,7 @@
 export module CopiumEngine.Graphics.EngineRenderPass;
 
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.IRenderPass;
+import CopiumEngine.Graphics.RenderGraph;
 
 
 export namespace Copium
@@ -10,19 +10,23 @@ export namespace Copium
     class EngineRenderPass final : public IRenderPass
     {
     public:
-        EngineRenderPass(SwapchainHandle swapchainHandle);
+        EngineRenderPass();
         ~EngineRenderPass() = default;
 
         EngineRenderPass(EngineRenderPass&& other) noexcept = default;
         EngineRenderPass& operator=(EngineRenderPass&& other) noexcept = default;
 
-        void OnCreate(IGraphicsDevice* graphicsDevice) override;
+        void OnSchedule(RenderGraph& renderGraph) override;
+        void OnCreate(RenderGraph& renderGraph) override;
         void OnRender(const RenderContext& renderContext) override;
 
     private:
-        SwapchainHandle     m_swapchainHandle;
+        RenderGraphTextureID m_engineColorId;
+        RenderGraphTextureID m_engineDepthId;
+
         RenderPassHandle    m_renderPassHandle;
-        RenderTextureHandle m_depthRTHandle;
+        RenderTextureHandle m_engineColorHandle;
+        RenderTextureHandle m_engineDepthHandle;
     };
 
 } // export namespace Copium

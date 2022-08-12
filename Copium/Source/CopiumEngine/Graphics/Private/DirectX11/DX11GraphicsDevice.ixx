@@ -127,6 +127,10 @@ export namespace Copium
         DX11GraphicsDevice(DX11GraphicsDevice&& other) noexcept = default;
         DX11GraphicsDevice& operator=(DX11GraphicsDevice&& other) noexcept = default;
 
+        //< For ImGui
+        // ID3D11ShaderResourceView*
+        [[nodiscard]] void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) override;
+        //> For ImGui
         [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
 
         // TODO(v.matushkin): <ImGui/CustomBackend>

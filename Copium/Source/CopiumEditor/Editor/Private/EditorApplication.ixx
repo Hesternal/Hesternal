@@ -18,7 +18,7 @@ export namespace Copium
 
     private:
         //< EngineApplication Interface Protected
-        void OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings) override;
+        void OnEngine_Init(int32 argc, const char* const* argv) override;
         void OnEngine_SystemsInit() override;
         void OnEngine_Shutdown() override;
         void OnEngine_Update() override;

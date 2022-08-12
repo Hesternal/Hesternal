@@ -1,7 +1,7 @@
 export module CopiumEditor.Editor.ImGuiRenderPass;
 
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.IRenderPass;
+import CopiumEngine.Graphics.RenderGraph;
 
 
 export namespace Copium
@@ -10,14 +10,25 @@ export namespace Copium
     class ImGuiRenderPass final : public IRenderPass
     {
     public:
-        ImGuiRenderPass() = default;
+        ImGuiRenderPass();
         ~ImGuiRenderPass() = default;
 
         ImGuiRenderPass(ImGuiRenderPass&& other) noexcept = default;
         ImGuiRenderPass& operator=(ImGuiRenderPass&& other) noexcept = default;
 
-        void OnCreate(IGraphicsDevice* graphicsDevice) override;
+        void OnSchedule(RenderGraph& renderGraph) override;
+        void OnCreate(RenderGraph& renderGraph) override;
         void OnRender(const RenderContext& renderContext) override;
+
+    private:
+        void*                m_engineColorNativeRenderTexture;
+
+        RenderGraphTextureID m_engineColorId;
+        RenderGraphTextureID m_editorColorId;
+
+        SwapchainHandle      m_swapchainHandle;
+        RenderPassHandle     m_renderPassHandle;
+        RenderTextureHandle  m_editorColorHandle;
     };
 
 } // export namespace Copium

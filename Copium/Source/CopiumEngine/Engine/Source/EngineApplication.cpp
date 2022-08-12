@@ -14,6 +14,7 @@ import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
 import CopiumEngine.Graphics;
@@ -50,7 +51,7 @@ namespace Copium
         COP_LOG_TRACE("EngineApplication Init");
 
         //- Derived App Init
-        OnEngine_Init(argc, argv, m_engineSettings);
+        OnEngine_Init(argc, argv);
 
         //- Systems Init
         _SystemsInit();
@@ -94,10 +95,12 @@ namespace Copium
 
         // TODO(v.matushkin): Camera initialization shouldn't be here
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
+
             constexpr float32 verticalFov = Math::Radians(90.0f);
             constexpr float32 near = 0.01f;
             constexpr float32 far = 100.0f;
-            float32 aspect = float32(m_engineSettings.WindowWidth) / m_engineSettings.WindowHeight;
+            float32 aspect = float32(engineSettings.RenderWidth) / engineSettings.RenderHeight;
 
             Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
 

@@ -9,11 +9,13 @@ module CopiumEditor.EditorApplication;
 import CopiumEditor.Assets.AssetDatabase;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.ECS.WorldManager;
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics;
 import CopiumEngine.Graphics.EngineRenderPass;
 import CopiumEngine.Graphics.RenderGraph;
 import CopiumEngine.ImGui.ImGuiContext;
 
+import CopiumEditor.Editor.EditorSettings;
 import CopiumEditor.Editor.ImGuiRenderPass;
 
 import <filesystem>;
@@ -51,7 +53,7 @@ namespace Copium
     }
 
 
-    void EditorApplication::OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings)
+    void EditorApplication::OnEngine_Init(int32 argc, const char* const* argv)
     {
         if (m_editorInitialized)
         {
@@ -93,30 +95,37 @@ namespace Copium
         m_projectPath = cmdResult[openProjectOption].as<std::string>();
         m_shaderDirPath = cmdResult[shaderDirOption].as<std::string>();
 
-        // if (usedCreateProject)
+        // if (usedCreateProject) 
         // {
         //     _CreateProject();
         // }
         // _OpenProject();
 
 
+        EngineSettings& engineSettings = EngineSettings::Get();
+        engineSettings.RenderWidth = 1280;
+        engineSettings.RenderHeight = 1000;
         engineSettings.GraphicsApi = GraphicsApi::DirectX11;
 
-        engineSettings.WindowTitle  = L"CopiumEngine";
-        engineSettings.WindowWidth  = 1280;
-        engineSettings.WindowHeight = 1000;
+        EditorSettings& editorSettings = EditorSettings::Get();
+        editorSettings.WindowTitle = L"CopiumEngine";
+        editorSettings.WindowWidth = 1920;
+        editorSettings.WindowHeight = 1080;
     }
 
     void EditorApplication::OnEngine_SystemsInit()
     {
-        COP_LOG_TRACE("EditorApplication SystemsInit");
+        COP_LOG_TRACE("EditorApplication SystemsInit"); 
 
-        WindowDesc windowDesc = {
-            .Title  = L"CopiumEngine",
-            .Width  = 1280,
-            .Height = 1000,
-        };
-        m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
+        {
+            EditorSettings& editorSettings = EditorSettings::Get();
+            WindowDesc windowDesc = {
+                .Title  = editorSettings.WindowTitle,
+                .Width  = editorSettings.WindowWidth,
+                .Height = editorSettings.WindowHeight,
+            };
+            m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
+        }
 
         ImGuiContext::Init(m_mainWindow->GetWindowHandle());
         AssetDatabase::Init(m_projectPath, m_shaderDirPath);
@@ -124,8 +133,8 @@ namespace Copium
         // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no idea how else
         Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("Main.shader"));
 
-        auto renderGraph = std::make_unique<RenderGraph>();
-        renderGraph->AddRenderPass(std::make_unique<EngineRenderPass>(m_mainWindow->GetSwapchainHandle()));
+        auto renderGraph = std::make_unique<RenderGraph>(m_mainWindow->GetSwapchainHandle());
+        renderGraph->AddRenderPass(std::make_unique<EngineRenderPass>());
         renderGraph->AddRenderPass(std::make_unique<ImGuiRenderPass>());
 
         Graphics::SetRenderGraph(std::move(renderGraph));

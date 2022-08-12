@@ -1,50 +1,61 @@
 module CopiumEngine.Graphics.EngineRenderPass;
 
+import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.IGraphicsDevice;
+import CopiumEngine.Graphics.RenderPassNames;
 
 
 namespace Copium
 {
 
-    EngineRenderPass::EngineRenderPass(SwapchainHandle swapchainHandle)
-        : m_swapchainHandle(swapchainHandle)
+    EngineRenderPass::EngineRenderPass()
+        : IRenderPass("Engine")
+        , m_engineColorId(RenderGraphTextureID::Invalid)
+        , m_engineDepthId(RenderGraphTextureID::Invalid)
         , m_renderPassHandle(RenderPassHandle::Invalid)
-        , m_depthRTHandle(RenderTextureHandle::Invalid)
+        , m_engineColorHandle(RenderTextureHandle::Invalid)
+        , m_engineDepthHandle(RenderTextureHandle::Invalid)
     {
     }
 
 
-    void EngineRenderPass::OnCreate(IGraphicsDevice* graphicsDevice)
+    void EngineRenderPass::OnSchedule(RenderGraph& renderGraph)
     {
-        RenderTextureHandle swapchainRTHandle = graphicsDevice->GetSwapchainRenderTexture(m_swapchainHandle);
+        m_engineColorId = renderGraph.ScheduleCreate(RenderPassNames::EngineColor);
+        m_engineDepthId = renderGraph.ScheduleCreate(RenderPassNames::EngineDepth);
+    }
 
-        RenderTextureDesc depthRenderTextureDesc = {
-            .Name       = "Engine Depth",
-            .ClearValue = RenderTextureClearValue::DefaultDepthStencil(),
-            .Width      = 1280,
-            .Height     = 1000,
-            .Format     = RenderTextureFormat::Depth32,
-            .Usage      = RenderTextureUsage::Default,
-        };
-        m_depthRTHandle = graphicsDevice->CreateRenderTexture(depthRenderTextureDesc);
+    void EngineRenderPass::OnCreate(RenderGraph& renderGraph)
+    {
+        EngineSettings& engineSettings = EngineSettings::Get();
+        const uint32 renderWidth = engineSettings.RenderWidth;
+        const uint32 renderHeight = engineSettings.RenderHeight;
 
-        RenderPassDesc renderPassDesc = {
+        m_engineColorHandle = renderGraph.CreateRenderTexture(
+            m_engineColorId, renderWidth, renderHeight, RenderTextureFormat::BGRA8, RenderTextureClearValue::DefaultColor()
+        );
+
+        m_engineDepthHandle = renderGraph.CreateRenderTexture(
+            m_engineDepthId, renderWidth, renderHeight, RenderTextureFormat::Depth32, RenderTextureClearValue::DefaultDepthStencil()
+        );
+
+        m_renderPassHandle = renderGraph.CreateRenderPass(RenderPassDesc{
             .ColorAttachments = {
                 {
-                    .RTHandle   = swapchainRTHandle,
+                    .RTHandle   = m_engineColorHandle,
                     .LoadAction = AttachmentLoadAction::Clear,
-                }
+                },
             },
             .DepthStencilAttachment = AttachmentDesc{
-                .RTHandle   = m_depthRTHandle,
+                .RTHandle   = m_engineDepthHandle,
                 .LoadAction = AttachmentLoadAction::Clear,
             },
             .Subpass = {
                 .ColorAttachmentIndices    = {0},
                 .UseDepthStencilAttachment = true,
             },
-        };
-        m_renderPassHandle = graphicsDevice->CreateRenderPass(renderPassDesc);
+        });
     }
 
     void EngineRenderPass::OnRender(const RenderContext& renderContext)

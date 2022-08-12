@@ -16,6 +16,10 @@ export namespace Copium
         IGraphicsDevice(const IGraphicsDevice&) = delete;
         IGraphicsDevice& operator=(const IGraphicsDevice&) = delete;
 
+        //< For ImGui
+        // DX11 ID3D11ShaderResourceView*
+        [[nodiscard]] virtual void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) = 0;
+        //> For ImGui
         [[nodiscard]] virtual RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) = 0;
 
         virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;

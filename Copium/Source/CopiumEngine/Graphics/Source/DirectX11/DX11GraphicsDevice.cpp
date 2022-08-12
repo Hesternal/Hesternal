@@ -15,6 +15,7 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 module CopiumEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
+import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.DXCommon;
 
 import <memory>;
@@ -361,6 +362,13 @@ RELEASE_COM_PTR(m_factory);
     }
 
 
+    void* DX11GraphicsDevice::GetNativeRenderTexture(RenderTextureHandle renderTextureHandle)
+    {
+        ID3D11ShaderResourceView* d3dRenderTextureSrv = m_renderTextures.find(renderTextureHandle)->second.SRV;
+        COP_ASSERT_MSG(d3dRenderTextureSrv != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
+        return reinterpret_cast<void*>(d3dRenderTextureSrv);
+    }
+
     RenderTextureHandle DX11GraphicsDevice::GetSwapchainRenderTexture(SwapchainHandle swapchainHandle)
     {
         const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
@@ -662,7 +670,7 @@ RELEASE_COM_PTR(m_factory);
 
             if (depthStencilAttachmentDesc.LoadAction == AttachmentLoadAction::Clear)
             {
-                dx11RenderPass.ClearDepthStencilAttachment = depthStencilAttachmentDesc.RTHandle;
+                dx11RenderPass.ClearDepthStencilAttachment = depthStencilAttachment;
             }
         }
         else
@@ -684,9 +692,13 @@ RELEASE_COM_PTR(m_factory);
 
             dx11RenderPass.Subpass.DepthStencilAttachment = depthStencilAttachment;
         }
+        else
+        {
+            dx11RenderPass.Subpass.DepthStencilAttachment = RenderTextureHandle::Invalid;
+        }
 
         const auto renderPassHandle = static_cast<RenderPassHandle>(g_RenderPassHandleWorkaround++);
-        m_renderPasses.emplace(renderPassHandle, std::move(dx11RenderPass));
+        m_renderPasses.emplace(renderPassHandle, dx11RenderPass);
 
         return renderPassHandle;
     }
@@ -973,10 +985,11 @@ RELEASE_COM_PTR(m_factory);
 
         //- Setup Viewport
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
             // TODO(v.matushkin): <Viewport>
             D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(swapchainDesc.Width),
-                .Height   = static_cast<float32>(swapchainDesc.Height),
+                .Width    = static_cast<float32>(engineSettings.RenderWidth),
+                .Height   = static_cast<float32>(engineSettings.RenderHeight),
                 .MinDepth = 0,
                 .MaxDepth = 1,
             };
@@ -1116,10 +1129,11 @@ RELEASE_COM_PTR(m_factory);
 
         //- Setup Viewport
         {
+            EngineSettings& engineSettings = EngineSettings::Get();
             // TODO(v.matushkin): <Viewport>
             D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(width),
-                .Height   = static_cast<float32>(height),
+                .Width    = static_cast<float32>(engineSettings.RenderWidth),
+                .Height   = static_cast<float32>(engineSettings.RenderHeight),
                 .MinDepth = 0,
                 .MaxDepth = 1,
             };

@@ -2,7 +2,6 @@ export module CopiumEngine.Engine.Application;
 
 import CopiumEngine.Core.Application;
 import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Engine.EngineSettings;
 
 import <memory>;
 
@@ -18,7 +17,7 @@ export namespace Copium
 
         // NOTE(v.matushkin): Need separate Init and SystemsInit cause Editor sets EngineSettings,
         //  probably this can be reworked somehow, but right now idk how.
-        virtual void OnEngine_Init(int32 argc, const char* const* argv, EngineSettings& engineSettings) = 0;
+        virtual void OnEngine_Init(int32 argc, const char* const* argv) = 0;
         virtual void OnEngine_SystemsInit() = 0;
         virtual void OnEngine_Shutdown() = 0;
         virtual void OnEngine_Update() = 0;
@@ -34,9 +33,8 @@ export namespace Copium
         void _SystemsShutdown();
 
     private:
-        EngineSettings m_engineSettings;
-        bool           m_engineInitialized;
-        bool           m_engineClosed;
+        bool m_engineInitialized;
+        bool m_engineClosed;
     };
 
 } // export namespace Copium
