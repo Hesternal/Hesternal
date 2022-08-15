@@ -468,19 +468,17 @@ namespace Copium.HeaderTool.Parser
             }
         }
 
-        // NOTE(v.matushkin): This function exists only because I don't wanna deal with usage of "class" instead of "typename" in "template<...>" expression
+        // NOTE(v.matushkin): This function exists only because I don't wanna deal with usage of "class" instead of "typename" in "template<class ...>" expression
         /// <summary>
         /// Skip "<...>" part of the "template<...>" expression
         /// </summary>
         private void _ParseTemplate()
         {
-            Token openAngleBracketToken = PeekToken();
-            if (openAngleBracketToken.IsValue('<') == false)
+            // Skip stuff that I don't wanna handle, e.g. template instantiation 'extern template struct TRect<int32>;'
+            if (PeekToken().IsValue('<'))
             {
-                throw ParserError.UnexpectedSymbol(m_filePath, openAngleBracketToken, '<');
+                _ParseTypeTemplatedPart();
             }
-
-            _ParseTypeTemplatedPart();
         }
 
 
