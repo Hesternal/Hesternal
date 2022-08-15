@@ -404,25 +404,37 @@ namespace Copium.HeaderTool.Parser
 
         private void _ParseNamespace()
         {
-            string namespaceName;
+            string namespaceName = null;
 
-            // If anonymous namespace
-            if (PeekToken().IsSymbol('{'))
+            if (PeekToken().IsIdentifier())
             {
-                AdvanceToken();
-                // NOTE(v.matushkin): I don't know how should I handle anonymous namespace, since it doesn't have a name,
-                //  but right now I'm not using these names anyway. May be just assign empty string,
-                //  or doesn't push anything to type scope at all?
-                namespaceName = "ANON";
+                namespaceName = _ParseQualifiedIdentifier();
+            }
+
+            Token token = ExpectSymbol();
+
+            // Most likely it was 'using namespace Name;', skip.
+            if (token.IsValue(';'))
+            {
+            }
+            else if (token.IsValue('{'))
+            {
+                // If it was anonymous namespace
+                if (namespaceName == null)
+                {
+                    // NOTE(v.matushkin): I don't know how should I handle anonymous namespace, since it doesn't have a name,
+                    //  but right now I'm not using these names anyway. May be just assign empty string,
+                    //  or doesn't push anything to type scope at all?
+                    namespaceName = "ANON";
+                }
+
+                m_parsingContext.PushContext_Namespace();
+                m_cppTypeScope.Push(namespaceName);
             }
             else
             {
-                namespaceName = _ParseQualifiedIdentifier();
-                ExpectSymbol('{');
+                throw ParserError.Message(m_filePath, token, $"Expected ';' or '{{' symbol, got '{token.AsSymbol()}'");
             }
-
-            m_parsingContext.PushContext_Namespace();
-            m_cppTypeScope.Push(namespaceName);
         }
 
         private void _ParseStructOrClass(bool isStruct)
