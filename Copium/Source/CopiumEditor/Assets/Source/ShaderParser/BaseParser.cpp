@@ -366,6 +366,8 @@ namespace Copium
             throw Error_Message("Couldn't find the end of a string literal", m_line, tokenColumn);
         }
 
+        const ParserIterator tokenEnd = m_inputCurrent;
+
         // Skip '"' symbol
         if (_MoveNext() == false)
         {
@@ -373,7 +375,7 @@ namespace Copium
         }
         m_column++;
 
-        return Token(_MakeStringView(tokenBegin, m_inputCurrent), m_line, tokenColumn, TokenType::String);
+        return Token(_MakeStringView(tokenBegin, tokenEnd), m_line, tokenColumn, TokenType::String);
     }
 
 
