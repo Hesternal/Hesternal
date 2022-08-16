@@ -14,21 +14,26 @@ import <string>;
 import <vector>;
 
 
-namespace Copium
+namespace
 {
+    using namespace Copium;
+
+
     inline constexpr uint32 k_InvalidHandle = 0xffff'ffff;
-}
+
+} // namespace
 
 
 export namespace Copium
 {
 
-    enum class MeshHandle          : uint32 { Invalid = k_InvalidHandle };
-    enum class RenderPassHandle    : uint32 { Invalid = k_InvalidHandle };
-    enum class RenderTextureHandle : uint32 { Invalid = k_InvalidHandle };
-    enum class ShaderHandle        : uint32 { Invalid = k_InvalidHandle };
-    enum class SwapchainHandle     : uint32 { Invalid = k_InvalidHandle };
-    enum class TextureHandle       : uint32 { Invalid = k_InvalidHandle };
+    enum class GraphicsBufferHandle : uint32 { Invalid = k_InvalidHandle };
+    enum class MeshHandle           : uint32 { Invalid = k_InvalidHandle };
+    enum class RenderPassHandle     : uint32 { Invalid = k_InvalidHandle };
+    enum class RenderTextureHandle  : uint32 { Invalid = k_InvalidHandle };
+    enum class ShaderHandle         : uint32 { Invalid = k_InvalidHandle };
+    enum class SwapchainHandle      : uint32 { Invalid = k_InvalidHandle };
+    enum class TextureHandle        : uint32 { Invalid = k_InvalidHandle };
 
 
     //- Shader states
@@ -241,6 +246,26 @@ export namespace Copium
         Float32,
     };
 
+
+    enum class GraphicsBufferUsage : uint8
+    {
+        Vertex,
+        Index,
+        Constant,
+    };
+
+
+    struct GraphicsBufferDesc final
+    {
+        int32               ElementCount;
+        int32               ElementSize;
+        GraphicsBufferUsage Usage;
+
+        [[nodiscard]] int32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
+    };
+
+
+    //- Mesh
 
     CHT_STRUCT()
     struct VertexAttributeDesc

@@ -18,6 +18,7 @@ COP_WARNING_POP
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.DXCommon;
 
+import <cstring>;
 import <memory>;
 import <string>;
 import <unordered_map>;
@@ -55,13 +56,26 @@ namespace
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
 
-    static uint32 g_MeshHandleWorkaround          = 0;
-    static uint32 g_RenderPassHandleWorkaround    = 0;
-    static uint32 g_RenderTextureHandleWorkaround = 0;
-    static uint32 g_ShaderHandleWorkaround        = 0;
-    static uint32 g_SwapchainHandleWorkaround     = 0;
-    static uint32 g_TextureHandleWorkaround       = 0;
+    static constinit uint32 g_GraphicsBufferHandleWorkaround = 0;
+    static constinit uint32 g_MeshHandleWorkaround           = 0;
+    static constinit uint32 g_RenderPassHandleWorkaround     = 0;
+    static constinit uint32 g_RenderTextureHandleWorkaround  = 0;
+    static constinit uint32 g_ShaderHandleWorkaround         = 0;
+    static constinit uint32 g_SwapchainHandleWorkaround      = 0;
+    static constinit uint32 g_TextureHandleWorkaround        = 0;
 
+
+    //- GraphicsBuffer
+    [[nodiscard]] static uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage)
+    {
+        static const D3D11_BIND_FLAG d3dBindFlags[] = {
+            D3D11_BIND_VERTEX_BUFFER,
+            D3D11_BIND_INDEX_BUFFER,
+            D3D11_BIND_CONSTANT_BUFFER,
+        };
+
+        return d3dBindFlags[std::to_underlying(graphicsBufferUsage)];
+    }
 
     //- Mesh
     [[nodiscard]] static DXGI_FORMAT dx11_IndexFormat(IndexFormat indexFormat)
@@ -217,6 +231,11 @@ namespace
 namespace Copium
 {
 
+    void DX11GraphicsDevice::DX11GraphicsBuffer::Release()
+    {
+        Buffer->Release();
+    }
+
     void DX11GraphicsDevice::DX11Mesh::Release()
     {
         Index->Release();
@@ -310,34 +329,40 @@ namespace Copium
 
     DX11GraphicsDevice::~DX11GraphicsDevice()
     {
+        //- GraphicsBuffers
+        COP_LOG_WARN_COND(m_graphicsBuffers.size() != 0, "{:d} GraphicsBuffer(s) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
+        for (auto& handleAndGraphicsBuffer : m_graphicsBuffers)
+        {
+            handleAndGraphicsBuffer.second.Release();
+        }
         //- Meshes
-        COP_LOG_WARN_COND(m_meshes.size() != 0, "{:d} mesh(es) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
+        COP_LOG_WARN_COND(m_meshes.size() != 0, "{:d} Mesh(es) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
         for (auto& handleAndMesh : m_meshes)
         {
             handleAndMesh.second.Release();
         }
         //- RenderPasses
-        COP_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} render pass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
+        COP_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} RenderPass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
         //- Swapchains (Should be destroyed before RenderTextures)
-        COP_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
+        COP_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} Swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
         for (auto& handleAndSwapchain : m_swapchains)
         {
             handleAndSwapchain.second.Release(this);
         }
         //- RenderTextures
-        COP_LOG_WARN_COND(m_renderTextures.size() != 0, "{:d} render textures(s) were not cleaned up before DX11GraphicsDevice destruction", m_renderTextures.size());
+        COP_LOG_WARN_COND(m_renderTextures.size() != 0, "{:d} RenderTexture(s) were not cleaned up before DX11GraphicsDevice destruction", m_renderTextures.size());
         for (auto& handleAndRenderTexture : m_renderTextures)
         {
             handleAndRenderTexture.second.Release();
         }
         //- Shaders
-        COP_LOG_WARN_COND(m_shaders.size() != 0, "{:d} shader(s) were not cleaned up before DX11GraphicsDevice destruction", m_shaders.size());
+        COP_LOG_WARN_COND(m_shaders.size() != 0, "{:d} Shader(s) were not cleaned up before DX11GraphicsDevice destruction", m_shaders.size());
         for (auto& handleAndShader : m_shaders)
         {
             handleAndShader.second.Release();
         }
         //- Textures
-COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
+        COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} Texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
 for (auto& handleAndTexture2D : m_textures)
 {
     handleAndTexture2D.second.Release();
@@ -536,6 +561,47 @@ RELEASE_COM_PTR(m_factory);
         m_deviceContext->Draw(vertexCount, 0);
     }
 
+
+    GraphicsBufferHandle DX11GraphicsDevice::CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData)
+        {
+        DX11GraphicsBuffer dx11GraphicsBuffer;
+
+        {
+            // NOTE(v.matushkin): Hardcoding D3D11_USAGE_DYNAMIC and D3D11_CPU_ACCESS_WRITE
+            //  as there is no way to tell if the buffer will be updated later or it will be IMMUTABLE
+            D3D11_BUFFER_DESC d3dBufferDesc = {
+                .ByteWidth           = static_cast<uint32>(graphicsBufferDesc.SizeInBytes()),
+                .Usage               = D3D11_USAGE_DYNAMIC,
+                .BindFlags           = dx11_GraphicsBufferBindFlags(graphicsBufferDesc.Usage),
+                .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
+                .MiscFlags           = 0,
+                .StructureByteStride = 0,
+            };
+
+            D3D11_SUBRESOURCE_DATA* d3dSubresourceDataPtr;
+            D3D11_SUBRESOURCE_DATA d3dSubresourceData;
+
+            if (initialData.empty())
+            {
+                d3dSubresourceDataPtr = nullptr;
+            }
+            else
+            {
+                d3dSubresourceData.pSysMem = initialData.data();
+                d3dSubresourceData.SysMemPitch = 0;
+                d3dSubresourceData.SysMemSlicePitch = 0;
+
+                d3dSubresourceDataPtr = &d3dSubresourceData;
+            }
+
+            m_device->CreateBuffer(&d3dBufferDesc, d3dSubresourceDataPtr, &dx11GraphicsBuffer.Buffer);
+        }
+
+        const auto graphicsBufferHandle = static_cast<GraphicsBufferHandle>(g_GraphicsBufferHandleWorkaround++);
+        m_graphicsBuffers.emplace(graphicsBufferHandle, dx11GraphicsBuffer);
+
+        return graphicsBufferHandle;
+    }
 
     MeshHandle DX11GraphicsDevice::CreateMesh(const MeshDesc& meshDesc)
     {
@@ -1110,6 +1176,26 @@ RELEASE_COM_PTR(m_factory);
     }
 
 
+    void DX11GraphicsDevice::UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data)
+    {
+        const auto dx11GraphicsBufferIterator = m_graphicsBuffers.find(graphicsBufferHandle);
+        COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
+
+        ID3D11Buffer* d3dBuffer = dx11GraphicsBufferIterator->second.Buffer;
+
+        {
+            D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
+                .pData      = nullptr,
+                .RowPitch   = 0,
+                .DepthPitch = 0,
+            };
+
+            m_deviceContext->Map(d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
+            std::memcpy(d3dMappedSubresource.pData, data.data(), data.size());
+            m_deviceContext->Unmap(d3dBuffer, 0);
+        }
+    }
+
     void DX11GraphicsDevice::ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height)
     {
         const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
@@ -1141,6 +1227,14 @@ RELEASE_COM_PTR(m_factory);
         }
     }
 
+
+    void DX11GraphicsDevice::DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle)
+    {
+        auto graphicsBufferMapNode = m_graphicsBuffers.extract(graphicsBufferHandle);
+        COP_ASSERT(graphicsBufferMapNode.empty() == false);
+
+        graphicsBufferMapNode.mapped().Release();
+    }
 
     void DX11GraphicsDevice::DestroyMesh(MeshHandle meshHandle)
     {
@@ -1196,7 +1290,7 @@ RELEASE_COM_PTR(m_factory);
         {
             uint32 dxgiFactoryFlags = 0;
 #if COP_ENABLE_GRAPHICS_API_DEBUG
-            // NOTE(v.matushkin): Look like I need to set this to use IDXGIInfoQueue?
+            // NOTE(v.matushkin): Looks like I need to set this to use IDXGIInfoQueue?
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 

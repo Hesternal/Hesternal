@@ -30,6 +30,13 @@ export namespace Copium
         static constexpr uint8 k_RenderPassColorAttachments = 8;
 
 
+        struct DX11GraphicsBuffer
+        {
+            ID3D11Buffer* Buffer;
+
+            void Release();
+        };
+
         struct DX11Mesh
         {
             ID3D11Buffer* Index;
@@ -147,6 +154,7 @@ export namespace Copium
         void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
 
+        [[nodiscard]] GraphicsBufferHandle CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData) override;
         [[nodiscard]] MeshHandle CreateMesh(const MeshDesc& meshDesc) override;
         [[nodiscard]] RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) override;
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) override;
@@ -154,8 +162,10 @@ export namespace Copium
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
         [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc) override;
 
+        void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) override;
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;
 
+        void DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
         void DestroyMesh(MeshHandle meshHandle) override;
         void DestroyRenderPass(RenderPassHandle renderPassHandle) override;
         void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) override;
@@ -186,10 +196,13 @@ export namespace Copium
 
         std::unordered_map<MeshHandle,          DX11Mesh>          m_meshes;
         std::unordered_map<RenderPassHandle,    DX11RenderPass>    m_renderPasses;
-        std::unordered_map<RenderTextureHandle, DX11RenderTexture> m_renderTextures;
-        std::unordered_map<ShaderHandle,        DX11Shader>        m_shaders;
-        std::unordered_map<SwapchainHandle,     DX11Swapchain>     m_swapchains;
-        std::unordered_map<TextureHandle,       DX11Texture2D>     m_textures;
+        std::unordered_map<GraphicsBufferHandle, DX11GraphicsBuffer> m_graphicsBuffers;
+        std::unordered_map<MeshHandle,           DX11Mesh>           m_meshes;
+        std::unordered_map<RenderPassHandle,     DX11RenderPass>     m_renderPasses;
+        std::unordered_map<RenderTextureHandle,  DX11RenderTexture>  m_renderTextures;
+        std::unordered_map<ShaderHandle,         DX11Shader>         m_shaders;
+        std::unordered_map<SwapchainHandle,      DX11Swapchain>      m_swapchains;
+        std::unordered_map<TextureHandle,        DX11Texture2D>      m_textures;
     };
 
 } // export namespace Copium

@@ -10,15 +10,26 @@ import <bit>;
 import <utility>;
 
 
+namespace
+{
+    using namespace Copium;
+
+
+    // Minimal possible size
+    static_assert(sizeof(GraphicsBufferDesc) == 12);
+
+} // namespace
+
+
 namespace Copium
 {
 
     uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat)
     {
         static const uint8 bytesPerPixel[] = {
-           1,
-           2,
-           4,
+            1,
+            2,
+            4,
         };
 
         return bytesPerPixel[std::to_underlying(textureFormat)];

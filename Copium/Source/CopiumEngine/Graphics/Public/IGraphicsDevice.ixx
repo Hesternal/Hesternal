@@ -4,6 +4,8 @@ import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Math;
 
+import <span>;
+
 
 export namespace Copium
 {
@@ -32,6 +34,7 @@ export namespace Copium
         virtual void DrawMesh(MeshHandle meshHandle) = 0;
         virtual void DrawProcedural(uint32 vertexCount) = 0;
 
+        [[nodiscard]] virtual GraphicsBufferHandle CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData) = 0;
         [[nodiscard]] virtual MeshHandle CreateMesh(const MeshDesc& meshDesc) = 0;
         [[nodiscard]] virtual RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) = 0;
         [[nodiscard]] virtual RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) = 0;
@@ -39,8 +42,10 @@ export namespace Copium
         [[nodiscard]] virtual SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) = 0;
         [[nodiscard]] virtual TextureHandle CreateTexture2D(const TextureDesc& textureDesc) = 0;
 
+        virtual void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) = 0;
         virtual void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) = 0;
 
+        virtual void DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle) = 0;
         virtual void DestroyMesh(MeshHandle meshHandle) = 0;
         virtual void DestroyRenderPass(RenderPassHandle renderPassHandle) = 0;
         virtual void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) = 0;
