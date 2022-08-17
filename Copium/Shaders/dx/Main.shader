@@ -56,6 +56,7 @@ Shader "Engine/Main"
         Texture2D _NormalMap        : register(t1);
         sampler   sampler_NormalMap : register(s1);
 
+
         struct Varyings
         {
             float4 positionCS : SV_POSITION;
@@ -64,15 +65,16 @@ Shader "Engine/Main"
             float2 uv0        : VAR_TEXCOORD0;
         };
 
-        float4 main(Varyings input) : SV_TARGET
+
+        float4 main(Varyings IN) : SV_TARGET
         {
-            float4 baseColor = _BaseColorMap.Sample(sampler_BaseColorMap, input.uv0);
+            float4 baseColor = _BaseColorMap.Sample(sampler_BaseColorMap, IN.uv0);
             return baseColor;
 
-            // float3 normalMap = _NormalMap.Sample(sampler_NormalMap, input.uv0);
+            // float3 normalMap = _NormalMap.Sample(sampler_NormalMap, IN.uv0);
             // return float4(normalMap, 1.0f);
 
-            // float3 normalWS = normalize(input.normalWS);
+            // float3 normalWS = normalize(IN.normalWS);
             // return float4(normalWS, 1);
         }
     }

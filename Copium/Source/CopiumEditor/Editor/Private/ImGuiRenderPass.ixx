@@ -21,13 +21,12 @@ export namespace Copium
         void OnRender(const RenderContext& renderContext) override;
 
     private:
-        void*                m_engineColorNativeRenderTexture;
-
         RenderGraphTextureID m_engineColorId;
         RenderGraphTextureID m_editorColorId;
 
         SwapchainHandle      m_swapchainHandle;
         RenderPassHandle     m_renderPassHandle;
+        RenderTextureHandle  m_engineColorHandle;
         RenderTextureHandle  m_editorColorHandle;
     };
 

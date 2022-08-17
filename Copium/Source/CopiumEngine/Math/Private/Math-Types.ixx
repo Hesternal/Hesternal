@@ -169,6 +169,10 @@ export namespace Copium
         [[nodiscard]] static constexpr Float4x4 TR(const Float3& translation, const Quaternion& rotation);
         [[nodiscard]] static constexpr Float4x4 TRS(const Float3& translation, const Quaternion& rotation, const Float3& scale);
 
+        // NOTE(v.matushkin): At least I hope that is LH and maps Z to the right range
+        /// LeftHanded, maps ZNear/ZFar to [0..1] range
+        [[nodiscard]] static constexpr Float4x4 OrthoOffCenter(float32 left, float32 right, float32 top, float32 bottom, float32 near, float32 far) noexcept;
+        // NOTE(v.matushkin): Also not sure about the way I build Perspective matrix, seems like it's also wrong?
         /// verticalFov in radians
         [[nodiscard]] static Float4x4 Perspective(float32 verticalFov, float32 aspect, float32 near, float32 far);
     };
@@ -216,7 +220,7 @@ export namespace Copium::Math
     [[nodiscard]] constexpr Float3 Down()    { return Float3( 0.0f, -1.0f,  0.0f); }
     [[nodiscard]] constexpr Float3 Forward() { return Float3( 0.0f,  0.0f,  1.0f); }
     [[nodiscard]] constexpr Float3 Back()    { return Float3( 0.0f,  0.0f, -1.0f); }
-    // TODO(v.matushkin): Not usre why my Left and Right are the opposite of what they're supposed to be
+    // TODO(v.matushkin): Not sure why my Left and Right are the opposite of what they're supposed to be
     [[nodiscard]] constexpr Float3 Left()    { return Float3( 1.0f,  0.0f,  0.0f); }
     [[nodiscard]] constexpr Float3 Right()   { return Float3(-1.0f,  0.0f,  0.0f); }
 
@@ -626,6 +630,18 @@ export namespace Copium
                         Float4(r * translation, 1.0f));
     }
 
+
+    constexpr Float4x4 Float4x4::OrthoOffCenter(float32 left, float32 right, float32 bottom, float32 top, float32 near, float32 far) noexcept
+    {
+        float32 rcpX = 1.0f / (right - left);
+        float32 rcpY = 1.0f / (top - bottom);
+        float32 rcpZ = 1.0f / (far - near);
+
+        return Float4x4(2.0f * rcpX,        0.0f, 0.0f, (right + left) * -rcpX,
+                               0.0f, 2.0f * rcpY, 0.0f, (top + bottom) * -rcpY,
+                               0.0f,        0.0f, rcpZ,           near * -rcpZ,
+                               0.0f,        0.0f, 0.0f,                   1.0f);
+    }
 
     Float4x4 Float4x4::Perspective(float32 verticalFov, float32 aspect, float32 near, float32 far)
     {
