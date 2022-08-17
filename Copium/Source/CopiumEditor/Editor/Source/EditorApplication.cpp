@@ -127,11 +127,11 @@ namespace Copium
             m_mainWindow = std::make_unique<Window>(std::move(windowDesc));
         }
 
-        ImGuiContext::Init(m_mainWindow->GetWindowHandle());
         AssetDatabase::Init(m_projectPath, m_shaderDirPath);
 
         // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no idea how else
         Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("Main.shader"));
+        ImGuiContext::Init(m_mainWindow->GetWindowHandle(), AssetDatabase::LoadAsset<Shader>("ImGui.shader"));
 
         auto renderGraph = std::make_unique<RenderGraph>(m_mainWindow->GetSwapchainHandle());
         renderGraph->AddRenderPass(std::make_unique<EngineRenderPass>());
@@ -153,8 +153,8 @@ namespace Copium
         m_editorInitialized = false;
         m_editorClosed = true;
 
-        AssetDatabase::Shutdown();
         ImGuiContext::Shutdown();
+        AssetDatabase::Shutdown();
 
         m_mainWindow.reset();
 

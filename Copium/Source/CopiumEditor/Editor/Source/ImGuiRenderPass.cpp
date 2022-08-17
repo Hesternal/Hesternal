@@ -18,11 +18,11 @@ namespace Copium
 
     ImGuiRenderPass::ImGuiRenderPass()
         : IRenderPass("Editor")
-        , m_engineColorNativeRenderTexture(nullptr)
         , m_engineColorId(RenderGraphTextureID::Invalid)
         , m_editorColorId(RenderGraphTextureID::Invalid)
         , m_swapchainHandle(SwapchainHandle::Invalid)
         , m_renderPassHandle(RenderPassHandle::Invalid)
+        , m_engineColorHandle(RenderTextureHandle::Invalid)
         , m_editorColorHandle(RenderTextureHandle::Invalid)
     {
     }
@@ -36,7 +36,7 @@ namespace Copium
 
     void ImGuiRenderPass::OnCreate(RenderGraph& renderGraph)
     {
-        m_engineColorNativeRenderTexture = renderGraph.GetNativeRenderTexture(m_engineColorId);
+        m_engineColorHandle = renderGraph.GetRenderTexture(m_engineColorId);
 
         EditorSettings& editorSettings = EditorSettings::Get();
         m_editorColorHandle = renderGraph.CreateRenderTexture(
@@ -64,7 +64,7 @@ namespace Copium
         renderContext.BeginRenderPass(m_renderPassHandle);
         ImGuiContext::BeginFrame();
 
-        // ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
@@ -78,10 +78,14 @@ namespace Copium
             const auto windowSize = ImGui::GetWindowSize();
             if (ImGui::BeginChild("SceneChild", windowSize))
             {
+                ImGuiTexture imguiTexture;
+                imguiTexture.Parts.Handle = static_cast<uint32>(m_engineColorHandle);
+                imguiTexture.Parts.IsRenderTexture = true;
+
                 EngineSettings& engineSettings = EngineSettings::Get();
                 ImVec2 engineOutputDimensions(engineSettings.RenderWidth, engineSettings.RenderHeight);
 
-                ImGui::Image(m_engineColorNativeRenderTexture, engineOutputDimensions);
+                ImGui::Image(reinterpret_cast<ImTextureID>(imguiTexture.Whole), engineOutputDimensions);
 
                 ImGui::EndChild();
             }
