@@ -103,11 +103,11 @@ export namespace Copium
 
         struct DX11Swapchain
         {
-            IDXGISwapChain4*     Swapchain;
-            DXGI_FORMAT          Format;
-            uint32               Flags; // DXGI_SWAP_CHAIN_FLAG
-            uint8                BufferCount;
-            RenderTextureHandle  SwapchainRTHandle;
+            IDXGISwapChain4*    Swapchain;
+            DXGI_FORMAT         Format;
+            uint32              Flags; // DXGI_SWAP_CHAIN_FLAG
+            uint8               BufferCount;
+            RenderTextureHandle SwapchainRTHandle;
 
             void Release(DX11GraphicsDevice* dx11GraphicsDevice);
         };
@@ -148,9 +148,18 @@ export namespace Copium
         void BeginRenderPass(RenderPassHandle renderPassHandle) override;
         void EndFrame() override;
 
+        void SetViewport(const Rect& viewportRect) override;
+        void SetScissorRect(const RectInt& scissorRect) override;
+
         void BindShader(ShaderHandle shaderHandle) override;
+        void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
+        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
+        void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
+        void BindTexture(TextureHandle textureHandle, uint32 slot) override;
+        void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
         void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
 
+        void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;
         void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
 
@@ -194,8 +203,8 @@ export namespace Copium
         ID3D11Buffer*         m_cbPerCamera;
         ID3D11Buffer*         m_cbPerMesh;
 
-        std::unordered_map<MeshHandle,          DX11Mesh>          m_meshes;
-        std::unordered_map<RenderPassHandle,    DX11RenderPass>    m_renderPasses;
+        ID3D11SamplerState*   m_renderTextureSampler;
+
         std::unordered_map<GraphicsBufferHandle, DX11GraphicsBuffer> m_graphicsBuffers;
         std::unordered_map<MeshHandle,           DX11Mesh>           m_meshes;
         std::unordered_map<RenderPassHandle,     DX11RenderPass>     m_renderPasses;

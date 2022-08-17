@@ -51,6 +51,10 @@ namespace
     using namespace Copium;
 
 
+    static constexpr float32 k_ViewportMinDepth = 0.0f;
+    static constexpr float32 k_ViewportMaxDepth = 1.0f;
+
+
 #if COP_ENABLE_GRAPHICS_API_DEBUG
     static const GUID k_DxgiDebugGuid = DXGI_DEBUG_ALL;
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
@@ -288,6 +292,7 @@ namespace Copium
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
         , m_cbPerCamera(nullptr)
         , m_cbPerMesh(nullptr)
+        , m_renderTextureSampler(nullptr)
     {
         _CreateDevice();
 #if COP_ENABLE_GRAPHICS_API_DEBUG
@@ -316,6 +321,23 @@ namespace Copium
 
             m_device->CreateBuffer(&d3dPerCameraBufferDesc, nullptr, &m_cbPerCamera);
             m_device->CreateBuffer(&d3dPerMeshBufferDesc, nullptr, &m_cbPerMesh);
+        }
+
+        //- Create RenderTexture sampler
+        {
+            D3D11_SAMPLER_DESC d3dSamplerDesc = {
+                .Filter         = D3D11_FILTER_MIN_MAG_MIP_POINT,
+                .AddressU       = D3D11_TEXTURE_ADDRESS_CLAMP,
+                .AddressV       = D3D11_TEXTURE_ADDRESS_CLAMP,
+                .AddressW       = D3D11_TEXTURE_ADDRESS_CLAMP,
+                .MipLODBias     = 0,
+                .MaxAnisotropy  = 0,
+                .ComparisonFunc = D3D11_COMPARISON_NEVER,
+                // .BorderColor      // NOTE(v.matushkin): Only used if D3D11_TEXTURE_ADDRESS_BORDER is specified in Address*
+                .MinLOD         = 0,
+                .MaxLOD         = D3D11_FLOAT32_MAX,
+            };
+            m_device->CreateSamplerState(&d3dSamplerDesc, &m_renderTextureSampler);
         }
 
         //- Set default state
@@ -363,27 +385,29 @@ namespace Copium
         }
         //- Textures
         COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} Texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
-for (auto& handleAndTexture2D : m_textures)
-{
-    handleAndTexture2D.second.Release();
-}
+        for (auto& handleAndTexture2D : m_textures)
+        {
+            handleAndTexture2D.second.Release();
+        }
 
-RELEASE_COM_PTR(m_cbPerCamera);
-RELEASE_COM_PTR(m_cbPerMesh);
+        RELEASE_COM_PTR(m_renderTextureSampler);
 
-// NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
-// NOTE(v.matushkin): Probably this should be called for debug only
-m_deviceContext->ClearState();
-m_deviceContext->Flush();
-RELEASE_COM_PTR(m_deviceContext);
+        RELEASE_COM_PTR(m_cbPerCamera);
+        RELEASE_COM_PTR(m_cbPerMesh);
+
+        // NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
+        // NOTE(v.matushkin): Probably this should be called for debug only
+        m_deviceContext->ClearState();
+        m_deviceContext->Flush();
+        RELEASE_COM_PTR(m_deviceContext);
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
-_DebugLayer_ReportLiveObjects();
-RELEASE_COM_PTR(m_dxgiInfoQueue);
+        _DebugLayer_ReportLiveObjects();
+        RELEASE_COM_PTR(m_dxgiInfoQueue);
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
-RELEASE_COM_PTR(m_device);
-RELEASE_COM_PTR(m_factory);
+        RELEASE_COM_PTR(m_device);
+        RELEASE_COM_PTR(m_factory);
     }
 
 
@@ -508,6 +532,31 @@ RELEASE_COM_PTR(m_factory);
     }
 
 
+    void DX11GraphicsDevice::SetViewport(const Rect& viewportRect)
+    {
+        const D3D11_VIEWPORT d3dViewport = {
+            .TopLeftX = viewportRect.X,
+            .TopLeftY = viewportRect.Y,
+            .Width    = viewportRect.Width,
+            .Height   = viewportRect.Height,
+            .MinDepth = k_ViewportMinDepth,
+            .MaxDepth = k_ViewportMaxDepth,
+        };
+        m_deviceContext->RSSetViewports(1, &d3dViewport);
+    }
+
+    void DX11GraphicsDevice::SetScissorRect(const RectInt& scissorRect)
+    {
+        const D3D11_RECT d3dScissorRect = {
+            .left   = scissorRect.X,
+            .top    = scissorRect.Y,
+            .right  = scissorRect.GetMaxX(),
+            .bottom = scissorRect.GetMaxY(),
+        };
+        m_deviceContext->RSSetScissorRects(1, &d3dScissorRect);
+    }
+
+
     void DX11GraphicsDevice::BindShader(ShaderHandle shaderHandle)
     {
         const auto dx11ShaderIterator = m_shaders.find(shaderHandle);
@@ -523,6 +572,54 @@ RELEASE_COM_PTR(m_factory);
         m_deviceContext->OMSetDepthStencilState(dx11Shader.DepthStencilState, D3D11_DEFAULT_STENCIL_REFERENCE);
         // TODO(v.matushkin): BlendFactor, SampleMask ? BlendFactor = nullptr -> {1,1,1,1}
         m_deviceContext->OMSetBlendState(dx11Shader.BlendState, nullptr, D3D11_DEFAULT_SAMPLE_MASK);
+    }
+
+    void DX11GraphicsDevice::BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset)
+    {
+        const auto dx11VertexBufferIterator = m_graphicsBuffers.find(vertexBufferHandle);
+        COP_ASSERT(dx11VertexBufferIterator != m_graphicsBuffers.end());
+
+        m_deviceContext->IASetVertexBuffers(0, 1, &dx11VertexBufferIterator->second.Buffer, &stride, &offset);
+    }
+
+    void DX11GraphicsDevice::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat)
+    {
+        const auto dx11IndexBufferIterator = m_graphicsBuffers.find(indexBufferHandle);
+        COP_ASSERT(dx11IndexBufferIterator != m_graphicsBuffers.end());
+
+        m_deviceContext->IASetIndexBuffer(dx11IndexBufferIterator->second.Buffer, dx11_IndexFormat(indexFormat), 0);
+    }
+
+    void DX11GraphicsDevice::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot)
+    {
+        const auto dx11ConstantBufferIterator = m_graphicsBuffers.find(constantBufferHandle);
+        COP_ASSERT(dx11ConstantBufferIterator != m_graphicsBuffers.end());
+
+        m_deviceContext->VSSetConstantBuffers(slot, 1, &dx11ConstantBufferIterator->second.Buffer);
+    }
+
+    void DX11GraphicsDevice::BindTexture(TextureHandle textureHandle, uint32 slot)
+    {
+        const auto dx11TextureIterator = m_textures.find(textureHandle);
+        COP_ASSERT(dx11TextureIterator != m_textures.end());
+
+        DX11Texture2D& dx11Texture = dx11TextureIterator->second;
+        ID3D11ShaderResourceView* d3dTextureSRV = dx11Texture.SRV;
+        m_deviceContext->PSSetShaderResources(slot, 1, &d3dTextureSRV);
+        m_deviceContext->PSSetSamplers(slot, 1, &dx11Texture.Sampler);
+    }
+
+    void DX11GraphicsDevice::BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot)
+    {
+        const auto dx11RenderTextureIterator = m_renderTextures.find(renderTextureHandle);
+        COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
+
+        DX11RenderTexture& dx11RenderTexture = dx11RenderTextureIterator->second;
+        ID3D11ShaderResourceView* d3dRenderTextureSRV = dx11RenderTexture.SRV;
+        COP_ASSERT_MSG(d3dRenderTextureSRV != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
+
+        m_deviceContext->PSSetShaderResources(slot, 1, &d3dRenderTextureSRV);
+        m_deviceContext->PSSetSamplers(slot, 1, &m_renderTextureSampler);
     }
 
     void DX11GraphicsDevice::BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle)
@@ -542,6 +639,11 @@ RELEASE_COM_PTR(m_factory);
         m_deviceContext->PSSetSamplers(0, 2, textureSamplers);
     }
 
+
+    void DX11GraphicsDevice::DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset)
+    {
+        m_deviceContext->DrawIndexed(indexCount, firstIndex, vertexOffset);
+    }
 
     void DX11GraphicsDevice::DrawMesh(MeshHandle meshHandle)
     {
@@ -563,7 +665,7 @@ RELEASE_COM_PTR(m_factory);
 
 
     GraphicsBufferHandle DX11GraphicsDevice::CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData)
-        {
+    {
         DX11GraphicsBuffer dx11GraphicsBuffer;
 
         {
@@ -857,6 +959,13 @@ RELEASE_COM_PTR(m_factory);
     {
         // https://github-wiki-see.page/m/Microsoft/DirectXTK/wiki/CommonStates
 
+        // NOTE(v.matushkin): Needed to enable Scissors for ImGui shader,
+        //  don't know how else I should handle this. There is no point in exposing this flag since
+        //  it's always enabled in DX12/Vulkan anyway? May be just enable scissors for every shader?
+        // NOTE(v.matushkin): FrontCounterClockwise and InputLayout also depends on it.
+        static constinit const std::string_view k_ImGuiShaderName = "Engine/ImGui";
+        const bool isImGuiShader = shaderDesc.Name == k_ImGuiShaderName;
+
         // NOTE(v.matushkin): Can Shader State checks for nullptr fail because I'm not initializing them?
         DX11Shader dx11Shader;
 
@@ -867,12 +976,12 @@ RELEASE_COM_PTR(m_factory);
             D3D11_RASTERIZER_DESC2 d3dRasterizerStateDesc = {
                 .FillMode              = dx11_PolygonMode(rasterizerStateDesc.PolygonMode),
                 .CullMode              = dx11_CullMode(rasterizerStateDesc.CullMode),
-                .FrontCounterClockwise = dx_TriangleFrontFace(rasterizerStateDesc.FrontFace),
+                .FrontCounterClockwise = isImGuiShader ? false : dx_TriangleFrontFace(rasterizerStateDesc.FrontFace),
                 .DepthBias             = D3D11_DEFAULT_DEPTH_BIAS,
                 .DepthBiasClamp        = D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
                 .SlopeScaledDepthBias  = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS,
                 .DepthClipEnable       = true,
-                .ScissorEnable         = false,
+                .ScissorEnable         = isImGuiShader,
                 .MultisampleEnable     = false,
                 .AntialiasedLineEnable = false,
                 .ForcedSampleCount     = 0,
@@ -943,8 +1052,41 @@ RELEASE_COM_PTR(m_factory);
 
         //- Create InputLayout
         {
-            D3D11_INPUT_ELEMENT_DESC d3dInputElementDesc[] = {
-                {
+            D3D11_INPUT_ELEMENT_DESC d3dInputElementDesc[3];
+
+            if (isImGuiShader)
+            {
+                d3dInputElementDesc[0] = {
+                    .SemanticName         = "POSITION",
+                    .SemanticIndex        = 0,
+                    .Format               = DXGI_FORMAT_R32G32_FLOAT,
+                    .InputSlot            = 0,
+                    .AlignedByteOffset    = 0,
+                    .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
+                    .InstanceDataStepRate = 0,
+                };
+                d3dInputElementDesc[1] = {
+                    .SemanticName         = "TEXCOORD",
+                    .SemanticIndex        = 0,
+                    .Format               = DXGI_FORMAT_R32G32_FLOAT,
+                    .InputSlot            = 0,
+                    .AlignedByteOffset    = 8,
+                    .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
+                    .InstanceDataStepRate = 0,
+                };
+                d3dInputElementDesc[2] = {
+                    .SemanticName         = "COLOR",
+                    .SemanticIndex        = 0,
+                    .Format               = DXGI_FORMAT_R8G8B8A8_UNORM,
+                    .InputSlot            = 0,
+                    .AlignedByteOffset    = 16,
+                    .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
+                    .InstanceDataStepRate = 0,
+                };
+            }
+            else
+            {
+                d3dInputElementDesc[0] = {
                     .SemanticName         = "POSITION",
                     .SemanticIndex        = 0,
                     .Format               = DXGI_FORMAT_R32G32B32_FLOAT,
@@ -952,8 +1094,8 @@ RELEASE_COM_PTR(m_factory);
                     .AlignedByteOffset    = 0,
                     .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
                     .InstanceDataStepRate = 0,
-                },
-                {
+                };
+                d3dInputElementDesc[1] = {
                     .SemanticName         = "NORMAL",
                     .SemanticIndex        = 0,
                     .Format               = DXGI_FORMAT_R32G32B32_FLOAT,
@@ -961,8 +1103,8 @@ RELEASE_COM_PTR(m_factory);
                     .AlignedByteOffset    = 0,
                     .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
                     .InstanceDataStepRate = 0,
-                },
-                {
+                };
+                d3dInputElementDesc[2] = {
                     .SemanticName         = "TEXCOORD",
                     .SemanticIndex        = 0,
                     .Format               = DXGI_FORMAT_R32G32_FLOAT,
@@ -970,8 +1112,8 @@ RELEASE_COM_PTR(m_factory);
                     .AlignedByteOffset    = 0,
                     .InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA,
                     .InstanceDataStepRate = 0,
-                },
-            };
+                };
+            }
 
             m_device->CreateInputLayout(d3dInputElementDesc, 3, shaderDesc.VertexBlob.Data.get(), shaderDesc.VertexBlob.Size, &dx11Shader.InputLayout);
         }
