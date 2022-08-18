@@ -192,25 +192,9 @@ export namespace Copium
         [[nodiscard]] ID3D11DeviceContext* GetDeviceContext() const { return m_deviceContext; }
 
         void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
-        void BeginRenderPass(RenderPassHandle renderPassHandle) override;
         void EndFrame() override;
 
         [[nodiscard]] std::unique_ptr<ICommandBuffer> GetCommandBuffer() override;
-
-        void SetViewport(const Rect& viewportRect) override;
-        void SetScissorRect(const RectInt& scissorRect) override;
-
-        void BindShader(ShaderHandle shaderHandle) override;
-        void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
-        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
-        void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
-        void BindTexture(TextureHandle textureHandle, uint32 slot) override;
-        void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
-        void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
-
-        void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;
-        void DrawMesh(MeshHandle meshHandle) override;
-        void DrawProcedural(uint32 vertexCount) override;
 
         [[nodiscard]] GraphicsBufferHandle CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData) override;
         [[nodiscard]] MeshHandle CreateMesh(const MeshDesc& meshDesc) override;
