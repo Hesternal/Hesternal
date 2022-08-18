@@ -58,7 +58,7 @@ namespace Copium
         });
     }
 
-    void EngineRenderPass::OnRender(const RenderContext& renderContext)
+    void EngineRenderPass::OnRender(RenderContext& renderContext)
     {
         renderContext.BeginRenderPass(m_renderPassHandle);
         renderContext.DrawEntities();

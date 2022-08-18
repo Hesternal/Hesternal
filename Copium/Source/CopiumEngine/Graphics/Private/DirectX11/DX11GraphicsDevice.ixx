@@ -195,6 +195,8 @@ export namespace Copium
         void BeginRenderPass(RenderPassHandle renderPassHandle) override;
         void EndFrame() override;
 
+        [[nodiscard]] std::unique_ptr<ICommandBuffer> GetCommandBuffer() override;
+
         void SetViewport(const Rect& viewportRect) override;
         void SetScissorRect(const RectInt& scissorRect) override;
 

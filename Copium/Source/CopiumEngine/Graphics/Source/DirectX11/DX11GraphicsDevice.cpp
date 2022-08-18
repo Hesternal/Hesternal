@@ -366,6 +366,12 @@ namespace Copium
     }
 
 
+    std::unique_ptr<ICommandBuffer> DX11GraphicsDevice::GetCommandBuffer()
+    {
+        return std::make_unique<DX11CommandBuffer>(m_deviceContext, this);
+    }
+
+
     void DX11GraphicsDevice::SetViewport(const Rect& viewportRect)
     {
         const D3D11_VIEWPORT d3dViewport = {

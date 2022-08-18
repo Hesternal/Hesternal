@@ -2,8 +2,10 @@ export module CopiumEngine.Graphics.IGraphicsDevice;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
+import CopiumEngine.Graphics.ICommandBuffer;
 import CopiumEngine.Math;
 
+import <memory>;
 import <span>;
 
 
@@ -26,6 +28,8 @@ export namespace Copium
         virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;
         virtual void BeginRenderPass(RenderPassHandle renderPassHandle) = 0;
         virtual void EndFrame() = 0;
+
+        [[nodiscard]] virtual std::unique_ptr<ICommandBuffer> GetCommandBuffer() = 0;
 
         // NOTE(v.matushkin): DX11/DX12/Vulkan actually support setting multiple viewports/scissors,
         //  but I don't see any use cases for it right now.

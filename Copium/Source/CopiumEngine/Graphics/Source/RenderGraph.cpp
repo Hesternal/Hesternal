@@ -64,7 +64,7 @@ namespace Copium
         m_graphicsDevice = nullptr;
     }
 
-    void RenderGraph::Execute(const RenderContext& renderContext)
+    void RenderGraph::Execute(RenderContext& renderContext)
     {
         for (IRenderPass* const renderPass : m_renderPasses)
         {

@@ -36,7 +36,7 @@ export namespace Copium
 
         virtual void OnSchedule(RenderGraph& renderGraph) = 0;
         virtual void OnCreate(RenderGraph& renderGraph) = 0;
-        virtual void OnRender(const RenderContext& renderContext) = 0;
+        virtual void OnRender(RenderContext& renderContext) = 0;
 
     private:
         const std::string m_renderPassName;
@@ -85,7 +85,7 @@ export namespace Copium
         void AddRenderPass(std::unique_ptr<IRenderPass>&& renderPass);
 
         void Build(IGraphicsDevice* graphicsDevice);
-        void Execute(const RenderContext& renderContext);
+        void Execute(RenderContext& renderContext);
 
         //< IRenderPass OnSchedule
         [[nodiscard]] RenderGraphTextureID ScheduleCreate(const std::string& renderTextureName);

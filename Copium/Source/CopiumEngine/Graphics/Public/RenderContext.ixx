@@ -1,7 +1,7 @@
 export module CopiumEngine.Graphics.RenderContext;
 
+import CopiumEngine.Graphics.CommandBuffer;
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Graphics.RenderData;
 
 import <memory>;
@@ -14,7 +14,7 @@ export namespace Copium
     class RenderContext final
     {
     public:
-        RenderContext(RenderData&& renderData, IGraphicsDevice* graphicsDevice);
+        RenderContext(RenderData&& renderData, CommandBuffer&& commandBuffer);
         ~RenderContext() = default;
 
         RenderContext(const RenderContext&) = delete;
@@ -22,12 +22,12 @@ export namespace Copium
         RenderContext(RenderContext&& other) noexcept = default;
         RenderContext& operator=(RenderContext&& other) noexcept = default;
 
-        void BeginRenderPass(RenderPassHandle renderPassHandle) const;
-        void DrawEntities() const;
+        void BeginRenderPass(RenderPassHandle renderPassHandle);
+        void DrawEntities();
 
     private:
-        RenderData             m_renderData;
-        IGraphicsDevice* const m_graphicsDevice;
+        RenderData    m_renderData;
+        CommandBuffer m_commandBuffer;
     };
 
 } // export namespace Copium
