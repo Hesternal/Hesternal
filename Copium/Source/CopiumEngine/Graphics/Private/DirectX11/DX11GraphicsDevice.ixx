@@ -15,6 +15,7 @@ export module CopiumEngine.Graphics.DX11GraphicsDevice;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
+import CopiumEngine.Graphics.ICommandBuffer;
 import CopiumEngine.Graphics.IGraphicsDevice;
 
 import <unordered_map>;
@@ -128,8 +129,43 @@ namespace Copium
 export namespace Copium
 {
 
+    class DX11CommandBuffer final : public ICommandBuffer
+    {
+    public:
+        DX11CommandBuffer(ID3D11DeviceContext4* deviceContext, DX11GraphicsDevice* graphicsDevice);
+        ~DX11CommandBuffer() = default;
+
+        DX11CommandBuffer(DX11CommandBuffer&& other) = default;
+        DX11CommandBuffer& operator=(DX11CommandBuffer&& other) = default;
+
+        void BeginRenderPass(RenderPassHandle renderPassHandle) override;
+
+        void SetViewport(const Rect& viewportRect) override;
+        void SetScissorRect(const RectInt& scissorRect) override;
+
+        void BindShader(ShaderHandle shaderHandle) override;
+        void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
+        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
+        void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
+        void BindTexture(TextureHandle textureHandle, uint32 slot) override;
+        void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
+        void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
+
+        void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;
+        void DrawMesh(MeshHandle meshHandle) override;
+        void DrawProcedural(uint32 vertexCount) override;
+
+    private:
+        ID3D11DeviceContext4* const m_deviceContext;
+        DX11GraphicsDevice*   const m_graphicsDevice;
+    };
+
+
     class DX11GraphicsDevice final : public IGraphicsDevice
     {
+        friend DX11CommandBuffer;
+
+
         struct PerCamera
         {
             Float4x4 _CameraView;
@@ -148,6 +184,8 @@ export namespace Copium
         [[nodiscard]] void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) override;
         //> For ImGui
         [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
+
+        [[nodiscard]] ID3D11SamplerState* GetRenderTextureSampler() const { return m_renderTextureSampler; }
 
         // TODO(v.matushkin): <ImGui/CustomBackend>
         [[nodiscard]] ID3D11Device* GetDevice() const { return m_device; }
