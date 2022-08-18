@@ -42,6 +42,7 @@ export namespace Copium
         // TODO(v.matushkin): Shouldn't be exposed, set buffers only through material?
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot);
         // NOTE(v.matushkin): May be rework Texture/RenderTexture so that they use the same handle type?
+        void BindTexture(TextureHandle textureHandle, uint32 slot); // NOTE(v.matushkin): Needed for ImGui
         void BindTexture(const Texture* texture, uint32 slot);
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot);
         void BindMaterial(const Texture* baseColorTexture, const Texture* normalTexture);
@@ -103,6 +104,11 @@ export namespace Copium
     void CommandBuffer::BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot)
     {
         m_commandBuffer->BindConstantBuffer(constantBuffer->GetHandle(), slot);
+    }
+
+    void CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)
+    {
+        m_commandBuffer->BindTexture(textureHandle, slot);
     }
 
     void CommandBuffer::BindTexture(const Texture* texture, uint32 slot)

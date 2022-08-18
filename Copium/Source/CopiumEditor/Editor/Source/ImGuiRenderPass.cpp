@@ -101,7 +101,7 @@ namespace Copium
             ImGui::End();
         }
 
-        ImGuiContext::EndFrame();
+        ImGuiContext::EndFrame(renderContext.GetCommandBuffer());
     }
 
 } // namespace Copium

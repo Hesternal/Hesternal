@@ -22,6 +22,8 @@ export namespace Copium
         RenderContext(RenderContext&& other) noexcept = default;
         RenderContext& operator=(RenderContext&& other) noexcept = default;
 
+        [[nodiscard]] CommandBuffer& GetCommandBuffer() { return m_commandBuffer; }
+
         void BeginRenderPass(RenderPassHandle renderPassHandle);
         void DrawEntities();
 

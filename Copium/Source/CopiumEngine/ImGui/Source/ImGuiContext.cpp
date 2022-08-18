@@ -10,7 +10,6 @@ module CopiumEngine.ImGui.ImGuiContext;
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Math;
 
 import <cstring>;
@@ -86,11 +85,11 @@ namespace Copium
         ImGui::NewFrame();
     }
 
-    void ImGuiContext::EndFrame()
+    void ImGuiContext::EndFrame(CommandBuffer& commandBuffer)
     {
         ImGui::Render();
         ImGui::EndFrame();
-        _Renderer_DrawData();
+        _Renderer_DrawData(commandBuffer);
 
         // Update and Render additional Platform Windows
         //ImGui::UpdatePlatformWindows();
@@ -212,7 +211,7 @@ namespace Copium
         m_cameraBuffer.reset();
     }
 
-    void ImGuiContext::_Renderer_DrawData()
+    void ImGuiContext::_Renderer_DrawData(CommandBuffer& commandBuffer)
     {
         ImDrawData* imguiDrawData = ImGui::GetDrawData();
 
@@ -299,14 +298,12 @@ namespace Copium
             m_cameraBuffer->Unmap();
         }
 
-        IGraphicsDevice* graphicsDevice = Graphics::GetGraphicsDevice();
-
         //- Setup render state
-        graphicsDevice->BindShader(m_imguiShader->GetHandle());
-        graphicsDevice->BindVertexBuffer(m_vertexBuffer->GetHandle(), k_VertexElementSize, 0);
-        graphicsDevice->BindIndexBuffer(m_indexBuffer->GetHandle(), IndexFormat::UInt16);
-        graphicsDevice->BindConstantBuffer(m_cameraBuffer->GetHandle(), 0);
-        graphicsDevice->SetViewport(Rect(0.0f, 0.0f, displaySize.x, displaySize.y));
+        commandBuffer.BindShader(m_imguiShader.get());
+        commandBuffer.BindVertexBuffer(m_vertexBuffer.get(), k_VertexElementSize, 0);
+        commandBuffer.BindIndexBuffer(m_indexBuffer.get(), IndexFormat::UInt16);
+        commandBuffer.BindConstantBuffer(m_cameraBuffer.get(), 0);
+        commandBuffer.SetViewport(Rect(0.0f, 0.0f, displaySize.x, displaySize.y));
 
         //- Render command lists
         const ImVec2 clipOffset = displayPos;
@@ -339,24 +336,24 @@ namespace Copium
                         continue;
                     }
 
-                    graphicsDevice->SetScissorRect(RectInt::FromMinMax((int32)clipMinX, (int32)clipMinY, (int32)clipMaxX, (int32)clipMaxY));
+                    commandBuffer.SetScissorRect(RectInt::FromMinMax((int32)clipMinX, (int32)clipMinY, (int32)clipMaxX, (int32)clipMaxY));
                     //-- Bind Texture
                     ImGuiTexture textureHandle;
                     textureHandle.Whole = reinterpret_cast<uint64>(imguiDrawCommand.GetTexID());
 
                     if (textureHandle.Parts.IsRenderTexture)
                     {
-                        graphicsDevice->BindTexture(static_cast<RenderTextureHandle>(textureHandle.Parts.Handle), 0);
+                        commandBuffer.BindTexture(static_cast<RenderTextureHandle>(textureHandle.Parts.Handle), 0);
                     }
                     else
                     {
-                        graphicsDevice->BindTexture(static_cast<TextureHandle>(textureHandle.Parts.Handle), 0);
+                        commandBuffer.BindTexture(static_cast<TextureHandle>(textureHandle.Parts.Handle), 0);
                     }
 
                     //-- Draw
                     const int32 firstIndex = imguiDrawCommand.IdxOffset + globalIndexOffset;
                     const int32 vertexOffset = imguiDrawCommand.VtxOffset + globalVertexOffset;
-                    graphicsDevice->DrawIndexed(imguiDrawCommand.ElemCount, firstIndex, vertexOffset);
+                    commandBuffer.DrawIndexed(imguiDrawCommand.ElemCount, firstIndex, vertexOffset);
                 }
             }
 
@@ -368,7 +365,7 @@ namespace Copium
         EngineSettings& engineSettings = EngineSettings::Get();
         const float32 viewportWidth = static_cast<float32>(engineSettings.RenderWidth);
         const float32 viewportHeight = static_cast<float32>(engineSettings.RenderHeight);
-        graphicsDevice->SetViewport(Rect(0.0f, 0.0f, viewportWidth, viewportHeight));
+        commandBuffer.SetViewport(Rect(0.0f, 0.0f, viewportWidth, viewportHeight));
     }
 
 } // namespace Copium
