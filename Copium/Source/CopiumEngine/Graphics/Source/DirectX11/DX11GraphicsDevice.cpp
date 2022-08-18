@@ -3,12 +3,11 @@ module;
 #include "Engine/Core/Debug.hpp"
 
 #include <d3d11_4.h>
-#include <d3dcompiler.h>
 #if COP_ENABLE_GRAPHICS_API_DEBUG
 #include <dxgidebug.h>
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
-// NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
+// NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get 'import std;'
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
@@ -16,6 +15,7 @@ module CopiumEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
 import CopiumEngine.Engine.EngineSettings;
+import CopiumEngine.Graphics.DX11Conversion;
 import CopiumEngine.Graphics.DXCommon;
 
 import <cstring>;
@@ -51,10 +51,6 @@ namespace
     using namespace Copium;
 
 
-    static constexpr float32 k_ViewportMinDepth = 0.0f;
-    static constexpr float32 k_ViewportMaxDepth = 1.0f;
-
-
 #if COP_ENABLE_GRAPHICS_API_DEBUG
     static const GUID k_DxgiDebugGuid = DXGI_DEBUG_ALL;
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
@@ -68,179 +64,18 @@ namespace
     static constinit uint32 g_SwapchainHandleWorkaround      = 0;
     static constinit uint32 g_TextureHandleWorkaround        = 0;
 
-
-    //- GraphicsBuffer
-    [[nodiscard]] static uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage)
-    {
-        static const D3D11_BIND_FLAG d3dBindFlags[] = {
-            D3D11_BIND_VERTEX_BUFFER,
-            D3D11_BIND_INDEX_BUFFER,
-            D3D11_BIND_CONSTANT_BUFFER,
-        };
-
-        return d3dBindFlags[std::to_underlying(graphicsBufferUsage)];
-    }
-
-    //- Mesh
-    [[nodiscard]] static DXGI_FORMAT dx11_IndexFormat(IndexFormat indexFormat)
-    {
-        return indexFormat == IndexFormat::UInt16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
-    }
-
-    //- RenderTexture
-    #define DX11_NO_DEPTH_STENCIL 0
-    [[nodiscard]] static uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType)
-    {
-        static const uint32 d3dClearFlags[] = {
-            DX11_NO_DEPTH_STENCIL,
-            D3D11_CLEAR_DEPTH,
-            // D3D11_CLEAR_STENCIL,
-            // D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-        };
-
-        return d3dClearFlags[std::to_underlying(renderTextureType)];
-    }
-
-    //- Texture
-    [[nodiscard]] static D3D11_FILTER dx11_TextureFilterMode(TextureFilterMode textureFilterMode)
-    {
-        static const D3D11_FILTER d3dTextureFilterMode[] = {
-            D3D11_FILTER_MIN_MAG_MIP_POINT,
-            D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT,
-            D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-            D3D11_FILTER_ANISOTROPIC,
-        };
-
-        return d3dTextureFilterMode[std::to_underlying(textureFilterMode)];
-    }
-
-    [[nodiscard]] static D3D11_TEXTURE_ADDRESS_MODE dx11_TextureWrapMode(TextureWrapMode textureWrapMode)
-    {
-        static const D3D11_TEXTURE_ADDRESS_MODE d3dTextureWrapMode[] = {
-            D3D11_TEXTURE_ADDRESS_CLAMP,
-            D3D11_TEXTURE_ADDRESS_BORDER,
-            D3D11_TEXTURE_ADDRESS_MIRROR_ONCE,
-            D3D11_TEXTURE_ADDRESS_MIRROR,
-            D3D11_TEXTURE_ADDRESS_WRAP,
-        };
-
-        return d3dTextureWrapMode[std::to_underlying(textureWrapMode)];
-    }
-
-    //- Shader states
-
-    //-- RasterizerState
-    [[nodiscard]] static D3D11_CULL_MODE dx11_CullMode(CullMode cullMode)
-    {
-        static const D3D11_CULL_MODE d3dCullMode[] = {
-            D3D11_CULL_NONE,
-            D3D11_CULL_FRONT,
-            D3D11_CULL_BACK,
-        };
-
-        return d3dCullMode[std::to_underlying(cullMode)];
-    }
-
-    [[nodiscard]] static D3D11_FILL_MODE dx11_PolygonMode(PolygonMode polygonMode)
-    {
-        static const D3D11_FILL_MODE d3dPolygonMode[] = {
-            D3D11_FILL_SOLID,
-            D3D11_FILL_WIREFRAME,
-        };
-
-        return d3dPolygonMode[std::to_underlying(polygonMode)];
-    }
-
-    //-- DepthStencilState
-    [[nodiscard]] static D3D11_COMPARISON_FUNC dx11_CompareFunction(CompareFunction compareFunction)
-    {
-        static const D3D11_COMPARISON_FUNC d3dCompareFunction[] = {
-            D3D11_COMPARISON_NEVER,
-            D3D11_COMPARISON_LESS,
-            D3D11_COMPARISON_EQUAL,
-            D3D11_COMPARISON_LESS_EQUAL,
-            D3D11_COMPARISON_GREATER,
-            D3D11_COMPARISON_NOT_EQUAL,
-            D3D11_COMPARISON_GREATER_EQUAL,
-            D3D11_COMPARISON_ALWAYS,
-        };
-
-        return d3dCompareFunction[std::to_underlying(compareFunction)];
-    }
-
-    //-- BlendState
-    [[nodiscard]] static D3D11_BLEND_OP dx11_BlendOp(BlendOp blendOp)
-    {
-        static const D3D11_BLEND_OP d3dBlendOp[] = {
-            D3D11_BLEND_OP_ADD,
-            D3D11_BLEND_OP_SUBTRACT,
-            D3D11_BLEND_OP_REV_SUBTRACT,
-            D3D11_BLEND_OP_MIN,
-            D3D11_BLEND_OP_MAX,
-        };
-
-        return d3dBlendOp[std::to_underlying(blendOp)];
-    }
-
-    [[nodiscard]] static D3D11_BLEND dx11_BlendFactor(BlendFactor blendFactor)
-    {
-        static const D3D11_BLEND d3dBlendFactor[] = {
-            D3D11_BLEND_ZERO,
-            D3D11_BLEND_ONE,
-            D3D11_BLEND_SRC_COLOR,
-            D3D11_BLEND_INV_SRC_COLOR,
-            D3D11_BLEND_DEST_COLOR,
-            D3D11_BLEND_INV_DEST_COLOR,
-            D3D11_BLEND_SRC_ALPHA,
-            D3D11_BLEND_INV_SRC_ALPHA,
-            D3D11_BLEND_DEST_ALPHA,
-            D3D11_BLEND_INV_DEST_ALPHA,
-            D3D11_BLEND_SRC_ALPHA_SAT,
-            D3D11_BLEND_SRC1_COLOR,
-            D3D11_BLEND_INV_SRC1_COLOR,
-            D3D11_BLEND_SRC1_ALPHA,
-            D3D11_BLEND_INV_SRC1_ALPHA,
-        };
-
-        return d3dBlendFactor[std::to_underlying(blendFactor)];
-    }
-
-    [[nodiscard]] static D3D11_LOGIC_OP dx11_BlendLogicOp(BlendLogicOp blendLogicOp)
-    {
-        static const D3D11_LOGIC_OP d3dBlendLogicOp[] = {
-            D3D11_LOGIC_OP_CLEAR,
-            D3D11_LOGIC_OP_SET,
-            D3D11_LOGIC_OP_COPY,
-            D3D11_LOGIC_OP_COPY_INVERTED,
-            D3D11_LOGIC_OP_NOOP,
-            D3D11_LOGIC_OP_INVERT,
-            D3D11_LOGIC_OP_AND,
-            D3D11_LOGIC_OP_NAND,
-            D3D11_LOGIC_OP_OR,
-            D3D11_LOGIC_OP_NOR,
-            D3D11_LOGIC_OP_XOR,
-            D3D11_LOGIC_OP_EQUIV,
-            D3D11_LOGIC_OP_AND_REVERSE,
-            D3D11_LOGIC_OP_AND_INVERTED,
-            D3D11_LOGIC_OP_OR_REVERSE,
-            D3D11_LOGIC_OP_OR_INVERTED,
-        };
-
-        return d3dBlendLogicOp[std::to_underlying(blendLogicOp)];
-    }
-
 } // namespace
 
 
 namespace Copium
 {
 
-    void DX11GraphicsDevice::DX11GraphicsBuffer::Release()
+    void DX11GraphicsBuffer::Release()
     {
         Buffer->Release();
     }
 
-    void DX11GraphicsDevice::DX11Mesh::Release()
+    void DX11Mesh::Release()
     {
         Index->Release();
         VertexBuffers[0]->Release();
@@ -248,7 +83,7 @@ namespace Copium
         VertexBuffers[2]->Release();
     }
 
-    void DX11GraphicsDevice::DX11RenderTexture::Release()
+    void DX11RenderTexture::Release()
     {
         Texture->Release();
         RELEASE_COM_PTR(RTV);
@@ -256,7 +91,7 @@ namespace Copium
         RELEASE_COM_PTR(SRV);
     }
 
-    void DX11GraphicsDevice::DX11Shader::Release()
+    void DX11Shader::Release()
     {
         InputLayout->Release();
         VertexShader->Release();
@@ -266,7 +101,7 @@ namespace Copium
         BlendState->Release();
     }
 
-    void DX11GraphicsDevice::DX11Swapchain::Release(DX11GraphicsDevice* dx11GraphicsDevice)
+    void DX11Swapchain::Release(DX11GraphicsDevice* dx11GraphicsDevice)
     {
         dx11GraphicsDevice->DestroyRenderTexture(SwapchainRTHandle);
 
@@ -275,7 +110,7 @@ namespace Copium
         Swapchain->Release();
     }
 
-    void DX11GraphicsDevice::DX11Texture2D::Release()
+    void DX11Texture2D::Release()
     {
         Texture->Release();
         SRV->Release();
@@ -411,19 +246,9 @@ namespace Copium
     }
 
 
-    void* DX11GraphicsDevice::GetNativeRenderTexture(RenderTextureHandle renderTextureHandle)
-    {
-        ID3D11ShaderResourceView* d3dRenderTextureSrv = m_renderTextures.find(renderTextureHandle)->second.SRV;
-        COP_ASSERT_MSG(d3dRenderTextureSrv != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
-        return reinterpret_cast<void*>(d3dRenderTextureSrv);
-    }
-
     RenderTextureHandle DX11GraphicsDevice::GetSwapchainRenderTexture(SwapchainHandle swapchainHandle)
     {
-        const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
-        COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
-
-        return dx11SwapchainIterator->second.SwapchainRTHandle;
+        return _GetSwapchain(swapchainHandle).SwapchainRTHandle;
     }
 
 
@@ -460,59 +285,6 @@ namespace Copium
         }
     }
 
-    void DX11GraphicsDevice::BeginRenderPass(RenderPassHandle renderPassHandle)
-    {
-        const auto dx11RenderPassIterator = m_renderPasses.find(renderPassHandle);
-        COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
-
-        const DX11RenderPass& dx11RenderPass = dx11RenderPassIterator->second;
-
-        //- Clear RenderTargets
-        //-- Color
-        for (uint8 i = 0; i < dx11RenderPass.NumClearColorAttachments; i++)
-        {
-            const DX11RenderTexture& dx11RenderTexture = m_renderTextures.find(dx11RenderPass.ClearColorAttachments[i])->second;
-
-            m_deviceContext->ClearRenderTargetView(dx11RenderTexture.RTV, dx11RenderTexture.ClearValue.Color.Value);
-        }
-        //-- DepthStencil
-        if (dx11RenderPass.ClearDepthStencilAttachment != RenderTextureHandle::Invalid)
-        {
-            const DX11RenderTexture& dx11RenderTexture = m_renderTextures.find(dx11RenderPass.ClearDepthStencilAttachment)->second;
-            const uint32 depthStencilClearFlags = dx11_RenderTextureTypeToClearFlags(dx11RenderTexture.Type);
-            const ClearDepthStencilValue clearDepthStencilValue = dx11RenderTexture.ClearValue.DepthStencil;
-
-            m_deviceContext->ClearDepthStencilView(
-                dx11RenderTexture.DSV,
-                depthStencilClearFlags,
-                clearDepthStencilValue.Depth,
-                clearDepthStencilValue.Stencil
-            );
-        }
-
-        //- Set RenderTargets
-        {
-            ID3D11RenderTargetView* d3dSubpassRTVs[8]; // Actual type -> ID3D11RenderTargetView1
-            ID3D11DepthStencilView* d3dSubpassDSV;
-
-            for (uint8 i = 0; i < dx11RenderPass.Subpass.NumColorAttachments; i++)
-            {
-                d3dSubpassRTVs[i] = m_renderTextures.find(dx11RenderPass.Subpass.ColorAttachments[i])->second.RTV;
-            }
-
-            if (dx11RenderPass.Subpass.DepthStencilAttachment != RenderTextureHandle::Invalid)
-            {
-                d3dSubpassDSV = m_renderTextures.find(dx11RenderPass.Subpass.DepthStencilAttachment)->second.DSV;
-            }
-            else
-            {
-                d3dSubpassDSV = nullptr;
-            }
-
-            m_deviceContext->OMSetRenderTargets(dx11RenderPass.Subpass.NumColorAttachments, d3dSubpassRTVs, d3dSubpassDSV);
-        }
-    }
-
     void DX11GraphicsDevice::EndFrame()
     {
         // NOTE(v.matushkin): To disable debug layer message:
@@ -532,135 +304,9 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::SetViewport(const Rect& viewportRect)
+    std::unique_ptr<ICommandBuffer> DX11GraphicsDevice::GetCommandBuffer()
     {
-        const D3D11_VIEWPORT d3dViewport = {
-            .TopLeftX = viewportRect.X,
-            .TopLeftY = viewportRect.Y,
-            .Width    = viewportRect.Width,
-            .Height   = viewportRect.Height,
-            .MinDepth = k_ViewportMinDepth,
-            .MaxDepth = k_ViewportMaxDepth,
-        };
-        m_deviceContext->RSSetViewports(1, &d3dViewport);
-    }
-
-    void DX11GraphicsDevice::SetScissorRect(const RectInt& scissorRect)
-    {
-        const D3D11_RECT d3dScissorRect = {
-            .left   = scissorRect.X,
-            .top    = scissorRect.Y,
-            .right  = scissorRect.GetMaxX(),
-            .bottom = scissorRect.GetMaxY(),
-        };
-        m_deviceContext->RSSetScissorRects(1, &d3dScissorRect);
-    }
-
-
-    void DX11GraphicsDevice::BindShader(ShaderHandle shaderHandle)
-    {
-        const auto dx11ShaderIterator = m_shaders.find(shaderHandle);
-        COP_ASSERT(dx11ShaderIterator != m_shaders.end());
-
-        const DX11Shader& dx11Shader = dx11ShaderIterator->second;
-
-        m_deviceContext->IASetInputLayout(dx11Shader.InputLayout);
-        m_deviceContext->VSSetShader(dx11Shader.VertexShader, nullptr, 0);
-        m_deviceContext->RSSetState(dx11Shader.RasterizerState);
-        m_deviceContext->PSSetShader(dx11Shader.PixelShader, nullptr, 0);
-        // TODO(v.matushkin): StencilRef ?
-        m_deviceContext->OMSetDepthStencilState(dx11Shader.DepthStencilState, D3D11_DEFAULT_STENCIL_REFERENCE);
-        // TODO(v.matushkin): BlendFactor, SampleMask ? BlendFactor = nullptr -> {1,1,1,1}
-        m_deviceContext->OMSetBlendState(dx11Shader.BlendState, nullptr, D3D11_DEFAULT_SAMPLE_MASK);
-    }
-
-    void DX11GraphicsDevice::BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset)
-    {
-        const auto dx11VertexBufferIterator = m_graphicsBuffers.find(vertexBufferHandle);
-        COP_ASSERT(dx11VertexBufferIterator != m_graphicsBuffers.end());
-
-        m_deviceContext->IASetVertexBuffers(0, 1, &dx11VertexBufferIterator->second.Buffer, &stride, &offset);
-    }
-
-    void DX11GraphicsDevice::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat)
-    {
-        const auto dx11IndexBufferIterator = m_graphicsBuffers.find(indexBufferHandle);
-        COP_ASSERT(dx11IndexBufferIterator != m_graphicsBuffers.end());
-
-        m_deviceContext->IASetIndexBuffer(dx11IndexBufferIterator->second.Buffer, dx11_IndexFormat(indexFormat), 0);
-    }
-
-    void DX11GraphicsDevice::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot)
-    {
-        const auto dx11ConstantBufferIterator = m_graphicsBuffers.find(constantBufferHandle);
-        COP_ASSERT(dx11ConstantBufferIterator != m_graphicsBuffers.end());
-
-        m_deviceContext->VSSetConstantBuffers(slot, 1, &dx11ConstantBufferIterator->second.Buffer);
-    }
-
-    void DX11GraphicsDevice::BindTexture(TextureHandle textureHandle, uint32 slot)
-    {
-        const auto dx11TextureIterator = m_textures.find(textureHandle);
-        COP_ASSERT(dx11TextureIterator != m_textures.end());
-
-        DX11Texture2D& dx11Texture = dx11TextureIterator->second;
-        ID3D11ShaderResourceView* d3dTextureSRV = dx11Texture.SRV;
-        m_deviceContext->PSSetShaderResources(slot, 1, &d3dTextureSRV);
-        m_deviceContext->PSSetSamplers(slot, 1, &dx11Texture.Sampler);
-    }
-
-    void DX11GraphicsDevice::BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot)
-    {
-        const auto dx11RenderTextureIterator = m_renderTextures.find(renderTextureHandle);
-        COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
-
-        DX11RenderTexture& dx11RenderTexture = dx11RenderTextureIterator->second;
-        ID3D11ShaderResourceView* d3dRenderTextureSRV = dx11RenderTexture.SRV;
-        COP_ASSERT_MSG(d3dRenderTextureSRV != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
-
-        m_deviceContext->PSSetShaderResources(slot, 1, &d3dRenderTextureSRV);
-        m_deviceContext->PSSetSamplers(slot, 1, &m_renderTextureSampler);
-    }
-
-    void DX11GraphicsDevice::BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle)
-    {
-        const auto dx11BaseColorTextureIterator = m_textures.find(baseColorTextureHandle);
-        const auto dx11NormalTextureIterator = m_textures.find(normalTextureHandle);
-        COP_ASSERT(dx11BaseColorTextureIterator != m_textures.end());
-        COP_ASSERT(dx11NormalTextureIterator != m_textures.end());
-
-        DX11Texture2D& dx11BaseColorTexture = dx11BaseColorTextureIterator->second;
-        DX11Texture2D& dx11NormalTexture = dx11NormalTextureIterator->second;
-
-        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.SRV, dx11NormalTexture.SRV };
-        ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler, dx11NormalTexture.Sampler };
-
-        m_deviceContext->PSSetShaderResources(0, 2, materialTextures);
-        m_deviceContext->PSSetSamplers(0, 2, textureSamplers);
-    }
-
-
-    void DX11GraphicsDevice::DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset)
-    {
-        m_deviceContext->DrawIndexed(indexCount, firstIndex, vertexOffset);
-    }
-
-    void DX11GraphicsDevice::DrawMesh(MeshHandle meshHandle)
-    {
-        const auto dx11MeshIterator = m_meshes.find(meshHandle);
-        COP_ASSERT(dx11MeshIterator != m_meshes.end());
-
-        const DX11Mesh& dx11Mesh = dx11MeshIterator->second;
-
-        m_deviceContext->IASetIndexBuffer(dx11Mesh.Index, dx11Mesh.IndexFormat, 0);
-        m_deviceContext->IASetVertexBuffers(0, 3, dx11Mesh.VertexBuffers, dx11Mesh.VertexStrides, dx11Mesh.VertexOffsets);
-
-        m_deviceContext->DrawIndexed(dx11Mesh.IndexCount, 0, 0);
-    }
-
-    void DX11GraphicsDevice::DrawProcedural(uint32 vertexCount)
-    {
-        m_deviceContext->Draw(vertexCount, 0);
+        return std::make_unique<DX11CommandBuffer>(m_deviceContext, this);
     }
 
 
@@ -1320,11 +966,7 @@ namespace Copium
 
     void DX11GraphicsDevice::UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data)
     {
-        const auto dx11GraphicsBufferIterator = m_graphicsBuffers.find(graphicsBufferHandle);
-        COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
-
-        ID3D11Buffer* d3dBuffer = dx11GraphicsBufferIterator->second.Buffer;
-
+        ID3D11Buffer* d3dBuffer = _GetGraphicsBuffer(graphicsBufferHandle).Buffer;
         {
             D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
                 .pData      = nullptr,
@@ -1340,11 +982,8 @@ namespace Copium
 
     void DX11GraphicsDevice::ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height)
     {
-        const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
-        COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
-
-        DX11Swapchain& dx11Swapchain = dx11SwapchainIterator->second;
-        DX11RenderTexture& dx11SwapchainRenderTexture = m_renderTextures.find(dx11Swapchain.SwapchainRTHandle)->second;
+        DX11Swapchain& dx11Swapchain = _GetSwapchain(swapchainHandle);
+        DX11RenderTexture& dx11SwapchainRenderTexture = _GetRenderTexture(dx11Swapchain.SwapchainRTHandle);
         dx11SwapchainRenderTexture.RTV->Release();
         dx11SwapchainRenderTexture.Texture->Release();
         dx11Swapchain.Swapchain->ResizeBuffers(dx11Swapchain.BufferCount, width, height, dx11Swapchain.Format, dx11Swapchain.Flags);

@@ -120,7 +120,7 @@ namespace Copium
     {
         m_graphicsDevice->BeginFrame(Float4x4::Scale(0.005f), m_renderData.Camera.LocalToWorld, m_renderData.Camera.Projection);
 
-        RenderContext renderContext(std::move(m_renderData), m_graphicsDevice.get());
+        RenderContext renderContext(std::move(m_renderData), CommandBuffer(m_graphicsDevice->GetCommandBuffer()));
         m_renderGraph->Execute(renderContext);
 
         m_graphicsDevice->EndFrame();

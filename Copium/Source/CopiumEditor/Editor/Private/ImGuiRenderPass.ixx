@@ -18,7 +18,7 @@ export namespace Copium
 
         void OnSchedule(RenderGraph& renderGraph) override;
         void OnCreate(RenderGraph& renderGraph) override;
-        void OnRender(const RenderContext& renderContext) override;
+        void OnRender(RenderContext& renderContext) override;
 
     private:
         RenderGraphTextureID m_engineColorId;

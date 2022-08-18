@@ -59,7 +59,7 @@ namespace Copium
         m_renderPassHandle = renderGraph.CreateRenderPass(renderPassDesc);
     }
 
-    void ImGuiRenderPass::OnRender(const RenderContext& renderContext)
+    void ImGuiRenderPass::OnRender(RenderContext& renderContext)
     {
         renderContext.BeginRenderPass(m_renderPassHandle);
         ImGuiContext::BeginFrame();
@@ -101,7 +101,7 @@ namespace Copium
             ImGui::End();
         }
 
-        ImGuiContext::EndFrame();
+        ImGuiContext::EndFrame(renderContext.GetCommandBuffer());
     }
 
 } // namespace Copium

@@ -3,6 +3,7 @@ export module CopiumEngine.ImGui.ImGuiContext;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Graphics.CommandBuffer;
 import CopiumEngine.Graphics.GraphicsBuffer;
 import CopiumEngine.Platform.PlatformTypes;
 
@@ -35,13 +36,13 @@ export namespace Copium
         static void Shutdown();
 
         static void BeginFrame();
-        static void EndFrame();
+        static void EndFrame(CommandBuffer& commandBuffer);
 
     private:
         static void _Renderer_Init();
         static void _Renderer_InitPlatformInterface();
         static void _Renderer_Shutdown();
-        static void _Renderer_DrawData();
+        static void _Renderer_DrawData(CommandBuffer& commandBuffer);
 
     private:
         static inline std::shared_ptr<Shader>         m_imguiShader;
