@@ -179,17 +179,7 @@ export namespace Copium
         DX11GraphicsDevice(DX11GraphicsDevice&& other) noexcept = default;
         DX11GraphicsDevice& operator=(DX11GraphicsDevice&& other) noexcept = default;
 
-        //< For ImGui
-        // ID3D11ShaderResourceView*
-        [[nodiscard]] void* GetNativeRenderTexture(RenderTextureHandle renderTextureHandle) override;
-        //> For ImGui
         [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
-
-        [[nodiscard]] ID3D11SamplerState* GetRenderTextureSampler() const { return m_renderTextureSampler; }
-
-        // TODO(v.matushkin): <ImGui/CustomBackend>
-        [[nodiscard]] ID3D11Device* GetDevice() const { return m_device; }
-        [[nodiscard]] ID3D11DeviceContext* GetDeviceContext() const { return m_deviceContext; }
 
         void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
         void EndFrame() override;
@@ -216,6 +206,8 @@ export namespace Copium
         void DestroyTexture2D(TextureHandle textureHandle) override;
 
     private:
+        [[nodiscard]] ID3D11SamplerState* GetRenderTextureSampler() const { return m_renderTextureSampler; }
+
         [[nodiscard]] DX11GraphicsBuffer& _GetGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle);
         [[nodiscard]] DX11Mesh& _GetMesh(MeshHandle meshHandle);
         [[nodiscard]] DX11RenderPass& _GetRenderPass(RenderPassHandle renderPassHandle);

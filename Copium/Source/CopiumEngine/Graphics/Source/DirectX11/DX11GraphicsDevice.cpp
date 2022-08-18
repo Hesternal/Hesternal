@@ -246,13 +246,6 @@ namespace Copium
     }
 
 
-    void* DX11GraphicsDevice::GetNativeRenderTexture(RenderTextureHandle renderTextureHandle)
-    {
-        ID3D11ShaderResourceView* d3dRenderTextureSrv = _GetRenderTexture(renderTextureHandle).SRV;
-        COP_ASSERT_MSG(d3dRenderTextureSrv != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
-        return reinterpret_cast<void*>(d3dRenderTextureSrv);
-    }
-
     RenderTextureHandle DX11GraphicsDevice::GetSwapchainRenderTexture(SwapchainHandle swapchainHandle)
     {
         return _GetSwapchain(swapchainHandle).SwapchainRTHandle;

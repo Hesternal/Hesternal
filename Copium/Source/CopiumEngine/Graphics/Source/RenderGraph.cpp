@@ -133,11 +133,6 @@ namespace Copium
         return m_renderTexturesInfo[std::to_underlying(renderTextureId)].Handle;
     }
 
-    void* RenderGraph::GetNativeRenderTexture(RenderGraphTextureID renderTextureId) const
-    {
-        const RenderTextureHandle renderTextureHandle = m_renderTexturesInfo[std::to_underlying(renderTextureId)].Handle;
-        return m_graphicsDevice->GetNativeRenderTexture(renderTextureHandle);
-    }
 
     RenderTextureHandle RenderGraph::CreateRenderTexture(
         RenderGraphTextureID renderTextureId, uint32 width, uint32 height, RenderTextureFormat format, const RenderTextureClearValue& clearValue

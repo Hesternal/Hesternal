@@ -24,11 +24,10 @@ export namespace Copium
     // NOTE(v.matushkin): Don't know how to move it to its own module
     struct IRenderPass
     {
-        IRenderPass(std::string&& renderPassName) : m_renderPassName(std::move(renderPassName)) {}
         virtual ~IRenderPass() = default;
 
-        IRenderPass(const IRenderPass&) = delete;
-        IRenderPass& operator=(const IRenderPass&) = delete;
+        IRenderPass(const IRenderPass& other) = delete;
+        IRenderPass& operator=(const IRenderPass& other) = delete;
         IRenderPass(IRenderPass&& other) noexcept = default;
         IRenderPass& operator=(IRenderPass&& other) noexcept = default;
 
@@ -37,6 +36,9 @@ export namespace Copium
         virtual void OnSchedule(RenderGraph& renderGraph) = 0;
         virtual void OnCreate(RenderGraph& renderGraph) = 0;
         virtual void OnRender(RenderContext& renderContext) = 0;
+
+    protected:
+        IRenderPass(std::string&& renderPassName) : m_renderPassName(std::move(renderPassName)) {}
 
     private:
         const std::string m_renderPassName;
@@ -94,7 +96,6 @@ export namespace Copium
 
         //< IRenderPass OnCreate
         [[nodiscard]] RenderTextureHandle GetRenderTexture(RenderGraphTextureID renderTextureId) const;
-        [[nodiscard]] void* GetNativeRenderTexture(RenderGraphTextureID renderTextureId) const;
 
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(
             RenderGraphTextureID renderTextureId, uint32 width, uint32 height, RenderTextureFormat format, const RenderTextureClearValue& clearValue
@@ -108,21 +109,21 @@ export namespace Copium
         //> IRenderPass OnSchedule
 
     private:
-        std::vector<IRenderPass*>                 m_renderPasses; // RenderPasses to execute
+        std::vector<IRenderPass*>  m_renderPasses; // RenderPasses to execute
 
-        RenderPassNameToIdMap                     m_renderPassNameToId;
-        RenderTextureNameToIdMap                  m_renderTextureNameToId;
+        RenderPassNameToIdMap      m_renderPassNameToId;
+        RenderTextureNameToIdMap   m_renderTextureNameToId;
 
-        RenderPassInfo                            m_renderPassesInfo;
-        RenderTextureInfo                         m_renderTexturesInfo;
+        RenderPassInfo             m_renderPassesInfo;
+        RenderTextureInfo          m_renderTexturesInfo;
 
         //< IRenderPass OnSchedule
-        RenderGraphPassID                         m_scheduleCurrentPass;
+        RenderGraphPassID          m_scheduleCurrentPass;
         //> IRenderPass OnSchedule
         //< IRenderPass OnCreate
-        IGraphicsDevice*                          m_graphicsDevice;
-        SwapchainHandle                           m_swapchainHandle;
-        bool                                      m_isLastRenderPass;
+        IGraphicsDevice*           m_graphicsDevice;
+        SwapchainHandle            m_swapchainHandle;
+        bool                       m_isLastRenderPass;
         //> IRenderPass OnCreate
     };
 
