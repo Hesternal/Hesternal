@@ -32,6 +32,7 @@ export namespace Copium
         virtual void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) = 0;
         // TODO(v.matushkin): Shouldn't be exposed, set buffers only through material?
         virtual void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) = 0;
+        virtual void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize) = 0;
         // NOTE(v.matushkin): May be rework Texture/RenderTexture so that they use the same handle type?
         virtual void BindTexture(TextureHandle textureHandle, uint32 slot) = 0;
         virtual void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) = 0;

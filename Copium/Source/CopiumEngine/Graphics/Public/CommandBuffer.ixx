@@ -19,7 +19,7 @@ export namespace Copium
     class CommandBuffer final
     {
     public:
-        CommandBuffer(std::unique_ptr<ICommandBuffer>&& internalCommandBuffer);
+        CommandBuffer();
         ~CommandBuffer() = default;
 
         CommandBuffer(const CommandBuffer& other) = delete;
@@ -29,20 +29,17 @@ export namespace Copium
 
         void BeginRenderPass(RenderPassHandle renderPassHandle);
 
-        // NOTE(v.matushkin): DX11/DX12/Vulkan actually support setting multiple viewports/scissors,
-        //  but I don't see any use cases for it right now.
-        //  And seems like only Geometry shader can use multiple vieports/scissors ?
-        // NOTE(v.matushkin): Do I need to expose min/max depth?
         void SetViewport(const Rect& viewportRect);
         void SetScissorRect(const RectInt& scissorRect);
 
         void BindShader(const Shader* shader);
         void BindVertexBuffer(const GraphicsBuffer* vertexBuffer, uint32 stride, uint32 offset);
         void BindIndexBuffer(const GraphicsBuffer* indexBuffer, IndexFormat indexFormat);
-        // TODO(v.matushkin): Shouldn't be exposed, set buffers only through material?
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot);
-        // NOTE(v.matushkin): May be rework Texture/RenderTexture so that they use the same handle type?
-        void BindTexture(TextureHandle textureHandle, uint32 slot); // NOTE(v.matushkin): Needed for ImGui
+        // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters cause I don't know
+        //  if there are cases when you can bind like half of the buffer or break the 256 byte alignment.
+        void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot, uint32 elementIndex);
+        void BindTexture(TextureHandle textureHandle, uint32 slot);
         void BindTexture(const Texture* texture, uint32 slot);
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot);
         void BindMaterial(const Texture* baseColorTexture, const Texture* normalTexture);
@@ -55,13 +52,6 @@ export namespace Copium
         std::unique_ptr<ICommandBuffer> m_commandBuffer;
         ShaderHandle                    m_currentShader;
     };
-
-
-    CommandBuffer::CommandBuffer(std::unique_ptr<ICommandBuffer>&& internalCommandBuffer)
-        : m_commandBuffer(std::move(internalCommandBuffer))
-        , m_currentShader(ShaderHandle::Invalid)
-    {
-    }
 
 
     void CommandBuffer::BeginRenderPass(RenderPassHandle renderPassHandle)
@@ -104,6 +94,11 @@ export namespace Copium
     void CommandBuffer::BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot)
     {
         m_commandBuffer->BindConstantBuffer(constantBuffer->GetHandle(), slot);
+    }
+
+    void CommandBuffer::BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot, uint32 elementIndex)
+    {
+        m_commandBuffer->BindConstantBuffer(constantBuffer->GetHandle(), slot, elementIndex, constantBuffer->GetElementSize());
     }
 
     void CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)

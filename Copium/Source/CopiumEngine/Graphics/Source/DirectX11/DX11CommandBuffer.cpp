@@ -143,6 +143,14 @@ namespace Copium
         m_deviceContext->VSSetConstantBuffers(slot, 1, &dx11GraphicsBuffer.Buffer);
     }
 
+    void DX11CommandBuffer::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize)
+    {
+        const DX11GraphicsBuffer& dx11GraphicsBuffer = m_graphicsDevice->_GetGraphicsBuffer(constantBufferHandle);
+        const uint32 numConstants = elementSize / 16;
+        const uint32 firstConstant = elementIndex * numConstants;
+        m_deviceContext->VSSetConstantBuffers1(slot, 1, &dx11GraphicsBuffer.Buffer, &firstConstant, &numConstants);
+    }
+
     void DX11CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)
     {
         DX11Texture2D& dx11Texture = m_graphicsDevice->_GetTexture(textureHandle);
