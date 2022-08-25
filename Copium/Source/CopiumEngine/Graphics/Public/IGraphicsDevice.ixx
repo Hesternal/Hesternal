@@ -23,7 +23,7 @@ export namespace Copium
 
         [[nodiscard]] virtual RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) = 0;
 
-        virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;
+        virtual void BeginFrame() = 0;
         virtual void EndFrame() = 0;
 
         [[nodiscard]] virtual std::unique_ptr<ICommandBuffer> GetCommandBuffer() = 0;

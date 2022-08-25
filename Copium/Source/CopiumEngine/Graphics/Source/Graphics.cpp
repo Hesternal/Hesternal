@@ -15,7 +15,9 @@ namespace Copium
     void Graphics::Init()
     {
         m_graphicsDevice = std::make_unique<DX11GraphicsDevice>();
+        m_renderContext = std::make_unique<RenderContext>();
 
+        //- Black Texture
         {
             std::vector<uint8> blackTextureData = {
                 // Mip0
@@ -41,7 +43,7 @@ namespace Copium
 
             m_blackTexture = std::make_shared<Texture>(std::move(textureDesc));
         }
-
+        //- White Texture
         {
             std::vector<uint8> whiteTextureData = {
                 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -66,7 +68,7 @@ namespace Copium
 
             m_whiteTexture = std::make_shared<Texture>(std::move(textureDesc));
         }
-
+        //- Normal Texture
         {
             // NOTE(v.matushkin): Normal with alpha?
             std::vector<uint8> normalTextureData = {
@@ -82,7 +84,7 @@ namespace Copium
                 127, 127, 255, 255
             };
             TextureDesc textureDesc;
-            textureDesc.Name   = "White";
+            textureDesc.Name   = "Normal";
             textureDesc.Width  = 4;
             textureDesc.Height = 4;
             textureDesc.Format = TextureFormat::RGBA8;
@@ -97,6 +99,7 @@ namespace Copium
 
     void Graphics::Shutdown()
     {
+        m_renderContext.reset();
         m_renderGraph.reset();
 
         m_defaultShader.reset();
@@ -118,10 +121,10 @@ namespace Copium
 
     void Graphics::RenderFrame()
     {
-        m_graphicsDevice->BeginFrame(Float4x4::Scale(0.005f), m_renderData.Camera.LocalToWorld, m_renderData.Camera.Projection);
+        m_graphicsDevice->BeginFrame();
 
-        RenderContext renderContext(std::move(m_renderData), CommandBuffer());
-        m_renderGraph->Execute(renderContext);
+        m_renderContext->NewFrame();
+        m_renderGraph->Execute(*m_renderContext);
 
         m_graphicsDevice->EndFrame();
     }

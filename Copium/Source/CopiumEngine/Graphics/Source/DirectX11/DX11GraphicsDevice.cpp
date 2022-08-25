@@ -125,38 +125,12 @@ namespace Copium
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         , m_dxgiInfoQueue(nullptr)
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-        , m_cbPerCamera(nullptr)
-        , m_cbPerMesh(nullptr)
         , m_renderTextureSampler(nullptr)
     {
         _CreateDevice();
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         _DebugLayer_Init();
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-
-        //- Create ConstantBuffers
-        {
-            D3D11_BUFFER_DESC d3dPerCameraBufferDesc = {
-                .ByteWidth           = sizeof(PerCamera),
-                .Usage               = D3D11_USAGE_DYNAMIC,
-                .BindFlags           = D3D11_BIND_CONSTANT_BUFFER,
-                .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-
-            D3D11_BUFFER_DESC d3dPerMeshBufferDesc = {
-                .ByteWidth           = sizeof(Float4x4),
-                .Usage               = D3D11_USAGE_DYNAMIC,
-                .BindFlags           = D3D11_BIND_CONSTANT_BUFFER,
-                .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-
-            m_device->CreateBuffer(&d3dPerCameraBufferDesc, nullptr, &m_cbPerCamera);
-            m_device->CreateBuffer(&d3dPerMeshBufferDesc, nullptr, &m_cbPerMesh);
-        }
 
         //- Create RenderTexture sampler
         {
@@ -227,9 +201,6 @@ namespace Copium
 
         RELEASE_COM_PTR(m_renderTextureSampler);
 
-        RELEASE_COM_PTR(m_cbPerCamera);
-        RELEASE_COM_PTR(m_cbPerMesh);
-
         // NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
         // NOTE(v.matushkin): Probably this should be called for debug only
         m_deviceContext->ClearState();
@@ -252,37 +223,8 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection)
+    void DX11GraphicsDevice::BeginFrame()
     {
-        //- Update constant buffers
-        {
-            PerCamera perCamera = {
-                ._CameraView       = cameraView,
-                ._CameraProjection = cameraProjection,
-            };
-
-            D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
-                .pData      = nullptr,
-                .RowPitch   = 0,
-                .DepthPitch = 0,
-            };
-
-            //-- PerCamera
-            m_deviceContext->Map(m_cbPerCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, &perCamera, sizeof(PerCamera));
-            m_deviceContext->Unmap(m_cbPerCamera, 0);
-
-            //-- PerMesh
-            m_deviceContext->Map(m_cbPerMesh, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, &objectToWorld, sizeof(Float4x4));
-            m_deviceContext->Unmap(m_cbPerMesh, 0);
-        }
-
-        //- Set constant buffers
-        {
-            ID3D11Buffer* constantBuffers[]{ m_cbPerCamera, m_cbPerMesh };
-            m_deviceContext->VSSetConstantBuffers(0, 2, constantBuffers); // NOTE(v.matushkin): VSSetConstantBuffers1 ?
-        }
     }
 
     void DX11GraphicsDevice::EndFrame()

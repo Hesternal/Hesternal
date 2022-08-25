@@ -166,13 +166,6 @@ export namespace Copium
     {
         friend DX11CommandBuffer;
 
-
-        struct PerCamera
-        {
-            Float4x4 _CameraView;
-            Float4x4 _CameraProjection;
-        };
-
     public:
         DX11GraphicsDevice();
         ~DX11GraphicsDevice();
@@ -182,7 +175,7 @@ export namespace Copium
 
         [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
 
-        void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
+        void BeginFrame() override;
         void EndFrame() override;
 
         [[nodiscard]] std::unique_ptr<ICommandBuffer> GetCommandBuffer() override;
@@ -233,9 +226,6 @@ export namespace Copium
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         IDXGIInfoQueue*       m_dxgiInfoQueue;
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-
-        ID3D11Buffer*         m_cbPerCamera;
-        ID3D11Buffer*         m_cbPerMesh;
 
         ID3D11SamplerState*   m_renderTextureSampler;
 
