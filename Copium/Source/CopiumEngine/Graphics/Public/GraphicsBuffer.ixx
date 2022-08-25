@@ -26,8 +26,8 @@ export namespace Copium
         GraphicsBuffer(GraphicsBuffer&& other) noexcept;
         GraphicsBuffer& operator=(GraphicsBuffer&& other) noexcept;
 
-        [[nodiscard]] int32 GetElementCount() const noexcept { return m_graphicsBufferDesc.ElementCount; }
-        [[nodiscard]] int32 GetElementSize() const noexcept { return m_graphicsBufferDesc.ElementSize; }
+        [[nodiscard]] uint32 GetElementCount() const noexcept { return m_graphicsBufferDesc.ElementCount; }
+        [[nodiscard]] uint32 GetElementSize() const noexcept { return m_graphicsBufferDesc.ElementSize; }
         [[nodiscard]] GraphicsBufferUsage GetUsage() const noexcept { return m_graphicsBufferDesc.Usage; }
         [[nodiscard]] GraphicsBufferHandle GetHandle() const noexcept { return m_graphicsBufferHandle; }
 
@@ -41,7 +41,7 @@ export namespace Copium
     private:
         GraphicsBufferDesc       m_graphicsBufferDesc;
         std::unique_ptr<uint8[]> m_graphicsBufferData;
-        int32                    m_sizeInBytes;
+        uint32                   m_sizeInBytes;
         GraphicsBufferHandle     m_graphicsBufferHandle;
     };
 

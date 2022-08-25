@@ -318,7 +318,7 @@ namespace Copium
             // NOTE(v.matushkin): Hardcoding D3D11_USAGE_DYNAMIC and D3D11_CPU_ACCESS_WRITE
             //  as there is no way to tell if the buffer will be updated later or it will be IMMUTABLE
             D3D11_BUFFER_DESC d3dBufferDesc = {
-                .ByteWidth           = static_cast<uint32>(graphicsBufferDesc.SizeInBytes()),
+                .ByteWidth           = graphicsBufferDesc.SizeInBytes(),
                 .Usage               = D3D11_USAGE_DYNAMIC,
                 .BindFlags           = dx11_GraphicsBufferBindFlags(graphicsBufferDesc.Usage),
                 .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,

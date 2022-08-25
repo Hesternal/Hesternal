@@ -257,11 +257,11 @@ export namespace Copium
 
     struct GraphicsBufferDesc final
     {
-        int32               ElementCount;
-        int32               ElementSize;
+        uint32              ElementCount;
+        uint32              ElementSize;
         GraphicsBufferUsage Usage;
 
-        [[nodiscard]] int32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
+        [[nodiscard]] uint32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
     };
 
 
