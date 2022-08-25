@@ -42,8 +42,8 @@ namespace Copium
 {
 
     RenderContext::RenderContext()
-        : m_perCameraBuffer(GraphicsBufferDesc{ .ElementCount = 1, .ElementSize = k_PerCameraSizeInBytes, .Usage = GraphicsBufferUsage::Constant })
-        , m_perDrawBuffers(GraphicsBufferDesc{ .ElementCount = k_PerDrawElements, .ElementSize = k_PerDrawSizeInBytes, .Usage = GraphicsBufferUsage::Constant })
+        : m_perCameraBuffer(GraphicsBufferDesc::Constant(1, k_PerCameraSizeInBytes))
+        , m_perDrawBuffers(GraphicsBufferDesc::Constant(k_PerDrawElements, k_PerDrawSizeInBytes))
     {
     }
 

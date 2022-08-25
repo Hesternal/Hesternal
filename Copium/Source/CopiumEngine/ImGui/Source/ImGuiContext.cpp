@@ -134,14 +134,7 @@ namespace Copium
         }
 
         //- Create camera constant buffer
-        { 
-            GraphicsBufferDesc cameraBufferDesc = {
-                .ElementCount = 1,
-                .ElementSize  = k_CameraElementSize,
-                .Usage        = GraphicsBufferUsage::Constant,
-            };
-            m_cameraBuffer = std::make_unique<GraphicsBuffer>(cameraBufferDesc);
-        }
+        m_cameraBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Constant(1, k_CameraElementSize));
 
         if constexpr ((k_ImGuiConfigFlags & ImGuiConfigFlags_ViewportsEnable)
                       && (k_ImGuiBackendFlags & ImGuiBackendFlags_RendererHasViewports))
@@ -232,12 +225,7 @@ namespace Copium
                 COP_LOG_WARN("Resizing ImGui vertex buffer from {:d} to {:d}", m_vertexBuffer->GetElementCount(), newElementCount);
             }
 
-            GraphicsBufferDesc vertexBufferDesc = {
-                .ElementCount = newElementCount ,
-                .ElementSize  = k_VertexElementSize,
-                .Usage        = GraphicsBufferUsage::Vertex,
-            };
-            m_vertexBuffer = std::make_unique<GraphicsBuffer>(vertexBufferDesc);
+            m_vertexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Vertex(newElementCount, k_VertexElementSize));
         }
         if (const uint32 totalIndexCount = imguiDrawData->TotalIdxCount; m_indexBuffer == nullptr || totalIndexCount > m_indexBuffer->GetElementCount())
         {
@@ -248,12 +236,7 @@ namespace Copium
                 COP_LOG_WARN("Resizing ImGui index buffer from {:d} to {:d}", m_indexBuffer->GetElementCount(), newElementCount);
             }
 
-            GraphicsBufferDesc indexBufferDesc = {
-                .ElementCount = newElementCount,
-                .ElementSize  = k_IndexElementSize,
-                .Usage        = GraphicsBufferUsage::Index,
-            };
-            m_indexBuffer = std::make_unique<GraphicsBuffer>(indexBufferDesc);
+            m_indexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Index(newElementCount, k_IndexElementSize));
         }
 
         //- Upload vertex/index data into a single contiguous GPU buffer

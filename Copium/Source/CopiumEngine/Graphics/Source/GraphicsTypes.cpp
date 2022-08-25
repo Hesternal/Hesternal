@@ -24,7 +24,7 @@ namespace
 namespace Copium
 {
 
-    uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat)
+    uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat) noexcept
     {
         static const uint8 bytesPerPixel[] = {
             1,
@@ -36,7 +36,7 @@ namespace Copium
     }
 
 
-    uint32 VertexAttributeDesc::Stride() const
+    uint32 VertexAttributeDesc::Stride() const noexcept
     {
         static const uint32 vertexAttributeElementStride[] = {
             1, // SInt8
@@ -56,7 +56,7 @@ namespace Copium
         return Dimension * vertexAttributeElementStride[std::to_underlying(Format)];
     }
 
-    VertexAttributeDesc VertexAttributeDesc::Position()
+    VertexAttributeDesc VertexAttributeDesc::Position() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -67,7 +67,7 @@ namespace Copium
         };
     }
 
-    VertexAttributeDesc VertexAttributeDesc::Normal()
+    VertexAttributeDesc VertexAttributeDesc::Normal() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -78,7 +78,7 @@ namespace Copium
         };
     }
 
-    VertexAttributeDesc VertexAttributeDesc::UV0()
+    VertexAttributeDesc VertexAttributeDesc::UV0() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -90,28 +90,7 @@ namespace Copium
     }
 
 
-    ClearColorValue ClearColorValue::Default()
-    {
-        return ClearColorValue{ .Value = {0.f, 0.f, 0.f, 0.f} };
-    }
-
-    ClearDepthStencilValue ClearDepthStencilValue::Default()
-    {
-        return ClearDepthStencilValue{ .Depth = 1.f, .Stencil = 0 };
-    }
-
-    RenderTextureClearValue RenderTextureClearValue::DefaultColor()
-    {
-        return RenderTextureClearValue{ .Color = ClearColorValue::Default() };
-    }
-
-    RenderTextureClearValue RenderTextureClearValue::DefaultDepthStencil()
-    {
-        return RenderTextureClearValue{ .DepthStencil = ClearDepthStencilValue::Default() };
-    }
-
-
-    RenderTextureType RenderTextureDesc::RenderTextureType() const
+    RenderTextureType RenderTextureDesc::RenderTextureType() const noexcept
     {
         if (Format == RenderTextureFormat::BGRA8)
         {
@@ -167,7 +146,7 @@ namespace Copium
     }
 
 
-    RasterizerStateDesc RasterizerStateDesc::Default()
+    RasterizerStateDesc RasterizerStateDesc::Default() noexcept
     {
         return RasterizerStateDesc{
             .PolygonMode = PolygonMode::Fill,
@@ -176,7 +155,7 @@ namespace Copium
         };
     }
 
-    DepthStencilStateDesc DepthStencilStateDesc::Default()
+    DepthStencilStateDesc DepthStencilStateDesc::Default() noexcept
     {
         return DepthStencilStateDesc{
             .DepthTestEnable      = true,
@@ -185,7 +164,7 @@ namespace Copium
         };
     }
 
-    BlendStateDesc BlendStateDesc::Default()
+    BlendStateDesc BlendStateDesc::Default() noexcept
     {
         return BlendStateDesc{
             .BlendMode           = BlendMode::Off,

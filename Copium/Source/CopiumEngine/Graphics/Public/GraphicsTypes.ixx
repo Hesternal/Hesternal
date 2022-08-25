@@ -36,9 +36,294 @@ export namespace Copium
     enum class TextureHandle        : uint32 { Invalid = k_InvalidHandle };
 
 
-    //- Shader states
+    // ========================================================================
+    // ============================ GraphicsBuffer ============================
+    // ========================================================================
 
-    //-- RasterizerState
+    enum class GraphicsBufferUsage : uint8
+    {
+        Vertex,
+        Index,
+        Constant,
+    };
+
+    struct GraphicsBufferDesc final
+    {
+        uint32              ElementCount;
+        uint32              ElementSize;
+        GraphicsBufferUsage Usage;
+
+        [[nodiscard]] uint32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
+
+        [[nodiscard]] static GraphicsBufferDesc Vertex(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static GraphicsBufferDesc Index(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static GraphicsBufferDesc Constant(uint32 elementCount, uint32 elementSize) noexcept;
+    };
+
+
+    // ========================================================================
+    // ================================= Mesh =================================
+    // ========================================================================
+
+    enum class IndexFormat : uint8
+    {
+        UInt16,
+        UInt32,
+    };
+
+    enum class VertexAttribute : uint8
+    {
+        Position,
+        Normal,
+        UV0,
+    };
+
+    // NOTE(v.matushkin): Seems like OpenGL/Vulkan support more formats (VK_FORMAT_R64_SFLOAT for example)
+    // Edit VertexAttributeDesc::SizeInBytes() if changing something here
+    enum class VertexAttributeFormat : uint8
+    {
+        SInt8,
+        SInt16,
+        SInt32,
+        UInt8,
+        UInt16,
+        UInt32,
+        SNorm8,
+        SNorm16,
+        UNorm8,
+        UNorm16,
+        Float16,
+        Float32,
+    };
+
+    CHT_STRUCT()
+    struct VertexAttributeDesc final
+    {
+        CHT_GENERATED_BODY()
+
+        CHT_PROPERTY()
+        uint8                 Offset; // NOTE(v.matushkin): May be stride is a better name than offset?
+        CHT_PROPERTY()
+        uint8                 Dimension;
+        CHT_PROPERTY()
+        uint8                 Stream;
+        CHT_PROPERTY()
+        VertexAttribute       Attribute; // NOTE(v.matushkin): Do I need this?
+        CHT_PROPERTY()
+        VertexAttributeFormat Format;
+
+        [[nodiscard]] uint32 Stride() const noexcept;
+
+        [[nodiscard]] static VertexAttributeDesc Position() noexcept;
+        [[nodiscard]] static VertexAttributeDesc Normal() noexcept;
+        [[nodiscard]] static VertexAttributeDesc UV0() noexcept;
+    };
+
+    CHT_STRUCT()
+    struct MeshDesc final
+    {
+        CHT_GENERATED_BODY()
+
+        CHT_PROPERTY()
+        std::string         Name;
+        CHT_PROPERTY()
+        VertexAttributeDesc Position;
+        CHT_PROPERTY()
+        VertexAttributeDesc Normal;
+        CHT_PROPERTY()
+        VertexAttributeDesc UV0;
+        CHT_PROPERTY()
+        IndexFormat         IndexFormat;
+        CHT_PROPERTY()
+        uint32              IndexCount;
+        CHT_PROPERTY()
+        uint32              VertexCount;
+        CHT_PROPERTY()
+        std::vector<uint8>  IndexData;
+        CHT_PROPERTY()
+        std::vector<uint8>  VertexData;
+    };
+
+
+    // ========================================================================
+    // =============================== Texture ================================
+    // ========================================================================
+
+    enum class TextureFormat : uint8
+    {
+        R8,
+        RG8,
+        RGBA8,
+    };
+
+    [[nodiscard]] inline uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat) noexcept;
+
+    // NOTE(v.matushkin): There are a lot more options, but I'm not sure if there is a point of exposing them
+    enum class TextureFilterMode : uint8
+    {
+        Point,       // Min/Mag Point,  Mip Point
+        Bilinear,    // Min/Mag Linear, Mip Point
+        Trilinear,   // Min/Mag Linear, Mip Linear
+        Anisotropic,
+    };
+
+    enum class TextureWrapMode : uint8
+    {
+        ClampToEdge,
+        ClampToBorder,
+        MirroredOnce,
+        MirroredRepeat,
+        Repeat,
+    };
+
+    CHT_STRUCT()
+    struct TextureDesc final
+    {
+        CHT_GENERATED_BODY()
+
+        CHT_PROPERTY()
+        std::string        Name;
+        CHT_PROPERTY()
+        uint32             Width;
+        CHT_PROPERTY()
+        uint32             Height;
+        CHT_PROPERTY()
+        TextureFormat      Format;
+        CHT_PROPERTY()
+        uint8              MipmapCount;
+        CHT_PROPERTY()
+        TextureFilterMode  FilterMode;
+        CHT_PROPERTY()
+        uint8              AnisotropicLevel;
+        CHT_PROPERTY()
+        TextureWrapMode    WrapModeU;
+        CHT_PROPERTY()
+        TextureWrapMode    WrapModeV;
+        CHT_PROPERTY()
+        std::vector<uint8> Data;
+
+        void GenerateMipmaps(bool value);
+        void SetFilterMode(TextureFilterMode filterMode);
+        void SetAnisotropicFilterMode(uint8 anisotropicLevel);
+        void SetWrapMode(TextureWrapMode uv) noexcept { WrapModeU = uv; WrapModeV = uv; }
+        void SetWrapMode(TextureWrapMode u, TextureWrapMode v) noexcept { WrapModeU = u; WrapModeV = v; }
+    };
+
+
+    // ========================================================================
+    // ============================ RenderTexture =============================
+    // ========================================================================
+
+    // TODO(v.matushkin): Add Default color/depth formats that depends on the current platform
+    enum class RenderTextureFormat : uint8
+    {
+        BGRA8,
+        Depth32,
+    };
+
+    // NOTE(v.matushkin): Not sure about this enum
+    enum class RenderTextureType : uint8
+    {
+        Color,
+        Depth,
+        // Stencil,
+        // DepthStencil,
+    };
+
+    // NOTE(v.matushkin): Not sure about this enum and the naming
+    enum class RenderTextureUsage : uint8
+    {
+        Default,
+        ShaderRead,
+    };
+
+    struct ClearColorValue final
+    {
+        float32 Value[4];
+
+        [[nodiscard]] static ClearColorValue Default() noexcept { return ClearColorValue{ .Value = {0.f, 0.f, 0.f, 0.f} }; }
+    };
+
+    struct ClearDepthStencilValue final
+    {
+        float32 Depth;
+        uint8   Stencil;
+
+        [[nodiscard]] static ClearDepthStencilValue Default() noexcept { return ClearDepthStencilValue{ .Depth = 1.f, .Stencil = 0 }; }
+    };
+
+    union RenderTextureClearValue
+    {
+        ClearColorValue        Color;
+        ClearDepthStencilValue DepthStencil;
+
+        [[nodiscard]] static RenderTextureClearValue DefaultColor() noexcept { return RenderTextureClearValue{ .Color = ClearColorValue::Default() }; }
+        [[nodiscard]] static RenderTextureClearValue DefaultDepthStencil() noexcept { return RenderTextureClearValue{ .DepthStencil = ClearDepthStencilValue::Default() }; }
+    };
+
+    struct RenderTextureDesc final
+    {
+        std::string             Name;
+        RenderTextureClearValue ClearValue;
+        uint32                  Width;
+        uint32                  Height;
+        RenderTextureFormat     Format;
+        RenderTextureUsage      Usage;
+
+        [[nodiscard]] RenderTextureType RenderTextureType() const noexcept;
+    };
+
+
+    // ========================================================================
+    // ============================== RenderPass ==============================
+    // ========================================================================
+
+    enum class AttachmentLoadAction : uint8
+    {
+        Clear,
+        DontCare,
+    };
+
+    struct AttachmentDesc final
+    {
+        RenderTextureHandle  RTHandle;
+        AttachmentLoadAction LoadAction;
+    };
+
+    struct SubpassDesc final
+    {
+        std::vector<uint8> ColorAttachmentIndices;
+        bool               UseDepthStencilAttachment; // NOTE(v.matushkin): Questionable?
+    };
+
+    struct RenderPassDesc final
+    {
+        std::vector<AttachmentDesc>   ColorAttachments;
+        std::optional<AttachmentDesc> DepthStencilAttachment;
+        SubpassDesc                   Subpass; // NOTE(v.matushkin): Only one for now
+    };
+
+
+    // ========================================================================
+    // ============================== Swapchain ===============================
+    // ========================================================================
+
+    struct SwapchainDesc final
+    {
+        uint64              WindowNativeHandle;
+        uint16              Width;
+        uint16              Height;
+        uint8               BufferCount;
+        RenderTextureFormat Format;
+    };
+
+
+    // ========================================================================
+    // ================================ Shader ================================
+    // ========================================================================
+
+    //- RasterizerState
+
     CHT_ENUM()
     enum class PolygonMode : uint8
     {
@@ -62,7 +347,17 @@ export namespace Copium
         CounterClockwise,
     };
 
-    //-- DepthStencilState
+    struct RasterizerStateDesc final
+    {
+        PolygonMode       PolygonMode;
+        CullMode          CullMode;
+        TriangleFrontFace FrontFace;
+
+        [[nodiscard]] static RasterizerStateDesc Default() noexcept;
+    };
+
+    //- DepthStencilState
+
     // TODO(v.matushkin): What the fuck is this? I don't remember making it.
     //  It's just true/false for DepthStencilState.
     //  Looks like this was made to set depth RenderTexture access in RenderPasses may be?
@@ -86,7 +381,17 @@ export namespace Copium
         Always,
     };
 
-    //-- BlendState
+    struct DepthStencilStateDesc final
+    {
+        bool            DepthTestEnable;
+        bool            DepthWriteEnable;
+        CompareFunction DepthCompareFunction;
+
+        [[nodiscard]] static DepthStencilStateDesc Default() noexcept;
+    };
+
+    //- BlendState
+
     CHT_ENUM()
     enum class BlendMode : uint8
     {
@@ -147,293 +452,7 @@ export namespace Copium
         OrInverted,
     };
 
-
-    //- RenderPass
-
-    enum class AttachmentLoadAction : uint8
-    {
-        Clear,
-        DontCare,
-    };
-
-
-    //- RenderTexture
-
-    // TODO(v.matushkin): Add Default color/depth formats that depends on the current platform
-    enum class RenderTextureFormat : uint8
-    {
-        BGRA8,
-        Depth32,
-    };
-
-    // NOTE(v.matushkin): Not sure about this enum
-    enum class RenderTextureType : uint8
-    {
-        Color,
-        Depth,
-        // Stencil,
-        // DepthStencil,
-    };
-
-    // NOTE(v.matushkin): Not sure about this enum and the naming
-    enum class RenderTextureUsage : uint8
-    {
-        Default,
-        ShaderRead,
-    };
-
-
-    //- Texture
-
-    enum class TextureFormat : uint8
-    {
-        R8,
-        RG8,
-        RGBA8,
-    };
-
-    [[nodiscard]] inline uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat);
-
-    // NOTE(v.matushkin): There are a lot more options, but I'm not sure if there is a point of exposing them
-    enum class TextureFilterMode : uint8
-    {
-        Point,       // Min/Mag Point,  Mip Point
-        Bilinear,    // Min/Mag Linear, Mip Point
-        Trilinear,   // Min/Mag Linear, Mip Linear
-        Anisotropic,
-    };
-
-    enum class TextureWrapMode : uint8
-    {
-        ClampToEdge,
-        ClampToBorder,
-        MirroredOnce,
-        MirroredRepeat,
-        Repeat,
-    };
-
-
-    //- Mesh
-
-    enum class IndexFormat : uint8
-    {
-        UInt16,
-        UInt32,
-    };
-
-    enum class VertexAttribute : uint8
-    {
-        Position,
-        Normal,
-        UV0,
-    };
-
-    // NOTE(v.matushkin): Seems like OpenGL/Vulkan support more formats (VK_FORMAT_R64_SFLOAT for example)
-    // Edit VertexAttributeDesc::SizeInBytes() if changing something here
-    enum class VertexAttributeFormat : uint8
-    {
-        SInt8,
-        SInt16,
-        SInt32,
-        UInt8,
-        UInt16,
-        UInt32,
-        SNorm8,
-        SNorm16,
-        UNorm8,
-        UNorm16,
-        Float16,
-        Float32,
-    };
-
-
-    enum class GraphicsBufferUsage : uint8
-    {
-        Vertex,
-        Index,
-        Constant,
-    };
-
-
-    struct GraphicsBufferDesc final
-    {
-        uint32              ElementCount;
-        uint32              ElementSize;
-        GraphicsBufferUsage Usage;
-
-        [[nodiscard]] uint32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
-    };
-
-
-    //- Mesh
-
-    CHT_STRUCT()
-    struct VertexAttributeDesc
-    {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        uint8                 Offset; // NOTE(v.matushkin): May be stride is a better name than offset?
-        CHT_PROPERTY()
-        uint8                 Dimension;
-        CHT_PROPERTY()
-        uint8                 Stream;
-        CHT_PROPERTY()
-        VertexAttribute       Attribute; // NOTE(v.matushkin): Do I need this?
-        CHT_PROPERTY()
-        VertexAttributeFormat Format;
-
-        [[nodiscard]] uint32 Stride() const;
-
-        [[nodiscard]] static VertexAttributeDesc Position();
-        [[nodiscard]] static VertexAttributeDesc Normal();
-        [[nodiscard]] static VertexAttributeDesc UV0();
-    };
-
-    CHT_STRUCT()
-    struct MeshDesc
-    {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        std::string         Name;
-        CHT_PROPERTY()
-        VertexAttributeDesc Position;
-        CHT_PROPERTY()
-        VertexAttributeDesc Normal;
-        CHT_PROPERTY()
-        VertexAttributeDesc UV0;
-        CHT_PROPERTY()
-        IndexFormat         IndexFormat;
-        CHT_PROPERTY()
-        uint32              IndexCount;
-        CHT_PROPERTY()
-        uint32              VertexCount;
-        CHT_PROPERTY()
-        std::vector<uint8>  IndexData;
-        CHT_PROPERTY()
-        std::vector<uint8>  VertexData;
-    };
-
-
-    //- RenderTexture
-
-    struct ClearColorValue
-    {
-        float32 Value[4];
-
-        [[nodiscard]] static ClearColorValue Default();
-    };
-
-    struct ClearDepthStencilValue
-    {
-        float32 Depth;
-        uint8   Stencil;
-
-        [[nodiscard]] static ClearDepthStencilValue Default();
-    };
-
-    union RenderTextureClearValue
-    {
-        ClearColorValue        Color;
-        ClearDepthStencilValue DepthStencil;
-
-        [[nodiscard]] static RenderTextureClearValue DefaultColor();
-        [[nodiscard]] static RenderTextureClearValue DefaultDepthStencil();
-    };
-
-    struct RenderTextureDesc
-    {
-        std::string             Name;
-        RenderTextureClearValue ClearValue;
-        uint32                  Width;
-        uint32                  Height;
-        RenderTextureFormat     Format;
-        RenderTextureUsage      Usage;
-
-        [[nodiscard]] RenderTextureType RenderTextureType() const;
-    };
-
-
-    //- RenderPass
-
-    struct AttachmentDesc
-    {
-        RenderTextureHandle  RTHandle;
-        AttachmentLoadAction LoadAction;
-    };
-
-    struct SubpassDesc
-    {
-        std::vector<uint8> ColorAttachmentIndices;
-        bool               UseDepthStencilAttachment; // NOTE(v.matushkin): Questionable?
-    };
-
-    struct RenderPassDesc
-    {
-        std::vector<AttachmentDesc>   ColorAttachments;
-        std::optional<AttachmentDesc> DepthStencilAttachment;
-        SubpassDesc                   Subpass; // NOTE(v.matushkin): Only one for now
-    };
-
-
-    //- Texture
-
-    CHT_STRUCT()
-    struct TextureDesc
-    {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        std::string        Name;
-        CHT_PROPERTY()
-        uint32             Width;
-        CHT_PROPERTY()
-        uint32             Height;
-        CHT_PROPERTY()
-        TextureFormat      Format;
-        CHT_PROPERTY()
-        uint8              MipmapCount;
-        CHT_PROPERTY()
-        TextureFilterMode  FilterMode;
-        CHT_PROPERTY()
-        uint8              AnisotropicLevel;
-        CHT_PROPERTY()
-        TextureWrapMode    WrapModeU;
-        CHT_PROPERTY()
-        TextureWrapMode    WrapModeV;
-        CHT_PROPERTY()
-        std::vector<uint8> Data;
-
-        void GenerateMipmaps(bool value);
-        void SetFilterMode(TextureFilterMode filterMode);
-        void SetAnisotropicFilterMode(uint8 anisotropicLevel);
-        void SetWrapMode(TextureWrapMode uv)                   { WrapModeU = uv; WrapModeV = uv; }
-        void SetWrapMode(TextureWrapMode u, TextureWrapMode v) { WrapModeU = u; WrapModeV = v; }
-    };
-
-
-    //- Shader
-
-    struct RasterizerStateDesc
-    {
-        PolygonMode       PolygonMode;
-        CullMode          CullMode;
-        TriangleFrontFace FrontFace;
-
-        [[nodiscard]] static RasterizerStateDesc Default();
-    };
-
-    struct DepthStencilStateDesc
-    {
-        bool            DepthTestEnable;
-        bool            DepthWriteEnable;
-        CompareFunction DepthCompareFunction;
-
-        [[nodiscard]] static DepthStencilStateDesc Default();
-    };
-
-    struct BlendStateDesc
+    struct BlendStateDesc final
     {
         BlendMode    BlendMode;
         BlendFactor  ColorSrcBlendFactor;
@@ -444,17 +463,17 @@ export namespace Copium
         BlendOp      AlphaBlendOp;
         BlendLogicOp LogicOp;
 
-        [[nodiscard]] static BlendStateDesc Default();
+        [[nodiscard]] static BlendStateDesc Default() noexcept;
     };
 
-    struct ShaderBlob
+    struct ShaderBlob final
     {
         uint64                   Size;
         std::unique_ptr<uint8[]> Data;
     };
 
     CHT_STRUCT()
-    struct ShaderDesc
+    struct ShaderDesc final
     {
         CHT_GENERATED_BODY()
 
@@ -468,15 +487,19 @@ export namespace Copium
     };
 
 
-    //- Swapchain
-
-    struct SwapchainDesc
+    GraphicsBufferDesc GraphicsBufferDesc::Vertex(uint32 elementCount, uint32 elementSize) noexcept
     {
-        uint64              WindowNativeHandle;
-        uint16              Width;
-        uint16              Height;
-        uint8               BufferCount;
-        RenderTextureFormat Format;
-    };
+        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Vertex);
+    }
+
+    GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, uint32 elementSize) noexcept
+    {
+        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Index);
+    }
+
+    GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
+    {
+        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Constant);
+    }
 
 } // export namespace Copium
