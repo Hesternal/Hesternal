@@ -230,7 +230,7 @@ export namespace Copium::Math
     [[nodiscard]] constexpr Float3 Degrees(const Float3& radians);
     [[nodiscard]] constexpr Float4 Degrees(const Float4& radians);
 
-    [[nodiscard]] void SinCos(const Float3&, Float3& sin, Float3& cos);
+    [[nodiscard]] inline void SinCos(const Float3&, Float3& sin, Float3& cos);
 
     [[nodiscard]] constexpr float32 Dot(const Float3& lhs, const Float3& rhs);
     [[nodiscard]] constexpr float32 Dot(const Float4& lhs, const Float4& rhs);
