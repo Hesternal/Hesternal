@@ -45,13 +45,13 @@ namespace
     {
         if (numComponents == 1)
         {
-            return TextureFormat::R8;
+            return TextureFormat::R8_UNorm;
         }
         if (numComponents == 2)
         {
-            return TextureFormat::RG8;
+            return TextureFormat::RG8_UNorm;
         }
-        return TextureFormat::RGBA8;
+        return TextureFormat::RGBA8_UNorm;
     }
 
 

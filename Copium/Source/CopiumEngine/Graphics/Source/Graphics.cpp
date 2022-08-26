@@ -35,7 +35,7 @@ namespace Copium
             textureDesc.Name   = "Black";
             textureDesc.Width  = 4;
             textureDesc.Height = 4;
-            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(blackTextureData);
             textureDesc.GenerateMipmaps(true);
             textureDesc.SetAnisotropicFilterMode(16);
@@ -60,7 +60,7 @@ namespace Copium
             textureDesc.Name   = "White";
             textureDesc.Width  = 4;
             textureDesc.Height = 4;
-            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(whiteTextureData);
             textureDesc.GenerateMipmaps(true);
             textureDesc.SetAnisotropicFilterMode(16);
@@ -87,7 +87,7 @@ namespace Copium
             textureDesc.Name   = "Normal";
             textureDesc.Width  = 4;
             textureDesc.Height = 4;
-            textureDesc.Format = TextureFormat::RGBA8;
+            textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(normalTextureData);
             textureDesc.GenerateMipmaps(true);
             textureDesc.SetAnisotropicFilterMode(16);

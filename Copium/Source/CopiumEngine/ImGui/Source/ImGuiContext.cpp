@@ -115,7 +115,7 @@ namespace Copium
             fontTextureDesc.Name   = "ImGui Font";
             fontTextureDesc.Width  = width;
             fontTextureDesc.Height = height;
-            fontTextureDesc.Format = TextureFormat::RGBA8;
+            fontTextureDesc.Format = TextureFormat::RGBA8_UNorm;
             fontTextureDesc.GenerateMipmaps(false);
             fontTextureDesc.SetFilterMode(TextureFilterMode::Bilinear);
             fontTextureDesc.SetWrapMode(TextureWrapMode::Repeat);
