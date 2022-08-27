@@ -16,9 +16,9 @@ namespace Copium
         return Graphics::GetGraphicsDevice()->CreateShader(shaderDesc);
     }
 
-    TextureHandle AssetManager::CreateGpuResource(const TextureDesc& textureDesc)
+    TextureHandle AssetManager::CreateGpuResource(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc)
     {
-        return Graphics::GetGraphicsDevice()->CreateTexture2D(textureDesc);
+        return Graphics::GetGraphicsDevice()->CreateTexture2D(textureDesc, samplerDesc);
     }
 
 

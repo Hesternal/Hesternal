@@ -170,14 +170,15 @@ namespace Copium
         textureDesc.Height = heightUnsigned;
         textureDesc.Format = NumComponentsToTextureFormat(desiredComponents);
         textureDesc.GenerateMipmaps(true);
-        textureDesc.SetAnisotropicFilterMode(16);
-        textureDesc.SetWrapMode(TextureWrapMode::Repeat);
+        SamplerDesc samplerDesc;
+        samplerDesc.SetAnisotropicFilterMode(16);
+        samplerDesc.SetWrapMode(TextureWrapMode::Repeat);
 
         GenerateMips(stbImageData, textureDesc);
 
         stbi_image_free(stbImageData);
 
-        return Texture(std::move(textureDesc));
+        return Texture(std::move(textureDesc), samplerDesc);
     }
 
 } // namespace Copium

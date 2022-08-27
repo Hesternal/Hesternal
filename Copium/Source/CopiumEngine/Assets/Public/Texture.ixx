@@ -12,7 +12,7 @@ export namespace Copium
     class Texture final : public Object
     {
     public:
-        Texture(TextureDesc&& textureDesc);
+        Texture(TextureDesc&& textureDesc, const SamplerDesc& samplerDesc);
         ~Texture();
 
         // Default constructor for serialization
@@ -40,6 +40,7 @@ export namespace Copium
 
     private:
         TextureDesc   m_textureDesc;
+        SamplerDesc   m_samplerDesc;
         TextureHandle m_textureHandle;
     };
 

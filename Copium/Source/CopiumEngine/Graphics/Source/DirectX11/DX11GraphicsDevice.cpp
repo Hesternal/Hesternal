@@ -801,7 +801,7 @@ namespace Copium
         return swapchainHandle;
     }
 
-    TextureHandle DX11GraphicsDevice::CreateTexture2D(const TextureDesc& textureDesc)
+    TextureHandle DX11GraphicsDevice::CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc)
     {
         const DXGI_FORMAT dxgiTextureFormat = dx_TextureFormat(textureDesc.Format);
 
@@ -885,12 +885,12 @@ namespace Copium
             //  Or may be I should do it at the TextureDesc/Texture level and here assume that everything is already set up properly.
 
             D3D11_SAMPLER_DESC d3dSamplerDesc = {
-                .Filter         = dx11_TextureFilterMode(textureDesc.FilterMode),
-                .AddressU       = dx11_TextureWrapMode(textureDesc.WrapModeU),
-                .AddressV       = dx11_TextureWrapMode(textureDesc.WrapModeV),
-                .AddressW       = D3D11_TEXTURE_ADDRESS_CLAMP,  // NOTE(v.matushkin): How to handle this for 2D textures?
+                .Filter         = dx11_TextureFilterMode(samplerDesc.FilterMode),
+                .AddressU       = dx11_TextureWrapMode(samplerDesc.WrapModeU),
+                .AddressV       = dx11_TextureWrapMode(samplerDesc.WrapModeV),
+                .AddressW       = dx11_TextureWrapMode(samplerDesc.WrapModeW),
                 .MipLODBias     = 0,
-                .MaxAnisotropy  = textureDesc.AnisotropicLevel,
+                .MaxAnisotropy  = samplerDesc.AnisotropicLevel,
                 .ComparisonFunc = D3D11_COMPARISON_NEVER,
                 // .BorderColor      // NOTE(v.matushkin): Only used if D3D11_TEXTURE_ADDRESS_BORDER is specified in Address*
                 .MinLOD         = 0,

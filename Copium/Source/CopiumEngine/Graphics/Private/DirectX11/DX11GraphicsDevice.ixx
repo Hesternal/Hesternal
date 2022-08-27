@@ -186,7 +186,7 @@ export namespace Copium
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) override;
         [[nodiscard]] ShaderHandle CreateShader(const ShaderDesc& shaderDesc) override;
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
-        [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc) override;
+        [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) override;
 
         void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) override;
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;

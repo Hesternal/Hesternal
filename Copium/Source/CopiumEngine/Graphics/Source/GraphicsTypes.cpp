@@ -148,7 +148,7 @@ namespace Copium
         }
     }
 
-    void TextureDesc::SetFilterMode(TextureFilterMode filterMode)
+    void SamplerDesc::SetFilterMode(TextureFilterMode filterMode)
     {
         FilterMode = filterMode;
 
@@ -163,7 +163,7 @@ namespace Copium
         }
     }
 
-    void TextureDesc::SetAnisotropicFilterMode(uint8 anisotropicLevel)
+    void SamplerDesc::SetAnisotropicFilterMode(uint8 anisotropicLevel)
     {
         if (anisotropicLevel > 1)
         {

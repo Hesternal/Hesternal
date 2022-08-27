@@ -225,21 +225,22 @@ export namespace Copium
         CHT_PROPERTY()
         uint8              MipmapCount;
         CHT_PROPERTY()
-        TextureFilterMode  FilterMode;
-        CHT_PROPERTY()
-        uint8              AnisotropicLevel;
-        CHT_PROPERTY()
-        TextureWrapMode    WrapModeU;
-        CHT_PROPERTY()
-        TextureWrapMode    WrapModeV;
-        CHT_PROPERTY()
         std::vector<uint8> Data;
 
         void GenerateMipmaps(bool value);
+    };
+
+    struct SamplerDesc final
+    {
+        TextureFilterMode FilterMode;
+        uint8             AnisotropicLevel;
+        TextureWrapMode   WrapModeU;
+        TextureWrapMode   WrapModeV;
+        TextureWrapMode   WrapModeW;
+
         void SetFilterMode(TextureFilterMode filterMode);
         void SetAnisotropicFilterMode(uint8 anisotropicLevel);
-        void SetWrapMode(TextureWrapMode uv) noexcept { WrapModeU = uv; WrapModeV = uv; }
-        void SetWrapMode(TextureWrapMode u, TextureWrapMode v) noexcept { WrapModeU = u; WrapModeV = v; }
+        void SetWrapMode(TextureWrapMode uvw) noexcept { WrapModeU = uvw; WrapModeV = uvw; WrapModeW = uvw; }
     };
 
 

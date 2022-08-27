@@ -8,8 +8,9 @@ import <utility>;
 namespace Copium
 {
 
-    Texture::Texture(TextureDesc&& textureDesc)
+    Texture::Texture(TextureDesc&& textureDesc, const SamplerDesc& samplerDesc)
         : m_textureDesc(std::move(textureDesc))
+        , m_samplerDesc(samplerDesc)
     {
         _InitGpuResource();
     }
@@ -60,7 +61,7 @@ namespace Copium
 
     void Texture::_InitGpuResource()
     {
-        m_textureHandle = AssetManager::CreateGpuResource(m_textureDesc);
+        m_textureHandle = AssetManager::CreateGpuResource(m_textureDesc, m_samplerDesc);
     }
 
 } // namespace Copium
