@@ -17,6 +17,8 @@ namespace Copium
         m_graphicsDevice = std::make_unique<DX11GraphicsDevice>();
         m_renderContext = std::make_unique<RenderContext>();
 
+        const SamplerDesc defaultSamplerDesc = SamplerDesc::Default();
+
         //- Black Texture
         {
             std::vector<uint8> blackTextureData = {
@@ -38,11 +40,8 @@ namespace Copium
             textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(blackTextureData);
             textureDesc.GenerateMipmaps(true);
-            SamplerDesc samplerDesc;
-            samplerDesc.SetAnisotropicFilterMode(16);
-            samplerDesc.SetWrapMode(TextureWrapMode::Repeat);
 
-            m_blackTexture = std::make_shared<Texture>(std::move(textureDesc), samplerDesc);
+            m_blackTexture = std::make_shared<Texture>(std::move(textureDesc), defaultSamplerDesc);
         }
         //- White Texture
         {
@@ -64,11 +63,8 @@ namespace Copium
             textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(whiteTextureData);
             textureDesc.GenerateMipmaps(true);
-            SamplerDesc samplerDesc;
-            samplerDesc.SetAnisotropicFilterMode(16);
-            samplerDesc.SetWrapMode(TextureWrapMode::Repeat);
 
-            m_whiteTexture = std::make_shared<Texture>(std::move(textureDesc), samplerDesc);
+            m_whiteTexture = std::make_shared<Texture>(std::move(textureDesc), defaultSamplerDesc);
         }
         //- Normal Texture
         {
@@ -92,11 +88,8 @@ namespace Copium
             textureDesc.Format = TextureFormat::RGBA8_UNorm;
             textureDesc.Data   = std::move(normalTextureData);
             textureDesc.GenerateMipmaps(true);
-            SamplerDesc samplerDesc;
-            samplerDesc.SetAnisotropicFilterMode(16);
-            samplerDesc.SetWrapMode(TextureWrapMode::Repeat);
 
-            m_normalTexture = std::make_shared<Texture>(std::move(textureDesc), samplerDesc);
+            m_normalTexture = std::make_shared<Texture>(std::move(textureDesc), defaultSamplerDesc);
         }
     }
 

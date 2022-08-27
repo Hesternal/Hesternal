@@ -17,6 +17,7 @@ namespace
 
     // Minimal possible size
     static_assert(sizeof(GraphicsBufferDesc) == 12);
+    static_assert(sizeof(SamplerDesc) == 12);
 
 } // namespace
 
@@ -148,67 +149,21 @@ namespace Copium
         }
     }
 
-    void SamplerDesc::SetFilterMode(TextureFilterMode filterMode)
-    {
-        FilterMode = filterMode;
 
-        if (filterMode == TextureFilterMode::Anisotropic)
+    void SamplerDesc::SetAnisotropicFilter(uint8 anisoLevel)
+    {
+        MinFilter = MagFilter = SamplerFilterMode::Linear;
+        MipmapFilter = SamplerMipmapMode::Linear;
+
+        if (anisoLevel > 1)
         {
-            AnisotropicLevel = 16;
-            COP_LOG_WARN("It's better to use SetAnisotropicFilterMode for TextureFilterMode::Anisotropic");
+            AnisoLevel = anisoLevel;
         }
         else
         {
-            AnisotropicLevel = 0;
+            AnisoLevel = 0;
+            COP_LOG_WARN("No reason to set anisoLevel < 2 ? Setting filter to Trilinear");
         }
-    }
-
-    void SamplerDesc::SetAnisotropicFilterMode(uint8 anisotropicLevel)
-    {
-        if (anisotropicLevel > 1)
-        {
-            AnisotropicLevel = anisotropicLevel;
-            FilterMode = TextureFilterMode::Anisotropic;
-        }
-        else
-        {
-            AnisotropicLevel = 0;
-            FilterMode = TextureFilterMode::Trilinear;
-            COP_LOG_WARN("No reason to set anisotropicLevel < 2 ? Setting FilterMode to Trilinear");
-        }
-    }
-
-
-    RasterizerStateDesc RasterizerStateDesc::Default() noexcept
-    {
-        return RasterizerStateDesc{
-            .PolygonMode = PolygonMode::Fill,
-            .CullMode    = CullMode::Back,
-            .FrontFace   = TriangleFrontFace::CounterClockwise,
-        };
-    }
-
-    DepthStencilStateDesc DepthStencilStateDesc::Default() noexcept
-    {
-        return DepthStencilStateDesc{
-            .DepthTestEnable      = true,
-            .DepthWriteEnable     = true,
-            .DepthCompareFunction = CompareFunction::Less,
-        };
-    }
-
-    BlendStateDesc BlendStateDesc::Default() noexcept
-    {
-        return BlendStateDesc{
-            .BlendMode           = BlendMode::Off,
-            .ColorSrcBlendFactor = BlendFactor::One,
-            .ColorDstBlendFactor = BlendFactor::Zero,
-            .ColorBlendOp        = BlendOp::Add,
-            .AlphaSrcBlendFactor = BlendFactor::One,
-            .AlphaDstBlendFactor = BlendFactor::Zero,
-            .AlphaBlendOp        = BlendOp::Add,
-            .LogicOp             = BlendLogicOp::Noop,
-        };
     }
 
 } // namespace Copium

@@ -879,19 +879,14 @@ namespace Copium
         }
         //- Create Texture Sampler
         {
-            // NOTE(v.matushkin): I don't know if I should "fix" Filter/MaxAnisotropy in some cases,
-            //  like if AnisotropicLevel==1 -> set FilterMode to Trilinear,
-            //  or if FilterMode != Anisotropic -> set MaxAnisotropy = 0.
-            //  Or may be I should do it at the TextureDesc/Texture level and here assume that everything is already set up properly.
-
             D3D11_SAMPLER_DESC d3dSamplerDesc = {
-                .Filter         = dx11_TextureFilterMode(samplerDesc.FilterMode),
-                .AddressU       = dx11_TextureWrapMode(samplerDesc.WrapModeU),
-                .AddressV       = dx11_TextureWrapMode(samplerDesc.WrapModeV),
-                .AddressW       = dx11_TextureWrapMode(samplerDesc.WrapModeW),
-                .MipLODBias     = 0,
-                .MaxAnisotropy  = samplerDesc.AnisotropicLevel,
-                .ComparisonFunc = D3D11_COMPARISON_NEVER,
+                .Filter         = dx11_SamplerFilter(samplerDesc.MinFilter, samplerDesc.MagFilter, samplerDesc.MipmapFilter, samplerDesc.AnisoLevel),
+                .AddressU       = dx11_SamplerAddressMode(samplerDesc.AddressModeU),
+                .AddressV       = dx11_SamplerAddressMode(samplerDesc.AddressModeV),
+                .AddressW       = dx11_SamplerAddressMode(samplerDesc.AddressModeW),
+                .MipLODBias     = samplerDesc.MipLodBias,
+                .MaxAnisotropy  = samplerDesc.AnisoLevel,
+                .ComparisonFunc = D3D11_COMPARISON_NEVER, // NOTE(v.matushkin): Only for Depth textures?
                 // .BorderColor      // NOTE(v.matushkin): Only used if D3D11_TEXTURE_ADDRESS_BORDER is specified in Address*
                 .MinLOD         = 0,
                 .MaxLOD         = D3D11_FLOAT32_MAX,
@@ -1081,7 +1076,7 @@ namespace Copium
         m_dxgiInfoQueue->ClearRetrievalFilter(k_DxgiDebugGuid);
         m_dxgiInfoQueue->ClearStorageFilter(k_DxgiDebugGuid);
 
-        // Filter create/destroy resource messages, they probably can be useful, but most of the time it's just a spam
+        // Filter create/destroy resource messages, they're probably can be useful, but most of the time it's just a spam
         DXGI_INFO_QUEUE_MESSAGE_ID dxgiDenyMessageIDs[] = {
             D3D11_MESSAGE_ID_LIVE_OBJECT_SUMMARY,
             D3D11_MESSAGE_ID_CREATE_BUFFER,
@@ -1092,6 +1087,7 @@ namespace Copium
             D3D11_MESSAGE_ID_CREATE_VERTEXSHADER,
             D3D11_MESSAGE_ID_CREATE_PIXELSHADER,
             D3D11_MESSAGE_ID_CREATE_INPUTLAYOUT,
+            D3D11_MESSAGE_ID_CREATE_SAMPLER,
             D3D11_MESSAGE_ID_CREATE_FENCE,
             D3D11_MESSAGE_ID_DESTROY_BUFFER,
             D3D11_MESSAGE_ID_DESTROY_TEXTURE2D,
@@ -1101,6 +1097,7 @@ namespace Copium
             D3D11_MESSAGE_ID_DESTROY_VERTEXSHADER,
             D3D11_MESSAGE_ID_DESTROY_PIXELSHADER,
             D3D11_MESSAGE_ID_DESTROY_INPUTLAYOUT,
+            D3D11_MESSAGE_ID_DESTROY_SAMPLER,
             D3D11_MESSAGE_ID_DESTROY_FENCE,
         };
         DXGI_INFO_QUEUE_FILTER dxgiInfoQueueFilter = {

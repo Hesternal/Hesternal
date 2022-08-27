@@ -191,24 +191,6 @@ export namespace Copium
 
     [[nodiscard]] inline uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat) noexcept;
 
-    // NOTE(v.matushkin): There are a lot more options, but I'm not sure if there is a point of exposing them
-    enum class TextureFilterMode : uint8
-    {
-        Point,       // Min/Mag Point,  Mip Point
-        Bilinear,    // Min/Mag Linear, Mip Point
-        Trilinear,   // Min/Mag Linear, Mip Linear
-        Anisotropic,
-    };
-
-    enum class TextureWrapMode : uint8
-    {
-        ClampToEdge,
-        ClampToBorder,
-        MirroredOnce,
-        MirroredRepeat,
-        Repeat,
-    };
-
     CHT_STRUCT()
     struct TextureDesc final
     {
@@ -228,19 +210,6 @@ export namespace Copium
         std::vector<uint8> Data;
 
         void GenerateMipmaps(bool value);
-    };
-
-    struct SamplerDesc final
-    {
-        TextureFilterMode FilterMode;
-        uint8             AnisotropicLevel;
-        TextureWrapMode   WrapModeU;
-        TextureWrapMode   WrapModeV;
-        TextureWrapMode   WrapModeW;
-
-        void SetFilterMode(TextureFilterMode filterMode);
-        void SetAnisotropicFilterMode(uint8 anisotropicLevel);
-        void SetWrapMode(TextureWrapMode uvw) noexcept { WrapModeU = uvw; WrapModeV = uvw; WrapModeW = uvw; }
     };
 
 
@@ -335,6 +304,53 @@ export namespace Copium
         std::vector<AttachmentDesc>   ColorAttachments;
         std::optional<AttachmentDesc> DepthStencilAttachment;
         SubpassDesc                   Subpass; // NOTE(v.matushkin): Only one for now
+    };
+
+
+    // ========================================================================
+    // =============================== Sampler ================================
+    // ========================================================================
+
+    // NOTE(v.matushkin): Vulkan has "Cubic", thats why I made separate SamplerMipmapMode
+    enum class SamplerFilterMode : uint8
+    {
+        Nearest,
+        Linear,
+    };
+
+    enum class SamplerMipmapMode : uint8
+    {
+        Nearest,
+        Linear,
+    };
+
+    enum class SamplerAddressMode : uint8
+    {
+        ClampToEdge,
+        ClampToBorder,
+        MirroredOnce,
+        MirroredRepeat,
+        Repeat,
+    };
+
+    struct SamplerDesc final
+    {
+        SamplerFilterMode  MinFilter;
+        SamplerFilterMode  MagFilter;
+        SamplerMipmapMode  MipmapFilter;
+        uint8              AnisoLevel;
+        SamplerAddressMode AddressModeU;
+        SamplerAddressMode AddressModeV;
+        SamplerAddressMode AddressModeW;
+        float32            MipLodBias;
+
+        void SetNearestFilter() noexcept;   // Min/Mag Nearest, Mip Nearest
+        void SetBilinearFilter() noexcept;  // Min/Mag Linear,  Mip Nearest
+        void SetTrilinearFilter() noexcept; // Min/Mag Linear,  Mip Linear
+        void SetAnisotropicFilter(uint8 anisoLevel);
+        void SetAddressMode(SamplerAddressMode uvw) noexcept { AddressModeU = uvw; AddressModeV = uvw; AddressModeW = uvw; }
+
+        [[nodiscard]] static SamplerDesc Default() noexcept;
     };
 
 
@@ -534,6 +550,75 @@ export namespace Copium
     GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
     {
         return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Constant);
+    }
+
+
+    void SamplerDesc::SetNearestFilter() noexcept
+    {
+        MinFilter = MagFilter = SamplerFilterMode::Nearest;
+        MipmapFilter = SamplerMipmapMode::Nearest;
+        AnisoLevel = 0;
+    }
+
+    void SamplerDesc::SetBilinearFilter() noexcept
+    {
+        MinFilter = MagFilter = SamplerFilterMode::Linear;
+        MipmapFilter = SamplerMipmapMode::Nearest;
+        AnisoLevel = 0;
+    }
+
+    void SamplerDesc::SetTrilinearFilter() noexcept
+    {
+        MinFilter = MagFilter = SamplerFilterMode::Linear;
+        MipmapFilter = SamplerMipmapMode::Linear;
+        AnisoLevel = 0;
+    }
+
+    SamplerDesc SamplerDesc::Default() noexcept
+    {
+        return SamplerDesc{
+            .MinFilter    = SamplerFilterMode::Linear,
+            .MagFilter    = SamplerFilterMode::Linear,
+            .MipmapFilter = SamplerMipmapMode::Linear,
+            .AnisoLevel   = 16,
+            .AddressModeU = SamplerAddressMode::Repeat,
+            .AddressModeV = SamplerAddressMode::Repeat,
+            .AddressModeW = SamplerAddressMode::Repeat,
+            .MipLodBias   = 0.0f,
+        };
+    }
+
+
+    RasterizerStateDesc RasterizerStateDesc::Default() noexcept
+    {
+        return RasterizerStateDesc{
+            .PolygonMode = PolygonMode::Fill,
+            .CullMode    = CullMode::Back,
+            .FrontFace   = TriangleFrontFace::CounterClockwise,
+        };
+    }
+
+    DepthStencilStateDesc DepthStencilStateDesc::Default() noexcept
+    {
+        return DepthStencilStateDesc{
+            .DepthTestEnable      = true,
+            .DepthWriteEnable     = true,
+            .DepthCompareFunction = CompareFunction::Less,
+        };
+    }
+
+    BlendStateDesc BlendStateDesc::Default() noexcept
+    {
+        return BlendStateDesc{
+            .BlendMode           = BlendMode::Off,
+            .ColorSrcBlendFactor = BlendFactor::One,
+            .ColorDstBlendFactor = BlendFactor::Zero,
+            .ColorBlendOp        = BlendOp::Add,
+            .AlphaSrcBlendFactor = BlendFactor::One,
+            .AlphaDstBlendFactor = BlendFactor::Zero,
+            .AlphaBlendOp        = BlendOp::Add,
+            .LogicOp             = BlendLogicOp::Noop,
+        };
     }
 
 } // export namespace Copium

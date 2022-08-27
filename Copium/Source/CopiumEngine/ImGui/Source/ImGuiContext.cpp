@@ -117,15 +117,16 @@ namespace Copium
             fontTextureDesc.Height = height;
             fontTextureDesc.Format = TextureFormat::RGBA8_UNorm;
             fontTextureDesc.GenerateMipmaps(false);
-            SamplerDesc fontSamplerDesc;
-            fontSamplerDesc.SetFilterMode(TextureFilterMode::Bilinear);
-            fontSamplerDesc.SetWrapMode(TextureWrapMode::Repeat);
+            SamplerDesc samplerDesc;
+            samplerDesc.MipLodBias = 0.0f;
+            samplerDesc.SetBilinearFilter();
+            samplerDesc.SetAddressMode(SamplerAddressMode::Repeat);
 
             const uint32 dataSize = width * height * 4;
             fontTextureDesc.Data.resize(dataSize);
             std::memcpy(fontTextureDesc.Data.data(), data, dataSize);
 
-            m_imguiFontTexture = std::make_unique<Texture>(std::move(fontTextureDesc), fontSamplerDesc);
+            m_imguiFontTexture = std::make_unique<Texture>(std::move(fontTextureDesc), samplerDesc);
 
             ImGuiTexture imguiTexture;
             imguiTexture.Parts.Handle = static_cast<uint32>(m_imguiFontTexture->GetHandle());

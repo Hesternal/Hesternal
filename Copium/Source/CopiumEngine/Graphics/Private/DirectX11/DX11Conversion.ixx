@@ -52,22 +52,24 @@ export namespace Copium
         return d3dClearFlags[std::to_underlying(renderTextureType)];
     }
 
-    //- Texture
-    [[nodiscard]] inline D3D11_FILTER dx11_TextureFilterMode(TextureFilterMode textureFilterMode) noexcept
+    //- Sampler
+    [[nodiscard]] inline D3D11_FILTER dx11_SamplerFilter(SamplerFilterMode minFilter, SamplerFilterMode magFilter, SamplerMipmapMode mipmapMode, uint8 anisoLevel) noexcept
     {
-        static const D3D11_FILTER d3dTextureFilterMode[] = {
-            D3D11_FILTER_MIN_MAG_MIP_POINT,
-            D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT,
-            D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-            D3D11_FILTER_ANISOTROPIC,
-        };
+        D3D11_FILTER_TYPE d3dMinFilter = minFilter == SamplerFilterMode::Nearest ? D3D11_FILTER_TYPE_POINT : D3D11_FILTER_TYPE_LINEAR;
+        D3D11_FILTER_TYPE d3dMagFilter = magFilter == SamplerFilterMode::Nearest ? D3D11_FILTER_TYPE_POINT : D3D11_FILTER_TYPE_LINEAR;
+        D3D11_FILTER_TYPE d3dMipmapFilter = mipmapMode == SamplerMipmapMode::Nearest ? D3D11_FILTER_TYPE_POINT : D3D11_FILTER_TYPE_LINEAR;
 
-        return d3dTextureFilterMode[std::to_underlying(textureFilterMode)];
+        uint32 d3dSamplerFilter = d3dMinFilter << D3D11_MIN_FILTER_SHIFT
+                                | d3dMagFilter << D3D11_MAG_FILTER_SHIFT
+                                | d3dMipmapFilter << D3D11_MIP_FILTER_SHIFT
+                                | (anisoLevel == 0 ? 0 : D3D11_FILTER_ANISOTROPIC);
+
+        return static_cast<D3D11_FILTER>(d3dSamplerFilter);
     }
 
-    [[nodiscard]] inline D3D11_TEXTURE_ADDRESS_MODE dx11_TextureWrapMode(TextureWrapMode textureWrapMode) noexcept
+    [[nodiscard]] inline D3D11_TEXTURE_ADDRESS_MODE dx11_SamplerAddressMode(SamplerAddressMode samplerAddressMode) noexcept
     {
-        static const D3D11_TEXTURE_ADDRESS_MODE d3dTextureWrapMode[] = {
+        static const D3D11_TEXTURE_ADDRESS_MODE d3dSamplerAddressMode[] = {
             D3D11_TEXTURE_ADDRESS_CLAMP,
             D3D11_TEXTURE_ADDRESS_BORDER,
             D3D11_TEXTURE_ADDRESS_MIRROR_ONCE,
@@ -75,7 +77,7 @@ export namespace Copium
             D3D11_TEXTURE_ADDRESS_WRAP,
         };
 
-        return d3dTextureWrapMode[std::to_underlying(textureWrapMode)];
+        return d3dSamplerAddressMode[std::to_underlying(samplerAddressMode)];
     }
 
     //- Shader states
