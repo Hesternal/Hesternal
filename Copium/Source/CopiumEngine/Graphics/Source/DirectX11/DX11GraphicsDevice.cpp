@@ -64,6 +64,17 @@ namespace
     static constinit uint32 g_SwapchainHandleWorkaround      = 0;
     static constinit uint32 g_TextureHandleWorkaround        = 0;
 
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG_NAMES
+    static void SetResourceName(ID3D11DeviceChild* d3dResource, const std::string& name) noexcept
+    {
+        const uint32 nameLength = static_cast<uint32>(name.length());
+        d3dResource->SetPrivateData(WKPDID_D3DDebugObjectName, nameLength, name.data());
+    }
+#else
+    static void SetResourceName([[maybe_unused]] ID3D11DeviceChild* d3dResource, [[maybe_unused]] const std::string& name) noexcept {}
+#endif
+
 } // namespace
 
 
@@ -391,6 +402,11 @@ namespace Copium
             m_device->CreateBuffer(&d3dVertexAttributeBufferDesc, &d3dVertexAttributeSubresourceData, &dx11Mesh.VertexBuffers[2]);
         }
 
+        SetResourceName(dx11Mesh.Index, meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[0], meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[1], meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[2], meshDesc.Name);
+
         const auto meshHandle = static_cast<MeshHandle>(g_MeshHandleWorkaround++);
         m_meshes.emplace(meshHandle, dx11Mesh);
 
@@ -503,6 +519,8 @@ namespace Copium
                 .Texture2D     = { .MipSlice = 0 },
             };
             m_device->CreateRenderTargetView1(dx11RenderTexture.Texture, &d3dRtvDesc, &dx11RenderTexture.RTV);
+
+            SetResourceName(dx11RenderTexture.RTV, renderTextureDesc.Name);
         }
         else
         {
@@ -515,6 +533,8 @@ namespace Copium
                 .Texture2D     = { .MipSlice = 0 },
             };
             m_device->CreateDepthStencilView(dx11RenderTexture.Texture, &d3dDsvDesc, &dx11RenderTexture.DSV);
+
+            SetResourceName(dx11RenderTexture.DSV, renderTextureDesc.Name);
         }
 
         //- Create SRV
@@ -531,11 +551,15 @@ namespace Copium
                 .Texture2D     = d3dSrvTex2D,
             };
             m_device->CreateShaderResourceView1(dx11RenderTexture.Texture, &d3dSrvDesc, &dx11RenderTexture.SRV);
+
+            SetResourceName(dx11RenderTexture.SRV, renderTextureDesc.Name);
         }
         else
         {
             dx11RenderTexture.SRV = nullptr;
         }
+
+        SetResourceName(dx11RenderTexture.Texture, renderTextureDesc.Name);
 
         const auto renderTextureHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
         m_renderTextures.emplace(renderTextureHandle, dx11RenderTexture);
@@ -708,6 +732,9 @@ namespace Copium
 
         m_device->CreateVertexShader(shaderDesc.VertexBlob.Data.get(), shaderDesc.VertexBlob.Size, nullptr, &dx11Shader.VertexShader);
         m_device->CreatePixelShader(shaderDesc.FragmentBlob.Data.get(), shaderDesc.FragmentBlob.Size, nullptr, &dx11Shader.PixelShader);
+
+        SetResourceName(dx11Shader.VertexShader, shaderDesc.Name);
+        SetResourceName(dx11Shader.PixelShader, shaderDesc.Name);
 
         const auto shaderHandle = static_cast<ShaderHandle>(g_ShaderHandleWorkaround++);
         m_shaders.emplace(shaderHandle, dx11Shader);
@@ -893,6 +920,9 @@ namespace Copium
             };
             m_device->CreateSamplerState(&d3dSamplerDesc, &dx11Texture2D.Sampler);
         }
+
+        SetResourceName(dx11Texture2D.Texture, textureDesc.Name);
+        SetResourceName(dx11Texture2D.SRV, textureDesc.Name);
 
         const auto textureHandle = static_cast<TextureHandle>(g_TextureHandleWorkaround++);
         m_textures.emplace(textureHandle, dx11Texture2D);
