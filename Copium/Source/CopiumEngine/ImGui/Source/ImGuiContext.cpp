@@ -8,7 +8,6 @@ module;
 module CopiumEngine.ImGui.ImGuiContext;
 
 import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics;
 import CopiumEngine.Math;
 
@@ -27,12 +26,12 @@ namespace
 
 
     // Values just taken from ImGui DX11 backend
-    static constexpr int32 k_VertexBufferGrow = 5000;
-    static constexpr int32 k_IndexBufferGrow  = 10000;
+    static constexpr uint32 k_VertexBufferGrow = 5000;
+    static constexpr uint32 k_IndexBufferGrow  = 10000;
 
-    static constexpr int32 k_VertexElementSize = sizeof(ImDrawVert);
-    static constexpr int32 k_IndexElementSize  = sizeof(ImDrawIdx);
-    static constexpr int32 k_CameraElementSize = sizeof(Float4x4);
+    static constexpr uint32 k_VertexElementSize = sizeof(ImDrawVert);
+    static constexpr uint32 k_IndexElementSize  = sizeof(ImDrawIdx);
+    static constexpr uint32 k_CameraElementSize = sizeof(Float4x4);
 
     static constexpr int32 k_ImGuiConfigFlags = ImGuiConfigFlags_DockingEnable;
                                               // | ImGuiConfigFlags_ViewportsEnable;
@@ -79,16 +78,19 @@ namespace Copium
     }
 
 
-    void ImGuiContext::BeginFrame()
+    void ImGuiContext::BeginUpdate()
     {
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
     }
 
-    void ImGuiContext::EndFrame(CommandBuffer& commandBuffer)
+    void ImGuiContext::EndUpdate()
     {
         ImGui::Render();
-        ImGui::EndFrame();
+    }
+
+    void ImGuiContext::Render(CommandBuffer& commandBuffer)
+    {
         _Renderer_DrawData(commandBuffer);
 
         // Update and Render additional Platform Windows
@@ -115,16 +117,18 @@ namespace Copium
             fontTextureDesc.Name   = "ImGui Font";
             fontTextureDesc.Width  = width;
             fontTextureDesc.Height = height;
-            fontTextureDesc.Format = TextureFormat::RGBA8;
+            fontTextureDesc.Format = TextureFormat::RGBA8_UNorm;
             fontTextureDesc.GenerateMipmaps(false);
-            fontTextureDesc.SetFilterMode(TextureFilterMode::Bilinear);
-            fontTextureDesc.SetWrapMode(TextureWrapMode::Repeat);
+            SamplerDesc samplerDesc;
+            samplerDesc.MipLodBias = 0.0f;
+            samplerDesc.SetBilinearFilter();
+            samplerDesc.SetAddressMode(SamplerAddressMode::Repeat);
 
             const uint32 dataSize = width * height * 4;
             fontTextureDesc.Data.resize(dataSize);
             std::memcpy(fontTextureDesc.Data.data(), data, dataSize);
 
-            m_imguiFontTexture = std::make_unique<Texture>(std::move(fontTextureDesc));
+            m_imguiFontTexture = std::make_unique<Texture>(std::move(fontTextureDesc), samplerDesc);
 
             ImGuiTexture imguiTexture;
             imguiTexture.Parts.Handle = static_cast<uint32>(m_imguiFontTexture->GetHandle());
@@ -134,14 +138,7 @@ namespace Copium
         }
 
         //- Create camera constant buffer
-        { 
-            GraphicsBufferDesc cameraBufferDesc = {
-                .ElementCount = 1,
-                .ElementSize  = k_CameraElementSize,
-                .Usage        = GraphicsBufferUsage::Constant,
-            };
-            m_cameraBuffer = std::make_unique<GraphicsBuffer>(cameraBufferDesc);
-        }
+        m_cameraBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Constant(1, k_CameraElementSize));
 
         if constexpr ((k_ImGuiConfigFlags & ImGuiConfigFlags_ViewportsEnable)
                       && (k_ImGuiBackendFlags & ImGuiBackendFlags_RendererHasViewports))
@@ -214,49 +211,40 @@ namespace Copium
     void ImGuiContext::_Renderer_DrawData(CommandBuffer& commandBuffer)
     {
         ImDrawData* imguiDrawData = ImGui::GetDrawData();
+        const ImVec2 displaySize = imguiDrawData->DisplaySize;
 
         // Avoid rendering when minimized
-        if (imguiDrawData->DisplaySize.x <= 0.0f || imguiDrawData->DisplaySize.y <= 0.0f)
+        if (displaySize.x <= 0.0f || displaySize.y <= 0.0f)
         {
             return;
         }
 
         //- Create and grow vertex/index buffers if needed
-        if (m_vertexBuffer == nullptr || imguiDrawData->TotalVtxCount > m_vertexBuffer->GetElementCount())
+        if (const uint32 totalVertexCount = imguiDrawData->TotalVtxCount; m_vertexBuffer == nullptr || totalVertexCount > m_vertexBuffer->GetElementCount())
         {
-            const int32 newElementCount = imguiDrawData->TotalVtxCount + k_VertexBufferGrow;
+            const uint32 newElementCount = totalVertexCount + k_VertexBufferGrow;
 
             if (m_indexBuffer != nullptr)
             {
                 COP_LOG_WARN("Resizing ImGui vertex buffer from {:d} to {:d}", m_vertexBuffer->GetElementCount(), newElementCount);
             }
 
-            GraphicsBufferDesc vertexBufferDesc = {
-                .ElementCount = newElementCount ,
-                .ElementSize  = k_VertexElementSize,
-                .Usage        = GraphicsBufferUsage::Vertex,
-            };
-            m_vertexBuffer = std::make_unique<GraphicsBuffer>(vertexBufferDesc);
+            m_vertexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Vertex(newElementCount, k_VertexElementSize));
         }
-        if (m_indexBuffer == nullptr || imguiDrawData->TotalIdxCount > m_indexBuffer->GetElementCount())
+        if (const uint32 totalIndexCount = imguiDrawData->TotalIdxCount; m_indexBuffer == nullptr || totalIndexCount > m_indexBuffer->GetElementCount())
         {
-            const int32 newElementCount = imguiDrawData->TotalIdxCount + k_IndexBufferGrow;
+            const uint32 newElementCount = totalIndexCount + k_IndexBufferGrow;
 
             if (m_indexBuffer != nullptr)
             {
                 COP_LOG_WARN("Resizing ImGui index buffer from {:d} to {:d}", m_indexBuffer->GetElementCount(), newElementCount);
             }
 
-            GraphicsBufferDesc indexBufferDesc = {
-                .ElementCount = newElementCount,
-                .ElementSize  = k_IndexElementSize,
-                .Usage        = GraphicsBufferUsage::Index,
-            };
-            m_indexBuffer = std::make_unique<GraphicsBuffer>(indexBufferDesc);
+            m_indexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Index(newElementCount, k_IndexElementSize));
         }
 
         //- Upload vertex/index data into a single contiguous GPU buffer
-        const int32 cmdListCount = imguiDrawData->CmdListsCount;
+        const uint32 cmdListCount = imguiDrawData->CmdListsCount;
         {
             std::span<uint8> vertexBufferData = m_vertexBuffer->Map();
             std::span<uint8> indexBufferData = m_indexBuffer->Map();
@@ -264,11 +252,11 @@ namespace Copium
             uint8* vertexDataPtr = vertexBufferData.data();
             uint8* indexDataPtr = indexBufferData.data();
 
-            for (int32 i = 0; i < cmdListCount; i++)
+            for (uint32 i = 0; i < cmdListCount; i++)
             {
                 const ImDrawList* const imguiDrawList = imguiDrawData->CmdLists[i];
-                const int32 vertexBufferSize = imguiDrawList->VtxBuffer.Size * k_VertexElementSize;
-                const int32 indexBufferSize = imguiDrawList->IdxBuffer.Size * k_IndexElementSize;
+                const uint32 vertexBufferSize = imguiDrawList->VtxBuffer.Size * k_VertexElementSize;
+                const uint32 indexBufferSize = imguiDrawList->IdxBuffer.Size * k_IndexElementSize;
 
                 std::memcpy(vertexDataPtr, imguiDrawList->VtxBuffer.Data, vertexBufferSize);
                 std::memcpy(indexDataPtr, imguiDrawList->IdxBuffer.Data, indexBufferSize);
@@ -282,7 +270,6 @@ namespace Copium
         }
 
         //- Setup camera orthographic projection matrix
-        const ImVec2 displaySize = imguiDrawData->DisplaySize;
         const ImVec2 displayPos = imguiDrawData->DisplayPos;
         {
             const float32 left = displayPos.x;
@@ -307,15 +294,15 @@ namespace Copium
 
         //- Render command lists
         const ImVec2 clipOffset = displayPos;
-        int32 globalVertexOffset = 0;
-        int32 globalIndexOffset = 0;
+        uint32 globalVertexOffset = 0;
+        uint32 globalIndexOffset = 0;
 
-        for (int32 cmdListIndex = 0; cmdListIndex < cmdListCount; cmdListIndex++)
+        for (uint32 cmdListIndex = 0; cmdListIndex < cmdListCount; cmdListIndex++)
         {
             const ImDrawList* const imguiCmdList = imguiDrawData->CmdLists[cmdListIndex];
-            const int32 cmdListBufferCount = imguiCmdList->CmdBuffer.Size;
+            const uint32 cmdListBufferCount = imguiCmdList->CmdBuffer.Size;
 
-            for (int32 cmdBufferIndex = 0; cmdBufferIndex < cmdListBufferCount; cmdBufferIndex++)
+            for (uint32 cmdBufferIndex = 0; cmdBufferIndex < cmdListBufferCount; cmdBufferIndex++)
             {
                 const ImDrawCmd& imguiDrawCommand = imguiCmdList->CmdBuffer[cmdBufferIndex];
 
@@ -351,8 +338,8 @@ namespace Copium
                     }
 
                     //-- Draw
-                    const int32 firstIndex = imguiDrawCommand.IdxOffset + globalIndexOffset;
-                    const int32 vertexOffset = imguiDrawCommand.VtxOffset + globalVertexOffset;
+                    const uint32 firstIndex = imguiDrawCommand.IdxOffset + globalIndexOffset;
+                    const uint32 vertexOffset = imguiDrawCommand.VtxOffset + globalVertexOffset;
                     commandBuffer.DrawIndexed(imguiDrawCommand.ElemCount, firstIndex, vertexOffset);
                 }
             }
@@ -360,12 +347,6 @@ namespace Copium
             globalVertexOffset += imguiCmdList->VtxBuffer.Size;
             globalIndexOffset += imguiCmdList->IdxBuffer.Size;
         }
-
-        // NOTE(v.matushkin): Restore viewport, since EngineRenderPass doesn't have access to IGraphicsDevice
-        EngineSettings& engineSettings = EngineSettings::Get();
-        const float32 viewportWidth = static_cast<float32>(engineSettings.RenderWidth);
-        const float32 viewportHeight = static_cast<float32>(engineSettings.RenderHeight);
-        commandBuffer.SetViewport(Rect(0.0f, 0.0f, viewportWidth, viewportHeight));
     }
 
 } // namespace Copium

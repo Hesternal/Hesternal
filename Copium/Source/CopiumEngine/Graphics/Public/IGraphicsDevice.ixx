@@ -23,7 +23,7 @@ export namespace Copium
 
         [[nodiscard]] virtual RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) = 0;
 
-        virtual void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) = 0;
+        virtual void BeginFrame() = 0;
         virtual void EndFrame() = 0;
 
         [[nodiscard]] virtual std::unique_ptr<ICommandBuffer> GetCommandBuffer() = 0;
@@ -34,7 +34,7 @@ export namespace Copium
         [[nodiscard]] virtual RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) = 0;
         [[nodiscard]] virtual ShaderHandle CreateShader(const ShaderDesc& shaderDesc) = 0;
         [[nodiscard]] virtual SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) = 0;
-        [[nodiscard]] virtual TextureHandle CreateTexture2D(const TextureDesc& textureDesc) = 0;
+        [[nodiscard]] virtual TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) = 0;
 
         virtual void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) = 0;
         virtual void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) = 0;

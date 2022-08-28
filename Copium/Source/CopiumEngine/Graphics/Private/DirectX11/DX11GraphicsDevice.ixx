@@ -133,7 +133,7 @@ export namespace Copium
     {
     public:
         DX11CommandBuffer(ID3D11DeviceContext4* deviceContext, DX11GraphicsDevice* graphicsDevice);
-        ~DX11CommandBuffer() = default;
+        ~DX11CommandBuffer();
 
         DX11CommandBuffer(DX11CommandBuffer&& other) = default;
         DX11CommandBuffer& operator=(DX11CommandBuffer&& other) = default;
@@ -147,6 +147,7 @@ export namespace Copium
         void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
         void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
+        void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize) override;
         void BindTexture(TextureHandle textureHandle, uint32 slot) override;
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
         void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
@@ -155,22 +156,25 @@ export namespace Copium
         void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
 
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        void BeginSample(std::string_view name) override;
+        void EndSample() override;
+#endif
+
     private:
         ID3D11DeviceContext4* const m_deviceContext;
         DX11GraphicsDevice*   const m_graphicsDevice;
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        ID3DUserDefinedAnnotation* m_annotation;
+        bool                       m_makeAnnotationCalls;
+#endif
     };
 
 
     class DX11GraphicsDevice final : public IGraphicsDevice
     {
         friend DX11CommandBuffer;
-
-
-        struct PerCamera
-        {
-            Float4x4 _CameraView;
-            Float4x4 _CameraProjection;
-        };
 
     public:
         DX11GraphicsDevice();
@@ -181,7 +185,7 @@ export namespace Copium
 
         [[nodiscard]] RenderTextureHandle GetSwapchainRenderTexture(SwapchainHandle swapchainHandle) override;
 
-        void BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection) override;
+        void BeginFrame() override;
         void EndFrame() override;
 
         [[nodiscard]] std::unique_ptr<ICommandBuffer> GetCommandBuffer() override;
@@ -192,7 +196,7 @@ export namespace Copium
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) override;
         [[nodiscard]] ShaderHandle CreateShader(const ShaderDesc& shaderDesc) override;
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
-        [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc) override;
+        [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) override;
 
         void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) override;
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;
@@ -232,9 +236,6 @@ export namespace Copium
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         IDXGIInfoQueue*       m_dxgiInfoQueue;
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-
-        ID3D11Buffer*         m_cbPerCamera;
-        ID3D11Buffer*         m_cbPerMesh;
 
         ID3D11SamplerState*   m_renderTextureSampler;
 

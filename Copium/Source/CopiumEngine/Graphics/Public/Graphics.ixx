@@ -3,6 +3,7 @@ export module CopiumEngine.Graphics;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Graphics.IGraphicsDevice;
+import CopiumEngine.Graphics.RenderContext;
 import CopiumEngine.Graphics.RenderData;
 import CopiumEngine.Graphics.RenderGraph;
 
@@ -31,7 +32,7 @@ export namespace Copium
         [[nodiscard]] static void SetDefaultShader(std::shared_ptr<Shader>&& shader) { m_defaultShader = std::move(shader); }
 
         [[nodiscard]] static void SetRenderGraph(std::unique_ptr<RenderGraph>&& renderGraph);
-        [[nodiscard]] static void SetRenderData(RenderData&& renderData) { m_renderData = std::move(renderData); }
+        [[nodiscard]] static void SetRenderData(RenderData&& renderData) { m_renderContext->SetRenderData(std::move(renderData)); }
 
         static void RenderFrame();
 
@@ -45,7 +46,7 @@ export namespace Copium
         static inline std::shared_ptr<Texture>         m_normalTexture;
 
         static inline std::unique_ptr<RenderGraph>     m_renderGraph;
-        static inline RenderData                       m_renderData;
+        static inline std::unique_ptr<RenderContext>   m_renderContext;
     };
 
 } // export namespace Copium

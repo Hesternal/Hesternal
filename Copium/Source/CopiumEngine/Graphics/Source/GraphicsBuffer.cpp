@@ -4,8 +4,10 @@ module;
 
 module CopiumEngine.Graphics.GraphicsBuffer;
 
+import CopiumEngine.Engine.SystemInfo;
 import CopiumEngine.Graphics;
 import CopiumEngine.Graphics.GraphicsTypes;
+import CopiumEngine.Memory;
 
 import <cstring>;
 import <utility>;
@@ -21,15 +23,29 @@ namespace Copium
 
     GraphicsBuffer::GraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData)
         : m_graphicsBufferDesc(graphicsBufferDesc)
-        , m_sizeInBytes(m_graphicsBufferDesc.SizeInBytes())
     {
         COP_ASSERT_MSG(m_graphicsBufferDesc.ElementCount > 0, "Trying to create GraphicsBuffer with ElementCount < 1");
         COP_ASSERT_MSG(m_graphicsBufferDesc.ElementSize > 0, "Trying to create GraphicsBuffer with ElementSize < 1");
 
-        COP_ASSERT_MSG(m_graphicsBufferDesc.Usage != GraphicsBufferUsage::Index
-                       || (m_graphicsBufferDesc.ElementSize == 2 || m_graphicsBufferDesc.ElementSize == 4),
-                       "For Index GraphicsBuffer ElementSize should be either 2 or 4");
+        if (m_graphicsBufferDesc.Usage == GraphicsBufferUsage::Index)
+        {
+            COP_ASSERT_MSG(m_graphicsBufferDesc.ElementSize == 2 || m_graphicsBufferDesc.ElementSize == 4,
+                           "For Index GraphicsBuffer ElementSize should be either 2 or 4");
+        }
+        else if (m_graphicsBufferDesc.Usage == GraphicsBufferUsage::Constant)
+        {
+            COP_ASSERT_MSG(m_graphicsBufferDesc.ElementSize % 4 == 0,
+                           "For Constant GraphicsBuffer ElementSize should be a multiply of 4");
 
+            // NOTE(v.matushkin): Make element size to fit alignment requirements, don't know if I actually should do this,
+            //  may be there are cases when it is not needed.
+            if (m_graphicsBufferDesc.ElementCount > 1)
+            {
+                m_graphicsBufferDesc.ElementSize = Memory::GetAlignedSize(m_graphicsBufferDesc.ElementSize, SystemInfo::ConstantBufferAlignment);
+            }
+        }
+
+        m_sizeInBytes = m_graphicsBufferDesc.SizeInBytes();
         m_graphicsBufferData = std::make_unique<uint8[]>(m_sizeInBytes);
 
         std::span<const uint8> graphicsBufferData;

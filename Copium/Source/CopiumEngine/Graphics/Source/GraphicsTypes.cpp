@@ -17,6 +17,7 @@ namespace
 
     // Minimal possible size
     static_assert(sizeof(GraphicsBufferDesc) == 12);
+    static_assert(sizeof(SamplerDesc) == 12);
 
 } // namespace
 
@@ -24,19 +25,52 @@ namespace
 namespace Copium
 {
 
-    uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat)
+    uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat) noexcept
     {
         static const uint8 bytesPerPixel[] = {
             1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
             2,
             4,
+            4,
+            4,
+            4,
+            2,
+            2,
+            2,
+            2,
+            2,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8,
+            16,
+            16,
+            16,
         };
 
         return bytesPerPixel[std::to_underlying(textureFormat)];
     }
 
 
-    uint32 VertexAttributeDesc::Stride() const
+    uint32 VertexAttributeDesc::Stride() const noexcept
     {
         static const uint32 vertexAttributeElementStride[] = {
             1, // SInt8
@@ -56,7 +90,7 @@ namespace Copium
         return Dimension * vertexAttributeElementStride[std::to_underlying(Format)];
     }
 
-    VertexAttributeDesc VertexAttributeDesc::Position()
+    VertexAttributeDesc VertexAttributeDesc::Position() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -67,7 +101,7 @@ namespace Copium
         };
     }
 
-    VertexAttributeDesc VertexAttributeDesc::Normal()
+    VertexAttributeDesc VertexAttributeDesc::Normal() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -78,7 +112,7 @@ namespace Copium
         };
     }
 
-    VertexAttributeDesc VertexAttributeDesc::UV0()
+    VertexAttributeDesc VertexAttributeDesc::UV0() noexcept
     {
         return VertexAttributeDesc{
             .Offset    = 0,
@@ -90,28 +124,7 @@ namespace Copium
     }
 
 
-    ClearColorValue ClearColorValue::Default()
-    {
-        return ClearColorValue{ .Value = {0.f, 0.f, 0.f, 0.f} };
-    }
-
-    ClearDepthStencilValue ClearDepthStencilValue::Default()
-    {
-        return ClearDepthStencilValue{ .Depth = 1.f, .Stencil = 0 };
-    }
-
-    RenderTextureClearValue RenderTextureClearValue::DefaultColor()
-    {
-        return RenderTextureClearValue{ .Color = ClearColorValue::Default() };
-    }
-
-    RenderTextureClearValue RenderTextureClearValue::DefaultDepthStencil()
-    {
-        return RenderTextureClearValue{ .DepthStencil = ClearDepthStencilValue::Default() };
-    }
-
-
-    RenderTextureType RenderTextureDesc::RenderTextureType() const
+    RenderTextureType RenderTextureDesc::RenderTextureType() const noexcept
     {
         if (Format == RenderTextureFormat::BGRA8)
         {
@@ -136,67 +149,21 @@ namespace Copium
         }
     }
 
-    void TextureDesc::SetFilterMode(TextureFilterMode filterMode)
-    {
-        FilterMode = filterMode;
 
-        if (filterMode == TextureFilterMode::Anisotropic)
+    void SamplerDesc::SetAnisotropicFilter(uint8 anisoLevel)
+    {
+        MinFilter = MagFilter = SamplerFilterMode::Linear;
+        MipmapFilter = SamplerMipmapMode::Linear;
+
+        if (anisoLevel > 1)
         {
-            AnisotropicLevel = 16;
-            COP_LOG_WARN("It's better to use SetAnisotropicFilterMode for TextureFilterMode::Anisotropic");
+            AnisoLevel = anisoLevel;
         }
         else
         {
-            AnisotropicLevel = 0;
+            AnisoLevel = 0;
+            COP_LOG_WARN("No reason to set anisoLevel < 2 ? Setting filter to Trilinear");
         }
-    }
-
-    void TextureDesc::SetAnisotropicFilterMode(uint8 anisotropicLevel)
-    {
-        if (anisotropicLevel > 1)
-        {
-            AnisotropicLevel = anisotropicLevel;
-            FilterMode = TextureFilterMode::Anisotropic;
-        }
-        else
-        {
-            AnisotropicLevel = 0;
-            FilterMode = TextureFilterMode::Trilinear;
-            COP_LOG_WARN("No reason to set anisotropicLevel < 2 ? Setting FilterMode to Trilinear");
-        }
-    }
-
-
-    RasterizerStateDesc RasterizerStateDesc::Default()
-    {
-        return RasterizerStateDesc{
-            .PolygonMode = PolygonMode::Fill,
-            .CullMode    = CullMode::Back,
-            .FrontFace   = TriangleFrontFace::CounterClockwise,
-        };
-    }
-
-    DepthStencilStateDesc DepthStencilStateDesc::Default()
-    {
-        return DepthStencilStateDesc{
-            .DepthTestEnable      = true,
-            .DepthWriteEnable     = true,
-            .DepthCompareFunction = CompareFunction::Less,
-        };
-    }
-
-    BlendStateDesc BlendStateDesc::Default()
-    {
-        return BlendStateDesc{
-            .BlendMode           = BlendMode::Off,
-            .ColorSrcBlendFactor = BlendFactor::One,
-            .ColorDstBlendFactor = BlendFactor::Zero,
-            .ColorBlendOp        = BlendOp::Add,
-            .AlphaSrcBlendFactor = BlendFactor::One,
-            .AlphaDstBlendFactor = BlendFactor::Zero,
-            .AlphaBlendOp        = BlendOp::Add,
-            .LogicOp             = BlendLogicOp::Noop,
-        };
     }
 
 } // namespace Copium

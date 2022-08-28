@@ -14,7 +14,6 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 module CopiumEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
-import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.DX11Conversion;
 import CopiumEngine.Graphics.DXCommon;
 
@@ -26,10 +25,6 @@ import <utility>;
 
 
 // TODO(v.matushkin):
-//  - <Viewport>
-//    Right now I call ID3D11DeviceContext4::RSSetViewports on swapchain resize/creation
-//    Not sure that it should be like this. Probably a Camera should manage its viewport.
-//
 //  - <Device/Lost>
 //    Handle ID3D11Device5::RegisterDeviceRemovedEvent
 
@@ -63,6 +58,17 @@ namespace
     static constinit uint32 g_ShaderHandleWorkaround         = 0;
     static constinit uint32 g_SwapchainHandleWorkaround      = 0;
     static constinit uint32 g_TextureHandleWorkaround        = 0;
+
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG_NAMES
+    static void SetResourceName(ID3D11DeviceChild* d3dResource, const std::string& name) noexcept
+    {
+        const uint32 nameLength = static_cast<uint32>(name.length());
+        d3dResource->SetPrivateData(WKPDID_D3DDebugObjectName, nameLength, name.data());
+    }
+#else
+    static void SetResourceName([[maybe_unused]] ID3D11DeviceChild* d3dResource, [[maybe_unused]] const std::string& name) noexcept {}
+#endif
 
 } // namespace
 
@@ -125,38 +131,12 @@ namespace Copium
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         , m_dxgiInfoQueue(nullptr)
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-        , m_cbPerCamera(nullptr)
-        , m_cbPerMesh(nullptr)
         , m_renderTextureSampler(nullptr)
     {
         _CreateDevice();
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         _DebugLayer_Init();
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
-
-        //- Create ConstantBuffers
-        {
-            D3D11_BUFFER_DESC d3dPerCameraBufferDesc = {
-                .ByteWidth           = sizeof(PerCamera),
-                .Usage               = D3D11_USAGE_DYNAMIC,
-                .BindFlags           = D3D11_BIND_CONSTANT_BUFFER,
-                .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-
-            D3D11_BUFFER_DESC d3dPerMeshBufferDesc = {
-                .ByteWidth           = sizeof(Float4x4),
-                .Usage               = D3D11_USAGE_DYNAMIC,
-                .BindFlags           = D3D11_BIND_CONSTANT_BUFFER,
-                .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-
-            m_device->CreateBuffer(&d3dPerCameraBufferDesc, nullptr, &m_cbPerCamera);
-            m_device->CreateBuffer(&d3dPerMeshBufferDesc, nullptr, &m_cbPerMesh);
-        }
 
         //- Create RenderTexture sampler
         {
@@ -227,9 +207,6 @@ namespace Copium
 
         RELEASE_COM_PTR(m_renderTextureSampler);
 
-        RELEASE_COM_PTR(m_cbPerCamera);
-        RELEASE_COM_PTR(m_cbPerMesh);
-
         // NOTE(v.matushkin): https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
         // NOTE(v.matushkin): Probably this should be called for debug only
         m_deviceContext->ClearState();
@@ -252,37 +229,8 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::BeginFrame(const Float4x4& objectToWorld, const Float4x4& cameraView, const Float4x4& cameraProjection)
+    void DX11GraphicsDevice::BeginFrame()
     {
-        //- Update constant buffers
-        {
-            PerCamera perCamera = {
-                ._CameraView       = cameraView,
-                ._CameraProjection = cameraProjection,
-            };
-
-            D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
-                .pData      = nullptr,
-                .RowPitch   = 0,
-                .DepthPitch = 0,
-            };
-
-            //-- PerCamera
-            m_deviceContext->Map(m_cbPerCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, &perCamera, sizeof(PerCamera));
-            m_deviceContext->Unmap(m_cbPerCamera, 0);
-
-            //-- PerMesh
-            m_deviceContext->Map(m_cbPerMesh, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, &objectToWorld, sizeof(Float4x4));
-            m_deviceContext->Unmap(m_cbPerMesh, 0);
-        }
-
-        //- Set constant buffers
-        {
-            ID3D11Buffer* constantBuffers[]{ m_cbPerCamera, m_cbPerMesh };
-            m_deviceContext->VSSetConstantBuffers(0, 2, constantBuffers); // NOTE(v.matushkin): VSSetConstantBuffers1 ?
-        }
     }
 
     void DX11GraphicsDevice::EndFrame()
@@ -318,7 +266,7 @@ namespace Copium
             // NOTE(v.matushkin): Hardcoding D3D11_USAGE_DYNAMIC and D3D11_CPU_ACCESS_WRITE
             //  as there is no way to tell if the buffer will be updated later or it will be IMMUTABLE
             D3D11_BUFFER_DESC d3dBufferDesc = {
-                .ByteWidth           = static_cast<uint32>(graphicsBufferDesc.SizeInBytes()),
+                .ByteWidth           = graphicsBufferDesc.SizeInBytes(),
                 .Usage               = D3D11_USAGE_DYNAMIC,
                 .BindFlags           = dx11_GraphicsBufferBindFlags(graphicsBufferDesc.Usage),
                 .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
@@ -449,6 +397,11 @@ namespace Copium
             m_device->CreateBuffer(&d3dVertexAttributeBufferDesc, &d3dVertexAttributeSubresourceData, &dx11Mesh.VertexBuffers[2]);
         }
 
+        SetResourceName(dx11Mesh.Index, meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[0], meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[1], meshDesc.Name);
+        SetResourceName(dx11Mesh.VertexBuffers[2], meshDesc.Name);
+
         const auto meshHandle = static_cast<MeshHandle>(g_MeshHandleWorkaround++);
         m_meshes.emplace(meshHandle, dx11Mesh);
 
@@ -561,6 +514,8 @@ namespace Copium
                 .Texture2D     = { .MipSlice = 0 },
             };
             m_device->CreateRenderTargetView1(dx11RenderTexture.Texture, &d3dRtvDesc, &dx11RenderTexture.RTV);
+
+            SetResourceName(dx11RenderTexture.RTV, renderTextureDesc.Name);
         }
         else
         {
@@ -573,6 +528,8 @@ namespace Copium
                 .Texture2D     = { .MipSlice = 0 },
             };
             m_device->CreateDepthStencilView(dx11RenderTexture.Texture, &d3dDsvDesc, &dx11RenderTexture.DSV);
+
+            SetResourceName(dx11RenderTexture.DSV, renderTextureDesc.Name);
         }
 
         //- Create SRV
@@ -589,11 +546,15 @@ namespace Copium
                 .Texture2D     = d3dSrvTex2D,
             };
             m_device->CreateShaderResourceView1(dx11RenderTexture.Texture, &d3dSrvDesc, &dx11RenderTexture.SRV);
+
+            SetResourceName(dx11RenderTexture.SRV, renderTextureDesc.Name);
         }
         else
         {
             dx11RenderTexture.SRV = nullptr;
         }
+
+        SetResourceName(dx11RenderTexture.Texture, renderTextureDesc.Name);
 
         const auto renderTextureHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
         m_renderTextures.emplace(renderTextureHandle, dx11RenderTexture);
@@ -767,6 +728,9 @@ namespace Copium
         m_device->CreateVertexShader(shaderDesc.VertexBlob.Data.get(), shaderDesc.VertexBlob.Size, nullptr, &dx11Shader.VertexShader);
         m_device->CreatePixelShader(shaderDesc.FragmentBlob.Data.get(), shaderDesc.FragmentBlob.Size, nullptr, &dx11Shader.PixelShader);
 
+        SetResourceName(dx11Shader.VertexShader, shaderDesc.Name);
+        SetResourceName(dx11Shader.PixelShader, shaderDesc.Name);
+
         const auto shaderHandle = static_cast<ShaderHandle>(g_ShaderHandleWorkaround++);
         m_shaders.emplace(shaderHandle, dx11Shader);
 
@@ -837,19 +801,6 @@ namespace Copium
             m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
         }
 
-        //- Setup Viewport
-        {
-            EngineSettings& engineSettings = EngineSettings::Get();
-            // TODO(v.matushkin): <Viewport>
-            D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(engineSettings.RenderWidth),
-                .Height   = static_cast<float32>(engineSettings.RenderHeight),
-                .MinDepth = 0,
-                .MaxDepth = 1,
-            };
-            m_deviceContext->RSSetViewports(1, &d3dViewport);
-        }
-
         dx11Swapchain.SwapchainRTHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
         m_renderTextures.emplace(dx11Swapchain.SwapchainRTHandle, dx11SwapchainRenderTexture);
 
@@ -859,7 +810,7 @@ namespace Copium
         return swapchainHandle;
     }
 
-    TextureHandle DX11GraphicsDevice::CreateTexture2D(const TextureDesc& textureDesc)
+    TextureHandle DX11GraphicsDevice::CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc)
     {
         const DXGI_FORMAT dxgiTextureFormat = dx_TextureFormat(textureDesc.Format);
 
@@ -937,25 +888,23 @@ namespace Copium
         }
         //- Create Texture Sampler
         {
-            // NOTE(v.matushkin): I don't know if I should "fix" Filter/MaxAnisotropy in some cases,
-            //  like if AnisotropicLevel==1 -> set FilterMode to Trilinear,
-            //  or if FilterMode != Anisotropic -> set MaxAnisotropy = 0.
-            //  Or may be I should do it at the TextureDesc/Texture level and here assume that everything is already set up properly.
-
             D3D11_SAMPLER_DESC d3dSamplerDesc = {
-                .Filter         = dx11_TextureFilterMode(textureDesc.FilterMode),
-                .AddressU       = dx11_TextureWrapMode(textureDesc.WrapModeU),
-                .AddressV       = dx11_TextureWrapMode(textureDesc.WrapModeV),
-                .AddressW       = D3D11_TEXTURE_ADDRESS_CLAMP,  // NOTE(v.matushkin): How to handle this for 2D textures?
-                .MipLODBias     = 0,
-                .MaxAnisotropy  = textureDesc.AnisotropicLevel,
-                .ComparisonFunc = D3D11_COMPARISON_NEVER,
+                .Filter         = dx11_SamplerFilter(samplerDesc.MinFilter, samplerDesc.MagFilter, samplerDesc.MipmapFilter, samplerDesc.AnisoLevel),
+                .AddressU       = dx11_SamplerAddressMode(samplerDesc.AddressModeU),
+                .AddressV       = dx11_SamplerAddressMode(samplerDesc.AddressModeV),
+                .AddressW       = dx11_SamplerAddressMode(samplerDesc.AddressModeW),
+                .MipLODBias     = samplerDesc.MipLodBias,
+                .MaxAnisotropy  = samplerDesc.AnisoLevel,
+                .ComparisonFunc = D3D11_COMPARISON_NEVER, // NOTE(v.matushkin): Only for Depth textures?
                 // .BorderColor      // NOTE(v.matushkin): Only used if D3D11_TEXTURE_ADDRESS_BORDER is specified in Address*
                 .MinLOD         = 0,
                 .MaxLOD         = D3D11_FLOAT32_MAX,
             };
             m_device->CreateSamplerState(&d3dSamplerDesc, &dx11Texture2D.Sampler);
         }
+
+        SetResourceName(dx11Texture2D.Texture, textureDesc.Name);
+        SetResourceName(dx11Texture2D.SRV, textureDesc.Name);
 
         const auto textureHandle = static_cast<TextureHandle>(g_TextureHandleWorkaround++);
         m_textures.emplace(textureHandle, dx11Texture2D);
@@ -984,28 +933,16 @@ namespace Copium
     {
         DX11Swapchain& dx11Swapchain = _GetSwapchain(swapchainHandle);
         DX11RenderTexture& dx11SwapchainRenderTexture = _GetRenderTexture(dx11Swapchain.SwapchainRTHandle);
+
+        //- Release old Swapchain RenderTexture
         dx11SwapchainRenderTexture.RTV->Release();
         dx11SwapchainRenderTexture.Texture->Release();
+
         dx11Swapchain.Swapchain->ResizeBuffers(dx11Swapchain.BufferCount, width, height, dx11Swapchain.Format, dx11Swapchain.Flags);
 
-        //- Get Swapchain RenderTexture
-        {
-            dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
-            m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
-        }
-
-        //- Setup Viewport
-        {
-            EngineSettings& engineSettings = EngineSettings::Get();
-            // TODO(v.matushkin): <Viewport>
-            D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(engineSettings.RenderWidth),
-                .Height   = static_cast<float32>(engineSettings.RenderHeight),
-                .MinDepth = 0,
-                .MaxDepth = 1,
-            };
-            m_deviceContext->RSSetViewports(1, &d3dViewport);
-        }
+        //- Get new Swapchain RenderTexture
+        dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
+        m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
     }
 
 
@@ -1139,7 +1076,7 @@ namespace Copium
         m_dxgiInfoQueue->ClearRetrievalFilter(k_DxgiDebugGuid);
         m_dxgiInfoQueue->ClearStorageFilter(k_DxgiDebugGuid);
 
-        // Filter create/destroy resource messages, they probably can be useful, but most of the time it's just a spam
+        // Filter create/destroy resource messages, they're probably can be useful, but most of the time it's just a spam
         DXGI_INFO_QUEUE_MESSAGE_ID dxgiDenyMessageIDs[] = {
             D3D11_MESSAGE_ID_LIVE_OBJECT_SUMMARY,
             D3D11_MESSAGE_ID_CREATE_BUFFER,
@@ -1150,6 +1087,7 @@ namespace Copium
             D3D11_MESSAGE_ID_CREATE_VERTEXSHADER,
             D3D11_MESSAGE_ID_CREATE_PIXELSHADER,
             D3D11_MESSAGE_ID_CREATE_INPUTLAYOUT,
+            D3D11_MESSAGE_ID_CREATE_SAMPLER,
             D3D11_MESSAGE_ID_CREATE_FENCE,
             D3D11_MESSAGE_ID_DESTROY_BUFFER,
             D3D11_MESSAGE_ID_DESTROY_TEXTURE2D,
@@ -1159,6 +1097,7 @@ namespace Copium
             D3D11_MESSAGE_ID_DESTROY_VERTEXSHADER,
             D3D11_MESSAGE_ID_DESTROY_PIXELSHADER,
             D3D11_MESSAGE_ID_DESTROY_INPUTLAYOUT,
+            D3D11_MESSAGE_ID_DESTROY_SAMPLER,
             D3D11_MESSAGE_ID_DESTROY_FENCE,
         };
         DXGI_INFO_QUEUE_FILTER dxgiInfoQueueFilter = {

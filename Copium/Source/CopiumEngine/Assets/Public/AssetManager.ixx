@@ -11,7 +11,7 @@ export namespace Copium
     public:
         [[nodiscard]] static MeshHandle    CreateGpuResource(const MeshDesc& meshDesc);
         [[nodiscard]] static ShaderHandle  CreateGpuResource(const ShaderDesc& shaderDesc);
-        [[nodiscard]] static TextureHandle CreateGpuResource(const TextureDesc& textureDesc);
+        [[nodiscard]] static TextureHandle CreateGpuResource(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc);
 
         static void DestroyGpuResource(MeshHandle meshHandle);
         static void DestroyGpuResource(ShaderHandle shaderHandle);
