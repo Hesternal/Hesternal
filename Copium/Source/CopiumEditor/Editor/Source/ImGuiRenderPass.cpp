@@ -61,6 +61,9 @@ namespace Copium
 
     void ImGuiRenderPass::OnRender(RenderContext& renderContext)
     {
+        CommandBuffer& cmd = renderContext.GetCommandBuffer();
+        cmd.BeginSample(GetName());
+
         renderContext.BeginRenderPass(m_renderPassHandle);
         ImGuiContext::BeginFrame();
 
@@ -102,6 +105,8 @@ namespace Copium
         }
 
         ImGuiContext::EndFrame(renderContext.GetCommandBuffer());
+
+        cmd.EndSample();
     }
 
 } // namespace Copium

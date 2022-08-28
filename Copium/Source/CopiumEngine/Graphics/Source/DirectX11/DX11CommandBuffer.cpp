@@ -10,6 +10,7 @@ COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module CopiumEngine.Graphics.DX11GraphicsDevice;
 
+import CopiumEngine.Core.Platform;
 import CopiumEngine.Graphics.DX11Conversion;
 COP_WARNING_POP
 
@@ -32,6 +33,17 @@ namespace Copium
         : m_deviceContext(deviceContext)
         , m_graphicsDevice(graphicsDevice)
     {
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        m_deviceContext->QueryInterface(&m_annotation);
+        m_makeAnnotationCalls = m_annotation->GetStatus();
+#endif
+    }
+
+    DX11CommandBuffer::~DX11CommandBuffer()
+    {
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        m_annotation->Release();
+#endif
     }
 
 
@@ -203,5 +215,25 @@ namespace Copium
     {
         m_deviceContext->Draw(vertexCount, 0);
     }
+
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+    void DX11CommandBuffer::BeginSample(std::string_view name)
+    {
+        if (m_makeAnnotationCalls)
+        {
+            const std::wstring wideName = Platform::ToWideString(name);
+            m_annotation->BeginEvent(wideName.data());
+        }
+    }
+
+    void DX11CommandBuffer::EndSample()
+    {
+        if (m_makeAnnotationCalls)
+        {
+            m_annotation->EndEvent();
+        }
+    }
+#endif
 
 } // namespace Copium

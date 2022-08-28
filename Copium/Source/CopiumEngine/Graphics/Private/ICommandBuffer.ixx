@@ -1,8 +1,14 @@
+module;
+
+#include "Engine/Core/Defines.hpp"
+
 export module CopiumEngine.Graphics.ICommandBuffer;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Math;
+
+import <string_view>;
 
 
 export namespace Copium
@@ -41,6 +47,11 @@ export namespace Copium
         virtual void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) = 0;
         virtual void DrawMesh(MeshHandle meshHandle) = 0;
         virtual void DrawProcedural(uint32 vertexCount) = 0;
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        virtual void BeginSample(std::string_view name) = 0;
+        virtual void EndSample() = 0;
+#endif
 
     protected:
         ICommandBuffer() = default;

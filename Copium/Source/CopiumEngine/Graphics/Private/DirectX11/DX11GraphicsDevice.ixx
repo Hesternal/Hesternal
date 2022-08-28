@@ -133,7 +133,7 @@ export namespace Copium
     {
     public:
         DX11CommandBuffer(ID3D11DeviceContext4* deviceContext, DX11GraphicsDevice* graphicsDevice);
-        ~DX11CommandBuffer() = default;
+        ~DX11CommandBuffer();
 
         DX11CommandBuffer(DX11CommandBuffer&& other) = default;
         DX11CommandBuffer& operator=(DX11CommandBuffer&& other) = default;
@@ -156,9 +156,19 @@ export namespace Copium
         void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
 
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        void BeginSample(std::string_view name) override;
+        void EndSample() override;
+#endif
+
     private:
         ID3D11DeviceContext4* const m_deviceContext;
         DX11GraphicsDevice*   const m_graphicsDevice;
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        ID3DUserDefinedAnnotation* m_annotation;
+        bool                       m_makeAnnotationCalls;
+#endif
     };
 
 

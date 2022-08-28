@@ -1,3 +1,7 @@
+module;
+
+#include "Engine/Core/Defines.hpp"
+
 export module CopiumEngine.Graphics.CommandBuffer;
 
 import CopiumEngine.Assets.Mesh;
@@ -47,6 +51,14 @@ export namespace Copium
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset);
         void DrawMesh(const Mesh* mesh);
         void DrawProcedural(uint32 vertexCount);
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+        void BeginSample(std::string_view name);
+        void EndSample();
+#else
+        void BeginSample([[maybe_unused]] std::string_view name) {}
+        void EndSample() {}
+#endif
 
     private:
         std::unique_ptr<ICommandBuffer> m_commandBuffer;
@@ -136,5 +148,18 @@ export namespace Copium
     {
         m_commandBuffer->DrawProcedural(vertexCount);
     }
+
+
+#if COP_ENABLE_GRAPHICS_API_DEBUG
+    void CommandBuffer::BeginSample(std::string_view name)
+    {
+        m_commandBuffer->BeginSample(name);
+    }
+
+    void CommandBuffer::EndSample()
+    {
+        m_commandBuffer->EndSample();
+    }
+#endif
 
 } // export namespace CopiumEngine

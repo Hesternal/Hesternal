@@ -60,8 +60,13 @@ namespace Copium
 
     void EngineRenderPass::OnRender(RenderContext& renderContext)
     {
+        CommandBuffer& cmd = renderContext.GetCommandBuffer();
+        cmd.BeginSample(GetName());
+
         renderContext.BeginRenderPass(m_renderPassHandle);
         renderContext.DrawEntities();
+
+        cmd.EndSample();
     }
 
 } // namespace Copium
