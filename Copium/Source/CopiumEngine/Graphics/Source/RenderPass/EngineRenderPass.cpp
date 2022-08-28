@@ -28,7 +28,7 @@ namespace Copium
 
     void EngineRenderPass::OnCreate(RenderGraph& renderGraph)
     {
-        EngineSettings& engineSettings = EngineSettings::Get();
+        const EngineSettings& engineSettings = EngineSettings::Get();
         const uint32 renderWidth = engineSettings.RenderWidth;
         const uint32 renderHeight = engineSettings.RenderHeight;
 
@@ -60,10 +60,15 @@ namespace Copium
 
     void EngineRenderPass::OnRender(RenderContext& renderContext)
     {
+        const EngineSettings& engineSettings = EngineSettings::Get();
+        const float32 viewportWidth = static_cast<float32>(engineSettings.RenderWidth);
+        const float32 viewportHeight = static_cast<float32>(engineSettings.RenderHeight);
+
         CommandBuffer& cmd = renderContext.GetCommandBuffer();
         cmd.BeginSample(GetName());
 
         renderContext.BeginRenderPass(m_renderPassHandle);
+        cmd.SetViewport(Rect(0.0f, 0.0f, viewportWidth, viewportHeight));
         renderContext.DrawEntities();
 
         cmd.EndSample();

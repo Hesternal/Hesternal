@@ -14,7 +14,6 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 module CopiumEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
-import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.DX11Conversion;
 import CopiumEngine.Graphics.DXCommon;
 
@@ -26,10 +25,6 @@ import <utility>;
 
 
 // TODO(v.matushkin):
-//  - <Viewport>
-//    Right now I call ID3D11DeviceContext4::RSSetViewports on swapchain resize/creation
-//    Not sure that it should be like this. Probably a Camera should manage its viewport.
-//
 //  - <Device/Lost>
 //    Handle ID3D11Device5::RegisterDeviceRemovedEvent
 
@@ -806,19 +801,6 @@ namespace Copium
             m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
         }
 
-        //- Setup Viewport
-        {
-            EngineSettings& engineSettings = EngineSettings::Get();
-            // TODO(v.matushkin): <Viewport>
-            D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(engineSettings.RenderWidth),
-                .Height   = static_cast<float32>(engineSettings.RenderHeight),
-                .MinDepth = 0,
-                .MaxDepth = 1,
-            };
-            m_deviceContext->RSSetViewports(1, &d3dViewport);
-        }
-
         dx11Swapchain.SwapchainRTHandle = static_cast<RenderTextureHandle>(g_RenderTextureHandleWorkaround++);
         m_renderTextures.emplace(dx11Swapchain.SwapchainRTHandle, dx11SwapchainRenderTexture);
 
@@ -951,28 +933,16 @@ namespace Copium
     {
         DX11Swapchain& dx11Swapchain = _GetSwapchain(swapchainHandle);
         DX11RenderTexture& dx11SwapchainRenderTexture = _GetRenderTexture(dx11Swapchain.SwapchainRTHandle);
+
+        //- Release old Swapchain RenderTexture
         dx11SwapchainRenderTexture.RTV->Release();
         dx11SwapchainRenderTexture.Texture->Release();
+
         dx11Swapchain.Swapchain->ResizeBuffers(dx11Swapchain.BufferCount, width, height, dx11Swapchain.Format, dx11Swapchain.Flags);
 
-        //- Get Swapchain RenderTexture
-        {
-            dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
-            m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
-        }
-
-        //- Setup Viewport
-        {
-            EngineSettings& engineSettings = EngineSettings::Get();
-            // TODO(v.matushkin): <Viewport>
-            D3D11_VIEWPORT d3dViewport = {
-                .Width    = static_cast<float32>(engineSettings.RenderWidth),
-                .Height   = static_cast<float32>(engineSettings.RenderHeight),
-                .MinDepth = 0,
-                .MaxDepth = 1,
-            };
-            m_deviceContext->RSSetViewports(1, &d3dViewport);
-        }
+        //- Get new Swapchain RenderTexture
+        dx11Swapchain.Swapchain->GetBuffer(0, IID_PPV_ARGS(&dx11SwapchainRenderTexture.Texture));
+        m_device->CreateRenderTargetView1(dx11SwapchainRenderTexture.Texture, nullptr, &dx11SwapchainRenderTexture.RTV);
     }
 
 

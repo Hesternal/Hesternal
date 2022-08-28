@@ -8,7 +8,6 @@ module;
 module CopiumEngine.ImGui.ImGuiContext;
 
 import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics;
 import CopiumEngine.Math;
 
@@ -345,12 +344,6 @@ namespace Copium
             globalVertexOffset += imguiCmdList->VtxBuffer.Size;
             globalIndexOffset += imguiCmdList->IdxBuffer.Size;
         }
-
-        // NOTE(v.matushkin): Restore viewport, since EngineRenderPass doesn't have access to IGraphicsDevice
-        EngineSettings& engineSettings = EngineSettings::Get();
-        const float32 viewportWidth = static_cast<float32>(engineSettings.RenderWidth);
-        const float32 viewportHeight = static_cast<float32>(engineSettings.RenderHeight);
-        commandBuffer.SetViewport(Rect(0.0f, 0.0f, viewportWidth, viewportHeight));
     }
 
 } // namespace Copium
