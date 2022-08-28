@@ -35,8 +35,9 @@ export namespace Copium
         static void Init(WindowHandle windowHandle, std::shared_ptr<Shader>&& imguiShader);
         static void Shutdown();
 
-        static void BeginFrame();
-        static void EndFrame(CommandBuffer& commandBuffer);
+        static void BeginUpdate();
+        static void EndUpdate();
+        static void Render(CommandBuffer& commandBuffer);
 
     private:
         static void _Renderer_Init();

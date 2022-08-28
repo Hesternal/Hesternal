@@ -78,16 +78,19 @@ namespace Copium
     }
 
 
-    void ImGuiContext::BeginFrame()
+    void ImGuiContext::BeginUpdate()
     {
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
     }
 
-    void ImGuiContext::EndFrame(CommandBuffer& commandBuffer)
+    void ImGuiContext::EndUpdate()
     {
         ImGui::Render();
-        ImGui::EndFrame();
+    }
+
+    void ImGuiContext::Render(CommandBuffer& commandBuffer)
+    {
         _Renderer_DrawData(commandBuffer);
 
         // Update and Render additional Platform Windows
