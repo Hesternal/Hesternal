@@ -19,10 +19,16 @@ import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Math;
 
 import <queue>;
+import <utility>;
 
 
 namespace Copium
 {
+
+    Scene::Scene(std::string&& sceneName)
+        : m_sceneName(std::move(sceneName))
+    {
+    }
 
     Scene::~Scene()
     {
