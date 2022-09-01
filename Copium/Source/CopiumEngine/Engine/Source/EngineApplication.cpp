@@ -104,7 +104,9 @@ namespace Copium
 
             Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
 
-            EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
+            World* const defaultWorld = WorldManager::GetDefaultWorld();
+            EntityManager& entityManager = defaultWorld->GetEntityManager();
+
             Entity cameraEntity = entityManager.CreateEntity();
             entityManager.AddComponent<Translation>(cameraEntity, Translation{ .Value = Float3::Zero() });
             entityManager.AddComponent<Rotation>(cameraEntity, Rotation{ .Value = Quaternion::Identity() });
@@ -117,6 +119,8 @@ namespace Copium
                 .Pitch                 = 0.0f,
             });
             entityManager.AddComponent<Camera>(cameraEntity, Camera{ .Projection = cameraProjection });
+
+            defaultWorld->GetDefaultScene()->AddEntity(cameraEntity);
         }
     }
 

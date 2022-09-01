@@ -24,6 +24,7 @@ export namespace Copium
         [[nodiscard]] const std::string& GetName() const noexcept { return m_sceneName; }
         [[nodiscard]] const std::vector<Entity>& GetRootEntities() const noexcept { return m_rootEntities; }
 
+        void AddEntity(Entity entity) { m_rootEntities.push_back(entity); }
         void AddModel(const ModelScene* modelScene);
 
     private:
