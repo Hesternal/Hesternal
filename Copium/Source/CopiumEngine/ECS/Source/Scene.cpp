@@ -18,8 +18,18 @@ import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Math;
 
-import <queue>;
+import <stack>;
 import <utility>;
+
+
+namespace
+{
+    using namespace Copium;
+
+
+    static constexpr float32 k_SponzaScale = 0.005f;
+
+} // namespace
 
 
 namespace Copium
@@ -36,29 +46,35 @@ namespace Copium
     }
 
 
-    // TODO(v.matushkin): Entities hierarchy
+    // TODO(v.matushkin): Code is shit
     void Scene::AddModel(const ModelScene* modelScene)
     {
         // TODO(v.matushkin): Don't know how else I should make entities from scene, Scene serialization will be pain
         EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
 
-        Float4x4 sponzaTransform = Float4x4::Scale(0.005f);
-
-        std::queue<const ModelNode*> modelNodesQueue;
-        modelNodesQueue.push(modelScene->RootNode.get());
-
-        while (modelNodesQueue.empty() == false)
+        struct HierarchyNode
         {
-            const ModelNode* parentNode = modelNodesQueue.front();
-            modelNodesQueue.pop();
+            const ModelNode*     ModelNode;
+            std::vector<Entity>& EntityChildren;
+            int32                NextChildIndex;
+            Entity               Entity;
+        };
 
+        std::stack<HierarchyNode> modelNodesStack;
+        const std::vector<ModelMesh>& modelMeshes = modelScene->Meshes;
+
+        auto createEntity = [modelScene, &entityManager, &modelMeshes](ModelNode* modelNode) -> Entity
+        {
             Entity entity = entityManager.CreateEntity();
 
-            if (parentNode->MeshIndices.empty() == false)
+            if (modelNode->MeshIndices.empty() == false)
             {
-                entityManager.AddComponent<LocalToWorld>(entity, LocalToWorld{ .Value = sponzaTransform });
+                entityManager.AddComponent<Translation>(entity, Translation{ .Value = Float3::Zero() });
+                entityManager.AddComponent<Rotation>(entity, Rotation{ .Value = Quaternion::Identity() });
+                entityManager.AddComponent<Scale>(entity, Scale{ .Value = k_SponzaScale });
+                entityManager.AddComponent<LocalToWorld>(entity, LocalToWorld{ .Value = Float4x4::Identity() });
 
-                const ModelMesh& modelMesh = modelScene->Meshes[parentNode->MeshIndices[0]];
+                const ModelMesh& modelMesh = modelMeshes[modelNode->MeshIndices[0]];
 
                 entityManager.AddComponent<RenderMesh>(entity, RenderMesh{
                     .Mesh     = modelMesh.Mesh,
@@ -66,9 +82,59 @@ namespace Copium
                 });
             }
 
-            for (const std::unique_ptr<ModelNode>& childNode : parentNode->Children)
+            return entity;
+        };
+
+        {
+            ModelNode* const rootModelNode = modelScene->RootNode.get();
+
+            Entity rootEntity = createEntity(rootModelNode);
+            m_rootEntities.push_back(rootEntity);
+
+            if (rootModelNode->Children.empty() == false)
             {
-                modelNodesQueue.push(childNode.get());
+                modelNodesStack.push(HierarchyNode{
+                    .ModelNode      = rootModelNode,
+                    .EntityChildren = entityManager.AddComponent<Child>(rootEntity, Child{}).Children,
+                    .NextChildIndex = 0,
+                    .Entity         = rootEntity,
+                });
+            }
+        }
+
+        while (modelNodesStack.empty() == false)
+        {
+            HierarchyNode& parentNode = modelNodesStack.top();
+            const auto& childrenModelNodes = parentNode.ModelNode->Children;
+
+            bool popParentNode = true;
+
+            while (parentNode.NextChildIndex < childrenModelNodes.size())
+            {
+                ModelNode* const childModelNode = childrenModelNodes[parentNode.NextChildIndex++].get();
+
+                Entity childEntity = createEntity(childModelNode);
+
+                parentNode.EntityChildren.push_back(childEntity);
+                entityManager.AddComponent<Parent>(childEntity, Parent{ .Value = parentNode.Entity });
+
+                if (childModelNode->Children.empty() == false)
+                {
+                    modelNodesStack.push(HierarchyNode{
+                        .ModelNode      = childModelNode,
+                        .EntityChildren = entityManager.AddComponent<Child>(childEntity, Child{}).Children,
+                        .NextChildIndex = 0,
+                        .Entity         = childEntity,
+                    });
+
+                    popParentNode = false;
+                    break;
+                }
+            }
+
+            if (popParentNode)
+            {
+                modelNodesStack.pop();
             }
         }
     }

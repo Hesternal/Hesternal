@@ -45,7 +45,7 @@ export namespace Copium
 
     struct Child final : IComponent
     {
-        std::vector<Entity> Value;
+        std::vector<Entity> Children;
     };
 
 } // export namespace Copium
