@@ -61,47 +61,6 @@ namespace Copium
 
     void ImGuiRenderPass::OnRender(RenderContext& renderContext)
     {
-        ImGuiContext::BeginUpdate();
-
-        ImGui::ShowDemoWindow();
-
-        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-
-        if (ImGui::Begin("Hierarchy"))
-        {
-            ImGui::End();
-        }
-
-        if (ImGui::Begin("Scene"))
-        {
-            const auto windowSize = ImGui::GetWindowSize();
-            if (ImGui::BeginChild("SceneChild", windowSize))
-            {
-                ImGuiTexture imguiTexture;
-                imguiTexture.Parts.Handle = static_cast<uint32>(m_engineColorHandle);
-                imguiTexture.Parts.IsRenderTexture = true;
-
-                EngineSettings& engineSettings = EngineSettings::Get();
-                ImVec2 engineOutputDimensions(engineSettings.RenderWidth, engineSettings.RenderHeight);
-
-                ImGui::Image(reinterpret_cast<ImTextureID>(imguiTexture.Whole), engineOutputDimensions);
-
-                ImGui::EndChild();
-            }
-
-            ImGui::End();
-        }
-
-        if (ImGui::Begin("Render Stats"))
-        {
-            const auto framerate = ImGui::GetIO().Framerate;
-            ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / framerate, framerate);
-
-            ImGui::End();
-        }
-
-        ImGuiContext::EndUpdate();
-
         CommandBuffer& cmd = renderContext.GetCommandBuffer();
         cmd.BeginSample(GetName());
 

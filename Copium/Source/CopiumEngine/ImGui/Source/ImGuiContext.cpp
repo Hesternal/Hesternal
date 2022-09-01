@@ -82,6 +82,8 @@ namespace Copium
     {
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
+
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
     }
 
     void ImGuiContext::EndUpdate()

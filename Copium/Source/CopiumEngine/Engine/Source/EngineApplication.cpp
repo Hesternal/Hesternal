@@ -18,6 +18,7 @@ import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
 import CopiumEngine.Graphics;
+import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Utils.Time;
 
 import <utility>;
@@ -83,7 +84,17 @@ namespace Copium
         WorldManager::GetDefaultWorld()->Update();
         OnEngine_Update();
 
-        Graphics::RenderFrame();
+        {
+            IGraphicsDevice* const graphicsDevice = Graphics::GetGraphicsDevice();
+            RenderContext& renderContext = Graphics::GetRenderContext();
+
+            graphicsDevice->BeginFrame();
+
+            renderContext.NewFrame();
+            OnEngine_Render(renderContext);
+
+            graphicsDevice->EndFrame();
+        }
     }
 
 

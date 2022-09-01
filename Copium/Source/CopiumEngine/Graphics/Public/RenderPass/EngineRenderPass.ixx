@@ -16,6 +16,9 @@ export namespace Copium
         EngineRenderPass(EngineRenderPass&& other) noexcept = default;
         EngineRenderPass& operator=(EngineRenderPass&& other) noexcept = default;
 
+        // TODO(v.matushkin): HACK
+        [[nodiscard]] RenderTextureHandle GetEngineOutput() const noexcept { return m_engineColorHandle; }
+
         void OnSchedule(RenderGraph& renderGraph) override;
         void OnCreate(RenderGraph& renderGraph) override;
         void OnRender(RenderContext& renderContext) override;

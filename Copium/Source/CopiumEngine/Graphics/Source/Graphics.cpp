@@ -96,7 +96,6 @@ namespace Copium
     void Graphics::Shutdown()
     {
         m_renderContext.reset();
-        m_renderGraph.reset();
 
         m_defaultShader.reset();
 
@@ -105,24 +104,6 @@ namespace Copium
         m_normalTexture.reset();
 
         m_graphicsDevice.reset();
-    }
-
-
-    void Graphics::SetRenderGraph(std::unique_ptr<RenderGraph>&& renderGraph)
-    {
-        m_renderGraph = std::move(renderGraph);
-        m_renderGraph->Build(m_graphicsDevice.get());
-    }
-
-
-    void Graphics::RenderFrame()
-    {
-        m_graphicsDevice->BeginFrame();
-
-        m_renderContext->NewFrame();
-        m_renderGraph->Execute(*m_renderContext);
-
-        m_graphicsDevice->EndFrame();
     }
 
 } // namespace Copium
