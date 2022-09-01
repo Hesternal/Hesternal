@@ -18,6 +18,7 @@ import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Event.EventManager;
 import CopiumEngine.Math;
 import CopiumEngine.Graphics;
+import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Utils.Time;
 
 import <utility>;
@@ -83,7 +84,17 @@ namespace Copium
         WorldManager::GetDefaultWorld()->Update();
         OnEngine_Update();
 
-        Graphics::RenderFrame();
+        {
+            IGraphicsDevice* const graphicsDevice = Graphics::GetGraphicsDevice();
+            RenderContext& renderContext = Graphics::GetRenderContext();
+
+            graphicsDevice->BeginFrame();
+
+            renderContext.NewFrame();
+            OnEngine_Render(renderContext);
+
+            graphicsDevice->EndFrame();
+        }
     }
 
 
@@ -104,7 +115,9 @@ namespace Copium
 
             Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
 
-            EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
+            World* const defaultWorld = WorldManager::GetDefaultWorld();
+            EntityManager& entityManager = defaultWorld->GetEntityManager();
+
             Entity cameraEntity = entityManager.CreateEntity();
             entityManager.AddComponent<Translation>(cameraEntity, Translation{ .Value = Float3::Zero() });
             entityManager.AddComponent<Rotation>(cameraEntity, Rotation{ .Value = Quaternion::Identity() });
@@ -117,6 +130,8 @@ namespace Copium
                 .Pitch                 = 0.0f,
             });
             entityManager.AddComponent<Camera>(cameraEntity, Camera{ .Projection = cameraProjection });
+
+            defaultWorld->GetDefaultScene()->AddEntity(cameraEntity);
         }
     }
 

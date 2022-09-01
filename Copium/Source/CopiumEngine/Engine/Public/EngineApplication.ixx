@@ -2,6 +2,7 @@ export module CopiumEngine.Engine.Application;
 
 import CopiumEngine.Core.Application;
 import CopiumEngine.Core.CoreTypes;
+import CopiumEngine.Graphics.RenderContext;
 
 import <memory>;
 
@@ -21,6 +22,7 @@ export namespace Copium
         virtual void OnEngine_SystemsInit() = 0;
         virtual void OnEngine_Shutdown() = 0;
         virtual void OnEngine_Update() = 0;
+        virtual void OnEngine_Render(RenderContext& renderContext) = 0;
 
     private:
         //< Aplication Interface Protected

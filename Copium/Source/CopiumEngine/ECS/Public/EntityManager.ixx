@@ -31,7 +31,6 @@ export namespace Copium
 
         EntityManager(const EntityManager&) = delete;
         EntityManager& operator=(const EntityManager&) = delete;
-
         EntityManager(EntityManager&& other) noexcept = default;
         EntityManager& operator=(EntityManager&& other) noexcept = default;
 
@@ -39,16 +38,23 @@ export namespace Copium
         void DestroyEntity(Entity entity);
 
         // NOTE(v.matushkin): Can return multiple components (creates view internally?)
-        // template<CComponent TComponent>
-        // [[nodiscard]] TComponent GetComponent(Entity entity)
-        // {
-        //     return m_registry.get<TComponent>(entity);
-        // }
+        template<CComponent TComponent>
+        [[nodiscard]] TComponent& GetComponent(Entity entity)
+        {
+            return m_registry.get<TComponent>(entity);
+        }
+
+        // NOTE(v.matushkin): Can return multiple components
+        template<CComponent TComponent>
+        [[nodiscard]] TComponent* TryGetComponent(Entity entity)
+        {
+            return m_registry.try_get<TComponent>(entity);
+        }
 
         template<CComponent TComponent>
-        void AddComponent(Entity entity, TComponent&& component)
+        [[maybe_unused]] TComponent& AddComponent(Entity entity, TComponent&& component)
         {
-            m_registry.emplace<TComponent>(entity, std::forward<TComponent>(component));
+            return m_registry.emplace<TComponent>(entity, std::forward<TComponent>(component));
         }
 
         template<CComponent... TComponent>
