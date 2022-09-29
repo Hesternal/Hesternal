@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <!-- General -->
+    <StartupObject>Copium.BuildTool.Program</StartupObject>
+    <AssemblyName>CopiumBuildTool</AssemblyName>
+    <!--<PublishSingleFile>true</PublishSingleFile>-->
+    <!--<PublishTrimmed>true</PublishTrimmed>-->
+    <!--<SelfContained>true</SelfContained>-->
+    <!--<RuntimeIdentifier>win10-x64</RuntimeIdentifier>-->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0-2.final" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Copium.BuildTool\Copium.BuildTool.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </ProjectReference>
+    <ProjectReference Include="..\Copium.BuildTool.Generators\Copium.BuildTool.Generators.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </ProjectReference>
+    <ProjectReference Include="..\Copium.Core\Copium.Core.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </ProjectReference>
+    <ProjectReference Include="..\Copium.Core.Net7\Copium.Core.Net7.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </ProjectReference>
+    
+  </ItemGroup>
+
+</Project>

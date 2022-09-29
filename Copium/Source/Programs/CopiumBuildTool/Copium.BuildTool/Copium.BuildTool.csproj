@@ -1,39 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <!-- General -->
-    <StartupObject>Copium.BuildTool.Program</StartupObject>
-    <AssemblyName>CopiumBuildTool</AssemblyName>
-    <!--<PublishSingleFile>true</PublishSingleFile>-->
-    <!--<PublishTrimmed>true</PublishTrimmed>-->
-    <!--<SelfContained>true</SelfContained>-->
-    <!--<RuntimeIdentifier>win10-x64</RuntimeIdentifier>-->
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath> 
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <ProjectReference Include="..\Copium.Core.Net7\Copium.Core.Net7.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0-2.final" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Copium.BuildTool.BuildRules\Copium.BuildTool.BuildRules.csproj">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </ProjectReference>
-    <ProjectReference Include="..\Copium.Core\Copium.Core.csproj">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </ProjectReference>
+    <Reference Include="Microsoft.Build.CPPTasks.Common">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.CPPTasks.Common.Base">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.Base.dll</HintPath>
+    </Reference>
+    <!--<ProjectReference Include="..\Copium.BuildTool.SourceGenerator\Copium.BuildTool.SourceGenerator.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>-->
   </ItemGroup>
 
 </Project>

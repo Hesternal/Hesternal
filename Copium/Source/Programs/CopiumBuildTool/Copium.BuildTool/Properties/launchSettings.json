@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Copium.BuildTool": {
-      "commandName": "Project",
-      "commandLineArgs": "generate"
-    }
-  }
-}
