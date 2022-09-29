@@ -1,10 +1,16 @@
+module;
+
+//#include <fstream>
+
 export module CopiumEngine.Core.Platform.File;
 
 import CopiumEngine.Core.CoreTypes;
 
-import <filesystem>;
+// NOTE(v.matushkin): Waiting until https://github.com/microsoft/STL/issues/3112 gets fixed
+//  Although seems like it's working without this headers anyway?
+//import <filesystem>;
+//import <string>;
 import <fstream>;
-import <string>;
 
 
 export namespace Copium

@@ -23,6 +23,7 @@ class Copium(ConanFile):
 
     requires = [
           'assimp/5.2.2',
+          'catch2/3.1.0',
          'cxxopts/3.0.0',
             'entt/3.10.0',
             'glfw/3.3.7',
