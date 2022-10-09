@@ -6,14 +6,16 @@ import CopiumEngine.Core.CoreTypes;
 import <bit>;
 import <cmath>;
 import <type_traits>;
+import <utility>;
 
 
 export namespace Copium::Math
 {
 
-    constexpr float32 Rcp(float32 x) noexcept { return 1.0f / x; }
+    [[nodiscard]] constexpr float32 Rcp(float32 x) noexcept { return 1.0f / x; }
 
-    inline void SinCos(float32 x, float32& sin, float32& cos) { sin = std::sin(x); cos = std::cos(x); }
+    [[nodiscard]] inline std::pair<float32, float32> SinCos(float32 x) noexcept { return { std::sinf(x), std::cosf(x) }; }
+    [[nodiscard]] inline std::pair<float64, float64> SinCos(float64 x) noexcept { return { std::sin(x), std::cos(x) }; }
 
     [[nodiscard]] constexpr float32 Radians(float32 degrees) noexcept { return degrees * k_DegreeToRadians; }
     [[nodiscard]] constexpr float32 Degrees(float32 radians) noexcept { return radians * k_RadiansToDegree; }
