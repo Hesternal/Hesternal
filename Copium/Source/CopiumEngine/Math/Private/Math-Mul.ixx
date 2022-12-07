@@ -50,5 +50,4 @@ export namespace Copium::Math
                         lhs.C0 * rhs.C3.X + lhs.C1 * rhs.C3.Y + lhs.C2 * rhs.C3.Z + lhs.C3 * rhs.C3.W);
     }
 
-
 } // export namespace Copium::Math

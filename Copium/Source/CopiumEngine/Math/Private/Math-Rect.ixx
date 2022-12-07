@@ -17,8 +17,8 @@ export namespace Copium
         T Height;
 
 
-        constexpr TRect() = default;
-        constexpr TRect(const TRect& v) = default;
+        constexpr TRect() noexcept = default;
+        constexpr TRect(const TRect& v) noexcept = default;
 
         constexpr TRect(T x, T y, T width, T height) noexcept
             : X(x)
@@ -38,6 +38,7 @@ export namespace Copium
     };
 
 
+    // NOTE(v.matushkin): Not sure if I'm using extern correctly
     extern template struct TRect<int32>;
     extern template struct TRect<float32>;
 

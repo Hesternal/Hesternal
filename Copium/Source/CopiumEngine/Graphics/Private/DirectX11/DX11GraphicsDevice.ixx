@@ -1,6 +1,8 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+// NOTE(v.matushkin): Can't use ASSERT here, because Microsoft introduced new ICE after VS 17.4 preview 3.0?
+//#include "Engine/Core/Debug.hpp"
+#include "Engine/Core/Defines.hpp"
 
 #include <d3d11_4.h>
 #if COP_ENABLE_GRAPHICS_API_DEBUG
@@ -252,7 +254,11 @@ export namespace Copium
     DX11GraphicsBuffer& DX11GraphicsDevice::_GetGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle)
     {
         const auto dx11GraphicsBufferIterator = m_graphicsBuffers.find(graphicsBufferHandle);
-        COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
+        //COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
+        if (dx11GraphicsBufferIterator == m_graphicsBuffers.end())
+        {
+            std::abort();
+        }
 
         return dx11GraphicsBufferIterator->second;
     }
@@ -260,7 +266,11 @@ export namespace Copium
     DX11Mesh& DX11GraphicsDevice::_GetMesh(MeshHandle meshHandle)
     {
         const auto dx11MeshIterator = m_meshes.find(meshHandle);
-        COP_ASSERT(dx11MeshIterator != m_meshes.end());
+        //COP_ASSERT(dx11MeshIterator != m_meshes.end());
+        if (dx11MeshIterator == m_meshes.end())
+        {
+            std::abort();
+        }
 
         return dx11MeshIterator->second;
     }
@@ -268,7 +278,11 @@ export namespace Copium
     DX11RenderPass& DX11GraphicsDevice::_GetRenderPass(RenderPassHandle renderPassHandle)
     {
         const auto dx11RenderPassIterator = m_renderPasses.find(renderPassHandle);
-        COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
+        //COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
+        if (dx11RenderPassIterator == m_renderPasses.end())
+        {
+            std::abort();
+        }
 
         return dx11RenderPassIterator->second;
     }
@@ -276,7 +290,11 @@ export namespace Copium
     DX11RenderTexture& DX11GraphicsDevice::_GetRenderTexture(RenderTextureHandle renderTextureHandle)
     {
         const auto dx11RenderTextureIterator = m_renderTextures.find(renderTextureHandle);
-        COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
+        //COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
+        if (dx11RenderTextureIterator == m_renderTextures.end())
+        {
+            std::abort();
+        }
 
         return dx11RenderTextureIterator->second;
     }
@@ -284,7 +302,11 @@ export namespace Copium
     DX11Shader& DX11GraphicsDevice::_GetShader(ShaderHandle shaderHandle)
     {
         const auto dx11ShaderIterator = m_shaders.find(shaderHandle);
-        COP_ASSERT(dx11ShaderIterator != m_shaders.end());
+        //COP_ASSERT(dx11ShaderIterator != m_shaders.end());
+        if (dx11ShaderIterator == m_shaders.end())
+        {
+            std::abort();
+        }
 
         return dx11ShaderIterator->second;
     }
@@ -292,7 +314,11 @@ export namespace Copium
     DX11Swapchain& DX11GraphicsDevice::_GetSwapchain(SwapchainHandle swapchainHandle)
     {
         const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
-        COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
+        //COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
+        if (dx11SwapchainIterator == m_swapchains.end())
+        {
+            std::abort();
+        }
 
         return dx11SwapchainIterator->second;
     }
@@ -300,7 +326,11 @@ export namespace Copium
     DX11Texture2D& DX11GraphicsDevice::_GetTexture(TextureHandle textureHandle)
     {
         const auto dx11TextureIterator = m_textures.find(textureHandle);
-        COP_ASSERT(dx11TextureIterator != m_textures.end());
+        //COP_ASSERT(dx11TextureIterator != m_textures.end());
+        if (dx11TextureIterator == m_textures.end())
+        {
+            std::abort();
+        }
 
         return dx11TextureIterator->second;
     }

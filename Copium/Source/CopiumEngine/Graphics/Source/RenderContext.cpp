@@ -19,6 +19,7 @@ namespace
     {
         Float4x4 _CameraView;
         Float4x4 _CameraProjection;
+        Float4x4 _CameraViewProjection;
     };
 
     // NOTE(v.matushkin): Will be padded to 256 bytes by GraphicsBuffer

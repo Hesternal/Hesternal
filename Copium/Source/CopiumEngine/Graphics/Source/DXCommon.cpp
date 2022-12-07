@@ -17,7 +17,7 @@ namespace Copium
 
     DXGI_FORMAT dx_RenderTextureFormat(RenderTextureFormat renderTextureFormat)
     {
-        static const DXGI_FORMAT dxgiRenderTextureFormat[] = {
+        static constinit const DXGI_FORMAT dxgiRenderTextureFormat[] = {
             DXGI_FORMAT_B8G8R8A8_UNORM,
             DXGI_FORMAT_D32_FLOAT,
         };
@@ -28,7 +28,7 @@ namespace Copium
     // NOTE(v.matushkin): What about BGRA/RGBA ?
     DXGI_FORMAT dx_TextureFormat(TextureFormat textureFormat)
     {
-        static const DXGI_FORMAT dxgiTextureFormat[] = {
+        static constinit const DXGI_FORMAT dxgiTextureFormat[] = {
             DXGI_FORMAT_R8_UNORM,
             DXGI_FORMAT_R8_SNORM,
             DXGI_FORMAT_R8_UINT,
@@ -72,7 +72,7 @@ namespace Copium
 
     DXGI_FORMAT dx_VertexAttributeFormat(VertexAttributeFormat format, uint8 dimension)
     {
-        static const DXGI_FORMAT dxgiVertexFormat[] = {
+        static constinit const DXGI_FORMAT dxgiVertexFormat[] = {
             // SInt8
             DXGI_FORMAT_R8_SINT,
             DXGI_FORMAT_R8G8_SINT,
@@ -140,11 +140,6 @@ namespace Copium
         COP_ASSERT_MSG(dxgiFormat != DXGI_FORMAT_UNKNOWN, "Unsupported vertex format/dimension combination");
 
         return dxgiFormat;
-    }
-
-    bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace)
-    {
-        return triangleFrontFace == TriangleFrontFace::CounterClockwise;
     }
 
 } // namespace Copium

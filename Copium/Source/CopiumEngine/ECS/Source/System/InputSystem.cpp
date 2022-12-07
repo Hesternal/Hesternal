@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Engine/Core/Defines.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -19,7 +19,6 @@ import CopiumEngine.Utils.Time;
 
 namespace
 {
-
     using namespace Copium;
 
 
@@ -37,11 +36,11 @@ namespace
         }
         if (Input::IsButtonPressed(KeyboardButton::A))
         {
-            translation.X += 1.0f;
+            translation.X -= 1.0f;
         }
         if (Input::IsButtonPressed(KeyboardButton::D))
         {
-            translation.X -= 1.0f;
+            translation.X += 1.0f;
         }
         if (Input::IsButtonPressed(KeyboardButton::Q))
         {
@@ -52,7 +51,7 @@ namespace
             translation.Y -= 1.0f;
         }
 
-        if (Input::IsButtonPressed(KeyboardButton::LeftShit))
+        if (Input::IsButtonPressed(KeyboardButton::LeftShift))
         {
             cameraSpeed *= cameraBoost;
         }
@@ -85,7 +84,7 @@ namespace Copium
         const Int2 currentMousePosition = Input::GetMousePosition();
         const float32 deltaTime = static_cast<float32>(Time::GetDelta());
 
-        for (const auto [cameraEntity, cameraTranslation, cameraRotation, cameraLocalToWorld, cameraController] : cameraQuery.each())
+        for (const auto&& [cameraEntity, cameraTranslation, cameraRotation, cameraLocalToWorld, cameraController] : cameraQuery.each())
         {
             if (Input::IsButtonPressed(MouseButton::Right))
             {
@@ -96,18 +95,26 @@ namespace Copium
                     cameraController.Pitch += mousePositionDelta.Y * deltaTime;
                     cameraController.Yaw += mousePositionDelta.X * deltaTime;
 
-                    Quaternion rotationPitch = Quaternion::AxisAngle(Math::Left(), cameraController.Pitch);
-                    Quaternion rotationYaw = Quaternion::AxisAngle(Math::Up(), cameraController.Yaw);
-                    cameraRotation.Value = Quaternion::Mul(rotationPitch, rotationYaw);
+                    //Quaternion rotationPitch = Quaternion::AxisAngle(Math::Right(), cameraController.Pitch);
+                    //Quaternion rotationYaw = Quaternion::AxisAngle(Math::Up(), cameraController.Yaw);
+                    //cameraRotation.Value = Quaternion::Mul(rotationYaw, rotationPitch);
+
+                    cameraRotation.Value = Quaternion::EulerZXY(cameraController.Pitch, cameraController.Yaw, 0.0f);
                 }
             }
 
             cameraController.PreviousMousePosition = currentMousePosition;
 
-            Float3 translation = Quaternion::Mul(GetCameraTranslation(cameraController.CameraSpeed, cameraController.CameraBoost), cameraRotation.Value);
+            Float3x3 rotationMat = cameraRotation.Value.ToFloat3x3();
+            //Float3x3 rotationMat = Math::Mul(Float3x3::RotateY(cameraController.Yaw), Float3x3::RotateX(cameraController.Pitch));
+
+            Float3 translation = Math::Mul(rotationMat, GetCameraTranslation(cameraController.CameraSpeed, cameraController.CameraBoost));
+            //Float3 translation = Quaternion::Mul(cameraRotation.Value, GetCameraTranslation(cameraController.CameraSpeed, cameraController.CameraBoost));
+
             cameraTranslation.Value += translation;
 
-            cameraLocalToWorld.Value = Float4x4::TR(cameraTranslation.Value, cameraRotation.Value);
+            cameraLocalToWorld.Value = Math::TR(cameraTranslation.Value, rotationMat);
+            //cameraLocalToWorld.Value = Math::TR(cameraTranslation.Value, cameraRotation.Value);
         }
     }
 

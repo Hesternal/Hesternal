@@ -2,13 +2,16 @@ export module CopiumEngine.Math:Constants;
 
 import CopiumEngine.Core.CoreTypes;
 
+import <numbers>;
 
-export namespace Copium
+
+export namespace Copium::Math::Constants
 {
 
-    /// PI / 180
-    inline constexpr float32 k_DegreeToRadians = 0.0174532925f;
-    /// 180 / PI
-    inline constexpr float32 k_RadiansToDegree = 57.295779513f;
+    inline constexpr float32 PI = std::numbers::pi_v<float32>;
 
-} // export namespace Copium
+    inline constexpr float32 Deg2Rad = PI / 180.0f;
+    // NOTE(v.matushkin): IntelliSense lies about division by zero, because I import <numbers> as a header unit
+    inline constexpr float32 Rad2Deg = 180.0f / PI;
+
+} // export namespace Copium::Math::Constants

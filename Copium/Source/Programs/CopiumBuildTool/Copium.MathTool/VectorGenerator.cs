@@ -31,8 +31,8 @@ internal sealed class VectorGenerator : MathTypeGenerator
     {
         string zero = BaseTypeEnum.ToValueLiteral(0);
         string one = BaseTypeEnum.ToValueLiteral(1);
-        m_sb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} Zero() noexcept {{ return {0}({1}); }}", Type, zero).AppendLine();
-        m_sb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} One() noexcept {{ return {0}({1}); }}", Type, one).AppendLine();
+        m_cb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} Zero() noexcept {{ return {0}({1}); }}", Type, zero).AppendLine();
+        m_cb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} One() noexcept {{ return {0}({1}); }}", Type, one).AppendLine();
     }
 
 

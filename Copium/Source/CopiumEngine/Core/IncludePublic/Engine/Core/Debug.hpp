@@ -127,7 +127,10 @@ namespace Copium
 
 #else
 
-    #define COP_ASSERT(condition)              do { COP_UNUSED(condition); } while ((void)0,0)
-    #define COP_ASSERT_MSG(condition, message) do { COP_UNUSED(condition); } while ((void)0,0)
+    // #define COP_ASSERT(condition)              do { COP_UNUSED(condition); } while ((void)0,0)
+    // #define COP_ASSERT_MSG(condition, message) do { COP_UNUSED(condition); } while ((void)0,0)
+
+    #define COP_ASSERT(condition)              do { } while ((void)0,0)
+    #define COP_ASSERT_MSG(condition, message) do { } while ((void)0,0)
 
 #endif // COP_ENABLE_ASSERTS

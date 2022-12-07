@@ -108,12 +108,11 @@ namespace Copium
         {
             EngineSettings& engineSettings = EngineSettings::Get();
 
-            constexpr float32 verticalFov = Math::Radians(90.0f);
+            constexpr float32 verticalFov = Math::ToRadians(90.0f);
             constexpr float32 near = 0.01f;
-            constexpr float32 far = 100.0f;
-            float32 aspect = float32(engineSettings.RenderWidth) / engineSettings.RenderHeight;
-
-            Float4x4 cameraProjection = Float4x4::Perspective(verticalFov, aspect, near, far);
+            constexpr float32 far = 1000.0f;
+            const float32 aspect = float32(engineSettings.RenderWidth) / engineSettings.RenderHeight;
+            const Float4x4 cameraProjection = Math::Perspective(verticalFov, aspect, near, far);
 
             World* const defaultWorld = WorldManager::GetDefaultWorld();
             EntityManager& entityManager = defaultWorld->GetEntityManager();

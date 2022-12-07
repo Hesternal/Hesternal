@@ -280,7 +280,7 @@ namespace Copium
             const float32 bottom = displayPos.y + displaySize.y;
 
             // NOTE(v.matushkin): Z coordinate differs from ImGui backends, not sure if it matters since ImGui draws without Z-test anyway
-            const Float4x4 orthoProjection = Float4x4::OrthoOffCenter(left, right, bottom, top, 0.0f, 1.0f);
+            const Float4x4 orthoProjection = Math::OrthoOffCenter(left, right, bottom, top, 0.0f, 1.0f);
 
             std::span<uint8> cameraData = m_cameraBuffer->Map();
             std::memcpy(cameraData.data(), &orthoProjection, k_CameraElementSize);

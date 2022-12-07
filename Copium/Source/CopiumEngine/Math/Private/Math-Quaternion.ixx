@@ -19,63 +19,35 @@ export namespace Copium
         float32 W;
 
 
-        constexpr Quaternion() = default;
-        constexpr Quaternion(const Quaternion& other) = default;
+        constexpr Quaternion() noexcept = default;
+        constexpr Quaternion(const Quaternion& other) noexcept = default;
 
-        constexpr Quaternion(float32 x, float32 y, float32 z, float32 w);
-        constexpr Quaternion(const Float3& xyz, float32 w);
-        constexpr Quaternion(const Float4& xyzw);
+        constexpr Quaternion(float32 x, float32 y, float32 z, float32 w) noexcept : X(x), Y(y), Z(z), W(w) {}
+
+        constexpr Quaternion(const Float3& xyz, float32 w) noexcept : X(xyz.X),  Y(xyz.Y),  Z(xyz.Z),  W(w)      {}
+        constexpr Quaternion(const Float4& xyzw)           noexcept : X(xyzw.X), Y(xyzw.Y), Z(xyzw.Z), W(xyzw.W) {}
 
         [[nodiscard]] constexpr Float3x3 ToFloat3x3() const noexcept;
 
         [[nodiscard]] static constexpr Quaternion Identity() noexcept { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); }
 
-        [[nodiscard]] static constexpr Quaternion Conjugate(const Quaternion& q);
+        [[nodiscard]] static constexpr Quaternion Conjugate(const Quaternion& q) noexcept { return Quaternion(-q.X, -q.Y, -q.Z, q.W); }
         // TODO(v.matushkin): Not tested
-        [[nodiscard]] static constexpr Quaternion Inverse(const Quaternion& q);
+        [[nodiscard]] static constexpr Quaternion Inverse(const Quaternion& q) noexcept;
 
         /// <summary>Returns the result of transforming the quaternion b by the quaternion a.</summary>
-        [[nodiscard]] static constexpr Quaternion Mul(const Quaternion& lhs, const Quaternion& rhs);
+        [[nodiscard]] static constexpr Quaternion Mul(const Quaternion& lhs, const Quaternion& rhs) noexcept;
         /// <summary>Returns the result of rotating a vector by a unit quaternion.</summary>
-        [[nodiscard]] static constexpr Float3 Mul(const Quaternion& lhs, const Float3& rhs);
-        [[nodiscard]] static constexpr Float3 Mul(const Float3& rhs, const Quaternion& lhs);
+        [[nodiscard]] static constexpr Float3 Mul(const Quaternion& lhs, const Float3& rhs) noexcept;
+        [[nodiscard]] static constexpr Float3 Mul(const Float3& rhs, const Quaternion& lhs) noexcept;
 
         /// <param name="axis">The unit axis of rotation.</param>
-        /// <param name="angle">The angle of rotation in radians( ARE YOU SURE? ).</param>
-        [[nodiscard]] static Quaternion AxisAngle(const Float3& axis, float32 angle);
+        /// <param name="angle">The angle of rotation in radians.</param>
+        [[nodiscard]] static Quaternion AxisAngle(const Float3& axis, float32 angle) noexcept;
 
-        // TODO(v.matushkin): Not tested
-        [[nodiscard]] static Quaternion Euler(float32 roll, float32 yaw, float32 pitch);
+        /// X - pitch, Y - yaw, Z - roll
+        [[nodiscard]] static Quaternion EulerZXY(float32 pitch, float32 yaw, float32 roll) noexcept;
     };
-
-
-    // ========================================================================
-    // ============================== Quaternion ==============================
-    // ========================================================================
-
-    constexpr Quaternion::Quaternion(float32 x, float32 y, float32 z, float32 w)
-        : X(x)
-        , Y(y)
-        , Z(z)
-        , W(w)
-    {
-    }
-
-    constexpr Quaternion::Quaternion(const Float3& xyz, float32 w)
-        : X(xyz.X)
-        , Y(xyz.Y)
-        , Z(xyz.Z)
-        , W(w)
-    {
-    }
-
-    constexpr Quaternion::Quaternion(const Float4& xyzw)
-        : X(xyzw.X)
-        , Y(xyzw.Y)
-        , Z(xyzw.Z)
-        , W(xyzw.W)
-    {
-    }
 
 
     constexpr Float3x3 Quaternion::ToFloat3x3() const noexcept
@@ -108,12 +80,7 @@ export namespace Copium
     }
 
 
-    constexpr Quaternion Quaternion::Conjugate(const Quaternion& q)
-    {
-        return Quaternion(-q.X, -q.Y, -q.Z, q.W);
-    }
-
-    constexpr Quaternion Quaternion::Inverse(const Quaternion& q)
+    constexpr Quaternion Quaternion::Inverse(const Quaternion& q) noexcept
     {
         Float4 qVector = Float4(q.X, q.Y, q.Z, q.W);
         Float4 qVectorConjugate = Float4(-q.X, -q.Y, -q.Z, q.W);
@@ -123,7 +90,7 @@ export namespace Copium
     }
 
 
-    constexpr Quaternion Quaternion::Mul(const Quaternion& lhs, const Quaternion& rhs)
+    constexpr Quaternion Quaternion::Mul(const Quaternion& lhs, const Quaternion& rhs) noexcept
     {
         float32 x = lhs.W * rhs.X + lhs.X * rhs.W + lhs.Y * rhs.Z - lhs.Z * rhs.Y;
         float32 y = lhs.W * rhs.Y + lhs.Y * rhs.W + lhs.Z * rhs.X - lhs.X * rhs.Z;
@@ -133,7 +100,7 @@ export namespace Copium
         return Quaternion(x, y, z, w);
     }
 
-    constexpr Float3 Quaternion::Mul(const Quaternion& lhs, const Float3& rhs)
+    constexpr Float3 Quaternion::Mul(const Quaternion& lhs, const Float3& rhs) noexcept
     {
         Float3 lhsXYZ(lhs.X, lhs.Y, lhs.Z);
         Float3 t = 2.0f * Math::Cross(lhsXYZ, rhs);
@@ -141,26 +108,25 @@ export namespace Copium
         return rhs + lhs.W * t + Math::Cross(lhsXYZ, t);
     }
 
-    constexpr Float3 Quaternion::Mul(const Float3& rhs, const Quaternion& lhs)
+    constexpr Float3 Quaternion::Mul(const Float3& rhs, const Quaternion& lhs) noexcept
     {
         return Quaternion::Mul(Quaternion::Inverse(lhs), rhs);
     }
 
 
-    Quaternion Quaternion::AxisAngle(const Float3& axis, float32 angle)
+    Quaternion Quaternion::AxisAngle(const Float3& axis, float32 angle) noexcept
     {
-        auto [sin, cos] = Math::SinCos(angle * 0.5f);
+        const auto [sin, cos] = Math::SinCos(0.5f * angle);
         return Quaternion(axis * sin, cos);
     }
 
 
-    Quaternion Quaternion::Euler(float32 roll, float32 yaw, float32 pitch)
+    Quaternion Quaternion::EulerZXY(float32 pitch, float32 yaw, float32 roll) noexcept
     {
-        Float3 xyz(roll, yaw, pitch);
-        auto [sin, cos] = Math::SinCos(0.5f * xyz);
+        const auto [sin, cos] = Math::SinCos(0.5f * Float3(pitch, yaw, roll));
 
-        return Quaternion(sin.X * cos.Y * cos.Z - sin.Y * sin.Z * cos.X,
-                          sin.Y * cos.X * cos.Z + sin.X * sin.Z * cos.Y,
+        return Quaternion(sin.X * cos.Y * cos.Z + sin.Y * sin.Z * cos.X,
+                          sin.Y * cos.X * cos.Z - sin.X * sin.Z * cos.Y,
                           sin.Z * cos.X * cos.Y - sin.X * sin.Y * cos.Z,
                           cos.X * cos.Y * cos.Z + sin.Y * sin.Z * sin.X);
     }

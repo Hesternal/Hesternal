@@ -12,8 +12,8 @@ export namespace Copium
         static void Init();
         static void Update();
 
-        [[nodiscard]] static float64 GetCurrent() { return m_currentTime; }
-        [[nodiscard]] static float64 GetDelta()   { return m_deltaTime; }
+        [[nodiscard]] static float64 GetCurrent() noexcept { return m_currentTime; }
+        [[nodiscard]] static float64 GetDelta() noexcept { return m_deltaTime; }
 
     private:
         static inline float64 m_currentTime = 0;

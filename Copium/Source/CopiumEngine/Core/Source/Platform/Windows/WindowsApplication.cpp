@@ -203,7 +203,7 @@ namespace Copium
             .lpszClassName = k_WindowClassName,
             .hIconSm       = nullptr,
         };
-        const ATOM classUniqueId = RegisterClassExW(&wndClassEx);
+        [[maybe_unused]] const ATOM classUniqueId = RegisterClassExW(&wndClassEx);
         COP_ASSERT(classUniqueId != 0);
     }
 

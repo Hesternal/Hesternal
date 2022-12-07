@@ -1,63 +1,42 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+
+using Copium.MathTool.Cpp;
 
 namespace Copium.MathTool;
 
 
-// NOTE(v.matushkin): Some of the ideas on how to improve MathType classes:
-//  - Instead of FieldType/NumFields/FieldParam fields have VectorType field for MatrixType,
-//    and something like ScalarType for VectorType. So it will be easier to access vector fields from MatrixType.
-//  - Add Transpose method for VectorType (and may be also for MatrixType) which will create new VectorType,
-//    that just changes between row <=> column vector. This should make things easier in MatrixMulGenerator.
-
-
-internal enum BaseType
+internal static class CppSystemTypeMethods
 {
-    @bool,
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    float32,
-    float64,
-}
+    public static bool IsFloatType(this CppSystemType systemType) => systemType is CppSystemType.float32 or CppSystemType.float64;
 
-
-internal static class BaseTypeMethods
-{
-    public static bool IsFloatType(this BaseType baseType) => baseType is BaseType.float32 or BaseType.float64;
-
-    public static int ByteSize(this BaseType baseType)
+    public static int ByteSize(this CppSystemType systemType)
     {
-        return baseType switch
+        return systemType switch
         {
-            BaseType.@bool   => 1,
-            BaseType.int32   => 4,
-            BaseType.uint32  => 4,
-            BaseType.float32 => 4,
-            BaseType.float64 => 8,
+            CppSystemType.@bool => 1,
+            CppSystemType.int32 => 4,
+            CppSystemType.uint32 => 4,
+            CppSystemType.float32 => 4,
+            CppSystemType.float64 => 8,
             _ => throw new NotSupportedException(),
         };
     }
 
-    public static string ToMathType(this BaseType baseType, int rows, int columns)
+    public static string ToMathType(this CppSystemType systemType, int rows, int columns)
     {
         if (rows < 1 || columns < 1 || (rows == 1 && columns == 1))
         {
             throw new ArgumentException();
         }
 
-        string mathType = baseType switch
+        string mathType = systemType switch
         {
-            BaseType.@bool   => "Bool",
-            BaseType.int32   => "Int",
-            BaseType.uint32  => "UInt",
-            BaseType.float32 => "Float",
-            BaseType.float64 => "Double",
+            CppSystemType.@bool => "Bool",
+            CppSystemType.int32 => "Int",
+            CppSystemType.uint32 => "UInt",
+            CppSystemType.float32 => "Float",
+            CppSystemType.float64 => "Double",
             _ => throw new NotSupportedException(),
         };
 
@@ -73,14 +52,14 @@ internal static class BaseTypeMethods
         return mathType;
     }
 
-    public static string ToValueLiteral(this BaseType baseType, int value)
+    public static string ToValueLiteral(this CppSystemType systemType, int value)
     {
-        string postfix = baseType switch
+        string postfix = systemType switch
         {
-            BaseType.float32 => ".0f",
-            BaseType.float64 => ".0",
-            BaseType.int8 or BaseType.int16 or BaseType.int32 or BaseType.int64 => string.Empty,
-            BaseType.uint8 or BaseType.uint16 or BaseType.uint32 or BaseType.uint64 => "u",
+            CppSystemType.float32 => ".0f",
+            CppSystemType.float64 => ".0",
+            CppSystemType.int8 or CppSystemType.int16 or CppSystemType.int32 or CppSystemType.int64 => string.Empty,
+            CppSystemType.uint8 or CppSystemType.uint16 or CppSystemType.uint32 or CppSystemType.uint64 => "u",
             _ => throw new NotSupportedException(),
         };
 
@@ -89,89 +68,63 @@ internal static class BaseTypeMethods
 }
 
 
-internal abstract class MathType
+internal abstract class MathType : CppStructType
 {
-    public readonly string TypeDesc;
-    public readonly string Type;
-    public readonly string TypeParam;
-    public readonly bool PassByRef;
-
-    public readonly BaseType BaseTypeEnum;
-    public readonly string BaseTypeStr;
-
-    public readonly string FieldType;
-    public readonly int NumFields;
-    public readonly string FieldParam;
-
     public readonly int Rows;
     public readonly int Columns;
 
-    public bool IsVector => Rows == 1;
-    public bool IsMatrix => IsVector == false;
+    public readonly CppType BaseSystemType;
+    public readonly string TypeDesc;
 
-    public abstract ReadOnlySpan<string> Fields { get; }
-    public abstract ReadOnlySpan<string> FieldsLower { get; }
+    public readonly CppType FieldType;
+    public readonly int NumFields;
+    public abstract ReadOnlySpan<string> FieldNames { get; }
 
 
-    protected MathType(string typeDesc, string type, bool typePassByRef, BaseType baseType, string fieldType, int numFields, bool fieldPassByRef, int rows, int columns)
+    protected static readonly Dictionary<string, MathType> s_TypeCache = new();
+
+
+    protected MathType(string name, CppSystemType systemType, int rows, int columns, string typeDesc, CppType fieldType, int numFields)
+        : base(name, systemType.ByteSize() * rows * columns > 8)
     {
-        TypeDesc = typeDesc;
-        Type = type;
-        TypeParam = _MakeParamType(type, typePassByRef);
-        PassByRef = typePassByRef;
+        Rows = rows;
+        Columns = columns;
 
-        BaseTypeEnum = baseType;
-        BaseTypeStr = baseType.ToString();
+        BaseSystemType = new CppFundamentalType(systemType);
+        TypeDesc = typeDesc;
 
         FieldType = fieldType;
         NumFields = numFields;
-        FieldParam = _MakeParamType(fieldType, fieldPassByRef);
-
-        Rows = rows;
-        Columns = columns;
     }
-
-
-    public int GetRowsOrOneIfVector() => IsVector ? 1 : Rows;
-    public int GetColumnsOrOneIfVector() => IsVector ? 1 : Columns;
-    public int GetRowsOrDimensionIfVector() => IsVector ? Columns : Rows;
-
-
-    private static string _MakeParamType(string type, bool passByRef) => passByRef ? $"const {type}&" : type;
 }
 
 
 internal sealed class VectorType : MathType
 {
-    public override ReadOnlySpan<string> Fields => MathToolSettings.VectorFields.AsSpan(0, NumFields);
-    public override ReadOnlySpan<string> FieldsLower => MathToolSettings.VectorFieldsLower.AsSpan(0, NumFields);
+    public override ReadOnlySpan<string> FieldNames => MathToolSettings.VectorFields.AsSpan(0, NumFields);
 
 
-    private static readonly Dictionary<string, VectorType> s_Cache = new();
-
-
-    private VectorType(string type, bool typePassByRef, BaseType baseType, int dimension)
-        : base("Vector", type, typePassByRef, baseType, baseType.ToString(), dimension, false, 1, dimension)
+    private VectorType(string name, CppSystemType systemType, int rows, int columns)
+        : base(name, systemType, rows, columns, "Vector", new CppFundamentalType(systemType), Math.Max(rows, columns))
     {
     }
 
 
-    public static VectorType Create(BaseType baseType, int dimension)
+    public static VectorType CreateRowVector(CppSystemType systemType, int dimension) => _Create(systemType, dimension, 1);
+    public static VectorType CreateColumnVector(CppSystemType systemType, int dimension) => _Create(systemType, 1, dimension);
+
+
+    private static VectorType _Create(CppSystemType systemType, int rows, int columns)
     {
-        VectorType? vectorType;
-        string mathType = baseType.ToMathType(1, dimension);
+        string mathTypeName = systemType.ToMathType(rows, columns);
 
-        if (s_Cache.TryGetValue(mathType, out vectorType))
+        if (s_TypeCache.TryGetValue(mathTypeName, out MathType? vectorMathType))
         {
-            return vectorType;
+            return (VectorType)vectorMathType;
         }
-        else
-        {
-            bool passByRef = baseType.ByteSize() * dimension > 8;
-            vectorType = new VectorType(mathType, passByRef, baseType, dimension);
 
-            s_Cache.Add(mathType, vectorType);
-        }
+        VectorType vectorType = new(mathTypeName, systemType, rows, columns);
+        s_TypeCache.Add(mathTypeName, vectorType);
 
         return vectorType;
     }
@@ -180,37 +133,26 @@ internal sealed class VectorType : MathType
 
 internal sealed class MatrixType : MathType
 {
-    public override ReadOnlySpan<string> Fields => MathToolSettings.MatrixFields.AsSpan(0, NumFields);
-    public override ReadOnlySpan<string> FieldsLower => MathToolSettings.MatrixFieldsLower.AsSpan(0, NumFields);
+    public override ReadOnlySpan<string> FieldNames => MathToolSettings.MatrixFields.AsSpan(0, NumFields);
 
 
-    private static readonly Dictionary<string, MatrixType> s_Cache = new();
-
-
-    private MatrixType(string type, bool typePassByRef, BaseType baseType, string columnType, int rows, int columns, bool columnPassByRef)
-        : base("Matrix", type, typePassByRef, baseType, columnType, columns, columnPassByRef, rows, columns)
+    public MatrixType(string name, CppSystemType systemType, int rows, int columns)
+        : base(name, systemType, rows, columns, "Matrix", VectorType.CreateColumnVector(systemType, rows), columns)
     {
     }
 
 
-    public static MatrixType Create(BaseType baseType, int rows, int columns)
+    public static MatrixType Create(CppSystemType systemType, int rows, int columns)
     {
-        MatrixType? matrixType;
-        string mathType = baseType.ToMathType(rows, columns);
+        string mathTypeName = systemType.ToMathType(rows, columns);
 
-        if (s_Cache.TryGetValue(mathType, out matrixType))
+        if (s_TypeCache.TryGetValue(mathTypeName, out MathType? matrixMathType))
         {
-            return matrixType;
+            return (MatrixType)matrixMathType;
         }
-        else
-        {
-            bool passByRef = baseType.ByteSize() * rows * columns > 8;
-            VectorType matrixFieldType = VectorType.Create(baseType, rows);
 
-            matrixType = new MatrixType(mathType, passByRef, baseType, matrixFieldType.Type, rows, columns, matrixFieldType.PassByRef);
-
-            s_Cache.Add(mathType, matrixType);
-        }
+        MatrixType matrixType = new(mathTypeName, systemType, rows, columns);
+        s_TypeCache.Add(mathTypeName, matrixType);
 
         return matrixType;
     }

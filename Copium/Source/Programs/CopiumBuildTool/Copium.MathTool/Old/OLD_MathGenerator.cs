@@ -1,34 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-using Copium.MathTool.Cpp;
-
-namespace Copium.MathTool;
+namespace Copium.MathTool.Old;
 
 
-internal abstract class MathGenerator
+internal abstract class OLD_MathGenerator
 {
-//    protected static class Indent
-//    {
-//        private const string k_OneLevel = "    ";
-//
-//        public const string Namespace = k_OneLevel;
-//
-//        public const string Class  = k_OneLevel + Namespace;
-//        public const string Method = k_OneLevel + Class;
-//
-//        public const string FreeFunction = k_OneLevel + Namespace;
-//    }
+    protected static class Indent
+    {
+        private const string k_OneLevel = "    ";
 
-    protected readonly CppBuilder m_cb;
+        public const string Namespace = k_OneLevel;
+
+        public const string Class  = k_OneLevel + Namespace;
+        public const string Method = k_OneLevel + Class;
+
+        public const string FreeFunction = k_OneLevel + Namespace;
+    }
+
+    protected readonly StringBuilder m_sb;
 
 
     private string? m_namespace;
 
 
-    protected MathGenerator()
+    protected OLD_MathGenerator()
     {
-        m_cb = new CppBuilder(MathToolSettings.SbInitialCapacity);
+        m_sb = new StringBuilder(MathToolSettings.SbInitialCapacity);
     }
 
 
@@ -36,7 +35,7 @@ internal abstract class MathGenerator
     {
         m_namespace = @namespace;
 
-        m_cb.AppendLine(MathToolSettings.AutoGenComment)
+        m_sb.AppendLine(MathToolSettings.AutoGenComment)
             .AppendFormat("export module {0};", moduleName).AppendLine()
             .AppendLine();
 
@@ -44,21 +43,21 @@ internal abstract class MathGenerator
         {
             foreach (string moduleImport in moduleImports)
             {
-                m_cb.AppendFormat("import {0};", moduleImport).AppendLine();
+                m_sb.AppendFormat("import {0};", moduleImport).AppendLine();
             }
         }
 
         if (headerImports is not null)
         {
-            m_cb.AppendLine();
+            m_sb.AppendLine();
 
             foreach (string headerImport in headerImports)
             {
-                m_cb.AppendFormat("import {0};", headerImport).AppendLine();
+                m_sb.AppendFormat("import {0};", headerImport).AppendLine();
             }
         }
 
-        m_cb.AppendLine()
+        m_sb.AppendLine()
             .AppendLine()
             .Append("export namespace ").AppendLine(m_namespace)
             .AppendLine("{")
@@ -67,9 +66,9 @@ internal abstract class MathGenerator
 
     protected void End(string filePath)
     {
-        m_cb.AppendLine()
+        m_sb.AppendLine()
             .Append("} // export namespace ").AppendLine(m_namespace!);
 
-        File.WriteAllText(filePath, m_cb.ToString());
+        File.WriteAllText(filePath, m_sb.ToString());
     }
 }

@@ -90,7 +90,7 @@ internal sealed class MatrixMulGenerator : MathGenerator
         MathType lhsType = mulInfo.LhsType;
         MathType rhsType = mulInfo.RhsType;
 
-        m_sb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Mul({1} lhs, {2} rhs) noexcept", returnType, lhsType.TypeParam, rhsType.TypeParam).AppendLine()
+        m_cb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Mul({1} lhs, {2} rhs) noexcept", returnType, lhsType.TypeParam, rhsType.TypeParam).AppendLine()
             .AppendLine(Indent.Namespace + "{")
             .AppendFormat(Indent.FreeFunction + "return {0}(", returnType);
 
@@ -105,7 +105,7 @@ internal sealed class MatrixMulGenerator : MathGenerator
         {
             if (i != 0)
             {
-                m_sb.AppendLine(",")
+                m_cb.AppendLine(",")
                     .Append(argsIndent);
             }
 
@@ -113,23 +113,23 @@ internal sealed class MatrixMulGenerator : MathGenerator
             {
                 if (j != 0)
                 {
-                    m_sb.Append(" + ");
+                    m_cb.Append(" + ");
                 }
 
-                m_sb.Append("lhs.").Append(lhsType.Fields[j]).Append(" * rhs.");
+                m_cb.Append("lhs.").Append(lhsType.Fields[j]).Append(" * rhs.");
 
                 if (rhsIsMatrix)
                 {
-                    m_sb.Append(rhsType.Fields[i]).Append('.').Append(vectorFields[j]);
+                    m_cb.Append(rhsType.Fields[i]).Append('.').Append(vectorFields[j]);
                 }
                 else
                 {
-                    m_sb.Append(rhsType.Fields[j]);
+                    m_cb.Append(rhsType.Fields[j]);
                 }
             }
         }
 
-        m_sb.AppendLine(");")
+        m_cb.AppendLine(");")
             .AppendLine(Indent.Namespace + "}")
             .AppendLine();
     }

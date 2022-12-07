@@ -35,7 +35,7 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
         Start(moduleName, _GetModuleImports(), s_HeaderImports, MathToolSettings.MathNamespace);
 
         _GenerateTrigonometric();
-        m_sb.AppendLine()
+        m_cb.AppendLine()
             .AppendLine();
 
         _GenerateGeometric();
@@ -47,20 +47,20 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
     {
         //- Radians
         GenerateSimpleFunction(Indent.Namespace + "[[nodiscard]] constexpr {0} Radians({1} degrees) noexcept {{ return degrees * k_DegreeToRadians; }}");
-        m_sb.AppendLine();
+        m_cb.AppendLine();
         //- Degrees
         GenerateSimpleFunction(Indent.Namespace + "[[nodiscard]] constexpr {0} Degrees({1} radians) noexcept {{ return radians * k_RadiansToDegree; }}");
-        m_sb.AppendLine();
+        m_cb.AppendLine();
 
-        m_sb.AppendLine(Indent.Namespace + "// NOTE(v.matushkin): Seems like compilers can't use SVML intrinsics (https://godbolt.org/z/9fdT7f3Tq)")
+        m_cb.AppendLine(Indent.Namespace + "// NOTE(v.matushkin): Seems like compilers can't use SVML intrinsics (https://godbolt.org/z/9fdT7f3Tq)")
             .AppendLine();
 
         //- Sin
         GenerateTrigonometricFunction("Sin", baseType => baseType == BaseType.float32 ? "sinf" : "sin");
-        m_sb.AppendLine();
+        m_cb.AppendLine();
         //- Cos
         GenerateTrigonometricFunction("Cos", baseType => baseType == BaseType.float32 ? "cosf" : "cos");
-        m_sb.AppendLine();
+        m_cb.AppendLine();
 
         //- SinCos
         GenerateSimpleFunction(Indent.Namespace + "[[nodiscard]] std::pair<{0}, {0}> SinCos({1} v) noexcept {{ return {{ Sin(v), Cos(v) }}; }}");
@@ -69,7 +69,7 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
         {
             foreach (VectorType vectorType in m_floatVectorTypes)
             {
-                m_sb.AppendFormat(format, vectorType.Type, vectorType.TypeParam).AppendLine();
+                m_cb.AppendFormat(format, vectorType.Type, vectorType.TypeParam).AppendLine();
             }
         }
 
@@ -78,7 +78,7 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
             foreach (VectorType vectorType in m_floatVectorTypes)
             {
                 const string format = Indent.Namespace + "[[nodiscard]] {0} {1}({2} v) noexcept {{ return {0}(";
-                m_sb.AppendFormat(format, vectorType.Type, name, vectorType.TypeParam);
+                m_cb.AppendFormat(format, vectorType.Type, name, vectorType.TypeParam);
 
                 int numFields = vectorType.NumFields;
                 ReadOnlySpan<string> fields = vectorType.Fields;
@@ -87,12 +87,12 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
                 {
                     if (i != 0)
                     {
-                        m_sb.Append(", ");
+                        m_cb.Append(", ");
                     }
-                    m_sb.AppendFormat("std::{0}(v.{1})", stdFunction(vectorType.BaseTypeEnum), fields[i]);
+                    m_cb.AppendFormat("std::{0}(v.{1})", stdFunction(vectorType.BaseTypeEnum), fields[i]);
                 }
 
-                m_sb.AppendLine("); }");
+                m_cb.AppendLine("); }");
             }
         }
     }
@@ -102,7 +102,7 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
         //- Dot
         foreach (VectorType vectorType in m_vectorTypes)
         {
-            m_sb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Dot({1} lhs, {1} rhs) noexcept {{ return ", vectorType.BaseTypeStr, vectorType.TypeParam);
+            m_cb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Dot({1} lhs, {1} rhs) noexcept {{ return ", vectorType.BaseTypeStr, vectorType.TypeParam);
 
             int numFields = vectorType.NumFields;
             ReadOnlySpan<string> fields = vectorType.Fields;
@@ -111,22 +111,22 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
             {
                 if (i != 0)
                 {
-                    m_sb.Append(" + ");
+                    m_cb.Append(" + ");
                 }
-                m_sb.AppendFormat("lhs.{0} * rhs.{0}", fields[i]);
+                m_cb.AppendFormat("lhs.{0} * rhs.{0}", fields[i]);
             }
 
-            m_sb.AppendLine("; }");
+            m_cb.AppendLine("; }");
         }
 
-        m_sb.AppendLine();
+        m_cb.AppendLine();
 
         foreach (VectorType vectorType in m_floatVectorTypes)
         {
             // Only generate for Float3 and Double3
             if (vectorType.NumFields == 3 && vectorType.BaseTypeEnum.IsFloatType())
             {
-                m_sb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Cross({1} lhs, {1} rhs) noexcept", vectorType.Type, vectorType.TypeParam).AppendLine()
+                m_cb.AppendFormat(Indent.Namespace + "[[nodiscard]] constexpr {0} Cross({1} lhs, {1} rhs) noexcept", vectorType.Type, vectorType.TypeParam).AppendLine()
                     .AppendLine(Indent.Namespace + "{")
                     .AppendFormat(Indent.FreeFunction + "return {0}(lhs.Y * rhs.Z - lhs.Z * rhs.Y,", vectorType.Type).AppendLine()
                     .AppendLine(Indent.FreeFunction + "              lhs.Z * rhs.X - lhs.X * rhs.Z,")
