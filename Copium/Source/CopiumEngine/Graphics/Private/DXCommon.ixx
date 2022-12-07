@@ -10,6 +10,7 @@ import CopiumEngine.Graphics.GraphicsTypes;
 
 export namespace Copium
 {
+
     //- Texture
     [[nodiscard]] DXGI_FORMAT dx_RenderTextureFormat(RenderTextureFormat renderTextureFormat);
     [[nodiscard]] DXGI_FORMAT dx_TextureFormat(TextureFormat textureFormat);
@@ -17,6 +18,9 @@ export namespace Copium
     [[nodiscard]] DXGI_FORMAT dx_VertexAttributeFormat(VertexAttributeFormat format, uint8 dimension);
 
     /// For DirectX Clockwise - false, CounterClockwise - true
-    [[nodiscard]] bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace);
+    [[nodiscard]] inline constexpr bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace) noexcept
+    {
+        return triangleFrontFace == TriangleFrontFace::CounterClockwise;
+    }
 
 } // export namespace Copium

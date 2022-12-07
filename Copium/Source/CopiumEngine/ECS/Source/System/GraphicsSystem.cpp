@@ -33,9 +33,9 @@ namespace Copium
 
     void GraphicsSystem::OnUpdate(EntityManager& entityManager)
     {
-        const auto cameraView = entityManager.GetView<const LocalToWorld, const Camera>();
-        COP_ASSERT_MSG(cameraView.size_hint() == 1, "The scene must have at least and only 1 camera");
-        const auto [cameraEntity, cameraLocalToWorld, camera] = *cameraView.each().begin();
+        const auto cameraView = entityManager.GetView<const Camera>();
+        COP_ASSERT_MSG(cameraView.size() == 1, "The scene must have exactly 1 camera");
+        const auto [cameraEntity, camera] = *cameraView.each().begin();
 
         const auto renderMeshView = entityManager.GetView<const LocalToWorld, const RenderMesh>();
 
@@ -44,8 +44,9 @@ namespace Copium
 
         RenderData renderData;
         renderData.Camera = {
-            .LocalToWorld = cameraLocalToWorld.Value,
-            .Projection   = camera.Projection,
+            .View           = camera.View,
+            .Projection     = camera.Projection,
+            .ViewProjection = camera.ViewProjection,
         };
 
         for (const auto [entity, localToWorld, renderMesh] : renderMeshView.each())

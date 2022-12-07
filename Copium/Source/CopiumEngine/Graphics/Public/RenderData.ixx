@@ -14,8 +14,9 @@ export namespace Copium
 
     struct CameraRenderData final
     {
-        Float4x4 LocalToWorld;
+        Float4x4 View;
         Float4x4 Projection;
+        Float4x4 ViewProjection;
     };
 
     struct EntityRenderData final

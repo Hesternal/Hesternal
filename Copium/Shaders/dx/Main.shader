@@ -13,6 +13,7 @@ Shader "Engine/Main"
         {
             float4x4 _CameraView;
             float4x4 _CameraProjection;
+            float4x4 _CameraViewProjection;
         };
         cbuffer PerDraw : register(b1)
         {
@@ -40,7 +41,7 @@ Shader "Engine/Main"
             Varyings OUT;
 
             float4 positionWS = mul(_LocalToWorld, float4(IN.positionOS, 1.0f));
-            OUT.positionCS    = mul(_CameraProjection, mul(_CameraView, positionWS));
+            OUT.positionCS    = mul(_CameraViewProjection, positionWS);
             OUT.positionWS    = positionWS.xyz;
             OUT.normalWS      = mul((float3x3) _LocalToWorld, IN.normalOS);
             OUT.uv0           = IN.uv0.xy;

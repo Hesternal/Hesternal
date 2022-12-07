@@ -13,7 +13,9 @@ export namespace Copium
 
     struct Camera final : IComponent
     {
+        Float4x4 View;
         Float4x4 Projection;
+        Float4x4 ViewProjection;
     };
 
     struct RenderMesh final : IComponent

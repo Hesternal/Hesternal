@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.BuildTool.App", "Cop
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.BuildTool.Generators", "Copium.BuildTool.Generators\Copium.BuildTool.Generators.csproj", "{B353258D-6BB8-402E-A7C4-AFB6DBA51C46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Copium.BuildTool.SourceGenerator", "Copium.BuildTool.SourceGenerator\Copium.BuildTool.SourceGenerator.csproj", "{D85AB119-960A-44AF-81C8-F69821B6F90B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.BuildTool.SourceGenerator", "Copium.BuildTool.SourceGenerator\Copium.BuildTool.SourceGenerator.csproj", "{D85AB119-960A-44AF-81C8-F69821B6F90B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.Core", "Copium.Core\Copium.Core.csproj", "{77560C01-3905-4EB3-8DDA-1067AA5FA535}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.HeaderTool.MSBuild", "Copium.HeaderTool.MSBuild\Copium.HeaderTool.MSBuild.csproj", "{B838A045-6521-4CF3-9F91-0DB71913A81B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.HeaderTool.Program", "Copium.HeaderTool.Program\Copium.HeaderTool.Program.csproj", "{D43ED592-88E3-4D15-8AED-19E80CE3BE86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Copium.MathTool", "Copium.MathTool\Copium.MathTool.csproj", "{A3E1889C-297B-4037-9730-882CC34B661B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3E1889C-297B-4037-9730-882CC34B661B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3E1889C-297B-4037-9730-882CC34B661B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3E1889C-297B-4037-9730-882CC34B661B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3E1889C-297B-4037-9730-882CC34B661B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Engine/Core/Defines.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -12,6 +12,7 @@ module CopiumEngine.ECS.System.Transform;
 
 import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.ECS.Components;
+import CopiumEngine.Math;
 
 
 namespace Copium
@@ -31,9 +32,9 @@ namespace Copium
     {
         const auto transformView = entityManager.GetView<const Translation, const Rotation, const Scale, LocalToWorld>();
 
-        for (const auto [entity, translation, rotation, scale, localToWorld] : transformView.each())
+        for (const auto&& [entity, translation, rotation, scale, localToWorld] : transformView.each())
         {
-            localToWorld.Value = Float4x4::TRS(translation.Value, rotation.Value, Float3(scale.Value));
+            localToWorld.Value = Math::TRS(translation.Value, rotation.Value, Float3(scale.Value));
         }
     }
 

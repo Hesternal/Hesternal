@@ -31,7 +31,6 @@ namespace fs = std::filesystem;
 
 namespace AssimpConstants
 {
-
     using namespace Copium;
 
     // Index
@@ -64,14 +63,14 @@ namespace AssimpConstants
 
 namespace
 {
-
     using namespace Copium;
 
 
     [[nodiscard]] static std::string GetAssimpMaterialTexturePath(const fs::path& modelDirPath, const aiMaterial* material, aiTextureType textureType)
     {
         aiString texturePath;
-        const aiReturn error = material->GetTexture(textureType, 0, &texturePath);
+        // NOTE(v.matushkin): Useless method call without ASSERT
+        [[maybe_unused]] const aiReturn error = material->GetTexture(textureType, 0, &texturePath);
         COP_ASSERT_MSG(error == aiReturn::aiReturn_SUCCESS, error == aiReturn_FAILURE ? "aiReturn_FAILURE" : "aiReturn_OUTOFMEMORY");
 
         // NOTE(v.matushkin): This dances with pathes is so fucking dumb
@@ -200,7 +199,7 @@ namespace
         return indexFormat;
     }
 
-    [[nodiscard]] static void CopyUV0Data(const aiMesh* assimpMesh, uint8* vertexDataPtr)
+    static void CopyUV0Data(const aiMesh* assimpMesh, uint8* vertexDataPtr)
     {
         const uint32 numVertices = assimpMesh->mNumVertices;
         const aiVector3D* const assimpUV0Data = assimpMesh->mTextureCoords[0];
@@ -373,13 +372,16 @@ namespace Copium
             aiPostProcessSteps::aiProcess_Triangulate
             | aiPostProcessSteps::aiProcess_GenNormals
             // | aiPostProcessSteps::aiProcess_GenUVCoords
+            //- Left/Right handed
             // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
             // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
-            // | aiPostProcessSteps::aiProcess_MakeLeftHanded
-            // Optimization
+            | aiPostProcessSteps::aiProcess_MakeLeftHanded
+            // NOTE(v.matushkin): Why does it use an aiProcess_FlipWindingOrder flag? If it says that default is CCW and you need to use CCW in left-handed?
+            // | aiProcess_ConvertToLeftHanded
+            //- Optimization
             // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
             // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
-            // Validation
+            //- Validation
             // | aiPostProcessSteps::aiProcess_FindDegenerates
             // | aiPostProcessSteps::aiProcess_FindInvalidData
             // | aiPostProcessSteps::aiProcess_ValidateDataStructure

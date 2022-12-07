@@ -37,6 +37,9 @@
 #if defined(COP_COMPILER_MSVC)
 
     #define COP_DEBUG_BREAK() __debugbreak()
+    // NOTE(v.matushkin): __attribute__((always_inline)) for Clang ?
+    // NOTE(v.matushkin): Need to enable /Ob1 for inline to work in Debug build,
+    //   seems like Clang attribute works even in Debug?
     #define COP_FORCE_INLINE  __forceinline
 
     #define COP_WARNING_PUSH __pragma( warning(push) )

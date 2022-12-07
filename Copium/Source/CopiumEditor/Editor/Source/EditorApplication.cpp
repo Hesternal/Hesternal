@@ -81,8 +81,9 @@ namespace Copium
 
         cxxopts::ParseResult cmdResult = cmdArguments.parse(argc, argv);
 
-        // bool usedCreateProjectOption = cmdResult.count(createProjectOption);
-        bool usedOpenProjectOption = cmdResult.count(openProjectOption);
+        // NOTE(v.matushkin): Useless method calls without ASSERT
+        // [[maybe_unused]] const bool usedCreateProjectOption = cmdResult.count(createProjectOption);
+        [[maybe_unused]] const bool usedOpenProjectOption = cmdResult.count(openProjectOption);
 
         COP_ASSERT_MSG(usedOpenProjectOption, "Option --open-project should be specified");
         COP_ASSERT_MSG(cmdResult.count(shaderDirOption), "Option --shader-dir should be specified");
