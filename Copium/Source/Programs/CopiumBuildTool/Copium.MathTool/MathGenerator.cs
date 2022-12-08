@@ -5,7 +5,7 @@ using Copium.MathTool.Cpp;
 
 namespace Copium.MathTool;
 
-
+/*
 internal abstract class MathGenerator
 {
 //    protected static class Indent
@@ -73,3 +73,4 @@ internal abstract class MathGenerator
         File.WriteAllText(filePath, m_cb.ToString());
     }
 }
+*/

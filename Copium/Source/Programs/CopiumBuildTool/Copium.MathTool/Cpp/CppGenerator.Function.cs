@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Copium.MathTool.Cpp;
 
-
+/*
 internal partial class CppGenerator
 {
     public void GenerateFunction(CppFunction cppFunction, Action<StringBuilder> functionBody)
@@ -82,3 +82,4 @@ internal partial class CppGenerator
 //        }
 //    }
 }
+*/

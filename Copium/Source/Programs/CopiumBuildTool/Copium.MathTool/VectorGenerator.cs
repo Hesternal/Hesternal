@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using Copium.MathTool.Cpp;
+
 namespace Copium.MathTool;
 
-
+/*
 internal sealed class VectorGenerator : MathTypeGenerator
 {
     private VectorGenerator(VectorType vectorType)
@@ -29,8 +31,8 @@ internal sealed class VectorGenerator : MathTypeGenerator
 
     protected override void GenerateStaticMethods()
     {
-        string zero = BaseTypeEnum.ToValueLiteral(0);
-        string one = BaseTypeEnum.ToValueLiteral(1);
+        string zero = CppSystemType.ToValueLiteral(0);
+        string one = CppSystemType.ToValueLiteral(1);
         m_cb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} Zero() noexcept {{ return {0}({1}); }}", Type, zero).AppendLine();
         m_cb.AppendFormat(Indent.Class + "[[nodiscard]] static constexpr {0} One() noexcept {{ return {0}({1}); }}", Type, one).AppendLine();
     }
@@ -41,3 +43,4 @@ internal sealed class VectorGenerator : MathTypeGenerator
 
     }
 }
+*/

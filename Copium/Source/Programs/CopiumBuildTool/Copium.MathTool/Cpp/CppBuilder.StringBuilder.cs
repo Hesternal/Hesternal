@@ -5,7 +5,7 @@ using System;
 
 namespace Copium.MathTool.Cpp;
 
-
+/*
 internal sealed partial class CppBuilder
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -245,3 +245,4 @@ internal sealed partial class CppBuilder
         return this;
     }
 }
+*/

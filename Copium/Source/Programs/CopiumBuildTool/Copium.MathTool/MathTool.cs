@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using Copium.MathTool.Cpp;
+
 namespace Copium.MathTool;
 
-
+/*
 internal sealed class MathTool
 {
     private readonly DirectoryInfo m_privateDir;
@@ -32,38 +34,39 @@ internal sealed class MathTool
 
     private void _Generate()
     {
-        _AddVector(BaseType.int32, 2);
-        _AddVector(BaseType.float32, 2);
-        _AddVector(BaseType.float32, 3);
-        _AddVector(BaseType.float32, 4);
+        _AddVector(CppSystemType.int32, 2);
+        _AddVector(CppSystemType.float32, 2);
+        _AddVector(CppSystemType.float32, 3);
+        _AddVector(CppSystemType.float32, 4);
 
-        _AddMatrix(BaseType.float32, 3, 3);
-        _AddMatrix(BaseType.float32, 4, 4);
+        _AddMatrix(CppSystemType.float32, 3, 3);
+        _AddMatrix(CppSystemType.float32, 4, 4);
 
         _GenerateTypes();
         _GenerateAdditionalModules();
         _GenerateMathModule();
     }
 
-    private void _AddVector(BaseType baseType, int dimension)
+    private void _AddVector(CppSystemType cppSystemType, int dimension)
     {
         if (dimension < 1 || dimension > 4)
         {
             throw new NotSupportedException();
         }
 
-        VectorType vectorType = VectorType.Create(baseType, dimension);
+        // TODO(v.matushkin): Column or row vector?
+        VectorType vectorType = VectorType.CreateColumnVector(cppSystemType, dimension);
         m_vectorTypes.Add(vectorType);
     }
 
-    private void _AddMatrix(BaseType baseType, int rows, int columns)
+    private void _AddMatrix(CppSystemType cppSystemType, int rows, int columns)
     {
         if (rows < 2 || rows > 4 || columns < 2 || columns > 4)
         {
             throw new NotSupportedException();
         }
 
-        MatrixType matrixType = MatrixType.Create(baseType, rows, columns);
+        MatrixType matrixType = MatrixType.Create(cppSystemType, rows, columns);
         m_matrixTypes.Add(matrixType);
     }
 
@@ -71,16 +74,16 @@ internal sealed class MathTool
     {
         foreach (VectorType vectorType in m_vectorTypes)
         {
-            string filePath = _MakeInternalPartitionFilePath(m_privateDir, vectorType.Type);
-            string moduleName = _MakeInternalPartitionName(vectorType.Type);
+            string filePath = _MakeInternalPartitionFilePath(m_privateDir, vectorType.Name);
+            string moduleName = _MakeInternalPartitionName(vectorType.Name);
 
             VectorGenerator.Generate(filePath, moduleName, vectorType);
         }
 
         foreach (MatrixType matrixType in m_matrixTypes)
         {
-            string filePath = _MakeInternalPartitionFilePath(m_privateDir, matrixType.Type);
-            string moduleName = _MakeInternalPartitionName(matrixType.Type);
+            string filePath = _MakeInternalPartitionFilePath(m_privateDir, matrixType.Name);
+            string moduleName = _MakeInternalPartitionName(matrixType.Name);
 
             MatrixGenerator.Generate(filePath, moduleName, matrixType);
         }
@@ -103,8 +106,8 @@ internal sealed class MathTool
     private void _GenerateMathModule()
     {
         List<string> internalPartitions = new(MathToolSettings.HandWrittenMathInternalPartitions);
-        internalPartitions.AddRange(m_vectorTypes.Select(vectorType => vectorType.Type));
-        internalPartitions.AddRange(m_matrixTypes.Select(matrixType => matrixType.Type));
+        internalPartitions.AddRange(m_vectorTypes.Select(vectorType => vectorType.Name));
+        internalPartitions.AddRange(m_matrixTypes.Select(matrixType => matrixType.Name));
         internalPartitions.Sort();
 
         StringBuilder code = new();
@@ -137,3 +140,4 @@ internal sealed class MathTool
         return Path.Join(outputDir.FullName, module + ".ixx");
     }
 }
+*/

@@ -6,7 +6,7 @@ using Copium.MathTool.Cpp;
 
 namespace Copium.MathTool;
 
-
+/*
 internal abstract class MathTypeGenerator : MathGenerator
 {
     protected static readonly string[] CompoundOperators = { "+=", "-=", "*=" };
@@ -278,3 +278,4 @@ internal abstract class MathTypeGenerator : MathGenerator
         }
     }
 }
+*/

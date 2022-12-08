@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Copium.MathTool.Cpp;
 
-
+/*
 internal sealed partial class CppBuilder
 {
     private const int k_IndentPerLevel = 4;
@@ -111,3 +111,4 @@ internal sealed partial class CppBuilder
         }
     }
 }
+*/

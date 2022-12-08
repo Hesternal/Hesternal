@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Copium.MathTool;
 
-
+/*
 internal sealed class MatrixGenerator : MathTypeGenerator
 {
     private readonly string m_moduleImport;
@@ -109,3 +109,4 @@ internal sealed class MatrixGenerator : MathTypeGenerator
         }
     }
 }
+*/

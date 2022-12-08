@@ -32,7 +32,7 @@ internal static class Program
 
     private static void _MathToolMain(DirectoryInfo privateDir, DirectoryInfo publicDir)
     {
-        MathTool.Generate(privateDir, publicDir);
+        // MathTool.Generate(privateDir, publicDir);
     }
 
 

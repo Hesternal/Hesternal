@@ -8,7 +8,7 @@ namespace Copium.MathTool;
 // NOTE(v.matushkin): This generator is a fucking pile of shit,
 //  using MathType abstraction mostly made things harder than helped me.
 
-
+/*
 internal sealed class MatrixMulGenerator : MathGenerator
 {
     public const string InternalPartitionName = "Mul";
@@ -134,3 +134,4 @@ internal sealed class MatrixMulGenerator : MathGenerator
             .AppendLine();
     }
 }
+*/

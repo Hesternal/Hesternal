@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Copium.MathTool;
 
-
+/*
 internal sealed class VectorFunctionsGenerator : MathGenerator
 {
     public const string InternalPartitionName = "VectorFunctions";
@@ -146,3 +146,4 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
             .Append("CopiumEngine.Core.CoreTypes");
     }
 }
+*/
