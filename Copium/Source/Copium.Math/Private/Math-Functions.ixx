@@ -2,7 +2,7 @@ module;
 
 #include "Copium/Core/Defines.hpp"
 
-export module CopiumEngine.Math:Functions;
+export module Copium.Math:Functions;
 
 import :Constants;
 

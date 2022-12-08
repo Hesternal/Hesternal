@@ -10,13 +10,14 @@ COP_WARNING_POP
 
 module CopiumEngine.Engine.Application;
 
+import Copium.Math;
+
 import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Event.EventManager;
-import CopiumEngine.Math;
 import CopiumEngine.Graphics;
 import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Utils.Time;

@@ -5,9 +5,9 @@ module;
 export module CopiumEngine.Graphics.ICommandBuffer;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Math;
 
 import <string_view>;
 

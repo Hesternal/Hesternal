@@ -3,9 +3,9 @@ export module CopiumEngine.ECS.Components:Transform;
 import :IComponent;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.ECS.Entity;
-import CopiumEngine.Math;
 
 import <vector>;
 

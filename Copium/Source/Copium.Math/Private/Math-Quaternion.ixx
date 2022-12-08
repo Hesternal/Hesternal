@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Quaternion;
+export module Copium.Math:Quaternion;
 
 import :Float3;
 import :Float3x3;

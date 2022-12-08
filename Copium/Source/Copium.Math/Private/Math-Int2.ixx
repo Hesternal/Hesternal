@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Int2;
+export module Copium.Math:Int2;
 
 import Copium.Core;
 

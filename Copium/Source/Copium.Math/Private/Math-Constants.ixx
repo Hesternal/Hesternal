@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Constants;
+export module Copium.Math:Constants;
 
 import Copium.Core;
 

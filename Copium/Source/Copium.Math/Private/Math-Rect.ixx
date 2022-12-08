@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Rect;
+export module Copium.Math:Rect;
 
 import Copium.Core;
 

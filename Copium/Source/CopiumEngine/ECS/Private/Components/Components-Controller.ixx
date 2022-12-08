@@ -1,8 +1,9 @@
 export module CopiumEngine.ECS.Components:Controller;
 
 import :IComponent;
+
 import Copium.Core;
-import CopiumEngine.Math;
+import Copium.Math;
 
 import <memory>;
 

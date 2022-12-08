@@ -5,7 +5,7 @@ module;
 export module CopiumEngine.Memory;
 
 import Copium.Core;
-import CopiumEngine.Math;
+import Copium.Math;
 
 
 export namespace Copium

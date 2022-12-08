@@ -2,7 +2,7 @@
 
 //#include <fmt/format.h>
 
-//export module CopiumEngine.Math:Format;
+//export module Copium.Math:Format;
 
 //import :Float3x3;
 //import :Float4x4;

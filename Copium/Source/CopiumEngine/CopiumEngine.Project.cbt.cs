@@ -12,6 +12,7 @@ internal sealed class CopiumEngine : CopiumCppProject
         SetConfigurationMatrix(new CopiumCppConfigurationMatrix(OutputType.StaticLib));
 
         AddPublicProjectReference<CopiumCore>();
+        AddPublicProjectReference<CopiumMath>();
 
         AddSourcesDir("Assets");
         AddSourcesDir("Core");
@@ -20,7 +21,6 @@ internal sealed class CopiumEngine : CopiumCppProject
         AddSourcesDir("Event");
         AddSourcesDir("Graphics");
         AddSourcesDir("ImGui");
-        AddSourcesDir("Math");
         AddSourcesDir("Memory");
         AddSourcesDir("Platform");
         AddSourcesDir("Utils");

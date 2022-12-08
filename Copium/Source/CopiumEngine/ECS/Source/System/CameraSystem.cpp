@@ -11,9 +11,9 @@ COP_WARNING_POP
 module CopiumEngine.ECS.System.Camera;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.ECS.Components;
-import CopiumEngine.Math;
 
 
 namespace Copium

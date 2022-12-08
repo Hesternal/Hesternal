@@ -5,13 +5,14 @@ module;
 export module CopiumEngine.Graphics.CommandBuffer;
 
 import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Assets.Mesh;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Graphics.ICommandBuffer;
 import CopiumEngine.Graphics.GraphicsBuffer;
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Math;
 
 import <memory>;
 import <utility>;

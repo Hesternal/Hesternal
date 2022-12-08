@@ -5,7 +5,7 @@ module;
 module CopiumEngine.Graphics.RenderContext;
 
 import Copium.Core;
-import CopiumEngine.Math;
+import Copium.Math;
 
 import <utility>;
 

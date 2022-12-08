@@ -8,9 +8,9 @@ module;
 module CopiumEngine.ImGui.ImGuiContext;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.Graphics;
-import CopiumEngine.Math;
 
 import <cstring>;
 import <utility>;

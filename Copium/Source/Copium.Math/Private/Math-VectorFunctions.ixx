@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:VectorFunctions;
+export module Copium.Math:VectorFunctions;
 
 import :Constants;
 import :Float2;

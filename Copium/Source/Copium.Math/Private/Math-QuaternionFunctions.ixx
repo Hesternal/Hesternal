@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:QuaternionFunctions;
+export module Copium.Math:QuaternionFunctions;
 
 import :Quaternion;
 

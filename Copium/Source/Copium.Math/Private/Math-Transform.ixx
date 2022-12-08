@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Transform;
+export module Copium.Math:Transform;
 
 import :Float3;
 import :Float4;

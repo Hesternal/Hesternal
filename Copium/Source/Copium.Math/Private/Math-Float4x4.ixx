@@ -1,4 +1,4 @@
-export module CopiumEngine.Math:Float4x4;
+export module Copium.Math:Float4x4;
 
 import :Float4;
 import :Functions;
