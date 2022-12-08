@@ -1,5 +1,7 @@
 module;
 
+#include "Copium/Core/Defines.hpp"
+
 #include <dxgiformat.h>
 
 export module CopiumEngine.Graphics.DXCommon;
@@ -19,7 +21,7 @@ export namespace Copium
     [[nodiscard]] DXGI_FORMAT dx_VertexAttributeFormat(VertexAttributeFormat format, uint8 dimension);
 
     /// For DirectX Clockwise - false, CounterClockwise - true
-    [[nodiscard]] inline constexpr bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace) noexcept
+    [[nodiscard]] COP_FORCE_INLINE constexpr bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace) noexcept
     {
         return triangleFrontFace == TriangleFrontFace::CounterClockwise;
     }
