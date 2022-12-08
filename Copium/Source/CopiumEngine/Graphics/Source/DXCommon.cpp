@@ -1,12 +1,13 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 #include <dxgiformat.h>
 
 module CopiumEngine.Graphics.DXCommon;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <utility>;

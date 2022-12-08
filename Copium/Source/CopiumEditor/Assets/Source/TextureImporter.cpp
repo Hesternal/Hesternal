@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 // NOTE(v.matushkin): Put stb in a normal conan package? not this fucking trash that I get rn
 // NOTE(v.matushkin): It's kinda dumb that stb error checking depends on 'COP_ENABLE_ASSERTS'
@@ -22,7 +22,7 @@ module;
 
 module CopiumEditor.Assets.TextureImporter;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <bit>;
 import <cstring>;

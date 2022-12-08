@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 #include <d3d11_1.h>
 
@@ -10,7 +10,8 @@ COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module CopiumEngine.Graphics.DX11Conversion;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <utility>;

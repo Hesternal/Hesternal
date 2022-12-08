@@ -1,4 +1,4 @@
-import CopiumEngine.Math;
+import Copium.Math;
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>

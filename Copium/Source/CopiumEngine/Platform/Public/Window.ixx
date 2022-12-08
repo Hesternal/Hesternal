@@ -1,6 +1,6 @@
 export module CopiumEngine.Platform.Window;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Event.EventTypes;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Platform.PlatformTypes;

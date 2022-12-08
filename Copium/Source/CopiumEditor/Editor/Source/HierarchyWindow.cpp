@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -13,7 +13,8 @@ COP_WARNING_POP
 
 module CopiumEditor.Editor.HierarchyWindow;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.EntityManager;

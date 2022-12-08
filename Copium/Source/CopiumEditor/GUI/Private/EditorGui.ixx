@@ -1,7 +1,7 @@
 export module CopiumEditor.GUI.EditorGui;
 
-import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Math;
+import Copium.Core;
+import Copium.Math;
 
 import <vector>;
 import <string_view>;

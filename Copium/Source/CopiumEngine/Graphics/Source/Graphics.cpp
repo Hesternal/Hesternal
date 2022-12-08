@@ -1,6 +1,6 @@
 module CopiumEngine.Graphics;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Graphics.DX11GraphicsDevice;
 import CopiumEngine.Graphics.RenderContext;
 

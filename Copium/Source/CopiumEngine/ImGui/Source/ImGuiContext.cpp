@@ -1,15 +1,16 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 #include "Engine/ImGui/imgui_impl_win32.h"
 
 #include <imgui.h>
 
 module CopiumEngine.ImGui.ImGuiContext;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Graphics;
-import CopiumEngine.Math;
 
 import <cstring>;
 import <utility>;

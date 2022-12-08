@@ -1,6 +1,6 @@
 export module CopiumEngine.Utils.Time;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 export namespace Copium

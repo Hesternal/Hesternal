@@ -1,8 +1,8 @@
 export module CopiumEngine.ImGui.ImGuiContext;
 
+import Copium.Core;
 import CopiumEngine.Assets.Shader;
 import CopiumEngine.Assets.Texture;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.CommandBuffer;
 import CopiumEngine.Graphics.GraphicsBuffer;
 import CopiumEngine.Platform.PlatformTypes;

@@ -1,9 +1,10 @@
 export module CopiumEngine.Graphics.IGraphicsDevice;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Graphics.ICommandBuffer;
-import CopiumEngine.Math;
 
 import <memory>;
 import <span>;

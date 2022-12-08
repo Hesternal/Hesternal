@@ -1,7 +1,7 @@
 export module CopiumEngine.Event.EventTypes;
 
-import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Math;
+import Copium.Core;
+import Copium.Math;
 
 
 export namespace Copium

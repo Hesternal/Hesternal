@@ -4,7 +4,7 @@ module;
 
 export module CopiumEngine.Core.Platform.File;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 // NOTE(v.matushkin): Waiting until https://github.com/microsoft/STL/issues/3112 gets fixed
 //  Although seems like it's working without this headers anyway?

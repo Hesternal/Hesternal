@@ -1,11 +1,11 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 export module CopiumEngine.Memory;
 
-import CopiumEngine.Core.CoreTypes;
-import CopiumEngine.Math;
+import Copium.Core;
+import Copium.Math;
 
 
 export namespace Copium

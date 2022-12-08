@@ -25,9 +25,9 @@ internal abstract class CopiumCppProject : CopiumCppBaseProject
     }
 
 
-    protected void AddSourcesDir(string subDirPath)
+    protected void AddSourcesDir(string subDirPath = "")
     {
-        DirectoryItem subDir = MakeFileDir.MakeSubDirItem(subDirPath);
+        DirectoryItem subDir = subDirPath == string.Empty ? MakeFileDir : MakeFileDir.MakeSubDirItem(subDirPath);
 
         foreach (DirectoryItem sourcesDir in subDir.EnumerateDirectories())
         {

@@ -1,10 +1,10 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 module CopiumEditor.Assets.ShaderImporter.ShaderParser;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 // TODO(v.matushkin): Check for invalid State parsed values. EnumUtils doesn't check if it's a valid value.

@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -8,12 +8,13 @@ module;
 
 module CopiumEditor.Assets.ModelImporter;
 
+import Copium.Core;
+
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
 import CopiumEngine.Assets.Model;
 import CopiumEngine.Assets.Texture;
 import CopiumEngine.Assets.Shader;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics;
 
 import CopiumEditor.Assets.AssetDatabase;

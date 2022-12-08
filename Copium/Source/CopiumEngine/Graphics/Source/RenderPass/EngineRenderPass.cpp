@@ -1,6 +1,6 @@
 module CopiumEngine.Graphics.EngineRenderPass;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Graphics.RenderPassNames;

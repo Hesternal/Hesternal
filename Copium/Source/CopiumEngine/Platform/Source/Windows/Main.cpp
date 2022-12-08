@@ -1,5 +1,5 @@
+import Copium.Core;
 import CopiumEngine.Core.Application;
-import CopiumEngine.Core.CoreTypes;
 
 import <memory>;
 

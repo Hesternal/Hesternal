@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/CopiumHeaderTool.hpp"
+#include "Copium/Core/CopiumHeaderTool.hpp"
 
 export module CopiumEngine.Utils.EnumUtils;
 

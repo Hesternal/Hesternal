@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 #include <combaseapi.h>
 #include <Windows.h>
@@ -11,7 +11,8 @@ COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module CopiumEngine.Core.Platform;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Core.Misc.Guid;
 COP_WARNING_POP
 

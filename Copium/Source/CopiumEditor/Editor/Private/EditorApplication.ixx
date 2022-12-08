@@ -1,6 +1,7 @@
 export module CopiumEditor.EditorApplication;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Engine.Application;
 import CopiumEngine.Graphics.RenderGraph;
 import CopiumEngine.Platform.Window;

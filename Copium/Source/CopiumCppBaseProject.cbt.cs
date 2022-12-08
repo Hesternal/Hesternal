@@ -158,7 +158,6 @@ internal abstract class CopiumCppBaseProject : CppProject
         linker.PerUserRedirection = false;
         linker.LinkLibraryDependencies = true;
         linker.UseLibraryDependencyInputs = false;
-        linker.LinkStatus = true;
         //linker.TreatLinkerWarningAsErrors = true;
         linker.SubSystem = Msvc.SubSystem.Console;
         linker.LargeAddressAware = true;

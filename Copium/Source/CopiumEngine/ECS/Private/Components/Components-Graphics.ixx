@@ -1,9 +1,11 @@
 export module CopiumEngine.ECS.Components:Graphics;
 
 import :IComponent;
+
+import Copium.Math;
+
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Math;
 
 import <memory>;
 

@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -10,13 +10,14 @@ COP_WARNING_POP
 
 module CopiumEngine.ECS.Scene;
 
+import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.ECS.Components;
 import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
-import CopiumEngine.Math;
 
 import <stack>;
 import <utility>;

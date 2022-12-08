@@ -1,6 +1,6 @@
 export module CopiumEngine.Core.ClassID;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 export namespace Copium

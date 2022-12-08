@@ -84,7 +84,7 @@ internal sealed class DotnetHelper
         const int optionalPreviewGroup = 1 + versionGroup;
         const int pathGroup = 1 + optionalPreviewGroup;
         Regex sdkInfoRegex = new(
-            @"Microsoft\.NETCore\.App (([0-9\.]+)(?:\-[a-z]+\.([0-9\.]+))) \[([^\]]+)\]",
+            @"Microsoft\.NETCore\.App (([0-9\.]+)(?:\-[a-z]+\.([0-9\.]+))?) \[([^\]]+)\]",
             RegexOptions.Compiled | RegexOptions.NonBacktracking);
 
         Version? runtimeVersion = null;
@@ -108,29 +108,35 @@ internal sealed class DotnetHelper
             {
                 Group previewVersionGroup = sdkInfoMatch.Groups[optionalPreviewGroup];
 
-                if (runtimeVersion == null || version > runtimeVersion)
+                if (runtimeVersion is null || version > runtimeVersion)
                 {
                     runtimeVersion = version;
                     runtimePath = sdkInfoMatch.Groups[pathGroup].Value;
 
-                    if (previewVersionGroup.Success)
-                    {
-                        runtimePreviewVersion = Version.Parse(previewVersionGroup.Value);
-                    }
+                    runtimePreviewVersion = previewVersionGroup.Success ? Version.Parse(previewVersionGroup.Value) : null;
                 }
-                else if (previewVersionGroup.Success)
+                else if (version == runtimeVersion)
                 {
-                    Version previewVersion = Version.Parse(previewVersionGroup.Value);
-                    if (previewVersion > runtimePreviewVersion)
+                    // Non preview with the same version takes precedence
+                    if (previewVersionGroup.Success == false)
                     {
-                        runtimePreviewVersion = previewVersion;
+                        runtimePreviewVersion = null;
                         runtimePath = sdkInfoMatch.Groups[pathGroup].Value;
+                    }
+                    else
+                    {
+                        Version previewVersion = Version.Parse(previewVersionGroup.Value);
+                        if (previewVersion > runtimePreviewVersion)
+                        {
+                            runtimePreviewVersion = previewVersion;
+                            runtimePath = sdkInfoMatch.Groups[pathGroup].Value;
+                        }
                     }
                 }
             }
         }
 
-        if (runtimeVersion == null || string.IsNullOrEmpty(runtimePath))
+        if (runtimeVersion is null || string.IsNullOrEmpty(runtimePath))
         {
             throw new CbtException("Couldn't find any .Net 7 Sdk");
         }

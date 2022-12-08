@@ -1,6 +1,6 @@
 export module CopiumEngine.Core.Serialization.FileBinaryConverter;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Core.Platform.File;
 import CopiumEngine.Core.Serialization.IBinaryConverter;
 

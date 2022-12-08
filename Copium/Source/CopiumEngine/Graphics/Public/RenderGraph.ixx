@@ -1,6 +1,6 @@
 export module CopiumEngine.Graphics.RenderGraph;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Graphics.IGraphicsDevice;
 import CopiumEngine.Graphics.RenderContext;

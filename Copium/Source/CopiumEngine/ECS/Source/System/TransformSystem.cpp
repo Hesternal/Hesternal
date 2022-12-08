@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -10,9 +10,10 @@ COP_WARNING_POP
 
 module CopiumEngine.ECS.System.Transform;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.ECS.Components;
-import CopiumEngine.Math;
 
 
 namespace Copium

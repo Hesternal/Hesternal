@@ -1,6 +1,6 @@
 export module CopiumEngine.Graphics.GraphicsBuffer;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <memory>;

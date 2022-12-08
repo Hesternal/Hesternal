@@ -1,12 +1,13 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 export module CopiumEngine.Graphics.ICommandBuffer;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Math;
 
 import <string_view>;
 

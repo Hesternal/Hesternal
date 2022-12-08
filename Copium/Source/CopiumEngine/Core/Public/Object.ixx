@@ -1,12 +1,12 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 // #include "EngineCht/Object.cht.hpp"
 
 export module CopiumEngine.Core.Object;
 
+import Copium.Core;
 import CopiumEngine.Core.ClassID;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Core.ForwardDeclaration;
 
 // import <concepts>;
