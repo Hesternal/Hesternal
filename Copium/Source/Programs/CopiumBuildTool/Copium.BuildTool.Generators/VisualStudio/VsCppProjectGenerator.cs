@@ -189,7 +189,8 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
 
             if (m_hasPublicReferences)
             {
-                foreach (VsCppProject projectReference in m_publicProjectReferences!) // NOTE(v.matushkin): Not null when hasReferences is true
+                // NOTE(v.matushkin): Not null when m_hasPublicReferences is true
+                foreach (VsCppProject projectReference in m_publicProjectReferences!)
                 {
                     VsPropsFile? privateProps = projectReference.PrivateProps;
                     VsPropsFile? publicProps = projectReference.PublicProps;
@@ -519,28 +520,28 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
 
     private void _ProjectReferencesItemGroup()
     {
-        if (m_hasPrivateReferences || m_hasPublicReferences)
+        if ((m_hasPrivateReferences || m_hasPublicReferences) == false)
         {
-            m_projectWriter.BeginItemGroup();
+            return;
+        }
 
-            WriteProjectReferences(m_privateProjectReferences, m_hasPrivateReferences);
-            WriteProjectReferences(m_publicProjectReferences, m_hasPublicReferences);
+        // NOTE(v.matushkin): If I get it right, vcxproj ProjectReference is not transitive,
+        //  so I need to add them all manually
+        IEnumerable<VsCppProject> directProjectReferences = Enumerable.Empty<VsCppProject>();
+        // NOTE(v.matushkin): Not null when hasReferences is true
+        if (m_hasPrivateReferences) directProjectReferences = m_privateProjectReferences!;
+        if (m_hasPublicReferences) directProjectReferences = directProjectReferences.Concat(m_publicProjectReferences!);
 
+        m_projectWriter.BeginItemGroup();
+
+        foreach (VsCppProject projectReference in _GetAllProjectReferences(directProjectReferences))
+        {
+            m_projectWriter.BeginItem(VsXmlItem.ProjectReference, projectReference.OutputFile.GetRelativePath(m_project.Base.OutputDir));
+            m_projectWriter.Property(VcxprojItem.Project, projectReference.ProjectGuid);
             m_projectWriter.EndElement();
         }
 
-        void WriteProjectReferences(ReadOnlyCollection<VsCppProject>? projectReferences, bool hasReferences)
-        {
-            if (hasReferences)
-            {
-                foreach (VsCppProject projectReference in projectReferences!) // NOTE(v.matushkin): Not null when hasReferences is true
-                {
-                    m_projectWriter.BeginItem(VsXmlItem.ProjectReference, projectReference.OutputFile.GetRelativePath(m_project.Base.OutputDir));
-                    m_projectWriter.Property(VcxprojItem.Project, projectReference.ProjectGuid);
-                    m_projectWriter.EndElement();
-                }
-            }
-        }
+        m_projectWriter.EndElement();
     }
 
     private void _ExtensionTargetsImportGroup()
@@ -568,5 +569,47 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
             OutputType.SharedLib => "DynamicLibrary",
             _ => throw new ArgumentOutOfRangeException(nameof(outputType)),
         };
+    }
+
+    private static VsCppProject[] _GetAllProjectReferences(IEnumerable<VsCppProject> directProjectReferences)
+    {
+        HashSet<VsCppProject> allProjectReferences = new();
+
+        foreach (VsCppProject directReference in directProjectReferences)
+        {
+            if (allProjectReferences.Add(directReference))
+            {
+                AddTransitiveReferences(directReference);
+            }
+        }
+
+        VsCppProject[] arr = allProjectReferences.ToArray();
+        Array.Sort(arr);
+
+        return arr;
+
+        void AddTransitiveReferences(VsCppProject projectReference)
+        {
+            if (projectReference.PublicProjectReferences is not null)
+            {
+                foreach (VsCppProject transitiveReference in projectReference.PublicProjectReferences)
+                {
+                    if (allProjectReferences.Add(transitiveReference))
+                    {
+                        AddTransitiveReferences(transitiveReference);
+                    }
+                }
+            }
+            if (projectReference.PrivateProjectReferences is not null)
+            {
+                foreach (VsCppProject transitiveReference in projectReference.PrivateProjectReferences)
+                {
+                    if (allProjectReferences.Add(transitiveReference))
+                    {
+                        AddTransitiveReferences(transitiveReference);
+                    }
+                }
+            }
+        }
     }
 }
