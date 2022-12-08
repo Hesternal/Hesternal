@@ -1,6 +1,6 @@
 export module CopiumEngine.Engine.SystemInfo;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 export namespace Copium::SystemInfo

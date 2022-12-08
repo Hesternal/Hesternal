@@ -1,9 +1,8 @@
 export module CopiumEngine.Math:QuaternionFunctions;
 
-//import :Constants;
-//import :Functions;
 import :Quaternion;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 
 export namespace Copium::Math

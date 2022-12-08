@@ -1,6 +1,6 @@
 export module CopiumEngine.Core.Misc.Guid;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <functional>;
 

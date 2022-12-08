@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 #if COP_ENABLE_LOGGING
 

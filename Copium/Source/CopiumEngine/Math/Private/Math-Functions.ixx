@@ -1,11 +1,12 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 
 export module CopiumEngine.Math:Functions;
 
 import :Constants;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 import <bit>;
 import <cmath>;

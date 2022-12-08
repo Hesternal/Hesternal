@@ -1,7 +1,7 @@
 export module CopiumEngine.Engine.Application;
 
+import Copium.Core;
 import CopiumEngine.Core.Application;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Graphics.RenderContext;
 
 import <memory>;

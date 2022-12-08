@@ -4,7 +4,8 @@ module;
 
 module CopiumEditor.Editor.SceneWindow;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Engine.EngineSettings;
 import CopiumEngine.ImGui.ImGuiContext; // For ImGuiTexture
 

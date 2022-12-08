@@ -1,6 +1,6 @@
 export module CopiumEditor.Assets.ShaderImporter.ParserError;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <string>;
 import <utility>;

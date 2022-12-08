@@ -1,8 +1,8 @@
 export module CopiumEngine.Graphics.RenderData;
 
+import Copium.Core;
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Core.CoreTypes;
 import CopiumEngine.Math;
 
 import <memory>;

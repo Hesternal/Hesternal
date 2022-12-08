@@ -2,7 +2,7 @@
     "EnumGenerator": {
         "Hpp": {
             "Includes": [
-                "Engine/Core/CopiumHeaderTool.hpp"
+                "Copium/Core/CopiumHeaderTool.hpp"
             ]
         },
         "Cpp": {

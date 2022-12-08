@@ -1,11 +1,11 @@
 module;
 
-#include "Engine/Core/Defines.hpp"
+#include "Copium/Core/Defines.hpp"
 #include "EditorCht/BaseParser.cht.hpp"
 
 export module CopiumEditor.Assets.ShaderImporter.BaseParser;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import CopiumEditor.Assets.ShaderImporter.ParserError;
 

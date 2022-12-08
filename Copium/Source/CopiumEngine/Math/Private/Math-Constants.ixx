@@ -1,6 +1,6 @@
 export module CopiumEngine.Math:Constants;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <numbers>;
 

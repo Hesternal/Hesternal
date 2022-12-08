@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4996)
@@ -10,7 +10,8 @@ COP_WARNING_POP
 
 module CopiumEngine.ECS.System.Graphics;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.ECS.Components;
 import CopiumEngine.Graphics;
 import CopiumEngine.Graphics.RenderData;

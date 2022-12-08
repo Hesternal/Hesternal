@@ -1,6 +1,6 @@
 module CopiumEngine.Memory;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <cstdlib>;
 import <new>;

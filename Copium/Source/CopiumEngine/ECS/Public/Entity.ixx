@@ -1,6 +1,6 @@
 export module CopiumEngine.ECS.Entity;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 namespace

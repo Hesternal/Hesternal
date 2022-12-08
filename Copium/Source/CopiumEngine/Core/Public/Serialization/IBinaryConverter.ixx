@@ -1,6 +1,7 @@
 export module CopiumEngine.Core.Serialization.IBinaryConverter;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Core.ForwardDeclaration;
 import CopiumEngine.Core.Serialization.ObjectSerializationContext;
 

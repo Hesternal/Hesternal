@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -11,7 +11,7 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
 module CopiumEngine.Core.Application;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 // NOTE(v.matushkin): I'm importing Event/Platform modules(c++) here in the Core.Module.cs
 //  I should either put Event/Platform modules in the Core or move back Application calss out of Core Module
 import CopiumEngine.Event.EventManager;

@@ -1,6 +1,6 @@
 export module CopiumEngine.Math:Int2;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 
 export namespace Copium

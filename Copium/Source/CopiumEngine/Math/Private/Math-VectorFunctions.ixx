@@ -6,7 +6,8 @@ import :Float3;
 import :Float4;
 import :Functions;
 import :Int2;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 import <utility>;
 

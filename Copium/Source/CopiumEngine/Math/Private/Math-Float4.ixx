@@ -3,7 +3,8 @@ export module CopiumEngine.Math:Float4;
 import :Float2;
 import :Float3;
 import :Functions;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 
 export namespace Copium

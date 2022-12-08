@@ -1,6 +1,6 @@
 export module CopiumEngine.Platform.PlatformTypes;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <string>;
 

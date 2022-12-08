@@ -1,4 +1,4 @@
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 #if COP_ENABLE_LOGGING
 

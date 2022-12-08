@@ -1,8 +1,8 @@
 module;
 
 // NOTE(v.matushkin): Can't use ASSERT here, because Microsoft introduced new ICE after VS 17.4 preview 3.0?
-//#include "Engine/Core/Debug.hpp"
-#include "Engine/Core/Defines.hpp"
+//#include "Copium/Core/Debug.hpp"
+#include "Copium/Core/Defines.hpp"
 
 #include <d3d11_4.h>
 #if COP_ENABLE_GRAPHICS_API_DEBUG
@@ -15,7 +15,8 @@ COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module CopiumEngine.Graphics.DX11GraphicsDevice;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 import CopiumEngine.Graphics.ICommandBuffer;
 import CopiumEngine.Graphics.IGraphicsDevice;

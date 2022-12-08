@@ -1,4 +1,4 @@
-module CopiumEngine.Core.CoreTypes;
+module Copium.Core;
 
 
 namespace Copium

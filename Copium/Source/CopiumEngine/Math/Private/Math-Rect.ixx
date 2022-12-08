@@ -1,6 +1,6 @@
 export module CopiumEngine.Math:Rect;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <type_traits>;
 

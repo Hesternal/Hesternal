@@ -1,6 +1,6 @@
 export module CopiumEditor.Editor.EditorSettings;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <string>;
 

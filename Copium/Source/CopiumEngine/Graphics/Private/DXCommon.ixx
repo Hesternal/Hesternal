@@ -4,7 +4,8 @@ module;
 
 export module CopiumEngine.Graphics.DXCommon;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 
 

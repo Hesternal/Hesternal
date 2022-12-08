@@ -1,10 +1,10 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 module CopiumEngine.Graphics.GraphicsTypes;
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <bit>;
 import <utility>;

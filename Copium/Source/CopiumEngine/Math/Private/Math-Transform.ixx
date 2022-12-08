@@ -6,7 +6,8 @@ import :Float3x3;
 import :Float4x4;
 import :Mul;
 import :Quaternion;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 
 export namespace Copium::Math

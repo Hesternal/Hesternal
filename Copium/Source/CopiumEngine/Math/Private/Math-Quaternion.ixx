@@ -5,7 +5,8 @@ import :Float3x3;
 import :Float4;
 import :Functions;
 import :VectorFunctions;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 
 export namespace Copium

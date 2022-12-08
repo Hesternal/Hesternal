@@ -2,7 +2,8 @@ export module CopiumEngine.Math:Projection;
 
 import :Float4x4;
 import :Functions;
-import CopiumEngine.Core.CoreTypes;
+
+import Copium.Core;
 
 
 export namespace Copium::Math

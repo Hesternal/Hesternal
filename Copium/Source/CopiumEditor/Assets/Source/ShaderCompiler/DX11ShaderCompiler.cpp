@@ -1,6 +1,6 @@
 module;
 
-#include "Engine/Core/Debug.hpp"
+#include "Copium/Core/Debug.hpp"
 
 #include <d3d11_4.h>
 #include <d3dcompiler.h>
@@ -12,7 +12,7 @@ COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different 
 module CopiumEditor.Assets.DX11ShaderCompiler;
 COP_WARNING_POP
 
-import CopiumEngine.Core.CoreTypes;
+import Copium.Core;
 
 import <memory>;
 import <string_view>;

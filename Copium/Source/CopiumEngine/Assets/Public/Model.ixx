@@ -1,8 +1,8 @@
 export module CopiumEngine.Assets.Model;
 
+import Copium.Core;
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Core.CoreTypes;
 
 import <memory>;
 import <string>;

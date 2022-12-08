@@ -1,4 +1,4 @@
-export module CopiumEngine.Core.CoreConcepts;
+export module Copium.Core:Concepts;
 
 import <type_traits>;
 
