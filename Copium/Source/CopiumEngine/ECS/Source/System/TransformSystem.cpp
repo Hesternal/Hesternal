@@ -31,11 +31,11 @@ namespace Copium
 
     void TransformSystem::OnUpdate(EntityManager& entityManager)
     {
-        const auto transformView = entityManager.GetView<const Translation, const Rotation, const Scale, LocalToWorld>();
+        const auto transformView = entityManager.GetView<const Transform, LocalToWorld>();
 
-        for (const auto&& [entity, translation, rotation, scale, localToWorld] : transformView.each())
+        for (const auto&& [entity, transform, localToWorld] : transformView.each())
         {
-            localToWorld.Value = Math::TRS(translation.Value, rotation.Value, Float3(scale.Value));
+            localToWorld.Value = Math::TRS(transform.Position, transform.Rotation, transform.Scale);
         }
     }
 

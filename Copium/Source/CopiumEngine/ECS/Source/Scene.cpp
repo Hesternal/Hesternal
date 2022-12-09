@@ -70,9 +70,7 @@ namespace Copium
 
             if (modelNode->MeshIndices.empty() == false)
             {
-                entityManager.AddComponent<Translation>(entity, Translation{ .Value = Float3::Zero() });
-                entityManager.AddComponent<Rotation>(entity, Rotation{ .Value = Quaternion::Identity() });
-                entityManager.AddComponent<Scale>(entity, Scale{ .Value = k_SponzaScale });
+                entityManager.AddComponent<Transform>(entity, Transform::FromScale(k_SponzaScale));
                 entityManager.AddComponent<LocalToWorld>(entity, LocalToWorld{ .Value = Float4x4::Identity() });
 
                 const ModelMesh& modelMesh = modelMeshes[modelNode->MeshIndices[0]];
