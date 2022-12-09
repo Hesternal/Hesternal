@@ -40,6 +40,16 @@ export namespace Copium::Math
                         Float4(translation, 1.0f));
     }
 
+    [[nodiscard]] constexpr Float4x4 TRS(const Float3& translation, const Quaternion& rotation, float32 scale) noexcept
+    {
+        const Float3x3 r = rotation.ToFloat3x3();
+
+        return Float4x4(Float4(r.C0 * scale, 0.0f),
+                        Float4(r.C1 * scale, 0.0f),
+                        Float4(r.C2 * scale, 0.0f),
+                        Float4(translation, 1.0f));
+    }
+
     [[nodiscard]] constexpr Float4x4 TRS(const Float3& translation, const Quaternion& rotation, const Float3& scale) noexcept
     {
         const Float3x3 r = rotation.ToFloat3x3();

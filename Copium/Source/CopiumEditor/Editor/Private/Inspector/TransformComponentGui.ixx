@@ -13,78 +13,30 @@ import CopiumEditor.GUI.EditorGui;
 export namespace Copium
 {
 
-    class TranslationGui : public ComponentGui
+    class TransformGui : public ComponentGui
     {
     public:
-        TranslationGui(Translation* translation)
-            : ComponentGui("Translation")
-            , m_translation(translation)
+        TransformGui(Transform* transform)
+            : ComponentGui("Transform")
+            , m_transform(transform)
         {
         }
 
-        ~TranslationGui() = default;
+        ~TransformGui() = default;
 
-        TranslationGui(TranslationGui&& other) noexcept = default;
-        TranslationGui& operator=(TranslationGui&& other) noexcept = default;
+        TransformGui(TransformGui&& other) noexcept = default;
+        TransformGui& operator=(TransformGui&& other) noexcept = default;
 
     protected:
         void OnComponentGui() override
         {
-            EditorGui::VectorField(m_translation->Value);
+            EditorGui::VectorField("Position", m_transform->Position);
+            EditorGui::QuaternionField("Rotation", m_transform->Rotation);
+            EditorGui::FloatField("Scale", m_transform->Scale);
         }
 
     private:
-        Translation* m_translation;
-    };
-
-
-    class RotationGui : public ComponentGui
-    {
-    public:
-        RotationGui(Rotation* rotation)
-            : ComponentGui("Rotation")
-            , m_rotation(rotation)
-        {
-        }
-
-        ~RotationGui() = default;
-
-        RotationGui(RotationGui&& other) noexcept = default;
-        RotationGui& operator=(RotationGui&& other) noexcept = default;
-
-    protected:
-        void OnComponentGui()
-        {
-            EditorGui::QuaternionField(m_rotation->Value);
-        }
-
-    private:
-        Rotation* m_rotation;
-    };
-
-
-    class ScaleGui : public ComponentGui
-    {
-    public:
-        ScaleGui(Scale* scale)
-            : ComponentGui("Scale")
-            , m_scale(scale)
-        {
-        }
-
-        ~ScaleGui() = default;
-
-        ScaleGui(ScaleGui&& other) noexcept = default;
-        ScaleGui& operator=(ScaleGui&& other) noexcept = default;
-
-    protected:
-        void OnComponentGui() override
-        {
-            EditorGui::FloatField(m_scale->Value);
-        }
-
-    private:
-        Scale* m_scale;
+        Transform* m_transform;
     };
 
 

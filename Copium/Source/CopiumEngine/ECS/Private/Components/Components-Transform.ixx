@@ -13,19 +13,21 @@ import <vector>;
 export namespace Copium
 {
 
-    struct Translation final : IComponent
+    struct Transform final : IComponent
     {
-        Float3 Value;
-    };
+        Float3     Position;
+        float32    Scale;
+        Quaternion Rotation;
 
-    struct Rotation final : IComponent
-    {
-        Quaternion Value;
-    };
+        [[nodiscard]] static inline Transform Identity() noexcept
+        {
+            return Transform{ .Position = Float3::Zero(), .Scale = 1.0f, .Rotation = Quaternion::Identity() };
+        }
 
-    struct Scale final : IComponent
-    {
-        float32 Value;
+        [[nodiscard]] static inline Transform FromScale(float32 scale) noexcept
+        {
+            return Transform{ .Position = Float3::Zero(), .Scale = scale, .Rotation = Quaternion::Identity() };
+        }
     };
 
 
