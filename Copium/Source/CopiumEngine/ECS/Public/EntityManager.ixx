@@ -67,7 +67,7 @@ export namespace Copium
         [[nodiscard]] entt::basic_view<Entity, entt::get_t<TComponent...>, entt::exclude_t<TExclude...>>
         GetView(entt::exclude_t<TExclude...> exclude = {})
         {
-            return m_registry.view<TComponent..., TExclude...>(exclude);
+            return m_registry.view<TComponent...>(exclude);
         }
 
     private:
