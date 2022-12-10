@@ -9,6 +9,7 @@ module;
 module CopiumEditor.Assets.ModelImporter;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
@@ -152,7 +153,7 @@ namespace
         uint32 indexDataSize;
         IndexFormat indexFormat;
 
-        if (numIndices > std::numeric_limits<uint16>::max())
+        if (numIndices > Math::UInt16::Max)
         {
             indexDataSize = numIndices * sizeof(uint32);
             indexFormat = IndexFormat::UInt32;
@@ -166,7 +167,7 @@ namespace
         indexData.resize(indexDataSize);
         uint8* indexDataPtr = indexData.data();
 
-        if (numIndices > std::numeric_limits<uint16>::max())
+        if (numIndices > Math::UInt16::Max)
         {
             for (uint32 i = 0; i < numFaces; i++)
             {
