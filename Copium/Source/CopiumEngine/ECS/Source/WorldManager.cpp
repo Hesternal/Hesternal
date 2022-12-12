@@ -4,6 +4,7 @@ import CopiumEngine.ECS.System.Camera;
 import CopiumEngine.ECS.System.Input;
 import CopiumEngine.ECS.System.Graphics;
 import CopiumEngine.ECS.System.TransformToMatrix;
+import CopiumEngine.ECS.System.TransformHierarchy;
 
 import <memory>;
 import <vector>;
@@ -20,6 +21,7 @@ namespace Copium
         std::vector<std::unique_ptr<ISystem>> systems;
         systems.push_back(std::make_unique<InputSystem>());
         systems.push_back(std::make_unique<TransformToMatrixSystem>());
+        systems.push_back(std::make_unique<TransformHierarchySystem>());
         systems.push_back(std::make_unique<CameraSystem>());
         systems.push_back(std::make_unique<GraphicsSystem>());
 
