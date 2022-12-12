@@ -41,10 +41,12 @@ export namespace Copium
         constexpr Float4& operator+=(float32 rhs) noexcept { X += rhs; Y += rhs; Z += rhs; W += rhs; return *this; }
         constexpr Float4& operator-=(float32 rhs) noexcept { X -= rhs; Y -= rhs; Z -= rhs; W -= rhs; return *this; }
         constexpr Float4& operator*=(float32 rhs) noexcept { X *= rhs; Y *= rhs; Z *= rhs; W *= rhs; return *this; }
+        constexpr Float4& operator/=(float32 rhs) noexcept { X /= rhs; Y /= rhs; Z /= rhs; W /= rhs; return *this; }
         //-- Vector | Vector
         constexpr Float4& operator+=(const Float4& rhs) noexcept { X += rhs.X; Y += rhs.Y; Z += rhs.Z; W += rhs.W; return *this; }
         constexpr Float4& operator-=(const Float4& rhs) noexcept { X -= rhs.X; Y -= rhs.Y; Z -= rhs.Z; W -= rhs.W; return *this; }
         constexpr Float4& operator*=(const Float4& rhs) noexcept { X *= rhs.X; Y *= rhs.Y; Z *= rhs.Z; W *= rhs.W; return *this; }
+        constexpr Float4& operator/=(const Float4& rhs) noexcept { X /= rhs.X; Y /= rhs.Y; Z /= rhs.Z; W /= rhs.W; return *this; }
 
         //- Unary
         friend constexpr Float4 operator-(const Float4& rhs) noexcept { return Float4(-rhs.X, -rhs.Y, -rhs.Z, -rhs.W); }
@@ -54,14 +56,17 @@ export namespace Copium
         friend constexpr Float4 operator+(const Float4& lhs, float32 rhs) noexcept { return Float4(lhs.X + rhs, lhs.Y + rhs, lhs.Z + rhs, lhs.W + rhs); }
         friend constexpr Float4 operator-(const Float4& lhs, float32 rhs) noexcept { return Float4(lhs.X - rhs, lhs.Y - rhs, lhs.Z - rhs, lhs.W - rhs); }
         friend constexpr Float4 operator*(const Float4& lhs, float32 rhs) noexcept { return Float4(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs, lhs.W * rhs); }
+        friend constexpr Float4 operator/(const Float4& lhs, float32 rhs) noexcept { return Float4(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs, lhs.W / rhs); }
         //-- Scalar | Vector
         friend constexpr Float4 operator+(float32 lhs, const Float4& rhs) noexcept { return Float4(lhs + rhs.X, lhs + rhs.Y, lhs + rhs.Z, lhs + rhs.W); }
         friend constexpr Float4 operator-(float32 lhs, const Float4& rhs) noexcept { return Float4(lhs - rhs.X, lhs - rhs.Y, lhs - rhs.Z, lhs - rhs.W); }
         friend constexpr Float4 operator*(float32 lhs, const Float4& rhs) noexcept { return Float4(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z, lhs * rhs.W); }
+        friend constexpr Float4 operator/(float32 lhs, const Float4& rhs) noexcept { return Float4(lhs / rhs.X, lhs / rhs.Y, lhs / rhs.Z, lhs / rhs.W); }
         //-- Vector | Vector
         friend constexpr Float4 operator+(const Float4& lhs, const Float4& rhs) noexcept { return Float4(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z, lhs.W + rhs.W); }
         friend constexpr Float4 operator-(const Float4& lhs, const Float4& rhs) noexcept { return Float4(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z, lhs.W - rhs.W); }
         friend constexpr Float4 operator*(const Float4& lhs, const Float4& rhs) noexcept { return Float4(lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z, lhs.W * rhs.W); }
+        friend constexpr Float4 operator/(const Float4& lhs, const Float4& rhs) noexcept { return Float4(lhs.X / rhs.X, lhs.Y / rhs.Y, lhs.Z / rhs.Z, lhs.W / rhs.W); }
 
         [[nodiscard]] inline float32 Length() const noexcept { return Math::Sqrt(X * X + Y * Y + Z * Z + W * W); }
 
