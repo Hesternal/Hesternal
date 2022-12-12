@@ -40,7 +40,7 @@ internal sealed class Conan
     }
 
 
-    private static readonly Version s_ConanRequiredVersion = new(1, 52, 0);
+    private static readonly Version s_ConanRequiredVersion = new(1, 55, 0);
 
 
     public static void ValidateInstallation()

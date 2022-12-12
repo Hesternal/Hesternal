@@ -2,7 +2,7 @@ from conan import ConanFile
 from conan.tools.cmake import CMakeDeps
 from conan.tools.microsoft import MSBuildDeps
 
-required_conan_version = '>=1.48.0'
+required_conan_version = '>=1.55.0'
 
 class Copium(ConanFile):
     name = 'Copium'
@@ -26,9 +26,7 @@ class Copium(ConanFile):
           'catch2/3.1.0',
          'cxxopts/3.0.0',
             'entt/3.10.0',
-            'glfw/3.3.7',
            'imgui/cci.20220621+1.88.docking',
-        'simdjson/2.0.1',
           'spdlog/1.10.0',
              'stb/cci.20210910',
     ]
