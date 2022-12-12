@@ -1,4 +1,4 @@
-export module CopiumEngine.ECS.System.RotationAuthoring;
+export module CopiumEngine.ECS.System.TransformHierarchy;
 
 import CopiumEngine.ECS.ISystem;
 import CopiumEngine.ECS.EntityManager;
@@ -9,14 +9,14 @@ export namespace Copium
 
     // NOTE(v.matushkin): This is kinda of a hack I guess, so I can edit rotation in ImGui.
     //  Don't know if there is more elegant solution.
-    class RotationAuthoringSystem final : public ISystem
+    class TransformHierarchySystem final : public ISystem
     {
     public:
-        RotationAuthoringSystem() = default;
-        ~RotationAuthoringSystem() = default;
+        TransformHierarchySystem() = default;
+        ~TransformHierarchySystem() = default;
 
-        RotationAuthoringSystem(RotationAuthoringSystem&& other) noexcept = default;
-        RotationAuthoringSystem& operator=(RotationAuthoringSystem&& other) noexcept = default;
+        TransformHierarchySystem(TransformHierarchySystem&& other) noexcept = default;
+        TransformHierarchySystem& operator=(TransformHierarchySystem&& other) noexcept = default;
 
         //< ISystem Interface Public
         void OnCreate(EntityManager& entityManager) override;

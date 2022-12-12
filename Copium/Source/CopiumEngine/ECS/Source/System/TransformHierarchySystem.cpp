@@ -8,33 +8,66 @@ COP_WARNING_DISABLE_MSVC(4996)
 #include <entt/entity/view.hpp>
 COP_WARNING_POP
 
-module CopiumEngine.ECS.System.Transform;
+module CopiumEngine.ECS.System.TransformHierarchy;
 
 import Copium.Math;
 
+import CopiumEngine.ECS.Entity;
 import CopiumEngine.ECS.Components;
 
 
 namespace Copium
 {
 
-    void TransformSystem::OnCreate(EntityManager& entityManager)
+    void TransformHierarchySystem::OnCreate(EntityManager& entityManager)
     {
         COP_UNUSED(entityManager);
     }
 
-    void TransformSystem::OnDestroy(EntityManager& entityManager)
+    void TransformHierarchySystem::OnDestroy(EntityManager& entityManager)
     {
         COP_UNUSED(entityManager);
     }
 
-    void TransformSystem::OnUpdate(EntityManager& entityManager)
+    void TransformHierarchySystem::OnUpdate(EntityManager& entityManager)
     {
-        const auto transformView = entityManager.GetView<const Translation, const Rotation, const Scale, LocalToWorld>();
-
-        for (const auto&& [entity, translation, rotation, scale, localToWorld] : transformView.each())
+        // Recursive lambda, kind of
+        class UpdateChildLocalToWorld final
         {
-            localToWorld.Value = Math::TRS(translation.Value, rotation.Value, Float3(scale.Value));
+        public:
+            UpdateChildLocalToWorld(EntityManager& entityManager)
+                : entityManager(entityManager)
+                , localToWorldView(entityManager.GetView<LocalToWorld>())
+            {}
+
+            void operator()(const Float4x4& parentLocalToWorld, const Entity childEntity)
+            {
+                Float4x4& localToWorld = localToWorldView.get<LocalToWorld>(childEntity).Value;
+                localToWorld = Math::Mul(parentLocalToWorld, localToWorld);
+
+                if (Child* const child = entityManager.TryGetComponent<Child>(childEntity); child != nullptr)
+                {
+                    for (const Entity entity : child->Children)
+                    {
+                        operator()(localToWorld, entity);
+                    }
+                }
+            }
+
+        private:
+            EntityManager&                                  entityManager;
+            decltype(entityManager.GetView<LocalToWorld>()) localToWorldView;
+        };
+
+        UpdateChildLocalToWorld updateChildLocalToWorld(entityManager);
+        const auto rootsView = entityManager.GetView<const LocalToWorld, const Child>(entt::exclude_t<Parent>());
+
+        for (const auto&& [entity, localToWorld, child] : rootsView.each())
+        {
+            for (const Entity childEntity : child.Children)
+            {
+                updateChildLocalToWorld(localToWorld.Value, childEntity);
+            }
         }
     }
 
