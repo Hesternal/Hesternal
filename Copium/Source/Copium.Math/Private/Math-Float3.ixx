@@ -34,10 +34,12 @@ export namespace Copium
         constexpr Float3& operator+=(float32 rhs) noexcept { X += rhs; Y += rhs; Z += rhs; return *this; }
         constexpr Float3& operator-=(float32 rhs) noexcept { X -= rhs; Y -= rhs; Z -= rhs; return *this; }
         constexpr Float3& operator*=(float32 rhs) noexcept { X *= rhs; Y *= rhs; Z *= rhs; return *this; }
+        constexpr Float3& operator/=(float32 rhs) noexcept { X /= rhs; Y /= rhs; Z /= rhs; return *this; }
         //-- Vector | Vector
         constexpr Float3& operator+=(const Float3& rhs) noexcept { X += rhs.X; Y += rhs.Y; Z += rhs.Z; return *this; }
         constexpr Float3& operator-=(const Float3& rhs) noexcept { X -= rhs.X; Y -= rhs.Y; Z -= rhs.Z; return *this; }
         constexpr Float3& operator*=(const Float3& rhs) noexcept { X *= rhs.X; Y *= rhs.Y; Z *= rhs.Z; return *this; }
+        constexpr Float3& operator/=(const Float3& rhs) noexcept { X /= rhs.X; Y /= rhs.Y; Z /= rhs.Z; return *this; }
 
         //- Unary
         friend constexpr Float3 operator-(const Float3& rhs) noexcept { return Float3(-rhs.X, -rhs.Y, -rhs.Z); }
@@ -47,14 +49,17 @@ export namespace Copium
         friend constexpr Float3 operator+(const Float3& lhs, float32 rhs) noexcept { return Float3(lhs.X + rhs, lhs.Y + rhs, lhs.Z + rhs); }
         friend constexpr Float3 operator-(const Float3& lhs, float32 rhs) noexcept { return Float3(lhs.X - rhs, lhs.Y - rhs, lhs.Z - rhs); }
         friend constexpr Float3 operator*(const Float3& lhs, float32 rhs) noexcept { return Float3(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs); }
+        friend constexpr Float3 operator/(const Float3& lhs, float32 rhs) noexcept { return Float3(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs); }
         //-- Scalar | Vector
         friend constexpr Float3 operator+(float32 lhs, const Float3& rhs) noexcept { return Float3(lhs + rhs.X, lhs + rhs.Y, lhs + rhs.Z); }
         friend constexpr Float3 operator-(float32 lhs, const Float3& rhs) noexcept { return Float3(lhs - rhs.X, lhs - rhs.Y, lhs - rhs.Z); }
         friend constexpr Float3 operator*(float32 lhs, const Float3& rhs) noexcept { return Float3(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z); }
+        friend constexpr Float3 operator/(float32 lhs, const Float3& rhs) noexcept { return Float3(lhs / rhs.X, lhs / rhs.Y, lhs / rhs.Z); }
         //-- Vector | Vector
         friend constexpr Float3 operator+(const Float3& lhs, const Float3& rhs) noexcept { return Float3(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z); }
         friend constexpr Float3 operator-(const Float3& lhs, const Float3& rhs) noexcept { return Float3(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z); }
         friend constexpr Float3 operator*(const Float3& lhs, const Float3& rhs) noexcept { return Float3(lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z); }
+        friend constexpr Float3 operator/(const Float3& lhs, const Float3& rhs) noexcept { return Float3(lhs.X / rhs.X, lhs.Y / rhs.Y, lhs.Z / rhs.Z); }
 
         [[nodiscard]] inline float32 Length() const noexcept { return Math::Sqrt(X * X + Y * Y + Z * Z); }
 

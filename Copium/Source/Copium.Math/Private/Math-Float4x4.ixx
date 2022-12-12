@@ -88,7 +88,6 @@ export namespace Copium
         , C3(c3)
     {}
 
-    //< HAND FIXED
     constexpr Float4x4::Float4x4(float32 m00, float32 m01, float32 m02, float32 m03,
                                  float32 m10, float32 m11, float32 m12, float32 m13,
                                  float32 m20, float32 m21, float32 m22, float32 m23,
@@ -98,7 +97,6 @@ export namespace Copium
         , C2(m02, m12, m22, m32)
         , C3(m03, m13, m23, m33)
     {}
-    //> HAND FIXED
 
 
     constexpr float32 Float4x4::Determinant() const noexcept
