@@ -28,6 +28,11 @@ export namespace Copium
         {
             return Transform{ .Position = Float3::Zero(), .Scale = scale, .Rotation = Quaternion::Identity() };
         }
+
+        [[nodiscard]] static inline Transform FromPositionRotationScale(const Float3& position, const Quaternion& rotation, float32 scale) noexcept
+        {
+            return Transform{ .Position = position, .Scale = scale, .Rotation = rotation };
+        }
     };
 
 

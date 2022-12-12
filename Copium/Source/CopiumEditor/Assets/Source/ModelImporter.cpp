@@ -21,7 +21,6 @@ import CopiumEngine.Graphics;
 import CopiumEditor.Assets.AssetDatabase;
 
 import <filesystem>;
-import <limits>;
 import <memory>;
 import <queue>;
 import <string>;
@@ -107,7 +106,7 @@ namespace
             {
                 const std::string texturePath = GetAssimpMaterialTexturePath(modelDirPath, assimpMaterial, aiTextureType::aiTextureType_DIFFUSE);
                 material->SetBaseColorMap(AssetDatabase::LoadAsset<Texture>(texturePath));
-
+            
                 if (diffuseTexturesCount != 1)
                 {
                     COP_LOG_WARN("Material has {:d} BaseColorMaps. [{:s}]", diffuseTexturesCount, assimpMaterialName);
@@ -124,7 +123,7 @@ namespace
             {
                 const std::string texturePath = GetAssimpMaterialTexturePath(modelDirPath, assimpMaterial, aiTextureType::aiTextureType_NORMALS);
                 material->SetNormalMap(AssetDatabase::LoadAsset<Texture>(texturePath));
-
+            
                 if (normalTexturesCount != 1)
                 {
                     COP_LOG_WARN("Material has {:d} NormalMaps. [{:s}]", diffuseTexturesCount, assimpMaterialName);
@@ -285,9 +284,29 @@ namespace
 
     [[nodiscard]] static std::unique_ptr<ModelNode> GetAssimpModelHierarchy(const aiNode* assimpRootNode)
     {
+        static auto DecomposeNodeTransform = [](const aiNode* const assimpNode, ModelNode* const modelNode)
+        {
+            // TODO(v.matushkin): Add Decompose method to Copium.Math?
+            // NOTE(v.matushkin): Fix negative zeroes?
+            aiVector3D position;
+            aiQuaternion rotation;
+            aiVector3D scale;
+            assimpNode->mTransformation.Decompose(scale, rotation, position);
+
+            if ((Math::IsNearlyEqual(scale.x, scale.y) && Math::IsNearlyEqual(scale.x, scale.z)) == false)
+            {
+                COP_LOG_WARN("Node has a non-uniform scale.");
+            }
+
+            modelNode->Position = Float3(position.x, position.y, position.z);
+            modelNode->Rotation = Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+            modelNode->Scale = scale.x;
+        };
+
         auto modelRootNode = std::make_unique<ModelNode>(ModelNode{
             .Name = std::string(assimpRootNode->mName.C_Str(), assimpRootNode->mName.length),
         });
+        DecomposeNodeTransform(assimpRootNode, modelRootNode.get());
 
         const uint32 rootNumMeshes = assimpRootNode->mNumMeshes;
         if (rootNumMeshes != 0)
@@ -323,25 +342,25 @@ namespace
                 const aiNode* const assimpChildrenNode = assimpParentNode->mChildren[i];
                 const uint32 childNumChildren = assimpChildrenNode->mNumChildren;
                 const uint32 childNumMeshes = assimpChildrenNode->mNumMeshes;
-
-                std::string_view childrenNodeName(assimpChildrenNode->mName.C_Str(), assimpChildrenNode->mName.length);
-
-                if (assimpChildrenNode->mMetaData != nullptr)
-                {
-                    COP_LOG_WARN("Node has metadata. [{:s}] | NumProperties: {:d}", childrenNodeName, assimpChildrenNode->mMetaData->mNumProperties);
-                }
+                const std::string_view childrenNodeName(assimpChildrenNode->mName.C_Str(), assimpChildrenNode->mName.length);
 
                 if (childNumChildren == 0 && childNumMeshes == 0)
                 {
+                    COP_LOG_WARN("Skipping a node without children and meshes. [{:s}]", childrenNodeName);
                     continue;
                 }
-
-                auto modelChildrenNode = std::make_unique<ModelNode>(ModelNode{ .Name = std::string(childrenNodeName) });
-
                 if (childNumMeshes > 1)
                 {
                     COP_LOG_WARN("Assimp node has {:d} meshes. [{:s}]", childNumMeshes, childrenNodeName);
                 }
+                // if (assimpChildrenNode->mMetaData != nullptr)
+                // {
+                //     COP_LOG_WARN("Node has metadata. [{:s}] | NumProperties: {:d}", childrenNodeName, assimpChildrenNode->mMetaData->mNumProperties);
+                // }
+
+                auto modelChildrenNode = std::make_unique<ModelNode>(ModelNode{ .Name = std::string(childrenNodeName) });
+                DecomposeNodeTransform(assimpChildrenNode, modelChildrenNode.get());
+
                 for (uint32 j = 0; j < childNumMeshes; j++)
                 {
                     modelChildrenNode->MeshIndices.push_back(assimpChildrenNode->mMeshes[j]);
@@ -369,29 +388,8 @@ namespace Copium
     {
         Assimp::Importer assimpImporter;
 
-        // TODO(v.matushkin): Learn more about aiPostProcessSteps
-        const uint32 assimpPostProcessFlags =
-            aiPostProcessSteps::aiProcess_Triangulate
-            | aiPostProcessSteps::aiProcess_GenNormals
-            // | aiPostProcessSteps::aiProcess_GenUVCoords
-            //- Left/Right handed
-            // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
-            // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
-            | aiPostProcessSteps::aiProcess_MakeLeftHanded
-            // NOTE(v.matushkin): Why does it use an aiProcess_FlipWindingOrder flag? If it says that default is CCW and you need to use CCW in left-handed?
-            // | aiProcess_ConvertToLeftHanded
-            //- Optimization
-            // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
-            // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
-            //- Validation
-            // | aiPostProcessSteps::aiProcess_FindDegenerates
-            // | aiPostProcessSteps::aiProcess_FindInvalidData
-            // | aiPostProcessSteps::aiProcess_ValidateDataStructure
-            ;
-        COP_ASSERT_MSG(assimpImporter.ValidateFlags(assimpPostProcessFlags), "Invalid set of Assimp PostProcess flags");
-
-        const aiScene* const assimpScene = assimpImporter.ReadFile(modelPath, assimpPostProcessFlags);
-
+        //- Load scene
+        const aiScene* const assimpScene = assimpImporter.ReadFile(modelPath, 0);
         // TODO(v.matushkin): This will break when asserts turned off
         if (assimpScene == nullptr)
         {
@@ -403,10 +401,48 @@ namespace Copium
             COP_ASSERT(false);
         }
 
+        //- NOTE(v.matushkin): Hack for Sponza model
+        // NOTE(v.matushkin): This Math::Float32::Infinity usage kinda highlights the issue with non templated constants,
+        //   that std::numeric_limits and std::numbers use. Because ai_real can either be float32 or float64.
+        const ai_real assimpModelGlobalScale = assimpImporter.GetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, Math::Float32::Infinity);
+        if (assimpModelGlobalScale == Math::Float32::Infinity)
+        {
+            COP_LOG_DEBUG("Applying global scale");
+            assimpImporter.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, 0.01f);
+        }
+
+        //- Apply PostProcessing
+        // TODO(v.matushkin): Learn more about aiPostProcessSteps
+        constexpr uint32 assimpPostProcessFlags = 0
+            | aiPostProcessSteps::aiProcess_Triangulate
+            | aiPostProcessSteps::aiProcess_GenNormals
+            // | aiPostProcessSteps::aiProcess_GenUVCoords
+            //- Left/Right handed
+            // | aiPostProcessSteps::aiProcess_FlipUVs          // Instead of stbi_set_flip_vertically_on_load(true); ?
+            // | aiPostProcessSteps::aiProcess_FlipWindingOrder // Default is counter clockwise
+            | aiPostProcessSteps::aiProcess_MakeLeftHanded
+            // NOTE(v.matushkin): Why does it use an aiProcess_FlipWindingOrder flag? If it says that default is CCW and you need to use CCW in left-handed?
+            // | aiProcess_ConvertToLeftHanded
+            //- Optimization
+            // | aiPostProcessSteps::aiProcess_JoinIdenticalVertices
+            // | aiPostProcessSteps::aiProcess_ImproveCacheLocality
+            // | aiPostProcessSteps::aiProcess_OptimizeGraph
+            //- Validation
+            // | aiPostProcessSteps::aiProcess_FindDegenerates
+            // | aiPostProcessSteps::aiProcess_FindInvalidData
+            // | aiPostProcessSteps::aiProcess_ValidateDataStructure
+            //
+            | aiPostProcessSteps::aiProcess_GlobalScale
+            ;
+        COP_ASSERT_MSG(assimpImporter.ValidateFlags(assimpPostProcessFlags), "Invalid set of Assimp PostProcess flags");
+        // This returns the same pointer, and can only be nullptr if aiProcess_ValidateDataStructure was used
+        assimpImporter.ApplyPostProcessing(assimpPostProcessFlags);
+
         if (assimpScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
         {
             COP_ASSERT_MSG(false, "AI_SCENE_FLAGS_INCOMPLETE");
         }
+        // This flag can be set only if aiProcess_ValidateDataStructure was used
         if (assimpScene->mFlags & AI_SCENE_FLAGS_VALIDATION_WARNING)
         {
             COP_LOG_WARN("AI_SCENE_FLAGS_VALIDATION_WARNING");
