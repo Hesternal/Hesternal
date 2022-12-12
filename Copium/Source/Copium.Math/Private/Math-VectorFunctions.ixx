@@ -15,13 +15,13 @@ import <utility>;
 export namespace Copium::Math
 {
 
-    [[nodiscard]] constexpr Float2 ToRadians(Float2 degrees)        noexcept { return degrees * Constants::Deg2Rad; }
-    [[nodiscard]] constexpr Float3 ToRadians(const Float3& degrees) noexcept { return degrees * Constants::Deg2Rad; }
-    [[nodiscard]] constexpr Float4 ToRadians(const Float4& degrees) noexcept { return degrees * Constants::Deg2Rad; }
+    [[nodiscard]] constexpr Float2 ToRadians(Float2 degrees)        noexcept { return degrees * Float32::Deg2Rad; }
+    [[nodiscard]] constexpr Float3 ToRadians(const Float3& degrees) noexcept { return degrees * Float32::Deg2Rad; }
+    [[nodiscard]] constexpr Float4 ToRadians(const Float4& degrees) noexcept { return degrees * Float32::Deg2Rad; }
 
-    [[nodiscard]] constexpr Float2 ToDegrees(Float2 radians)        noexcept { return radians * Constants::Rad2Deg; }
-    [[nodiscard]] constexpr Float3 ToDegrees(const Float3& radians) noexcept { return radians * Constants::Rad2Deg; }
-    [[nodiscard]] constexpr Float4 ToDegrees(const Float4& radians) noexcept { return radians * Constants::Rad2Deg; }
+    [[nodiscard]] constexpr Float2 ToDegrees(Float2 radians)        noexcept { return radians * Float32::Rad2Deg; }
+    [[nodiscard]] constexpr Float3 ToDegrees(const Float3& radians) noexcept { return radians * Float32::Rad2Deg; }
+    [[nodiscard]] constexpr Float4 ToDegrees(const Float4& radians) noexcept { return radians * Float32::Rad2Deg; }
 
     // NOTE(v.matushkin): Seems like compilers can't use SVML intrinsics (https://godbolt.org/z/9fdT7f3Tq)
 

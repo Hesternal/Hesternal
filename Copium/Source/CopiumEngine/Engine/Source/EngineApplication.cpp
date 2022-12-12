@@ -119,8 +119,7 @@ namespace Copium
             EntityManager& entityManager = defaultWorld->GetEntityManager();
 
             Entity cameraEntity = entityManager.CreateEntity();
-            entityManager.AddComponent<Translation>(cameraEntity, Translation{ .Value = Float3::Zero() });
-            entityManager.AddComponent<Rotation>(cameraEntity, Rotation{ .Value = Quaternion::Identity() });
+            entityManager.AddComponent<Transform>(cameraEntity, Transform::Identity());
             entityManager.AddComponent<LocalToWorld>(cameraEntity, LocalToWorld{ .Value = Float4x4::Identity() });
             entityManager.AddComponent<Controller>(cameraEntity, Controller{
                 .CameraSpeed           = 2.0f,

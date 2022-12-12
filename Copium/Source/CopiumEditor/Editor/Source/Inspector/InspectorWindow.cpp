@@ -41,19 +41,9 @@ namespace Copium
         {
             EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
 
-            if (Translation* translation = entityManager.TryGetComponent<Translation>(entity); translation != nullptr)
+            if (Transform* transform = entityManager.TryGetComponent<Transform>(entity); transform != nullptr)
             {
-                TranslationGui(translation).Draw();
-            }
-
-            if (Rotation* rotation = entityManager.TryGetComponent<Rotation>(entity); rotation != nullptr)
-            {
-                RotationGui(rotation).Draw();
-            }
-
-            if (Scale* scale = entityManager.TryGetComponent<Scale>(entity); scale != nullptr)
-            {
-                ScaleGui(scale).Draw();
+                TransformGui(transform ).Draw();
             }
 
             if (LocalToWorld* localToWorld = entityManager.TryGetComponent<LocalToWorld>(entity); localToWorld != nullptr)

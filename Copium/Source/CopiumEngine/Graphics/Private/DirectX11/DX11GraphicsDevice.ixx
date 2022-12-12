@@ -255,11 +255,14 @@ export namespace Copium
     DX11GraphicsBuffer& DX11GraphicsDevice::_GetGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle)
     {
         const auto dx11GraphicsBufferIterator = m_graphicsBuffers.find(graphicsBufferHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
+#if COP_ENABLE_ASSERTS
         if (dx11GraphicsBufferIterator == m_graphicsBuffers.end())
         {
             std::abort();
         }
+#endif
 
         return dx11GraphicsBufferIterator->second;
     }
@@ -267,11 +270,14 @@ export namespace Copium
     DX11Mesh& DX11GraphicsDevice::_GetMesh(MeshHandle meshHandle)
     {
         const auto dx11MeshIterator = m_meshes.find(meshHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11MeshIterator != m_meshes.end());
+#if COP_ENABLE_ASSERTS
         if (dx11MeshIterator == m_meshes.end())
         {
             std::abort();
         }
+#endif
 
         return dx11MeshIterator->second;
     }
@@ -279,11 +285,14 @@ export namespace Copium
     DX11RenderPass& DX11GraphicsDevice::_GetRenderPass(RenderPassHandle renderPassHandle)
     {
         const auto dx11RenderPassIterator = m_renderPasses.find(renderPassHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
+#if COP_ENABLE_ASSERTS
         if (dx11RenderPassIterator == m_renderPasses.end())
         {
             std::abort();
         }
+#endif
 
         return dx11RenderPassIterator->second;
     }
@@ -291,11 +300,14 @@ export namespace Copium
     DX11RenderTexture& DX11GraphicsDevice::_GetRenderTexture(RenderTextureHandle renderTextureHandle)
     {
         const auto dx11RenderTextureIterator = m_renderTextures.find(renderTextureHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
+#if COP_ENABLE_ASSERTS
         if (dx11RenderTextureIterator == m_renderTextures.end())
         {
             std::abort();
         }
+#endif
 
         return dx11RenderTextureIterator->second;
     }
@@ -303,11 +315,14 @@ export namespace Copium
     DX11Shader& DX11GraphicsDevice::_GetShader(ShaderHandle shaderHandle)
     {
         const auto dx11ShaderIterator = m_shaders.find(shaderHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11ShaderIterator != m_shaders.end());
+#if COP_ENABLE_ASSERTS
         if (dx11ShaderIterator == m_shaders.end())
         {
             std::abort();
         }
+#endif
 
         return dx11ShaderIterator->second;
     }
@@ -315,11 +330,14 @@ export namespace Copium
     DX11Swapchain& DX11GraphicsDevice::_GetSwapchain(SwapchainHandle swapchainHandle)
     {
         const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
+#if COP_ENABLE_ASSERTS
         if (dx11SwapchainIterator == m_swapchains.end())
         {
             std::abort();
         }
+#endif
 
         return dx11SwapchainIterator->second;
     }
@@ -327,11 +345,14 @@ export namespace Copium
     DX11Texture2D& DX11GraphicsDevice::_GetTexture(TextureHandle textureHandle)
     {
         const auto dx11TextureIterator = m_textures.find(textureHandle);
+        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
         //COP_ASSERT(dx11TextureIterator != m_textures.end());
+#if COP_ENABLE_ASSERTS
         if (dx11TextureIterator == m_textures.end())
         {
             std::abort();
         }
+#endif
 
         return dx11TextureIterator->second;
     }

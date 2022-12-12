@@ -23,23 +23,12 @@ import <stack>;
 import <utility>;
 
 
-namespace
-{
-    using namespace Copium;
-
-
-    static constexpr float32 k_SponzaScale = 0.005f;
-
-} // namespace
-
-
 namespace Copium
 {
 
     Scene::Scene(std::string&& sceneName)
         : m_sceneName(std::move(sceneName))
-    {
-    }
+    {}
 
     Scene::~Scene()
     {
@@ -53,7 +42,7 @@ namespace Copium
         // TODO(v.matushkin): Don't know how else I should make entities from scene, Scene serialization will be pain
         EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
 
-        struct HierarchyNode
+        struct HierarchyNode final
         {
             const ModelNode*     ModelNode;
             std::vector<Entity>& EntityChildren;
@@ -64,19 +53,23 @@ namespace Copium
         std::stack<HierarchyNode> modelNodesStack;
         const std::vector<ModelMesh>& modelMeshes = modelScene->Meshes;
 
-        auto createEntity = [modelScene, &entityManager, &modelMeshes](ModelNode* modelNode) -> Entity
+        auto CreateEntity = [modelScene, &entityManager, &modelMeshes](const ModelNode* const modelNode) -> Entity
         {
             Entity entity = entityManager.CreateEntity();
+            entityManager.AddComponent<Transform>(entity,
+                Transform::FromPositionRotationScale(modelNode->Position, modelNode->Rotation, modelNode->Scale)
+            );
+            entityManager.AddComponent<LocalToWorld>(entity, LocalToWorld{ .Value = Float4x4::Identity() });
+            // TODO(v.matushkin): <Components/Editor>
+            //   Right now this is the simplest way to add Editor components, probably in the future
+            //   there should be multiple layers of components initialization so I can hook to it from the Editor.
+            //   Or something like that, idk.
+            // NOTE(v.matushkin): Copies of Node name strings, may be just move them
+            entityManager.AddComponent<EditorData>(entity, EditorData{ .EntityName = modelNode->Name });
 
             if (modelNode->MeshIndices.empty() == false)
             {
-                entityManager.AddComponent<Translation>(entity, Translation{ .Value = Float3::Zero() });
-                entityManager.AddComponent<Rotation>(entity, Rotation{ .Value = Quaternion::Identity() });
-                entityManager.AddComponent<Scale>(entity, Scale{ .Value = k_SponzaScale });
-                entityManager.AddComponent<LocalToWorld>(entity, LocalToWorld{ .Value = Float4x4::Identity() });
-
                 const ModelMesh& modelMesh = modelMeshes[modelNode->MeshIndices[0]];
-
                 entityManager.AddComponent<RenderMesh>(entity, RenderMesh{
                     .Mesh     = modelMesh.Mesh,
                     .Material = modelScene->Materials[modelMesh.MaterialIndex],
@@ -87,9 +80,9 @@ namespace Copium
         };
 
         {
-            ModelNode* const rootModelNode = modelScene->RootNode.get();
+            const ModelNode* const rootModelNode = modelScene->RootNode.get();
 
-            Entity rootEntity = createEntity(rootModelNode);
+            Entity rootEntity = CreateEntity(rootModelNode);
             m_rootEntities.push_back(rootEntity);
 
             if (rootModelNode->Children.empty() == false)
@@ -114,7 +107,7 @@ namespace Copium
             {
                 ModelNode* const childModelNode = childrenModelNodes[parentNode.NextChildIndex++].get();
 
-                Entity childEntity = createEntity(childModelNode);
+                Entity childEntity = CreateEntity(childModelNode);
 
                 parentNode.EntityChildren.push_back(childEntity);
                 entityManager.AddComponent<Parent>(childEntity, Parent{ .Value = parentNode.Entity });

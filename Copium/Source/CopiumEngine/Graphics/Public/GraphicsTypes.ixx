@@ -253,7 +253,7 @@ export namespace Copium
         float32 Depth;
         uint8   Stencil;
 
-        // NOTE(v.matushkin): <ReverseZ> 
+        // NOTE(v.matushkin): <ReverseZ>
         [[nodiscard]] static ClearDepthStencilValue Default() noexcept { return ClearDepthStencilValue{ .Depth = 0.f, .Stencil = 0 }; }
     };
 
@@ -605,7 +605,7 @@ export namespace Copium
         return DepthStencilStateDesc{
             .DepthTestEnable      = true,
             .DepthWriteEnable     = true,
-            .DepthCompareFunction = CompareFunction::GreaterEqual, // NOTE(v.matushkin: <ReverseZ>
+            .DepthCompareFunction = CompareFunction::GreaterEqual, // NOTE(v.matushkin): <ReverseZ>
         };
     }
 

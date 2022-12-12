@@ -1,6 +1,8 @@
 export module CopiumEngine.Assets.Model;
 
 import Copium.Core;
+import Copium.Math;
+
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
 
@@ -23,6 +25,11 @@ export namespace Copium
     {
         std::string                             Name;
         std::vector<std::unique_ptr<ModelNode>> Children;
+
+        Float3                                  Position;
+        float32                                 Scale;
+        Quaternion                              Rotation;
+
         // NOTE(v.matushkin): Idk what Assimp means by having multiple meshes per node and how I should handle it
         std::vector<uint32>                     MeshIndices;
     };
