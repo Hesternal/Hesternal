@@ -87,9 +87,14 @@ namespace
     {
         for (const Entity entity : entities)
         {
+            const EditorData* const entityEditorData = entityManager.TryGetComponent<EditorData>(entity);
+            const std::string& entityName = entityEditorData != nullptr
+                                          ? entityEditorData->EntityName
+                                          : fmt::format("Entity {{{:d}}}", std::to_underlying(entity));
+
             const Child* const entityChildren = entityManager.TryGetComponent<Child>(entity);
+
             const bool isSelected = Selection::IsSelected(entity);
-            const std::string entityName = fmt::format("Entity {{{:d}}}", std::to_underlying(entity));
 
             if (entityChildren == nullptr)
             {
