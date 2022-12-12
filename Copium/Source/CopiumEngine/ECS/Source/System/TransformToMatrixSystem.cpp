@@ -8,7 +8,7 @@ COP_WARNING_DISABLE_MSVC(4996)
 #include <entt/entity/view.hpp>
 COP_WARNING_POP
 
-module CopiumEngine.ECS.System.Transform;
+module CopiumEngine.ECS.System.TransformToMatrix;
 
 import Copium.Core;
 import Copium.Math;
@@ -19,17 +19,17 @@ import CopiumEngine.ECS.Components;
 namespace Copium
 {
 
-    void TransformSystem::OnCreate(EntityManager& entityManager)
+    void TransformToMatrixSystem::OnCreate(EntityManager& entityManager)
     {
         COP_UNUSED(entityManager);
     }
 
-    void TransformSystem::OnDestroy(EntityManager& entityManager)
+    void TransformToMatrixSystem::OnDestroy(EntityManager& entityManager)
     {
         COP_UNUSED(entityManager);
     }
 
-    void TransformSystem::OnUpdate(EntityManager& entityManager)
+    void TransformToMatrixSystem::OnUpdate(EntityManager& entityManager)
     {
         const auto transformView = entityManager.GetView<const Transform, LocalToWorld>();
 
