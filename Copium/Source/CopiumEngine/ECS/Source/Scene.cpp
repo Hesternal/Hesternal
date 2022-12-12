@@ -67,6 +67,12 @@ namespace Copium
         auto createEntity = [modelScene, &entityManager, &modelMeshes](ModelNode* modelNode) -> Entity
         {
             Entity entity = entityManager.CreateEntity();
+            // TODO(v.matushkin): <Components/Editor>
+            //   Right now this is the simplest way to add Editor components, probably in the future
+            //   there should be multiple layers of components initialization so I can hook to it from the Editor.
+            //   Or something like that, idk.
+            // NOTE(v.matushkin): Copies of Node name strings, may be just move them
+            entityManager.AddComponent<EditorData>(entity, EditorData{ .EntityName = modelNode->Name });
 
             if (modelNode->MeshIndices.empty() == false)
             {
