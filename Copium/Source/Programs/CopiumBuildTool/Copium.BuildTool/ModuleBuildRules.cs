@@ -7,9 +7,7 @@ public enum ConanLibrary
     catch2,
     cxxopts,
     entt,
-    glfw,
     imgui,
-    simdjson,
     spdlog,
     stb,
 }
