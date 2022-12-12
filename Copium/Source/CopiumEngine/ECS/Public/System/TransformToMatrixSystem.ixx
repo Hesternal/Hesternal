@@ -1,4 +1,4 @@
-export module CopiumEngine.ECS.System.Transform;
+export module CopiumEngine.ECS.System.TransformToMatrix;
 
 import CopiumEngine.ECS.ISystem;
 import CopiumEngine.ECS.EntityManager;
@@ -7,14 +7,14 @@ import CopiumEngine.ECS.EntityManager;
 export namespace Copium
 {
 
-    class TransformSystem final : public ISystem
+    class TransformToMatrixSystem final : public ISystem
     {
     public:
-        TransformSystem() = default;
-        ~TransformSystem() = default;
+        TransformToMatrixSystem() = default;
+        ~TransformToMatrixSystem() = default;
 
-        TransformSystem(TransformSystem&& other) noexcept = default;
-        TransformSystem& operator=(TransformSystem&& other) noexcept = default;
+        TransformToMatrixSystem(TransformToMatrixSystem&& other) noexcept = default;
+        TransformToMatrixSystem& operator=(TransformToMatrixSystem&& other) noexcept = default;
 
         //< ISystem Interface Public
         void OnCreate(EntityManager& entityManager) override;
