@@ -141,11 +141,13 @@ export namespace Copium
         DX11CommandBuffer(DX11CommandBuffer&& other) = default;
         DX11CommandBuffer& operator=(DX11CommandBuffer&& other) = default;
 
+        //- RenderPass
         void BeginRenderPass(RenderPassHandle renderPassHandle) override;
 
         void SetViewport(const Rect& viewportRect) override;
         void SetScissorRect(const RectInt& scissorRect) override;
 
+        //- Bind
         void BindShader(ShaderHandle shaderHandle) override;
         void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
         void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
@@ -155,9 +157,15 @@ export namespace Copium
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
         void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
 
+        //- Draw
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;
         void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
+
+        //- GraphicsBuffer
+        void CopyBuffer(GraphicsBufferHandle srcGraphicsBufferHandle, GraphicsBufferHandle dstGraphicsBufferHandle) override;
+        [[nodiscard]] void* MapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
+        void UnmapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         void BeginSample(std::string_view name) override;
@@ -201,7 +209,6 @@ export namespace Copium
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
         [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) override;
 
-        void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) override;
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;
 
         void DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle) override;

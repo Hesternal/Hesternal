@@ -7,6 +7,7 @@ import CopiumEngine.Graphics.RenderData;
 
 import <memory>;
 import <vector>;
+import <utility>;
 
 
 export namespace Copium
@@ -25,7 +26,7 @@ export namespace Copium
 
         [[nodiscard]] CommandBuffer& GetCommandBuffer() { return m_commandBuffer; }
 
-        void SetRenderData(RenderData&& renderData);
+        void SetRenderData(RenderData&& renderData) { m_renderData = std::move(renderData); }
         void NewFrame();
 
         void BeginRenderPass(RenderPassHandle renderPassHandle);

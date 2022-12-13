@@ -15,6 +15,7 @@ import CopiumEngine.Graphics.GraphicsBuffer;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <memory>;
+import <span>;
 import <utility>;
 
 
@@ -32,11 +33,13 @@ export namespace Copium
         CommandBuffer(CommandBuffer&& other) = default;
         CommandBuffer& operator=(CommandBuffer&& other) = default;
 
+        //- RenderPass
         void BeginRenderPass(RenderPassHandle renderPassHandle);
 
         void SetViewport(const Rect& viewportRect);
         void SetScissorRect(const RectInt& scissorRect);
 
+        //- Bind
         void BindShader(const Shader* shader);
         void BindVertexBuffer(const GraphicsBuffer* vertexBuffer, uint32 stride, uint32 offset);
         void BindIndexBuffer(const GraphicsBuffer* indexBuffer, IndexFormat indexFormat);
@@ -49,9 +52,16 @@ export namespace Copium
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot);
         void BindMaterial(const Texture* baseColorTexture, const Texture* normalTexture);
 
+        //- Draw
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset);
         void DrawMesh(const Mesh* mesh);
         void DrawProcedural(uint32 vertexCount);
+
+        //- GraphicsBuffer
+        void CopyBuffer(const GraphicsBuffer& srcGraphicsBuffer, const GraphicsBuffer& dstGraphicsBuffer);
+        // NOTE(v.matushkin): May be it's redundant to return span and just a pointer will do?
+        [[nodiscard]] std::span<uint8> MapBuffer(const GraphicsBuffer& graphicsBuffer);
+        void UnmapBuffer(const GraphicsBuffer& graphicsBuffer);
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         void BeginSample(std::string_view name);
@@ -148,6 +158,19 @@ export namespace Copium
     void CommandBuffer::DrawProcedural(uint32 vertexCount)
     {
         m_commandBuffer->DrawProcedural(vertexCount);
+    }
+
+
+    std::span<uint8> CommandBuffer::MapBuffer(const GraphicsBuffer& graphicsBuffer)
+    {
+        void* const mappedData = m_commandBuffer->MapBuffer(graphicsBuffer.GetHandle());
+        // NOTE(v.matushkin): GetBufferSize can be different from the actual buffer size
+        return std::span<uint8>(static_cast<uint8*>(mappedData), graphicsBuffer.GetBufferSize());
+    }
+
+    void CommandBuffer::UnmapBuffer(const GraphicsBuffer& graphicsBuffer)
+    {
+        m_commandBuffer->UnmapBuffer(graphicsBuffer.GetHandle());
     }
 
 

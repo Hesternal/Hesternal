@@ -913,22 +913,6 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data)
-    {
-        ID3D11Buffer* d3dBuffer = _GetGraphicsBuffer(graphicsBufferHandle).Buffer;
-        {
-            D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
-                .pData      = nullptr,
-                .RowPitch   = 0,
-                .DepthPitch = 0,
-            };
-
-            m_deviceContext->Map(d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, data.data(), data.size());
-            m_deviceContext->Unmap(d3dBuffer, 0);
-        }
-    }
-
     void DX11GraphicsDevice::ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height)
     {
         DX11Swapchain& dx11Swapchain = _GetSwapchain(swapchainHandle);

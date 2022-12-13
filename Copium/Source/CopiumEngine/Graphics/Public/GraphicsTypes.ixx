@@ -6,6 +6,7 @@ module;
 export module CopiumEngine.Graphics.GraphicsTypes;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.Core.ForwardDeclaration;
 
@@ -46,6 +47,7 @@ export namespace Copium
         Vertex,
         Index,
         Constant,
+        Invalid = Math::UInt8::Max,
     };
 
     struct GraphicsBufferDesc final
@@ -59,6 +61,7 @@ export namespace Copium
         [[nodiscard]] static GraphicsBufferDesc Vertex(uint32 elementCount, uint32 elementSize) noexcept;
         [[nodiscard]] static GraphicsBufferDesc Index(uint32 elementCount, uint32 elementSize) noexcept;
         [[nodiscard]] static GraphicsBufferDesc Constant(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static GraphicsBufferDesc Invalid() noexcept;
     };
 
 
@@ -541,17 +544,22 @@ export namespace Copium
 
     GraphicsBufferDesc GraphicsBufferDesc::Vertex(uint32 elementCount, uint32 elementSize) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Vertex);
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Vertex };
     }
 
     GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, uint32 elementSize) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Index);
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Index };
     }
 
     GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Constant);
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Constant };
+    }
+
+    GraphicsBufferDesc GraphicsBufferDesc::Invalid() noexcept
+    {
+        return GraphicsBufferDesc{ .ElementCount = 0, .ElementSize = 0, .Usage = GraphicsBufferUsage::Invalid };
     }
 
 
