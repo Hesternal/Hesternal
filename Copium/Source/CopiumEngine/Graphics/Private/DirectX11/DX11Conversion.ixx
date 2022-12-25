@@ -18,13 +18,28 @@ import <utility>;
 COP_WARNING_POP
 
 
+// https://developercommunity.visualstudio.com/t/VS-2022-1750-Preview-2-C20-modules-b/10229203
+#define _COP_STATIC_ARRAY_BUG_FIXED false
+
+// NOTE(v.matushkin): I should mark this functions as `constexpr` anyway, but then I can't mark array as `static`
+//   and I don't know how static array works in constexpr function.
+
+#if _COP_STATIC_ARRAY_BUG_FIXED
+    #define _COP_STATIC_ARRAY static constinit
+    #define _COP_FUNCTION     inline
+#else
+    #define _COP_STATIC_ARRAY constexpr
+    #define _COP_FUNCTION     constexpr
+#endif
+
+
 export namespace Copium
 {
 
     //- GraphicsBuffer
-    [[nodiscard]] inline uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
+    [[nodiscard]] _COP_FUNCTION uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
     {
-        static const D3D11_BIND_FLAG d3dBindFlags[] = {
+        _COP_STATIC_ARRAY D3D11_BIND_FLAG d3dBindFlags[] = {
             D3D11_BIND_VERTEX_BUFFER,
             D3D11_BIND_INDEX_BUFFER,
             D3D11_BIND_CONSTANT_BUFFER,
@@ -34,16 +49,16 @@ export namespace Copium
     }
 
     //- Mesh
-    [[nodiscard]] inline DXGI_FORMAT dx11_IndexFormat(IndexFormat indexFormat) noexcept
+    [[nodiscard]] constexpr DXGI_FORMAT dx11_IndexFormat(IndexFormat indexFormat) noexcept
     {
         return indexFormat == IndexFormat::UInt16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
     }
 
     //- RenderTexture
     #define DX11_NO_DEPTH_STENCIL 0
-    [[nodiscard]] inline uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType) noexcept
+    [[nodiscard]] _COP_FUNCTION uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType) noexcept
     {
-        static const uint32 d3dClearFlags[] = {
+        _COP_STATIC_ARRAY uint32 d3dClearFlags[] = {
             DX11_NO_DEPTH_STENCIL,
             D3D11_CLEAR_DEPTH,
             // D3D11_CLEAR_STENCIL,
@@ -54,7 +69,7 @@ export namespace Copium
     }
 
     //- Sampler
-    [[nodiscard]] inline D3D11_FILTER dx11_SamplerFilter(SamplerFilterMode minFilter, SamplerFilterMode magFilter, SamplerMipmapMode mipmapMode, uint8 anisoLevel) noexcept
+    [[nodiscard]] constexpr D3D11_FILTER dx11_SamplerFilter(SamplerFilterMode minFilter, SamplerFilterMode magFilter, SamplerMipmapMode mipmapMode, uint8 anisoLevel) noexcept
     {
         D3D11_FILTER_TYPE d3dMinFilter = minFilter == SamplerFilterMode::Nearest ? D3D11_FILTER_TYPE_POINT : D3D11_FILTER_TYPE_LINEAR;
         D3D11_FILTER_TYPE d3dMagFilter = magFilter == SamplerFilterMode::Nearest ? D3D11_FILTER_TYPE_POINT : D3D11_FILTER_TYPE_LINEAR;
@@ -68,9 +83,9 @@ export namespace Copium
         return static_cast<D3D11_FILTER>(d3dSamplerFilter);
     }
 
-    [[nodiscard]] inline D3D11_TEXTURE_ADDRESS_MODE dx11_SamplerAddressMode(SamplerAddressMode samplerAddressMode) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_TEXTURE_ADDRESS_MODE dx11_SamplerAddressMode(SamplerAddressMode samplerAddressMode) noexcept
     {
-        static const D3D11_TEXTURE_ADDRESS_MODE d3dSamplerAddressMode[] = {
+        _COP_STATIC_ARRAY D3D11_TEXTURE_ADDRESS_MODE d3dSamplerAddressMode[] = {
             D3D11_TEXTURE_ADDRESS_CLAMP,
             D3D11_TEXTURE_ADDRESS_BORDER,
             D3D11_TEXTURE_ADDRESS_MIRROR_ONCE,
@@ -84,9 +99,9 @@ export namespace Copium
     //- Shader states
 
     //-- RasterizerState
-    [[nodiscard]] inline D3D11_CULL_MODE dx11_CullMode(CullMode cullMode) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_CULL_MODE dx11_CullMode(CullMode cullMode) noexcept
     {
-        static const D3D11_CULL_MODE d3dCullMode[] = {
+        _COP_STATIC_ARRAY D3D11_CULL_MODE d3dCullMode[] = {
             D3D11_CULL_NONE,
             D3D11_CULL_FRONT,
             D3D11_CULL_BACK,
@@ -95,9 +110,9 @@ export namespace Copium
         return d3dCullMode[std::to_underlying(cullMode)];
     }
 
-    [[nodiscard]] inline D3D11_FILL_MODE dx11_PolygonMode(PolygonMode polygonMode) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_FILL_MODE dx11_PolygonMode(PolygonMode polygonMode) noexcept
     {
-        static const D3D11_FILL_MODE d3dPolygonMode[] = {
+        _COP_STATIC_ARRAY D3D11_FILL_MODE d3dPolygonMode[] = {
             D3D11_FILL_SOLID,
             D3D11_FILL_WIREFRAME,
         };
@@ -106,9 +121,9 @@ export namespace Copium
     }
 
     //-- DepthStencilState
-    [[nodiscard]] inline D3D11_COMPARISON_FUNC dx11_CompareFunction(CompareFunction compareFunction) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_COMPARISON_FUNC dx11_CompareFunction(CompareFunction compareFunction) noexcept
     {
-        static const D3D11_COMPARISON_FUNC d3dCompareFunction[] = {
+        _COP_STATIC_ARRAY D3D11_COMPARISON_FUNC d3dCompareFunction[] = {
             D3D11_COMPARISON_NEVER,
             D3D11_COMPARISON_LESS,
             D3D11_COMPARISON_EQUAL,
@@ -123,9 +138,9 @@ export namespace Copium
     }
 
     //-- BlendState
-    [[nodiscard]] inline D3D11_BLEND_OP dx11_BlendOp(BlendOp blendOp) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_BLEND_OP dx11_BlendOp(BlendOp blendOp) noexcept
     {
-        static const D3D11_BLEND_OP d3dBlendOp[] = {
+        _COP_STATIC_ARRAY D3D11_BLEND_OP d3dBlendOp[] = {
             D3D11_BLEND_OP_ADD,
             D3D11_BLEND_OP_SUBTRACT,
             D3D11_BLEND_OP_REV_SUBTRACT,
@@ -136,9 +151,9 @@ export namespace Copium
         return d3dBlendOp[std::to_underlying(blendOp)];
     }
 
-    [[nodiscard]] inline D3D11_BLEND dx11_BlendFactor(BlendFactor blendFactor) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_BLEND dx11_BlendFactor(BlendFactor blendFactor) noexcept
     {
-        static const D3D11_BLEND d3dBlendFactor[] = {
+        _COP_STATIC_ARRAY D3D11_BLEND d3dBlendFactor[] = {
             D3D11_BLEND_ZERO,
             D3D11_BLEND_ONE,
             D3D11_BLEND_SRC_COLOR,
@@ -159,9 +174,9 @@ export namespace Copium
         return d3dBlendFactor[std::to_underlying(blendFactor)];
     }
 
-    [[nodiscard]] inline D3D11_LOGIC_OP dx11_BlendLogicOp(BlendLogicOp blendLogicOp) noexcept
+    [[nodiscard]] _COP_FUNCTION D3D11_LOGIC_OP dx11_BlendLogicOp(BlendLogicOp blendLogicOp) noexcept
     {
-        static const D3D11_LOGIC_OP d3dBlendLogicOp[] = {
+        _COP_STATIC_ARRAY D3D11_LOGIC_OP d3dBlendLogicOp[] = {
             D3D11_LOGIC_OP_CLEAR,
             D3D11_LOGIC_OP_SET,
             D3D11_LOGIC_OP_COPY,

@@ -19,6 +19,16 @@ import <span>;
 import <utility>;
 
 
+// https://developercommunity.visualstudio.com/t/VS-2022-1750-Preview-2-C20-modules-b/10230159
+#define _COP_NODISCARD_BUG_FIXED false
+
+#if _COP_NODISCARD_BUG_FIXED
+    #define _COP_NODISCARD_BUG_WORKAROUND(unused_variable) do { } while ((void)0,0)
+#else
+    #define _COP_NODISCARD_BUG_WORKAROUND(unused_variable) COP_UNUSED(unused_variable)
+#endif
+
+
 export namespace Copium
 {
 
@@ -67,7 +77,7 @@ export namespace Copium
         void BeginSample(std::string_view name);
         void EndSample();
 #else
-        void BeginSample([[maybe_unused]] std::string_view name) {}
+        void BeginSample([[maybe_unused]] std::string_view name) { _COP_NODISCARD_BUG_WORKAROUND(name); }
         void EndSample() {}
 #endif
 
