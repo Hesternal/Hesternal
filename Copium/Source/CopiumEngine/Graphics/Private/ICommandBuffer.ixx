@@ -38,6 +38,7 @@ export namespace Copium
         //- Bind
         virtual void BindShader(ShaderHandle shaderHandle) = 0;
         virtual void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) = 0;
+        virtual void BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3]) = 0;
         virtual void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) = 0;
         // TODO(v.matushkin): Shouldn't be exposed, set buffers only through material?
         virtual void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) = 0;
@@ -49,7 +50,6 @@ export namespace Copium
 
         //- Draw
         virtual void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) = 0;
-        virtual void DrawMesh(MeshHandle meshHandle) = 0;
         virtual void DrawProcedural(uint32 vertexCount) = 0;
 
         //- GraphicsBuffer

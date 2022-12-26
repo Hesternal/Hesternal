@@ -1,8 +1,16 @@
+module;
+
+#include "Copium/Core/Debug.hpp"
+
 module CopiumEngine.Assets.Mesh;
 
-import CopiumEngine.Assets.AssetManager;
+import Copium.Core;
 
+import <span>;
 import <utility>;
+
+
+// NOTE(v.matushkin): I need a way to create IMMUTABLE GraphicsBuffer (altough there is no such thing in DX11/VK ?)
 
 
 namespace Copium
@@ -10,57 +18,28 @@ namespace Copium
 
     Mesh::Mesh(MeshDesc&& meshDesc)
         : m_meshDesc(std::move(meshDesc))
-    {
-        _InitGpuResource();
-    }
-
-    Mesh::~Mesh()
-    {
-        if (m_meshHandle != MeshHandle::Invalid)
-        {
-            AssetManager::DestroyGpuResource(m_meshHandle);
-        }
-    }
-
-    Mesh::Mesh()
-        : m_meshHandle(MeshHandle::Invalid)
-    {
-    }
-
-    Mesh::Mesh(DoNotInitialize, MeshDesc&& meshDesc)
-        : m_meshDesc(std::move(meshDesc))
-        , m_meshHandle(MeshHandle::Invalid)
-    {
-    }
-
-    Mesh::Mesh(Mesh&& other) noexcept
-        : m_meshDesc(std::move(other.m_meshDesc))
-        , m_meshHandle(std::exchange(other.m_meshHandle, MeshHandle::Invalid))
-    {
-    }
+        , m_indexBuffer(GraphicsBufferDesc{
+                .ElementCount = static_cast<uint32>(m_meshDesc.IndexData.size()),
+                .ElementSize  = sizeof(uint8),
+                .Usage        = GraphicsBufferUsage::Index},
+            std::span<const uint8>(m_meshDesc.IndexData.data(), static_cast<uint32>(m_meshDesc.IndexData.size())))
+        , m_vertexBuffer(GraphicsBufferDesc::Vertex(static_cast<uint32>(m_meshDesc.VertexData.size()), sizeof(uint8)),
+            std::span<const uint8>(m_meshDesc.VertexData.data(), static_cast<uint32>(m_meshDesc.VertexData.size())))
+    {}
 
     Mesh& Mesh::operator=(Mesh&& other) noexcept
     {
-        m_meshDesc = std::move(other.m_meshDesc);
-        m_meshHandle = std::exchange(other.m_meshHandle, MeshHandle::Invalid);
+        if (this != &other)
+        {
+            m_meshDesc = std::move(other.m_meshDesc);
+            m_indexBuffer = std::move(other.m_indexBuffer);
+            m_vertexBuffer = std::move(other.m_vertexBuffer);
+        }
+        else
+        {
+            COP_ASSERT_MSG(false, "Trying to move assign to self");
+        }
         return *this;
-    }
-
-
-    void Mesh::Convert(IBinaryConverter& bc)
-    {
-        bc << m_meshDesc;
-    }
-
-    void Mesh::OnAfterDeserealize()
-    {
-        _InitGpuResource();
-    }
-
-
-    void Mesh::_InitGpuResource()
-    {
-        m_meshHandle = AssetManager::CreateGpuResource(m_meshDesc);
     }
 
 } // namespace Copium

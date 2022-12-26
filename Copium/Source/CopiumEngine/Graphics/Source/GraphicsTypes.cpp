@@ -90,39 +90,6 @@ namespace Copium
         return Dimension * vertexAttributeElementStride[std::to_underlying(Format)];
     }
 
-    VertexAttributeDesc VertexAttributeDesc::Position() noexcept
-    {
-        return VertexAttributeDesc{
-            .Offset    = 0,
-            .Dimension = 3,
-            .Stream    = 0,
-            .Attribute = VertexAttribute::Position,
-            .Format    = VertexAttributeFormat::Float32,
-        };
-    }
-
-    VertexAttributeDesc VertexAttributeDesc::Normal() noexcept
-    {
-        return VertexAttributeDesc{
-            .Offset    = 0,
-            .Dimension = 3,
-            .Stream    = 1,
-            .Attribute = VertexAttribute::Normal,
-            .Format    = VertexAttributeFormat::Float32,
-        };
-    }
-
-    VertexAttributeDesc VertexAttributeDesc::UV0() noexcept
-    {
-        return VertexAttributeDesc{
-            .Offset    = 0,
-            .Dimension = 2,
-            .Stream    = 2,
-            .Attribute = VertexAttribute::UV0,
-            .Format    = VertexAttributeFormat::Float32,
-        };
-    }
-
 
     RenderTextureType RenderTextureDesc::RenderTextureType() const noexcept
     {

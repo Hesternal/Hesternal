@@ -249,9 +249,9 @@ namespace
 
             MeshDesc meshDesc = {
                 .Name        = std::move(meshName),
-                .Position    = VertexAttributeDesc::Position(),
-                .Normal      = VertexAttributeDesc::Normal(),
-                .UV0         = VertexAttributeDesc::UV0(),
+                .Position    = VertexAttributeDesc::Position(0),
+                .Normal      = VertexAttributeDesc::Normal(positionDataSize),
+                .UV0         = VertexAttributeDesc::UV0(positionDataSize + normalDataSize),
                 .IndexCount  = assimpMesh->mNumFaces * AssimpConstants::IndicesPerFace,
                 .VertexCount = numVertices,
             };

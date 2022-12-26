@@ -143,6 +143,16 @@ namespace Copium
         m_deviceContext->IASetVertexBuffers(0, 1, &dx11VertexBuffer.Buffer, &stride, &offset);
     }
 
+    void DX11CommandBuffer::BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3])
+    {
+        ID3D11Buffer* d3dVertexBuffers[3];
+        d3dVertexBuffers[0] = m_graphicsDevice->_GetGraphicsBuffer(vertexBufferHandle).Buffer;
+        d3dVertexBuffers[1] = d3dVertexBuffers[0];
+        d3dVertexBuffers[2] = d3dVertexBuffers[0];
+
+        m_deviceContext->IASetVertexBuffers(0, 3, d3dVertexBuffers, strides, offsets);
+    }
+
     void DX11CommandBuffer::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat)
     {
         const DX11GraphicsBuffer& dx11IndexBuffer = m_graphicsDevice->_GetGraphicsBuffer(indexBufferHandle);
@@ -199,16 +209,6 @@ namespace Copium
     void DX11CommandBuffer::DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset)
     {
         m_deviceContext->DrawIndexed(indexCount, firstIndex, vertexOffset);
-    }
-
-    void DX11CommandBuffer::DrawMesh(MeshHandle meshHandle)
-    {
-        const DX11Mesh& dx11Mesh = m_graphicsDevice->_GetMesh(meshHandle);
-
-        m_deviceContext->IASetIndexBuffer(dx11Mesh.Index, dx11Mesh.IndexFormat, 0);
-        m_deviceContext->IASetVertexBuffers(0, 3, dx11Mesh.VertexBuffers, dx11Mesh.VertexStrides, dx11Mesh.VertexOffsets);
-
-        m_deviceContext->DrawIndexed(dx11Mesh.IndexCount, 0, 0);
     }
 
     void DX11CommandBuffer::DrawProcedural(uint32 vertexCount)

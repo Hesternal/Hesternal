@@ -115,9 +115,8 @@ namespace Copium
                 m_commandBuffer.BindMaterial(baseColorMap, normalMap);
             }
 
-            const Mesh* mesh = m_renderData.Meshes[entityRenderData.MeshIndex].get();
             m_commandBuffer.BindConstantBuffer(&m_perDrawBuffers, k_PerDrawSlot, i);
-            m_commandBuffer.DrawMesh(mesh);
+            m_commandBuffer.DrawMesh(*m_renderData.Meshes[entityRenderData.MeshIndex]);
         }
     }
 

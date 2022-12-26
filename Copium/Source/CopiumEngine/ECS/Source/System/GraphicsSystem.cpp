@@ -41,7 +41,7 @@ namespace Copium
         const auto renderMeshView = entityManager.GetView<const LocalToWorld, const RenderMesh>();
 
         std::unordered_map<std::shared_ptr<Material>, uint32> materialToIndex;
-        std::unordered_map<MeshHandle, uint32> meshToIndex;
+        std::unordered_map<std::shared_ptr<Mesh>, uint32> meshToIndex;
 
         RenderData renderData;
         renderData.Camera = {
@@ -67,17 +67,16 @@ namespace Copium
             }
 
             //- Get Mesh index
-            const MeshHandle meshHandle = renderMesh.Mesh->GetHandle();
             uint32 meshIndex;
 
-            if (const auto meshToIndexIt = meshToIndex.find(meshHandle); meshToIndexIt != meshToIndex.end())
+            if (const auto meshToIndexIt = meshToIndex.find(renderMesh.Mesh); meshToIndexIt != meshToIndex.end())
             {
                 meshIndex = meshToIndexIt->second;
             }
             else
             {
                 meshIndex = static_cast<uint32>(renderData.Meshes.size());
-                meshToIndex.emplace(meshHandle, meshIndex);
+                meshToIndex.emplace(renderMesh.Mesh, meshIndex);
                 renderData.Meshes.push_back(renderMesh.Mesh);
             }
 
