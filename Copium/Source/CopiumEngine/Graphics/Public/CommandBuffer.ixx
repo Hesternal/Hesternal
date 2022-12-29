@@ -51,8 +51,8 @@ export namespace Copium
 
         //- Bind
         void BindShader(const Shader* shader);
+        void BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat, uint32 offset);
         void BindVertexBuffer(const GraphicsBuffer& vertexBuffer, uint32 stride, uint32 offset);
-        void BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat);
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot);
         // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters cause I don't know
         //  if there are cases when you can bind like half of the buffer or break the 256 byte alignment.
@@ -114,14 +114,14 @@ export namespace Copium
         }
     }
 
+    void CommandBuffer::BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat, uint32 offset)
+    {
+        m_commandBuffer->BindIndexBuffer(indexBuffer.GetHandle(), indexFormat, offset);
+    }
+
     void CommandBuffer::BindVertexBuffer(const GraphicsBuffer& vertexBuffer, uint32 stride, uint32 offset)
     {
         m_commandBuffer->BindVertexBuffer(vertexBuffer.GetHandle(), stride, offset);
-    }
-
-    void CommandBuffer::BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat)
-    {
-        m_commandBuffer->BindIndexBuffer(indexBuffer.GetHandle(), indexFormat);
     }
 
     void CommandBuffer::BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot)
@@ -164,13 +164,19 @@ export namespace Copium
     {
         const MeshDesc& meshDesc = mesh.GetDesc();
 
-        BindIndexBuffer(mesh.GetIndexBuffer(), meshDesc.IndexFormat);
-
+        const GraphicsBufferHandle indexBufferHandle = mesh.GetIndexBuffer().GetHandle();
+        const GraphicsBufferHandle vertexBufferHandle = mesh.GetVertexBuffer().GetHandle();
         const uint32 vertexStrides[3] = { meshDesc.Position.Stride(), meshDesc.Normal.Stride(), meshDesc.UV0.Stride() };
-        const uint32 vertexOffsets[3] = { meshDesc.Position.Offset, meshDesc.Normal.Offset, meshDesc.UV0.Offset };
-        m_commandBuffer->BindVertexBuffers(mesh.GetVertexBuffer().GetHandle(), vertexStrides, vertexOffsets);
 
-        DrawIndexed(meshDesc.IndexCount, 0, 0);
+        for (const SubMeshDesc& subMeshDesc : meshDesc.SubMeshes)
+        {
+            m_commandBuffer->BindIndexBuffer(indexBufferHandle, subMeshDesc.IndexFormat, subMeshDesc.IndexBufferOffset);
+
+            const uint32 vertexOffsets[3] = { subMeshDesc.PositionBufferOffset, subMeshDesc.NormalBufferOffset, subMeshDesc.UV0BufferOffset };
+            m_commandBuffer->BindVertexBuffers(vertexBufferHandle, vertexStrides, vertexOffsets);
+
+            m_commandBuffer->DrawIndexed(subMeshDesc.IndexCount, 0, 0);
+        }
     }
 
     void CommandBuffer::DrawProcedural(uint32 vertexCount)

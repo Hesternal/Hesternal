@@ -137,6 +137,12 @@ namespace Copium
         m_deviceContext->OMSetBlendState(dx11Shader.BlendState, nullptr, D3D11_DEFAULT_SAMPLE_MASK);
     }
 
+    void DX11CommandBuffer::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat, uint32 offset)
+    {
+        const DX11GraphicsBuffer& dx11IndexBuffer = m_graphicsDevice->_GetGraphicsBuffer(indexBufferHandle);
+        m_deviceContext->IASetIndexBuffer(dx11IndexBuffer.Buffer, dx11_IndexFormat(indexFormat), offset);
+    }
+
     void DX11CommandBuffer::BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset)
     {
         const DX11GraphicsBuffer& dx11VertexBuffer = m_graphicsDevice->_GetGraphicsBuffer(vertexBufferHandle);
@@ -151,12 +157,6 @@ namespace Copium
         d3dVertexBuffers[2] = d3dVertexBuffers[0];
 
         m_deviceContext->IASetVertexBuffers(0, 3, d3dVertexBuffers, strides, offsets);
-    }
-
-    void DX11CommandBuffer::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat)
-    {
-        const DX11GraphicsBuffer& dx11IndexBuffer = m_graphicsDevice->_GetGraphicsBuffer(indexBufferHandle);
-        m_deviceContext->IASetIndexBuffer(dx11IndexBuffer.Buffer, dx11_IndexFormat(indexFormat), 0);
     }
 
     void DX11CommandBuffer::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot)

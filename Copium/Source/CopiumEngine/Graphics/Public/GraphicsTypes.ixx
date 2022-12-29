@@ -107,52 +107,43 @@ export namespace Copium
         Float32,
     };
 
-    CHT_STRUCT()
     struct VertexAttributeDesc final
     {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        uint32                Offset;
-        CHT_PROPERTY()
+        uint8                 Offset;
         uint8                 Dimension;
-        CHT_PROPERTY()
         uint8                 Stream;
-        CHT_PROPERTY()
         VertexAttribute       Attribute; // NOTE(v.matushkin): Do I need this?
-        CHT_PROPERTY()
         VertexAttributeFormat Format;
 
         [[nodiscard]] uint32 Stride() const noexcept;
 
-        [[nodiscard]] static constexpr VertexAttributeDesc Position(uint32 offset) noexcept;
-        [[nodiscard]] static constexpr VertexAttributeDesc Normal(uint32 offset) noexcept;
-        [[nodiscard]] static constexpr VertexAttributeDesc UV0(uint32 offset) noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc Position() noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc Normal() noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc UV0() noexcept;
     };
 
-    CHT_STRUCT()
+    struct SubMeshDesc final
+    {
+        IndexFormat IndexFormat;
+        uint32      IndexCount;
+        uint32      IndexBufferOffset;
+        uint32      VertexCount;
+        uint32      PositionBufferOffset;
+        uint32      NormalBufferOffset;
+        uint32      UV0BufferOffset;
+    };
+
     struct MeshDesc final
     {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        std::string         Name;
-        CHT_PROPERTY()
-        VertexAttributeDesc Position;
-        CHT_PROPERTY()
-        VertexAttributeDesc Normal;
-        CHT_PROPERTY()
-        VertexAttributeDesc UV0;
-        CHT_PROPERTY()
-        IndexFormat         IndexFormat;
-        CHT_PROPERTY()
-        uint32              IndexCount;
-        CHT_PROPERTY()
-        uint32              VertexCount;
-        CHT_PROPERTY()
-        std::vector<uint8>  IndexData;
-        CHT_PROPERTY()
-        std::vector<uint8>  VertexData;
+        std::string              Name;
+        VertexAttributeDesc      Position;
+        VertexAttributeDesc      Normal;
+        VertexAttributeDesc      UV0;
+        std::vector<SubMeshDesc> SubMeshes;
+        // NOTE(v.matushkin): *Data should be of some Array type, so there will be no memory wasted,
+        //   and no way to change the size of this containers.
+        std::vector<uint8>       IndexData;
+        std::vector<uint8>       VertexData;
     };
 
 
@@ -574,10 +565,10 @@ export namespace Copium
     }
 
 
-    constexpr VertexAttributeDesc VertexAttributeDesc::Position(uint32 offset) noexcept
+    constexpr VertexAttributeDesc VertexAttributeDesc::Position() noexcept
     {
         return VertexAttributeDesc{
-            .Offset    = offset,
+            .Offset    = 0,
             .Dimension = 3,
             .Stream    = 0,
             .Attribute = VertexAttribute::Position,
@@ -585,10 +576,10 @@ export namespace Copium
         };
     }
 
-    constexpr VertexAttributeDesc VertexAttributeDesc::Normal(uint32 offset) noexcept
+    constexpr VertexAttributeDesc VertexAttributeDesc::Normal() noexcept
     {
         return VertexAttributeDesc{
-            .Offset    = offset,
+            .Offset    = 0,
             .Dimension = 3,
             .Stream    = 1,
             .Attribute = VertexAttribute::Normal,
@@ -596,10 +587,10 @@ export namespace Copium
         };
     }
 
-    constexpr VertexAttributeDesc VertexAttributeDesc::UV0(uint32 offset) noexcept
+    constexpr VertexAttributeDesc VertexAttributeDesc::UV0() noexcept
     {
         return VertexAttributeDesc{
-            .Offset    = offset,
+            .Offset    = 0,
             .Dimension = 2,
             .Stream    = 2,
             .Attribute = VertexAttribute::UV0,

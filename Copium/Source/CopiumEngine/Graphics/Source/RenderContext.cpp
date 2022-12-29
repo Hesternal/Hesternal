@@ -29,7 +29,8 @@ namespace
 
     static constexpr int32 k_PerCameraSizeInBytes = sizeof(PerCamera);
     static constexpr int32 k_PerDrawSizeInBytes   = sizeof(PerDraw);
-    static constexpr int32 k_PerDrawElements      = 500;
+    // NOTE(v.matushkin): 1500 needed for Bistro, 2500 for SanMiguel
+    static constexpr int32 k_PerDrawElements      = 2500;
 
     static constexpr uint32 k_PerCameraSlot = 0;
     static constexpr uint32 k_PerDrawSlot   = 1;

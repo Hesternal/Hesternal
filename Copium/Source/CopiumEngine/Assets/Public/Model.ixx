@@ -7,6 +7,7 @@ import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
 
 import <memory>;
+import <optional>;
 import <string>;
 import <vector>;
 
@@ -18,7 +19,7 @@ export namespace Copium
     {
         std::shared_ptr<Mesh> Mesh;
         // NOTE(v.matushkin): What if I want to remap/override original material to some external?
-        uint32                MaterialIndex;
+        std::vector<uint32>   MaterialIndices;
     };
 
     struct ModelNode final
@@ -30,9 +31,11 @@ export namespace Copium
         float32                                 Scale;
         Quaternion                              Rotation;
 
-        // NOTE(v.matushkin): Idk what Assimp means by having multiple meshes per node and how I should handle it
-        std::vector<uint32>                     MeshIndices;
+        std::optional<uint32>                   MeshIndex;
     };
+    // NOTE(v.matushkin): Why with "uint32 MeshIndex" sizeof(ModelNode) == 88,
+    //  but with "std::optional<uint32> MeshIndex" it's 96 and not 92 ?
+    //static_assert(sizeof(ModelNode) == 96);
 
     struct ModelScene final
     {

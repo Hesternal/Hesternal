@@ -21,7 +21,6 @@ export namespace Copium
 
         [[nodiscard]] const MeshDesc&       GetDesc()         const noexcept { return m_meshDesc; }
         [[nodiscard]] const std::string&    GetName()         const noexcept { return m_meshDesc.Name; }
-        [[nodiscard]] IndexFormat           GetIndexFormat()  const noexcept { return m_meshDesc.IndexFormat; }
         [[nodiscard]] const GraphicsBuffer& GetIndexBuffer()  const noexcept { return m_indexBuffer; }
         [[nodiscard]] const GraphicsBuffer& GetVertexBuffer() const noexcept { return m_vertexBuffer; }
 

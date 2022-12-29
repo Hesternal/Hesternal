@@ -137,9 +137,9 @@ export namespace Copium
 
         //- Bind
         void BindShader(ShaderHandle shaderHandle) override;
+        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat, uint32 offset) override;
         void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
         void BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3]) override;
-        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize) override;
         void BindTexture(TextureHandle textureHandle, uint32 slot) override;

@@ -294,8 +294,8 @@ namespace Copium
 
         //- Setup render state
         commandBuffer.BindShader(m_imguiShader.get());
+        commandBuffer.BindIndexBuffer(*m_indexBuffer, IndexFormat::UInt16, 0);
         commandBuffer.BindVertexBuffer(*m_vertexBuffer, k_VertexElementSize, 0);
-        commandBuffer.BindIndexBuffer(*m_indexBuffer, IndexFormat::UInt16);
         commandBuffer.BindConstantBuffer(m_cameraBuffer.get(), 0);
         commandBuffer.SetViewport(Rect(0.0f, 0.0f, displaySize.x, displaySize.y));
 
