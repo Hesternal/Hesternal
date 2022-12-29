@@ -1,7 +1,6 @@
 export module CopiumEngine.ECS.System.Camera;
 
-import CopiumEngine.ECS.ISystem;
-import CopiumEngine.ECS.EntityManager;
+import Copium.ECS;
 
 
 export namespace Copium

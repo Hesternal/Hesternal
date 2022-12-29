@@ -1,7 +1,8 @@
 export module CopiumEngine.ECS.Scene;
 
+import Copium.ECS;
+
 import CopiumEngine.Assets.Model;
-import CopiumEngine.ECS.Entity;
 
 import <string>;
 import <vector>;

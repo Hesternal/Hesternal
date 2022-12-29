@@ -8,6 +8,7 @@ internal sealed class CopiumSolution : Solution
         : base("Copium", Globals.Build.ProjectDir.MakeSubDirItem("vs"))
     {
         AddProject(new CopiumCore(OutputDir));
+        AddProject(new CopiumECS(OutputDir));
         AddProject(new CopiumMath(OutputDir));
         AddProject(new CopiumEngine(OutputDir));
         AddProject(new CopiumEngineTests(OutputDir));

@@ -1,4 +1,4 @@
-export module CopiumEngine.ECS.Components:IComponent;
+export module Copium.ECS:IComponent;
 
 import <concepts>;
 

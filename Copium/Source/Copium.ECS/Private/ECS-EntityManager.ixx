@@ -11,10 +11,10 @@ COP_WARNING_DISABLE_MSVC(4996)
 #include <entt/entity/view.hpp>
 COP_WARNING_POP
 
-export module CopiumEngine.ECS.EntityManager;
+export module Copium.ECS:EntityManager;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.Entity;
+import :Entity;
+import :IComponent;
 
 import <utility>;
 
@@ -34,8 +34,8 @@ export namespace Copium
         EntityManager(EntityManager&& other) noexcept = default;
         EntityManager& operator=(EntityManager&& other) noexcept = default;
 
-        [[nodiscard]] Entity CreateEntity();
-        void DestroyEntity(Entity entity);
+        [[nodiscard]] Entity CreateEntity() { return m_registry.create(); }
+        void DestroyEntity(Entity entity) { m_registry.destroy(entity); }
 
         // NOTE(v.matushkin): Can return multiple components (creates view internally?)
         template<CComponent TComponent>
@@ -73,5 +73,14 @@ export namespace Copium
     private:
         entt::basic_registry<Entity> m_registry;
     };
+
+
+    EntityManager::EntityManager()
+    {
+    }
+
+    EntityManager::~EntityManager()
+    {
+    }
 
 } // export namespace Copium

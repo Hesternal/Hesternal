@@ -1,6 +1,6 @@
 export module CopiumEngine.ECS.Components:Editor;
 
-import :IComponent;
+import Copium.ECS;
 
 import <string>;
 

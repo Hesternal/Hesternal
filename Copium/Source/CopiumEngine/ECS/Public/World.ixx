@@ -1,7 +1,7 @@
 export module CopiumEngine.ECS.World;
 
-import CopiumEngine.ECS.EntityManager;
-import CopiumEngine.ECS.ISystem;
+import Copium.ECS;
+
 import CopiumEngine.ECS.Scene;
 
 import <memory>;

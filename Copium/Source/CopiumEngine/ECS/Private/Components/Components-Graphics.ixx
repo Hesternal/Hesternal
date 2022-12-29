@@ -1,7 +1,6 @@
 export module CopiumEngine.ECS.Components:Graphics;
 
-import :IComponent;
-
+import Copium.ECS;
 import Copium.Math;
 
 import CopiumEngine.Assets.Material;

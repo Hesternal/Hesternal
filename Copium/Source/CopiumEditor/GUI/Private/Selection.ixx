@@ -1,6 +1,6 @@
 export module CopiumEditor.GUI.Selection;
 
-import CopiumEngine.ECS.Entity;
+import Copium.ECS;
 
 
 // NOTE(v.matushkin): Not sure that this class should be in the GUI Module

@@ -12,6 +12,7 @@ internal sealed class CopiumEngine : CopiumCppProject
         SetConfigurationMatrix(new CopiumCppConfigurationMatrix(OutputType.StaticLib));
 
         AddPublicProjectReference<CopiumCore>();
+        AddPublicProjectReference<CopiumECS>();
         AddPublicProjectReference<CopiumMath>();
 
         AddSourcesDir("Assets");
@@ -29,8 +30,6 @@ internal sealed class CopiumEngine : CopiumCppProject
 
     protected override void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
     {
-        //- ECS
-        configuration.PublicConanLibs.Add(ConanLibrary.entt);
         //- Graphics
         if (configuration.OS == BuildOS.Windows)
         {

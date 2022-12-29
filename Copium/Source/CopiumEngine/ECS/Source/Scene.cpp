@@ -1,22 +1,17 @@
 module;
 
 #include "Copium/Core/Defines.hpp"
-
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4996)
-#include <entt/entity/registry.hpp>
-#include <entt/entity/view.hpp>
-COP_WARNING_POP
+#include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
 module CopiumEngine.ECS.Scene;
 
 import Copium.Core;
+import Copium.ECS;
 import Copium.Math;
 
 import CopiumEngine.Assets.Material;
 import CopiumEngine.Assets.Mesh;
 import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
 
 import <stack>;

@@ -1,20 +1,14 @@
 module;
 
 #include "Copium/Core/Defines.hpp"
-
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4996)
-#include <entt/entity/registry.hpp>
-#include <entt/entity/view.hpp>
-COP_WARNING_POP
+#include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
 module CopiumEditor.Editor.InspectorWindow;
 
 import Copium.Core;
+import Copium.ECS;
 
 import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.Entity;
-import CopiumEngine.ECS.EntityManager;
 import CopiumEngine.ECS.WorldManager;
 
 import CopiumEditor.Editor.ControllerComponentGui;
