@@ -53,7 +53,7 @@ namespace Copium
         std::stack<HierarchyNode> modelNodesStack;
         const std::vector<ModelMesh>& modelMeshes = modelScene->Meshes;
 
-        auto CreateEntity = [modelScene, &entityManager, &modelMeshes](const ModelNode* const modelNode) -> Entity
+        const auto CreateEntity = [modelScene, &entityManager, &modelMeshes](const ModelNode* const modelNode) -> Entity
         {
             Entity entity = entityManager.CreateEntity();
             entityManager.AddComponent<Transform>(entity,
@@ -67,12 +67,13 @@ namespace Copium
             // NOTE(v.matushkin): Copies of Node name strings, may be just move them
             entityManager.AddComponent<EditorData>(entity, EditorData{ .EntityName = modelNode->Name });
 
-            if (modelNode->MeshIndices.empty() == false)
+            if (modelNode->MeshIndex.has_value())
             {
-                const ModelMesh& modelMesh = modelMeshes[modelNode->MeshIndices[0]];
+                const ModelMesh& modelMesh = modelMeshes[*modelNode->MeshIndex];
                 entityManager.AddComponent<RenderMesh>(entity, RenderMesh{
                     .Mesh     = modelMesh.Mesh,
-                    .Material = modelScene->Materials[modelMesh.MaterialIndex],
+                    // TODO(v.matushkin): Hack, using only first material for all submeshes
+                    .Material = modelScene->Materials[modelMesh.MaterialIndices[0]],
                 });
             }
 

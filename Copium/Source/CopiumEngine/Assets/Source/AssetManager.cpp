@@ -6,11 +6,6 @@ import CopiumEngine.Graphics;
 namespace Copium
 {
 
-    MeshHandle AssetManager::CreateGpuResource(const MeshDesc& meshDesc)
-    {
-        return Graphics::GetGraphicsDevice()->CreateMesh(meshDesc);
-    }
-
     ShaderHandle AssetManager::CreateGpuResource(const ShaderDesc& shaderDesc)
     {
         return Graphics::GetGraphicsDevice()->CreateShader(shaderDesc);
@@ -21,11 +16,6 @@ namespace Copium
         return Graphics::GetGraphicsDevice()->CreateTexture2D(textureDesc, samplerDesc);
     }
 
-
-    void AssetManager::DestroyGpuResource(MeshHandle meshHandle)
-    {
-        Graphics::GetGraphicsDevice()->DestroyMesh(meshHandle);
-    }
 
     void AssetManager::DestroyGpuResource(ShaderHandle shaderHandle)
     {

@@ -42,18 +42,6 @@ namespace Copium
         void Release();
     };
 
-    struct DX11Mesh final
-    {
-        ID3D11Buffer* Index;
-        ID3D11Buffer* VertexBuffers[3];
-        DXGI_FORMAT   IndexFormat;
-        uint32        IndexCount;
-        uint32        VertexStrides[3];
-        uint32        VertexOffsets[3];
-
-        void Release();
-    };
-
     struct DX11RenderTexture final
     {
         ID3D11Texture2D1*          Texture;
@@ -141,23 +129,31 @@ export namespace Copium
         DX11CommandBuffer(DX11CommandBuffer&& other) = default;
         DX11CommandBuffer& operator=(DX11CommandBuffer&& other) = default;
 
+        //- RenderPass
         void BeginRenderPass(RenderPassHandle renderPassHandle) override;
 
         void SetViewport(const Rect& viewportRect) override;
         void SetScissorRect(const RectInt& scissorRect) override;
 
+        //- Bind
         void BindShader(ShaderHandle shaderHandle) override;
+        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat, uint32 offset) override;
         void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
-        void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat) override;
+        void BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3]) override;
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize) override;
         void BindTexture(TextureHandle textureHandle, uint32 slot) override;
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
         void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
 
+        //- Draw
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;
-        void DrawMesh(MeshHandle meshHandle) override;
         void DrawProcedural(uint32 vertexCount) override;
+
+        //- GraphicsBuffer
+        void CopyBuffer(GraphicsBufferHandle srcGraphicsBufferHandle, GraphicsBufferHandle dstGraphicsBufferHandle) override;
+        [[nodiscard]] void* MapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
+        void UnmapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
         void BeginSample(std::string_view name) override;
@@ -194,18 +190,15 @@ export namespace Copium
         [[nodiscard]] std::unique_ptr<ICommandBuffer> GetCommandBuffer() override;
 
         [[nodiscard]] GraphicsBufferHandle CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData) override;
-        [[nodiscard]] MeshHandle CreateMesh(const MeshDesc& meshDesc) override;
         [[nodiscard]] RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) override;
         [[nodiscard]] RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) override;
         [[nodiscard]] ShaderHandle CreateShader(const ShaderDesc& shaderDesc) override;
         [[nodiscard]] SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) override;
         [[nodiscard]] TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) override;
 
-        void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) override;
         void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) override;
 
         void DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
-        void DestroyMesh(MeshHandle meshHandle) override;
         void DestroyRenderPass(RenderPassHandle renderPassHandle) override;
         void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) override;
         void DestroyShader(ShaderHandle shaderHandle) override;
@@ -216,7 +209,6 @@ export namespace Copium
         [[nodiscard]] ID3D11SamplerState* GetRenderTextureSampler() const { return m_renderTextureSampler; }
 
         [[nodiscard]] DX11GraphicsBuffer& _GetGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle);
-        [[nodiscard]] DX11Mesh& _GetMesh(MeshHandle meshHandle);
         [[nodiscard]] DX11RenderPass& _GetRenderPass(RenderPassHandle renderPassHandle);
         [[nodiscard]] DX11RenderTexture& _GetRenderTexture(RenderTextureHandle renderTextureHandle);
         [[nodiscard]] DX11Shader& _GetShader(ShaderHandle shaderHandle);
@@ -243,7 +235,6 @@ export namespace Copium
         ID3D11SamplerState*   m_renderTextureSampler;
 
         std::unordered_map<GraphicsBufferHandle, DX11GraphicsBuffer> m_graphicsBuffers;
-        std::unordered_map<MeshHandle,           DX11Mesh>           m_meshes;
         std::unordered_map<RenderPassHandle,     DX11RenderPass>     m_renderPasses;
         std::unordered_map<RenderTextureHandle,  DX11RenderTexture>  m_renderTextures;
         std::unordered_map<ShaderHandle,         DX11Shader>         m_shaders;
@@ -265,21 +256,6 @@ export namespace Copium
 #endif
 
         return dx11GraphicsBufferIterator->second;
-    }
-
-    DX11Mesh& DX11GraphicsDevice::_GetMesh(MeshHandle meshHandle)
-    {
-        const auto dx11MeshIterator = m_meshes.find(meshHandle);
-        // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11MeshIterator != m_meshes.end());
-#if COP_ENABLE_ASSERTS
-        if (dx11MeshIterator == m_meshes.end())
-        {
-            std::abort();
-        }
-#endif
-
-        return dx11MeshIterator->second;
     }
 
     DX11RenderPass& DX11GraphicsDevice::_GetRenderPass(RenderPassHandle renderPassHandle)

@@ -30,18 +30,15 @@ export namespace Copium
         [[nodiscard]] virtual std::unique_ptr<ICommandBuffer> GetCommandBuffer() = 0;
 
         [[nodiscard]] virtual GraphicsBufferHandle CreateGraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData) = 0;
-        [[nodiscard]] virtual MeshHandle CreateMesh(const MeshDesc& meshDesc) = 0;
         [[nodiscard]] virtual RenderPassHandle CreateRenderPass(const RenderPassDesc& renderPassDesc) = 0;
         [[nodiscard]] virtual RenderTextureHandle CreateRenderTexture(const RenderTextureDesc& renderTextureDesc) = 0;
         [[nodiscard]] virtual ShaderHandle CreateShader(const ShaderDesc& shaderDesc) = 0;
         [[nodiscard]] virtual SwapchainHandle CreateSwapchain(const SwapchainDesc& swapchainDesc) = 0;
         [[nodiscard]] virtual TextureHandle CreateTexture2D(const TextureDesc& textureDesc, const SamplerDesc& samplerDesc) = 0;
 
-        virtual void UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data) = 0;
         virtual void ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height) = 0;
 
         virtual void DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle) = 0;
-        virtual void DestroyMesh(MeshHandle meshHandle) = 0;
         virtual void DestroyRenderPass(RenderPassHandle renderPassHandle) = 0;
         virtual void DestroyRenderTexture(RenderTextureHandle renderTextureHandle) = 0;
         virtual void DestroyShader(ShaderHandle shaderHandle) = 0;

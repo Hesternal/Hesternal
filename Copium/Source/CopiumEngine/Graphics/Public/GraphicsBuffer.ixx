@@ -1,6 +1,7 @@
 export module CopiumEngine.Graphics.GraphicsBuffer;
 
 import Copium.Core;
+
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <memory>;
@@ -8,7 +9,9 @@ import <span>;
 
 
 // TODO(v.matushkin): Right now Map/Unmap works with CPU memory and then I copy it in the IGraphicsDevice
-//  also with Map/Unmap. I should make GraphicsBuffer directly call IGraphicsDevice Map/Unmap.
+//   also with Map/Unmap. I should make GraphicsBuffer directly call IGraphicsDevice Map/Unmap.
+// NOTE(v.matushkin): Removed CPU side data copy, so there is no way to recreate GraphicsBuffer on device lost.
+//   Although I'm far from solving this kind of problems anyway.
 
 
 export namespace Copium
@@ -17,8 +20,7 @@ export namespace Copium
     class GraphicsBuffer final
     {
     public:
-        GraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc);
-        GraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData);
+        GraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData = {});
         ~GraphicsBuffer();
 
         GraphicsBuffer(const GraphicsBuffer& other) = delete;
@@ -26,23 +28,16 @@ export namespace Copium
         GraphicsBuffer(GraphicsBuffer&& other) noexcept;
         GraphicsBuffer& operator=(GraphicsBuffer&& other) noexcept;
 
-        [[nodiscard]] uint32 GetElementCount() const noexcept { return m_graphicsBufferDesc.ElementCount; }
-        [[nodiscard]] uint32 GetElementSize() const noexcept { return m_graphicsBufferDesc.ElementSize; }
-        [[nodiscard]] GraphicsBufferUsage GetUsage() const noexcept { return m_graphicsBufferDesc.Usage; }
-        [[nodiscard]] GraphicsBufferHandle GetHandle() const noexcept { return m_graphicsBufferHandle; }
-
-        void SetData(std::span<const uint8> data);
-        [[nodiscard]] std::span<uint8> Map();
-        void Unmap();
+        [[nodiscard]] uint32               GetElementCount() const noexcept { return m_graphicsBufferDesc.ElementCount; }
+        [[nodiscard]] uint32               GetElementSize()  const noexcept { return m_graphicsBufferDesc.ElementSize; }
+        [[nodiscard]] GraphicsBufferUsage  GetUsage()        const noexcept { return m_graphicsBufferDesc.Usage; }
+        [[nodiscard]] uint32               GetBufferSize()   const noexcept { return m_sizeInBytes; }
+        [[nodiscard]] GraphicsBufferHandle GetHandle()       const noexcept { return m_graphicsBufferHandle; }
 
     private:
-        void _UpdateGpuResource() const;
-
-    private:
-        GraphicsBufferDesc       m_graphicsBufferDesc;
-        std::unique_ptr<uint8[]> m_graphicsBufferData;
-        uint32                   m_sizeInBytes;
-        GraphicsBufferHandle     m_graphicsBufferHandle;
+        GraphicsBufferDesc   m_graphicsBufferDesc;
+        uint32               m_sizeInBytes;
+        GraphicsBufferHandle m_graphicsBufferHandle;
     };
 
 } // export namespace Copium

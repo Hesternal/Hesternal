@@ -81,14 +81,6 @@ namespace Copium
         Buffer->Release();
     }
 
-    void DX11Mesh::Release()
-    {
-        Index->Release();
-        VertexBuffers[0]->Release();
-        VertexBuffers[1]->Release();
-        VertexBuffers[2]->Release();
-    }
-
     void DX11RenderTexture::Release()
     {
         Texture->Release();
@@ -167,16 +159,10 @@ namespace Copium
     DX11GraphicsDevice::~DX11GraphicsDevice()
     {
         //- GraphicsBuffers
-        COP_LOG_WARN_COND(m_graphicsBuffers.size() != 0, "{:d} GraphicsBuffer(s) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
+        COP_LOG_WARN_COND(m_graphicsBuffers.size() != 0, "{:d} GraphicsBuffer(s) were not cleaned up before DX11GraphicsDevice destruction", m_graphicsBuffers.size());
         for (auto& handleAndGraphicsBuffer : m_graphicsBuffers)
         {
             handleAndGraphicsBuffer.second.Release();
-        }
-        //- Meshes
-        COP_LOG_WARN_COND(m_meshes.size() != 0, "{:d} Mesh(es) were not cleaned up before DX11GraphicsDevice destruction", m_meshes.size());
-        for (auto& handleAndMesh : m_meshes)
-        {
-            handleAndMesh.second.Release();
         }
         //- RenderPasses
         COP_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} RenderPass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
@@ -297,115 +283,6 @@ namespace Copium
         m_graphicsBuffers.emplace(graphicsBufferHandle, dx11GraphicsBuffer);
 
         return graphicsBufferHandle;
-    }
-
-    MeshHandle DX11GraphicsDevice::CreateMesh(const MeshDesc& meshDesc)
-    {
-        DX11Mesh dx11Mesh;
-        dx11Mesh.IndexFormat = dx11_IndexFormat(meshDesc.IndexFormat);
-        dx11Mesh.IndexCount = meshDesc.IndexCount;
-        dx11Mesh.VertexStrides[0] = meshDesc.Position.Stride();
-        dx11Mesh.VertexStrides[1] = meshDesc.Normal.Stride();
-        dx11Mesh.VertexStrides[2] = meshDesc.UV0.Stride();
-        dx11Mesh.VertexOffsets[0] = meshDesc.Position.Offset;
-        dx11Mesh.VertexOffsets[1] = meshDesc.Normal.Offset;
-        dx11Mesh.VertexOffsets[2] = meshDesc.UV0.Offset;
-
-        //- Create Index Buffer
-        {
-            D3D11_BUFFER_DESC d3dIndexBufferDesc = {
-                .ByteWidth           = static_cast<uint32>(meshDesc.IndexData.size()),
-                .Usage               = D3D11_USAGE_IMMUTABLE,
-                .BindFlags           = D3D11_BIND_INDEX_BUFFER,
-                .CPUAccessFlags      = 0,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-            D3D11_SUBRESOURCE_DATA d3dIndexSubresourceData = {
-                .pSysMem          = meshDesc.IndexData.data(),
-                .SysMemPitch      = 0,
-                .SysMemSlicePitch = 0,
-            };
-            m_device->CreateBuffer(&d3dIndexBufferDesc, &d3dIndexSubresourceData, &dx11Mesh.Index);
-        }
-
-        //- Create Vertex Buffers
-        const uint8* vertexData = meshDesc.VertexData.data();
-        const uint32 vertexCount = meshDesc.VertexCount;
-        uint32 vertexDataOffset = 0;
-
-        // NOTE(v.matushkin): Use lambda?
-        //-- Position
-        {
-            const uint32 vertexAttributeDataSize = vertexCount * dx11Mesh.VertexStrides[0];
-
-            D3D11_BUFFER_DESC d3dVertexAttributeBufferDesc = {
-                .ByteWidth           = vertexAttributeDataSize,
-                .Usage               = D3D11_USAGE_IMMUTABLE,
-                .BindFlags           = D3D11_BIND_VERTEX_BUFFER,
-                .CPUAccessFlags      = 0,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-            D3D11_SUBRESOURCE_DATA d3dVertexAttributeSubresourceData = {
-                .pSysMem          = vertexData,
-                .SysMemPitch      = 0,
-                .SysMemSlicePitch = 0,
-            };
-            m_device->CreateBuffer(&d3dVertexAttributeBufferDesc, &d3dVertexAttributeSubresourceData, &dx11Mesh.VertexBuffers[0]);
-
-            vertexDataOffset += vertexAttributeDataSize;
-        }
-        //-- Normal
-        {
-            const uint32 vertexAttributeDataSize = vertexCount * dx11Mesh.VertexStrides[1];
-
-            D3D11_BUFFER_DESC d3dVertexAttributeBufferDesc = {
-                .ByteWidth           = vertexAttributeDataSize,
-                .Usage               = D3D11_USAGE_IMMUTABLE,
-                .BindFlags           = D3D11_BIND_VERTEX_BUFFER,
-                .CPUAccessFlags      = 0,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-            D3D11_SUBRESOURCE_DATA d3dVertexAttributeSubresourceData = {
-                .pSysMem          = vertexData + vertexDataOffset,
-                .SysMemPitch      = 0,
-                .SysMemSlicePitch = 0,
-            };
-            m_device->CreateBuffer(&d3dVertexAttributeBufferDesc, &d3dVertexAttributeSubresourceData, &dx11Mesh.VertexBuffers[1]);
-
-            vertexDataOffset += vertexAttributeDataSize;
-        }
-        //-- UV0
-        {
-            const uint32 vertexAttributeDataSize = vertexCount * dx11Mesh.VertexStrides[2];
-
-            D3D11_BUFFER_DESC d3dVertexAttributeBufferDesc = {
-                .ByteWidth           = vertexAttributeDataSize,
-                .Usage               = D3D11_USAGE_IMMUTABLE,
-                .BindFlags           = D3D11_BIND_VERTEX_BUFFER,
-                .CPUAccessFlags      = 0,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
-            };
-            D3D11_SUBRESOURCE_DATA d3dVertexAttributeSubresourceData = {
-                .pSysMem          = vertexData + vertexDataOffset,
-                .SysMemPitch      = 0,
-                .SysMemSlicePitch = 0,
-            };
-            m_device->CreateBuffer(&d3dVertexAttributeBufferDesc, &d3dVertexAttributeSubresourceData, &dx11Mesh.VertexBuffers[2]);
-        }
-
-        SetResourceName(dx11Mesh.Index, meshDesc.Name);
-        SetResourceName(dx11Mesh.VertexBuffers[0], meshDesc.Name);
-        SetResourceName(dx11Mesh.VertexBuffers[1], meshDesc.Name);
-        SetResourceName(dx11Mesh.VertexBuffers[2], meshDesc.Name);
-
-        const auto meshHandle = static_cast<MeshHandle>(g_MeshHandleWorkaround++);
-        m_meshes.emplace(meshHandle, dx11Mesh);
-
-        return meshHandle;
     }
 
     RenderPassHandle DX11GraphicsDevice::CreateRenderPass(const RenderPassDesc& renderPassDesc)
@@ -913,22 +790,6 @@ namespace Copium
     }
 
 
-    void DX11GraphicsDevice::UpdateGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle, std::span<const uint8> data)
-    {
-        ID3D11Buffer* d3dBuffer = _GetGraphicsBuffer(graphicsBufferHandle).Buffer;
-        {
-            D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
-                .pData      = nullptr,
-                .RowPitch   = 0,
-                .DepthPitch = 0,
-            };
-
-            m_deviceContext->Map(d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
-            std::memcpy(d3dMappedSubresource.pData, data.data(), data.size());
-            m_deviceContext->Unmap(d3dBuffer, 0);
-        }
-    }
-
     void DX11GraphicsDevice::ResizeSwapchain(SwapchainHandle swapchainHandle, uint16 width, uint16 height)
     {
         DX11Swapchain& dx11Swapchain = _GetSwapchain(swapchainHandle);
@@ -952,14 +813,6 @@ namespace Copium
         COP_ASSERT(graphicsBufferMapNode.empty() == false);
 
         graphicsBufferMapNode.mapped().Release();
-    }
-
-    void DX11GraphicsDevice::DestroyMesh(MeshHandle meshHandle)
-    {
-        auto meshesMapNode = m_meshes.extract(meshHandle);
-        COP_ASSERT(meshesMapNode.empty() == false);
-
-        meshesMapNode.mapped().Release();
     }
 
     void DX11GraphicsDevice::DestroyRenderPass(RenderPassHandle renderPassHandle)

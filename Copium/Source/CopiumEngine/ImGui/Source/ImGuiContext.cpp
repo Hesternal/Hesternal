@@ -11,6 +11,7 @@ import Copium.Core;
 import Copium.Math;
 
 import CopiumEngine.Graphics;
+import CopiumEngine.Graphics.GraphicsTypes;
 
 import <cstring>;
 import <utility>;
@@ -34,6 +35,8 @@ namespace
     static constexpr uint32 k_IndexElementSize  = sizeof(ImDrawIdx);
     static constexpr uint32 k_CameraElementSize = sizeof(Float4x4);
 
+    static constexpr IndexFormat k_IndexFormat = IndexFormat::UInt16;
+
     static constexpr int32 k_ImGuiConfigFlags = ImGuiConfigFlags_DockingEnable;
                                               // | ImGuiConfigFlags_ViewportsEnable;
     static constexpr int32 k_ImGuiBackendFlags = ImGuiBackendFlags_RendererHasVtxOffset;
@@ -42,6 +45,7 @@ namespace
 
 
     static_assert(sizeof(ImGuiTexture) == 8);
+    static_assert(k_IndexElementSize == 2); // Check that ImGui using IndexFormat::UInt16
 
 } // namespace
 
@@ -243,14 +247,14 @@ namespace Copium
                 COP_LOG_WARN("Resizing ImGui index buffer from {:d} to {:d}", m_indexBuffer->GetElementCount(), newElementCount);
             }
 
-            m_indexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Index(newElementCount, k_IndexElementSize));
+            m_indexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Index(newElementCount, k_IndexFormat));
         }
 
         //- Upload vertex/index data into a single contiguous GPU buffer
         const uint32 cmdListCount = imguiDrawData->CmdListsCount;
         {
-            std::span<uint8> vertexBufferData = m_vertexBuffer->Map();
-            std::span<uint8> indexBufferData = m_indexBuffer->Map();
+            std::span<uint8> vertexBufferData = commandBuffer.MapBuffer(*m_vertexBuffer);
+            std::span<uint8> indexBufferData = commandBuffer.MapBuffer(*m_indexBuffer);
 
             uint8* vertexDataPtr = vertexBufferData.data();
             uint8* indexDataPtr = indexBufferData.data();
@@ -268,8 +272,8 @@ namespace Copium
                 indexDataPtr += indexBufferSize;
             }
 
-            m_vertexBuffer->Unmap();
-            m_indexBuffer->Unmap();
+            commandBuffer.UnmapBuffer(*m_vertexBuffer);
+            commandBuffer.UnmapBuffer(*m_indexBuffer);
         }
 
         //- Setup camera orthographic projection matrix
@@ -283,15 +287,15 @@ namespace Copium
             // NOTE(v.matushkin): Z coordinate differs from ImGui backends, not sure if it matters since ImGui draws without Z-test anyway
             const Float4x4 orthoProjection = Math::OrthoOffCenter(left, right, bottom, top, 0.0f, 1.0f);
 
-            std::span<uint8> cameraData = m_cameraBuffer->Map();
+            std::span<uint8> cameraData = commandBuffer.MapBuffer(*m_cameraBuffer);
             std::memcpy(cameraData.data(), &orthoProjection, k_CameraElementSize);
-            m_cameraBuffer->Unmap();
+            commandBuffer.UnmapBuffer(*m_cameraBuffer);
         }
 
         //- Setup render state
         commandBuffer.BindShader(m_imguiShader.get());
-        commandBuffer.BindVertexBuffer(m_vertexBuffer.get(), k_VertexElementSize, 0);
-        commandBuffer.BindIndexBuffer(m_indexBuffer.get(), IndexFormat::UInt16);
+        commandBuffer.BindIndexBuffer(*m_indexBuffer, IndexFormat::UInt16, 0);
+        commandBuffer.BindVertexBuffer(*m_vertexBuffer, k_VertexElementSize, 0);
         commandBuffer.BindConstantBuffer(m_cameraBuffer.get(), 0);
         commandBuffer.SetViewport(Rect(0.0f, 0.0f, displaySize.x, displaySize.y));
 

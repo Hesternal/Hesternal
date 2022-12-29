@@ -2,6 +2,8 @@ module;
 
 #include "Copium/Core/Defines.hpp"
 
+#include "CopiumEngine/Engine/EngineSettings.hpp"
+
 export module CopiumEngine.Engine.EngineSettings;
 
 import Copium.Core;
@@ -28,11 +30,15 @@ export namespace Copium
         GraphicsApi GraphicsApi;
 
 
-        [[nodiscard]] static EngineSettings& Get()
+        [[nodiscard]] static EngineSettings& Get() noexcept
+#if _COP_STATIC_VARIABLE_BUG_FIXED == false
+            ;
+#else
         {
             static EngineSettings settings;
             return settings;
         }
+#endif
     };
 
 } // export namespace Copium

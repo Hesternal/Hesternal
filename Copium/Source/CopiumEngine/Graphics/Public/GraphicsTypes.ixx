@@ -6,6 +6,7 @@ module;
 export module CopiumEngine.Graphics.GraphicsTypes;
 
 import Copium.Core;
+import Copium.Math;
 
 import CopiumEngine.Core.ForwardDeclaration;
 
@@ -20,7 +21,7 @@ namespace
     using namespace Copium;
 
 
-    inline constexpr uint32 k_InvalidHandle = 0xffff'ffff;
+    inline constexpr uint32 k_InvalidHandle = Math::UInt32::Max;
 
 } // namespace
 
@@ -29,12 +30,19 @@ export namespace Copium
 {
 
     enum class GraphicsBufferHandle : uint32 { Invalid = k_InvalidHandle };
-    enum class MeshHandle           : uint32 { Invalid = k_InvalidHandle };
     enum class RenderPassHandle     : uint32 { Invalid = k_InvalidHandle };
     enum class RenderTextureHandle  : uint32 { Invalid = k_InvalidHandle };
     enum class ShaderHandle         : uint32 { Invalid = k_InvalidHandle };
     enum class SwapchainHandle      : uint32 { Invalid = k_InvalidHandle };
     enum class TextureHandle        : uint32 { Invalid = k_InvalidHandle };
+
+
+    // Can't forward declare for GraphicsBufferDesc::Index because of fucking HeaderTool
+    enum class IndexFormat : uint8
+    {
+        UInt16,
+        UInt32,
+    };
 
 
     // ========================================================================
@@ -46,6 +54,7 @@ export namespace Copium
         Vertex,
         Index,
         Constant,
+        Invalid = Math::UInt8::Max,
     };
 
     struct GraphicsBufferDesc final
@@ -57,8 +66,9 @@ export namespace Copium
         [[nodiscard]] uint32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
 
         [[nodiscard]] static GraphicsBufferDesc Vertex(uint32 elementCount, uint32 elementSize) noexcept;
-        [[nodiscard]] static GraphicsBufferDesc Index(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static GraphicsBufferDesc Index(uint32 elementCount, IndexFormat indexFormat) noexcept;
         [[nodiscard]] static GraphicsBufferDesc Constant(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static GraphicsBufferDesc Invalid() noexcept;
     };
 
 
@@ -66,11 +76,11 @@ export namespace Copium
     // ================================= Mesh =================================
     // ========================================================================
 
-    enum class IndexFormat : uint8
-    {
-        UInt16,
-        UInt32,
-    };
+    //enum class IndexFormat : uint8
+    //{
+    //    UInt16,
+    //    UInt32,
+    //};
 
     enum class VertexAttribute : uint8
     {
@@ -97,52 +107,43 @@ export namespace Copium
         Float32,
     };
 
-    CHT_STRUCT()
     struct VertexAttributeDesc final
     {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        uint8                 Offset; // NOTE(v.matushkin): May be stride is a better name than offset?
-        CHT_PROPERTY()
+        uint8                 Offset;
         uint8                 Dimension;
-        CHT_PROPERTY()
         uint8                 Stream;
-        CHT_PROPERTY()
         VertexAttribute       Attribute; // NOTE(v.matushkin): Do I need this?
-        CHT_PROPERTY()
         VertexAttributeFormat Format;
 
         [[nodiscard]] uint32 Stride() const noexcept;
 
-        [[nodiscard]] static VertexAttributeDesc Position() noexcept;
-        [[nodiscard]] static VertexAttributeDesc Normal() noexcept;
-        [[nodiscard]] static VertexAttributeDesc UV0() noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc Position() noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc Normal() noexcept;
+        [[nodiscard]] static constexpr VertexAttributeDesc UV0() noexcept;
     };
 
-    CHT_STRUCT()
+    struct SubMeshDesc final
+    {
+        IndexFormat IndexFormat;
+        uint32      IndexCount;
+        uint32      IndexBufferOffset;
+        uint32      VertexCount;
+        uint32      PositionBufferOffset;
+        uint32      NormalBufferOffset;
+        uint32      UV0BufferOffset;
+    };
+
     struct MeshDesc final
     {
-        CHT_GENERATED_BODY()
-
-        CHT_PROPERTY()
-        std::string         Name;
-        CHT_PROPERTY()
-        VertexAttributeDesc Position;
-        CHT_PROPERTY()
-        VertexAttributeDesc Normal;
-        CHT_PROPERTY()
-        VertexAttributeDesc UV0;
-        CHT_PROPERTY()
-        IndexFormat         IndexFormat;
-        CHT_PROPERTY()
-        uint32              IndexCount;
-        CHT_PROPERTY()
-        uint32              VertexCount;
-        CHT_PROPERTY()
-        std::vector<uint8>  IndexData;
-        CHT_PROPERTY()
-        std::vector<uint8>  VertexData;
+        std::string              Name;
+        VertexAttributeDesc      Position;
+        VertexAttributeDesc      Normal;
+        VertexAttributeDesc      UV0;
+        std::vector<SubMeshDesc> SubMeshes;
+        // NOTE(v.matushkin): *Data should be of some Array type, so there will be no memory wasted,
+        //   and no way to change the size of this containers.
+        std::vector<uint8>       IndexData;
+        std::vector<uint8>       VertexData;
     };
 
 
@@ -541,17 +542,60 @@ export namespace Copium
 
     GraphicsBufferDesc GraphicsBufferDesc::Vertex(uint32 elementCount, uint32 elementSize) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Vertex);
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Vertex };
     }
 
-    GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, uint32 elementSize) noexcept
+    GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, IndexFormat indexFormat) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Index);
+        return GraphicsBufferDesc{
+            .ElementCount = elementCount,
+            .ElementSize  = indexFormat == IndexFormat::UInt16 ? uint32(2) : uint32(4),
+            .Usage        = GraphicsBufferUsage::Index
+        };
     }
 
     GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
     {
-        return GraphicsBufferDesc(elementCount, elementSize, GraphicsBufferUsage::Constant);
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Constant };
+    }
+
+    GraphicsBufferDesc GraphicsBufferDesc::Invalid() noexcept
+    {
+        return GraphicsBufferDesc{ .ElementCount = 0, .ElementSize = 0, .Usage = GraphicsBufferUsage::Invalid };
+    }
+
+
+    constexpr VertexAttributeDesc VertexAttributeDesc::Position() noexcept
+    {
+        return VertexAttributeDesc{
+            .Offset    = 0,
+            .Dimension = 3,
+            .Stream    = 0,
+            .Attribute = VertexAttribute::Position,
+            .Format    = VertexAttributeFormat::Float32,
+        };
+    }
+
+    constexpr VertexAttributeDesc VertexAttributeDesc::Normal() noexcept
+    {
+        return VertexAttributeDesc{
+            .Offset    = 0,
+            .Dimension = 3,
+            .Stream    = 1,
+            .Attribute = VertexAttribute::Normal,
+            .Format    = VertexAttributeFormat::Float32,
+        };
+    }
+
+    constexpr VertexAttributeDesc VertexAttributeDesc::UV0() noexcept
+    {
+        return VertexAttributeDesc{
+            .Offset    = 0,
+            .Dimension = 2,
+            .Stream    = 2,
+            .Attribute = VertexAttribute::UV0,
+            .Format    = VertexAttributeFormat::Float32,
+        };
     }
 
 

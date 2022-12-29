@@ -7,8 +7,6 @@ module CopiumEngine.Graphics.RenderContext;
 import Copium.Core;
 import Copium.Math;
 
-import <utility>;
-
 
 namespace
 {
@@ -31,7 +29,8 @@ namespace
 
     static constexpr int32 k_PerCameraSizeInBytes = sizeof(PerCamera);
     static constexpr int32 k_PerDrawSizeInBytes   = sizeof(PerDraw);
-    static constexpr int32 k_PerDrawElements      = 500;
+    // NOTE(v.matushkin): 1500 needed for Bistro, 2500 for SanMiguel
+    static constexpr int32 k_PerDrawElements      = 2500;
 
     static constexpr uint32 k_PerCameraSlot = 0;
     static constexpr uint32 k_PerDrawSlot   = 1;
@@ -45,19 +44,17 @@ namespace Copium
     RenderContext::RenderContext()
         : m_perCameraBuffer(GraphicsBufferDesc::Constant(1, k_PerCameraSizeInBytes))
         , m_perDrawBuffers(GraphicsBufferDesc::Constant(k_PerDrawElements, k_PerDrawSizeInBytes))
+    {}
+
+
+    void RenderContext::NewFrame()
     {
-    }
-
-
-    void RenderContext::SetRenderData(RenderData&& renderData)
-    {
-        m_renderData = std::move(renderData);
-
+        // NOTE(v.matushkin): Assuming I need to update these every frame, otherwise it's a waste
         //- Update PerCamera constant buffer
         {
-            std::span<uint8> perCameraBufferData = m_perCameraBuffer.Map();
+            std::span<uint8> perCameraBufferData = m_commandBuffer.MapBuffer(m_perCameraBuffer);
             std::memcpy(perCameraBufferData.data(), &m_renderData.Camera, k_PerCameraSizeInBytes);
-            m_perCameraBuffer.Unmap();
+            m_commandBuffer.UnmapBuffer(m_perCameraBuffer);
         }
         //- Update PerDraw constant buffers
         {
@@ -68,7 +65,7 @@ namespace Copium
             PerDraw perDraw;
             const uint32 perDrawElementSizeInBytes = m_perDrawBuffers.GetElementSize();
 
-            std::span<uint8> perDrawBufferData = m_perDrawBuffers.Map();
+            std::span<uint8> perDrawBufferData = m_commandBuffer.MapBuffer(m_perDrawBuffers);
             uint8* perDrawBufferDataPtr = perDrawBufferData.data();
 
             for (uint32 i = 0; i < entitiesCount; i++)
@@ -80,12 +77,9 @@ namespace Copium
                 perDrawBufferDataPtr += perDrawElementSizeInBytes;
             }
 
-            m_perDrawBuffers.Unmap();
+            m_commandBuffer.UnmapBuffer(m_perDrawBuffers);
         }
-    }
 
-    void RenderContext::NewFrame()
-    {
         m_commandBuffer.BindConstantBuffer(&m_perCameraBuffer, k_PerCameraSlot);
     }
 
@@ -122,9 +116,8 @@ namespace Copium
                 m_commandBuffer.BindMaterial(baseColorMap, normalMap);
             }
 
-            const Mesh* mesh = m_renderData.Meshes[entityRenderData.MeshIndex].get();
             m_commandBuffer.BindConstantBuffer(&m_perDrawBuffers, k_PerDrawSlot, i);
-            m_commandBuffer.DrawMesh(mesh);
+            m_commandBuffer.DrawMesh(*m_renderData.Meshes[entityRenderData.MeshIndex]);
         }
     }
 

@@ -137,16 +137,26 @@ namespace Copium
         m_deviceContext->OMSetBlendState(dx11Shader.BlendState, nullptr, D3D11_DEFAULT_SAMPLE_MASK);
     }
 
+    void DX11CommandBuffer::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat, uint32 offset)
+    {
+        const DX11GraphicsBuffer& dx11IndexBuffer = m_graphicsDevice->_GetGraphicsBuffer(indexBufferHandle);
+        m_deviceContext->IASetIndexBuffer(dx11IndexBuffer.Buffer, dx11_IndexFormat(indexFormat), offset);
+    }
+
     void DX11CommandBuffer::BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset)
     {
         const DX11GraphicsBuffer& dx11VertexBuffer = m_graphicsDevice->_GetGraphicsBuffer(vertexBufferHandle);
         m_deviceContext->IASetVertexBuffers(0, 1, &dx11VertexBuffer.Buffer, &stride, &offset);
     }
 
-    void DX11CommandBuffer::BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat)
+    void DX11CommandBuffer::BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3])
     {
-        const DX11GraphicsBuffer& dx11IndexBuffer = m_graphicsDevice->_GetGraphicsBuffer(indexBufferHandle);
-        m_deviceContext->IASetIndexBuffer(dx11IndexBuffer.Buffer, dx11_IndexFormat(indexFormat), 0);
+        ID3D11Buffer* d3dVertexBuffers[3];
+        d3dVertexBuffers[0] = m_graphicsDevice->_GetGraphicsBuffer(vertexBufferHandle).Buffer;
+        d3dVertexBuffers[1] = d3dVertexBuffers[0];
+        d3dVertexBuffers[2] = d3dVertexBuffers[0];
+
+        m_deviceContext->IASetVertexBuffers(0, 3, d3dVertexBuffers, strides, offsets);
     }
 
     void DX11CommandBuffer::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot)
@@ -201,19 +211,37 @@ namespace Copium
         m_deviceContext->DrawIndexed(indexCount, firstIndex, vertexOffset);
     }
 
-    void DX11CommandBuffer::DrawMesh(MeshHandle meshHandle)
-    {
-        const DX11Mesh& dx11Mesh = m_graphicsDevice->_GetMesh(meshHandle);
-
-        m_deviceContext->IASetIndexBuffer(dx11Mesh.Index, dx11Mesh.IndexFormat, 0);
-        m_deviceContext->IASetVertexBuffers(0, 3, dx11Mesh.VertexBuffers, dx11Mesh.VertexStrides, dx11Mesh.VertexOffsets);
-
-        m_deviceContext->DrawIndexed(dx11Mesh.IndexCount, 0, 0);
-    }
-
     void DX11CommandBuffer::DrawProcedural(uint32 vertexCount)
     {
         m_deviceContext->Draw(vertexCount, 0);
+    }
+
+
+    void DX11CommandBuffer::CopyBuffer(GraphicsBufferHandle srcGraphicsBufferHandle, GraphicsBufferHandle dstGraphicsBufferHandle)
+    {
+        ID3D11Buffer* const d3dSrcBuffer = m_graphicsDevice->_GetGraphicsBuffer(srcGraphicsBufferHandle).Buffer;
+        ID3D11Buffer* const d3dDstBuffer = m_graphicsDevice->_GetGraphicsBuffer(dstGraphicsBufferHandle).Buffer;
+        m_deviceContext->CopyResource(d3dDstBuffer, d3dSrcBuffer);
+    }
+
+    void* DX11CommandBuffer::MapBuffer(GraphicsBufferHandle graphicsBufferHandle)
+    {
+        ID3D11Buffer* const d3dBuffer = m_graphicsDevice->_GetGraphicsBuffer(graphicsBufferHandle).Buffer;
+        D3D11_MAPPED_SUBRESOURCE d3dMappedSubresource = {
+            .pData      = nullptr,
+            .RowPitch   = 0,
+            .DepthPitch = 0,
+        };
+        // NOTE(v.matushkin): There is only one flag: D3D11_MAP_FLAG_DO_NOT_WAIT
+        m_deviceContext->Map(d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedSubresource);
+
+        return d3dMappedSubresource.pData;
+    }
+
+    void DX11CommandBuffer::UnmapBuffer(GraphicsBufferHandle graphicsBufferHandle)
+    {
+        ID3D11Buffer* const d3dBuffer = m_graphicsDevice->_GetGraphicsBuffer(graphicsBufferHandle).Buffer;
+        m_deviceContext->Unmap(d3dBuffer, 0);
     }
 
 

@@ -1,46 +1,40 @@
 export module CopiumEngine.Assets.Mesh;
 
-import CopiumEngine.Core.Object;
+import CopiumEngine.Graphics.GraphicsBuffer;
 import CopiumEngine.Graphics.GraphicsTypes;
 
 import <string>;
+import <utility>;
 
 
 export namespace Copium
 {
 
-    class Mesh final : public Object
+    class Mesh final
     {
     public:
         Mesh(MeshDesc&& meshDesc);
-        ~Mesh();
-
-        // Default constructor for serialization
-        Mesh();
-        // This is for asset import
-        Mesh(DoNotInitialize, MeshDesc&& textureDesc);
+        ~Mesh() = default;
 
         Mesh(Mesh&& other) noexcept;
         Mesh& operator=(Mesh&& other) noexcept;
 
-        //< Object Interface Public
-        [[nodiscard]] const std::string& GetName() const override { return m_meshDesc.Name; }
-        //> Object Interface Public
-
-        [[nodiscard]] MeshHandle GetHandle() const { return m_meshHandle; }
-
-    private:
-        //< Object Interface Protected
-        [[nodiscard]] ClassID GetClassID() const override { return ClassID::Mesh; }
-        void Convert(IBinaryConverter& bc) override;
-        void OnAfterDeserealize() override;
-        //> Object Interface Protected
-
-        void _InitGpuResource();
+        [[nodiscard]] const MeshDesc&       GetDesc()         const noexcept { return m_meshDesc; }
+        [[nodiscard]] const std::string&    GetName()         const noexcept { return m_meshDesc.Name; }
+        [[nodiscard]] const GraphicsBuffer& GetIndexBuffer()  const noexcept { return m_indexBuffer; }
+        [[nodiscard]] const GraphicsBuffer& GetVertexBuffer() const noexcept { return m_vertexBuffer; }
 
     private:
-        MeshDesc   m_meshDesc;
-        MeshHandle m_meshHandle;
+        MeshDesc       m_meshDesc;
+        GraphicsBuffer m_indexBuffer;
+        GraphicsBuffer m_vertexBuffer;
     };
+
+
+    Mesh::Mesh(Mesh&& other) noexcept
+        : m_meshDesc(std::move(other.m_meshDesc))
+        , m_indexBuffer(std::move(other.m_indexBuffer))
+        , m_vertexBuffer(std::move(other.m_vertexBuffer))
+    {}
 
 } // export namespace Copium
