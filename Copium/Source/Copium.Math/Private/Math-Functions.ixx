@@ -4,8 +4,6 @@ module;
 
 export module Copium.Math:Functions;
 
-import :Constants;
-
 import Copium.Core;
 
 import <algorithm>;
@@ -134,7 +132,7 @@ export namespace Copium::Math
 // template float64 ToDegrees<float64>(float64 radians);
 //
 //
-// template<typename T> requires CUnsignedType<T>
+// template<typename T> requires CUnsignedIntegralType<T>
 // [[nodiscard]] constexpr bool IsPowerOfTwo(T value) noexcept { return std::has_single_bit(value); }
 // 
 // template bool IsPowerOfTwo<uint8>(uint8 value);

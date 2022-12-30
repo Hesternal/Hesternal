@@ -270,7 +270,7 @@ namespace
 
                     subMeshDesc.IndexCount = subMeshNumIndices;
 
-                    if (subMeshNumVertices > Math::UInt16::Max)
+                    if (subMeshNumVertices > UInt16::Max)
                     {
                         subMeshDesc.IndexFormat = IndexFormat::UInt32;
                         indexBufferSize += subMeshDesc.IndexCount * sizeof(uint32);
@@ -537,13 +537,11 @@ namespace Copium
         }
 
         //- NOTE(v.matushkin): Hack for Sponza model
-        // NOTE(v.matushkin): This Math::Float32::Infinity usage kinda highlights the issue with non templated constants,
-        //   that std::numeric_limits and std::numbers use. Because ai_real can either be float32 or float64.
-        const ai_real assimpModelGlobalScale = assimpImporter.GetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, Math::Float32::Infinity);
-        if (assimpModelGlobalScale == Math::Float32::Infinity)
+        const ai_real assimpModelGlobalScale = assimpImporter.GetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, FloatingType<ai_real>::Infinity);
+        if (assimpModelGlobalScale == FloatingType<ai_real>::Infinity)
         {
             COP_LOG_DEBUG("Applying global scale");
-            assimpImporter.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, 0.01f);
+            assimpImporter.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, static_cast<ai_real>(0.01));
         }
 
         //- Apply PostProcessing

@@ -6,7 +6,6 @@ module;
 export module CopiumEngine.Graphics.GraphicsTypes;
 
 import Copium.Core;
-import Copium.Math;
 
 import CopiumEngine.Core.ForwardDeclaration;
 
@@ -21,7 +20,7 @@ namespace
     using namespace Copium;
 
 
-    inline constexpr uint32 k_InvalidHandle = Math::UInt32::Max;
+    inline constexpr uint32 k_InvalidHandle = UInt32::Max;
 
 } // namespace
 
@@ -54,7 +53,7 @@ export namespace Copium
         Vertex,
         Index,
         Constant,
-        Invalid = Math::UInt8::Max,
+        Invalid = UInt8::Max,
     };
 
     struct GraphicsBufferDesc final

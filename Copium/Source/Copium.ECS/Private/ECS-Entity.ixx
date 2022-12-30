@@ -1,7 +1,6 @@
 export module Copium.ECS:Entity;
 
 import Copium.Core;
-import Copium.Math;
 
 
 namespace
@@ -9,7 +8,7 @@ namespace
     using namespace Copium;
 
 
-    inline constexpr uint32 k_InvalidHandle = Math::UInt32::Max;
+    inline constexpr uint32 k_InvalidHandle = UInt32::Max;
 
 } // namespace
 

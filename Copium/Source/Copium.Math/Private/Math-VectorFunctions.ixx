@@ -1,6 +1,5 @@
 export module Copium.Math:VectorFunctions;
 
-import :Constants;
 import :Float2;
 import :Float3;
 import :Float4;

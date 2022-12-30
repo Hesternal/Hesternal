@@ -1,6 +1,5 @@
 export module Copium.Math;
 
-export import :Constants;
 export import :Float2;
 export import :Float3;
 export import :Float3x3;

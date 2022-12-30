@@ -1,4 +1,5 @@
 export module Copium.Core;
 
 export import :Concepts;
-export import :Types;
+export import :Constants;
+export import :FundamentalTypes;

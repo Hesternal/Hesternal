@@ -5,10 +5,14 @@ import Copium.Core;
 import <string>;
 
 
-namespace Copium
+namespace
 {
-    inline constexpr uint64 k_InvalidHandle = 0xffff'ffff'ffff'ffff;
-}
+    using namespace Copium;
+
+
+    inline constexpr uint64 k_InvalidHandle = UInt64::Max;
+
+} // namespace
 
 
 export namespace Copium

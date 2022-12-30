@@ -1,4 +1,4 @@
-export module Copium.Core:Types;
+export module Copium.Core:FundamentalTypes;
 
 import <cstdint>;
 
