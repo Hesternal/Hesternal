@@ -3,18 +3,18 @@ module;
 #include "Copium/Core/Debug.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.ECS.System.Graphics;
+module HesternalEngine.ECS.System.Graphics;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.RenderData;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.Graphics;
+import HesternalEngine.Graphics.RenderData;
 
 import <unordered_map>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void GraphicsSystem::OnCreate(EntityManager& entityManager)
@@ -85,4 +85,4 @@ namespace Copium
         Graphics::SetRenderData(std::move(renderData));
     }
 
-} // namespace Copium
+} // namespace Hesternal

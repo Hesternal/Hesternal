@@ -2,10 +2,10 @@ module;
 
 #include <fmt/format.h>
 
-module CopiumEditor.Assets.ShaderImporter.BaseParser;
+module HesternalEditor.Assets.ShaderImporter.BaseParser;
 
 
-import CopiumEngine.Utils.EnumUtils;
+import HesternalEngine.Utils.EnumUtils;
 
 import <cctype>;
 import <string_view>;
@@ -14,7 +14,7 @@ import <string_view>;
 namespace
 {
 
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     // NOTE(v.matushkin): Idk ??? It's actully valid, may be make it's type int16 or something,
@@ -41,7 +41,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     BaseParser::BaseParser(std::string_view input)
@@ -452,4 +452,4 @@ namespace Copium
         return Error_Message("Unexpected EndOfFile", endOfFileToken);
     }
 
-} // namespace Copium
+} // namespace Hesternal

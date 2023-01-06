@@ -1,7 +1,7 @@
-module Copium.Core;
+module Hesternal.Core;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     static_assert(sizeof(int8)  == 1);
@@ -17,4 +17,4 @@ namespace Copium
     static_assert(sizeof(float32) == 4);
     static_assert(sizeof(float64) == 8);
 
-} // namespace Copium
+} // namespace Hesternal

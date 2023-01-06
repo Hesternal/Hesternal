@@ -67,6 +67,16 @@ namespace Copium.HeaderTool.Generator
 
     internal sealed class StructGeneratorConfig
     {
+        public sealed class StructGeneratorHppConfig
+        {
+            public readonly string[] Imports;
+
+            public StructGeneratorHppConfig(string[] imports)
+            {
+                Imports = imports;
+            }
+        }
+
         public sealed class StructGeneratorCppConfig
         {
             public readonly string[] Imports;
@@ -78,11 +88,13 @@ namespace Copium.HeaderTool.Generator
         }
 
 
+        public readonly StructGeneratorHppConfig Hpp;
         public readonly StructGeneratorCppConfig Cpp;
 
 
-        public StructGeneratorConfig(StructGeneratorCppConfig cpp)
+        public StructGeneratorConfig(StructGeneratorHppConfig hpp, StructGeneratorCppConfig cpp)
         {
+            Hpp = hpp;
             Cpp = cpp;
         }
     }
@@ -90,14 +102,23 @@ namespace Copium.HeaderTool.Generator
 
     internal sealed class CopiumHeaderToolConfig
     {
+        private const string k_ConfigFileName = "CopiumHeaderTool";
+
+
+        public readonly string Namespace;
+        public readonly string FilePathMacro;
         public readonly EnumGeneratorConfig EnumGenerator;
         public readonly StructGeneratorConfig StructGenerator;
 
+
         public CopiumHeaderToolConfig(
+            string @namespace, string filePathMacro,
             EnumGeneratorConfig enumGenerator,
             StructGeneratorConfig structGenerator
             )
         {
+            Namespace = @namespace;
+            FilePathMacro = filePathMacro;
             EnumGenerator = enumGenerator;
             StructGenerator = structGenerator;
         }
@@ -106,10 +127,10 @@ namespace Copium.HeaderTool.Generator
         // NOTE(v.matushkin): And why did I choose to pass the config dir instead of the config file path?
         public static CopiumHeaderToolConfig LoadConfig(DirectoryInfo copiumConfigDir)
         {
-            var configFile = new FileInfo(Path.Combine(copiumConfigDir.FullName, "CopiumHeaderTool.json"));
+            var configFile = new FileInfo(Path.Combine(copiumConfigDir.FullName, k_ConfigFileName + ".json"));
             if (configFile.Exists == false)
             {
-                throw new ApplicationException($"CopiumHeaderTool config doesn't exist: {configFile.FullName}");
+                throw new ApplicationException(k_ConfigFileName + $" config doesn't exist: {configFile.FullName}");
             }
 
             var options = new JsonSerializerOptions
@@ -125,7 +146,7 @@ namespace Copium.HeaderTool.Generator
 
             if (config == null)
             {
-                throw new ApplicationException($"Couldn't load CopiumHeaderTool config: {configFile.FullName}");
+                throw new ApplicationException("Couldn't load " + k_ConfigFileName + " config: {configFile.FullName}");
             }
 
             return config;

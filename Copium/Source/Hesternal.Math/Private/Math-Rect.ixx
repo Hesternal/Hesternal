@@ -1,11 +1,11 @@
-export module Copium.Math:Rect;
+export module Hesternal.Math:Rect;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <type_traits>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     template<typename T> requires std::is_same_v<int32, T> || std::is_same_v<float32, T>
@@ -45,4 +45,4 @@ export namespace Copium
     using RectInt = TRect<int32>;
     using Rect = TRect<float32>;
 
-} // export namespace Copium
+} // export namespace Hesternal

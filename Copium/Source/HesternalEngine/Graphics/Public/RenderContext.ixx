@@ -1,16 +1,16 @@
-export module CopiumEngine.Graphics.RenderContext;
+export module HesternalEngine.Graphics.RenderContext;
 
-import CopiumEngine.Graphics.CommandBuffer;
-import CopiumEngine.Graphics.GraphicsBuffer;
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.RenderData;
+import HesternalEngine.Graphics.CommandBuffer;
+import HesternalEngine.Graphics.GraphicsBuffer;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.RenderData;
 
 import <memory>;
 import <vector>;
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class RenderContext final
@@ -39,4 +39,4 @@ export namespace Copium
         GraphicsBuffer m_perDrawBuffers;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

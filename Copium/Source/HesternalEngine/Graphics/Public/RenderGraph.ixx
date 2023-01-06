@@ -1,9 +1,10 @@
-export module CopiumEngine.Graphics.RenderGraph;
+export module HesternalEngine.Graphics.RenderGraph;
 
-import Copium.Core;
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.IGraphicsDevice;
-import CopiumEngine.Graphics.RenderContext;
+import Hesternal.Core;
+
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.IGraphicsDevice;
+import HesternalEngine.Graphics.RenderContext;
 
 import <memory>;
 import <string>;
@@ -12,7 +13,7 @@ import <utility>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class RenderGraph;
@@ -127,4 +128,4 @@ export namespace Copium
         //> IRenderPass OnCreate
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

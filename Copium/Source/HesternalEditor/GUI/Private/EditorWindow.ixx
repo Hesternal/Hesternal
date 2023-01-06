@@ -1,9 +1,9 @@
-export module CopiumEditor.GUI.EditorWindow;
+export module HesternalEditor.GUI.EditorWindow;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EditorWindow
@@ -27,4 +27,4 @@ export namespace Copium
         std::string m_windowTitle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

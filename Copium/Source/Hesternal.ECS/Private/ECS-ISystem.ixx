@@ -1,9 +1,9 @@
-export module Copium.ECS:ISystem;
+export module Hesternal.ECS:ISystem;
 
 import :EntityManager;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct ISystem
@@ -24,4 +24,4 @@ export namespace Copium
         ISystem() = default;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

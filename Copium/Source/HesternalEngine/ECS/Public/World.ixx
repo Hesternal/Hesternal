@@ -1,14 +1,14 @@
-export module CopiumEngine.ECS.World;
+export module HesternalEngine.ECS.World;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
-import CopiumEngine.ECS.Scene;
+import HesternalEngine.ECS.Scene;
 
 import <memory>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class World final
@@ -34,4 +34,4 @@ export namespace Copium
         std::unique_ptr<Scene>                m_defaultScene;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

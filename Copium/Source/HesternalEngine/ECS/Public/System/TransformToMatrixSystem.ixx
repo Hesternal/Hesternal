@@ -1,9 +1,9 @@
-export module CopiumEngine.ECS.System.TransformToMatrix;
+export module HesternalEngine.ECS.System.TransformToMatrix;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class TransformToMatrixSystem final : public ISystem
@@ -22,4 +22,4 @@ export namespace Copium
         //> ISystem Interface Public
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,9 +1,9 @@
-module CopiumEngine.Core.Misc.Guid;
+module HesternalEngine.Core.Misc.Guid;
 
-import CopiumEngine.Core.Platform;
+import HesternalEngine.Core.Platform;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Guid Guid::Generate()
@@ -13,4 +13,4 @@ namespace Copium
         return guid;
     }
 
-} // namespace Copium
+} // namespace Hesternal

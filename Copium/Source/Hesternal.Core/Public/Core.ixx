@@ -1,4 +1,4 @@
-export module Copium.Core;
+export module Hesternal.Core;
 
 export import :Concepts;
 export import :Constants;

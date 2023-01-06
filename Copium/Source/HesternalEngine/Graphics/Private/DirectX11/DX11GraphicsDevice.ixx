@@ -13,20 +13,20 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-export module CopiumEngine.Graphics.DX11GraphicsDevice;
+export module HesternalEngine.Graphics.DX11GraphicsDevice;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.ICommandBuffer;
-import CopiumEngine.Graphics.IGraphicsDevice;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.ICommandBuffer;
+import HesternalEngine.Graphics.IGraphicsDevice;
 
 import <unordered_map>;
 import <vector>;
 COP_WARNING_POP
 
 
-namespace Copium
+namespace Hesternal
 {
 
     class DX11GraphicsDevice;
@@ -114,10 +114,10 @@ namespace Copium
         void Release();
     };
 
-} // namespace Copium
+} // namespace Hesternal
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class DX11CommandBuffer final : public ICommandBuffer
@@ -333,4 +333,4 @@ export namespace Copium
         return dx11TextureIterator->second;
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

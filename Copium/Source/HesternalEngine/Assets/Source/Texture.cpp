@@ -1,11 +1,11 @@
-module CopiumEngine.Assets.Texture;
+module HesternalEngine.Assets.Texture;
 
-import CopiumEngine.Assets.AssetManager;
+import HesternalEngine.Assets.AssetManager;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Texture::Texture(TextureDesc&& textureDesc, const SamplerDesc& samplerDesc)
@@ -64,4 +64,4 @@ namespace Copium
         m_textureHandle = AssetManager::CreateGpuResource(m_textureDesc, m_samplerDesc);
     }
 
-} // namespace Copium
+} // namespace Hesternal

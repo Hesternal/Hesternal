@@ -2,10 +2,10 @@ module;
 
 #include <imgui.h>
 
-module CopiumEditor.Editor.RenderStatsWindow;
+module HesternalEditor.Editor.RenderStatsWindow;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     RenderStatsWindow::RenderStatsWindow()
@@ -20,4 +20,4 @@ namespace Copium
         ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / framerate, framerate);
     }
 
-} // namespace Copium
+} // namespace Hesternal

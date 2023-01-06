@@ -3,22 +3,22 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEditor.Editor.InspectorWindow;
+module HesternalEditor.Editor.InspectorWindow;
 
-import Copium.Core;
-import Copium.ECS;
+import Hesternal.Core;
+import Hesternal.ECS;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.WorldManager;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.ECS.WorldManager;
 
-import CopiumEditor.Editor.ControllerComponentGui;
-import CopiumEditor.Editor.GraphicsComponentGui;
-import CopiumEditor.Editor.TransformComponentGui;
-import CopiumEditor.GUI.EditorGui;
-import CopiumEditor.GUI.Selection;
+import HesternalEditor.Editor.ControllerComponentGui;
+import HesternalEditor.Editor.GraphicsComponentGui;
+import HesternalEditor.Editor.TransformComponentGui;
+import HesternalEditor.GUI.EditorGui;
+import HesternalEditor.GUI.Selection;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     InspectorWindow::InspectorWindow()
@@ -72,4 +72,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

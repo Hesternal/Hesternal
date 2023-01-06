@@ -1,12 +1,12 @@
-module CopiumEngine.Graphics.EngineRenderPass;
+module HesternalEngine.Graphics.EngineRenderPass;
 
-import Copium.Core;
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Graphics.IGraphicsDevice;
-import CopiumEngine.Graphics.RenderPassNames;
+import Hesternal.Core;
+import HesternalEngine.Engine.EngineSettings;
+import HesternalEngine.Graphics.IGraphicsDevice;
+import HesternalEngine.Graphics.RenderPassNames;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     EngineRenderPass::EngineRenderPass()
@@ -74,4 +74,4 @@ namespace Copium
         cmd.EndSample();
     }
 
-} // namespace Copium
+} // namespace Hesternal

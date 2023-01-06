@@ -1,11 +1,11 @@
-export module CopiumEditor.Editor.EditorSettings;
+export module HesternalEditor.Editor.EditorSettings;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct EditorSettings final
@@ -22,4 +22,4 @@ export namespace Copium
         }
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

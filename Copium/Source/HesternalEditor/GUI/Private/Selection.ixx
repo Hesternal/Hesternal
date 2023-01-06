@@ -1,12 +1,12 @@
-export module CopiumEditor.GUI.Selection;
+export module HesternalEditor.GUI.Selection;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
 // NOTE(v.matushkin): Not sure that this class should be in the GUI Module
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Selection final
@@ -22,4 +22,4 @@ export namespace Copium
         static inline Entity m_selectedEntity = Entity::Invalid;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

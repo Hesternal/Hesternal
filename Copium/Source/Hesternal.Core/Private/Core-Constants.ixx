@@ -1,4 +1,4 @@
-export module Copium.Core:Constants;
+export module Hesternal.Core:Constants;
 
 import :Concepts;
 import :FundamentalTypes;
@@ -11,7 +11,7 @@ import <numbers>;
 //   and here I have `struct FundamentalType` in a Constants internal partition.
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     template<CArithmeticType T>
@@ -62,4 +62,4 @@ export namespace Copium
     using Float32 = FloatingType<float32>;
     using Float64 = FloatingType<float64>;
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -5,13 +5,13 @@ module;
 
 #include <imgui.h>
 
-module CopiumEngine.ImGui.ImGuiContext;
+module HesternalEngine.ImGui.ImGuiContext;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <cstring>;
 import <utility>;
@@ -24,7 +24,7 @@ import <utility>;
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     // Values just taken from ImGui DX11 backend
@@ -41,7 +41,7 @@ namespace
                                               // | ImGuiConfigFlags_ViewportsEnable;
     static constexpr int32 k_ImGuiBackendFlags = ImGuiBackendFlags_RendererHasVtxOffset;
                                                // | ImGuiBackendFlags_RendererHasViewports;
-    static const char* k_ImGuiBackendRendererName = "CopiumRenderer";
+    static const char* k_ImGuiBackendRendererName = "HesternalRenderer";
 
 
     static_assert(sizeof(ImGuiTexture) == 8);
@@ -50,7 +50,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void ImGuiContext::Init(WindowHandle windowHandle, std::shared_ptr<Shader>&& imguiShader)
@@ -356,4 +356,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

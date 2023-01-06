@@ -3,17 +3,17 @@ module;
 #include "Copium/Core/Defines.hpp"
 // #include "EngineCht/Object.cht.hpp"
 
-export module CopiumEngine.Core.Object;
+export module HesternalEngine.Core.Object;
 
-import Copium.Core;
-import CopiumEngine.Core.ClassID;
-import CopiumEngine.Core.ForwardDeclaration;
+import Hesternal.Core;
+import HesternalEngine.Core.ClassID;
+import HesternalEngine.Core.ForwardDeclaration;
 
 // import <concepts>;
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     enum class DoNotInitialize : uint8 {};
@@ -44,9 +44,9 @@ export namespace Copium
 
 
     // NOTE(v.matushkin):
-    //  CopiumEngine\Core\Public\Object.ixx(47,5): fatal  error C1001: Internal compiler error.
+    //  HesternalEngine\Core\Public\Object.ixx(47,5): fatal  error C1001: Internal compiler error.
     //  compiler file 'D:\a\_work\1\s\src\vctools\Compiler\CxxFE\sl\p1\c\module\unit.h', line 816)
     // template<typename T>
     // concept CObject = std::derived_from<T, Object>;
 
-} // export namespace Copium
+} // export namespace Hesternal

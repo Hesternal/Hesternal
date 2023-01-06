@@ -20,9 +20,9 @@ module;
 #undef STBI_NO_FAILURE_STRINGS
 #endif
 
-module CopiumEditor.Assets.TextureImporter;
+module HesternalEditor.Assets.TextureImporter;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <bit>;
 import <cstring>;
@@ -38,7 +38,7 @@ import <vector>;
 namespace
 {
 
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     [[nodiscard]] static TextureFormat NumComponentsToTextureFormat(int32 numComponents)
@@ -144,7 +144,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Texture TextureImporter::Import(const std::string& texturePath)
@@ -178,4 +178,4 @@ namespace Copium
         return Texture(std::move(textureDesc), SamplerDesc::Default());
     }
 
-} // namespace Copium
+} // namespace Hesternal

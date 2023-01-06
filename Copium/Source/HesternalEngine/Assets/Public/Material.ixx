@@ -1,16 +1,16 @@
-export module CopiumEngine.Assets.Material;
+export module HesternalEngine.Assets.Material;
 
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Core.Object;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Core.Object;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <memory>;
 import <string>;
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Material final : public Object
@@ -52,4 +52,4 @@ export namespace Copium
         std::shared_ptr<Texture> m_normalMap;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

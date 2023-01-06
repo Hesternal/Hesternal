@@ -2,17 +2,17 @@ module;
 
 #include "Copium/Core/Defines.hpp"
 
-export module CopiumEngine.Graphics.ICommandBuffer;
+export module HesternalEngine.Graphics.ICommandBuffer;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <string_view>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct ICommandBuffer
@@ -66,4 +66,4 @@ export namespace Copium
         ICommandBuffer() = default;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -2,11 +2,11 @@ module;
 
 #include "CopiumEngine/Engine/EngineSettings.hpp"
 
-module CopiumEngine.Engine.EngineSettings;
+module HesternalEngine.Engine.EngineSettings;
 
 
 #if _COP_STATIC_VARIABLE_BUG_FIXED == false
-namespace Copium
+namespace Hesternal
 {
 
     EngineSettings& EngineSettings::Get() noexcept
@@ -15,5 +15,5 @@ namespace Copium
         return settings;
     }
 
-} // namespace Copium
+} // namespace Hesternal
 #endif

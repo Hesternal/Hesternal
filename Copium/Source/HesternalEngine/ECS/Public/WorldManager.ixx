@@ -1,11 +1,11 @@
-export module CopiumEngine.ECS.WorldManager;
+export module HesternalEngine.ECS.WorldManager;
 
-import CopiumEngine.ECS.World;
+import HesternalEngine.ECS.World;
 
 import <memory>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class WorldManager final
@@ -20,4 +20,4 @@ export namespace Copium
         static inline std::unique_ptr<World> m_defaulWorld;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

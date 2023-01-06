@@ -1,11 +1,11 @@
-export module CopiumEditor.Assets.ModelImporter;
+export module HesternalEditor.Assets.ModelImporter;
 
-import CopiumEngine.Assets.Model;
+import HesternalEngine.Assets.Model;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ModelImporter final
@@ -14,4 +14,4 @@ export namespace Copium
         [[nodiscard]] static ModelScene Import(const std::string& modelPath);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

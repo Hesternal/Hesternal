@@ -2,12 +2,12 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Graphics.CommandBuffer;
+module HesternalEngine.Graphics.CommandBuffer;
 
-import CopiumEngine.Graphics;
+import HesternalEngine.Graphics;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     CommandBuffer::CommandBuffer()
@@ -28,4 +28,4 @@ namespace Copium
         m_commandBuffer->CopyBuffer(srcGraphicsBufferHandle, dstGraphicsBufferHandle);
     }
 
-} // namespace Copium
+} // namespace Hesternal

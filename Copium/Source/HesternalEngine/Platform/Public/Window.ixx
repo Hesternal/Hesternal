@@ -1,12 +1,13 @@
-export module CopiumEngine.Platform.Window;
+export module HesternalEngine.Platform.Window;
 
-import Copium.Core;
-import CopiumEngine.Event.EventTypes;
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Platform.PlatformTypes;
+import Hesternal.Core;
+
+import HesternalEngine.Event.EventTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Platform.PlatformTypes;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Window final
@@ -36,4 +37,4 @@ export namespace Copium
         bool                          m_isClosing;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

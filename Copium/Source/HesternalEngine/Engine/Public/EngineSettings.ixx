@@ -4,12 +4,12 @@ module;
 
 #include "CopiumEngine/Engine/EngineSettings.hpp"
 
-export module CopiumEngine.Engine.EngineSettings;
+export module HesternalEngine.Engine.EngineSettings;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     enum class GraphicsApi : uint8
@@ -41,5 +41,5 @@ export namespace Copium
 #endif
     };
 
-} // export namespace Copium
+} // export namespace Hesternal
  

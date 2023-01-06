@@ -1,9 +1,9 @@
-export module CopiumEngine.Core.Application;
+export module HesternalEngine.Core.Application;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Application
@@ -44,4 +44,4 @@ export namespace Copium
         bool m_shouldClose;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

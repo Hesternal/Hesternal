@@ -1,10 +1,10 @@
-export module CopiumEngine.Event.EventManager;
+export module HesternalEngine.Event.EventManager;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Event.EventTypes;
-import CopiumEngine.Platform.PlatformTypes;
+import HesternalEngine.Event.EventTypes;
+import HesternalEngine.Platform.PlatformTypes;
 
 import <functional>;
 import <optional>;
@@ -12,7 +12,7 @@ import <unordered_map>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EventManager final
@@ -59,4 +59,4 @@ export namespace Copium
         static inline std::unordered_map<WindowHandle, std::optional<WindowResizeEvent>> m_windowResizeEvents;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

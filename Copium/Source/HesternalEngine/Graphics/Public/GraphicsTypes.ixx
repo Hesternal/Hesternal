@@ -3,11 +3,11 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "EngineCht/GraphicsTypes.cht.hpp"
 
-export module CopiumEngine.Graphics.GraphicsTypes;
+export module HesternalEngine.Graphics.GraphicsTypes;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Core.ForwardDeclaration;
+import HesternalEngine.Core.ForwardDeclaration;
 
 import <memory>;
 import <optional>;
@@ -17,7 +17,7 @@ import <vector>;
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     inline constexpr uint32 k_InvalidHandle = UInt32::Max;
@@ -25,7 +25,7 @@ namespace
 } // namespace
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     enum class GraphicsBufferHandle : uint32 { Invalid = k_InvalidHandle };
@@ -666,4 +666,4 @@ export namespace Copium
         };
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

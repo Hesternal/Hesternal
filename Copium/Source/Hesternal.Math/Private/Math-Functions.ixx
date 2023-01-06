@@ -2,9 +2,9 @@ module;
 
 #include "Copium/Core/Defines.hpp"
 
-export module Copium.Math:Functions;
+export module Hesternal.Math:Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <algorithm>;
 import <bit>;
@@ -12,7 +12,7 @@ import <cmath>;
 import <utility>;
 
 
-export namespace Copium::Math
+export namespace Hesternal::Math
 {
 
     // NOTE(v.matushkin): Questionable function
@@ -95,7 +95,7 @@ export namespace Copium::Math
     [[nodiscard]] COP_FORCE_INLINE constexpr bool IsPowerOfTwo(uint32 x) noexcept { return std::has_single_bit(x); }
     [[nodiscard]] COP_FORCE_INLINE constexpr bool IsPowerOfTwo(uint64 x) noexcept { return std::has_single_bit(x); }
 
-} // export namespace Copium::Math
+} // export namespace Hesternal::Math
 
 
 // NOTE(v.matushkin): Not sure about templates

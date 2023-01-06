@@ -1,12 +1,12 @@
-module CopiumEngine.Memory;
+module HesternalEngine.Memory;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <cstdlib>;
 import <new>;
 
 
-void* operator new(Copium::uint64 size)
+void* operator new(Hesternal::uint64 size)
 {
     if (size == 0)
         ++size; // avoid std::malloc(0) which may return nullptr on success

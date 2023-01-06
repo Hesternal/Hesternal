@@ -3,22 +3,22 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.ECS.Scene;
+module HesternalEngine.ECS.Scene;
 
-import Copium.Core;
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.ECS;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Material;
-import CopiumEngine.Assets.Mesh;
-import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.WorldManager;
+import HesternalEngine.Assets.Material;
+import HesternalEngine.Assets.Mesh;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.ECS.WorldManager;
 
 import <stack>;
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Scene::Scene(std::string&& sceneName)
@@ -129,4 +129,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

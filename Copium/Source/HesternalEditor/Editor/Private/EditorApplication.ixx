@@ -1,17 +1,17 @@
-export module CopiumEditor.EditorApplication;
+export module HesternalEditor.EditorApplication;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Engine.Application;
-import CopiumEngine.Graphics.RenderGraph;
-import CopiumEngine.Platform.Window;
+import HesternalEngine.Engine.Application;
+import HesternalEngine.Graphics.RenderGraph;
+import HesternalEngine.Platform.Window;
 
-import CopiumEditor.GUI.EditorWindow;
+import HesternalEditor.GUI.EditorWindow;
 
 import <filesystem>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EditorApplication final : public EngineApplication
@@ -45,4 +45,4 @@ export namespace Copium
         std::vector<std::unique_ptr<EditorWindow>> m_editorWindows;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,17 +1,17 @@
-module CopiumEngine.Event.Input;
+module HesternalEngine.Event.Input;
 
 
-namespace Copium
+namespace Hesternal
 {
 
-    // void Copium::Init()
+    // void Hesternal::Init()
     // {
     // 
     // }
     // 
-    // void Copium::Shutdown()
+    // void Hesternal::Shutdown()
     // {
     // 
     // }
 
-} // namespace Copium
+} // namespace Hesternal

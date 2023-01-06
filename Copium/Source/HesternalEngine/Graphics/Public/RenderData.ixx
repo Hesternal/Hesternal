@@ -1,16 +1,16 @@
-export module CopiumEngine.Graphics.RenderData;
+export module HesternalEngine.Graphics.RenderData;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Material;
-import CopiumEngine.Assets.Mesh;
+import HesternalEngine.Assets.Material;
+import HesternalEngine.Assets.Mesh;
 
 import <memory>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct CameraRenderData final
@@ -35,4 +35,4 @@ export namespace Copium
         std::vector<EntityRenderData>          Entities;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

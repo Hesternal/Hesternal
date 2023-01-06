@@ -2,12 +2,13 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEditor.Assets.AssetDatabase;
+module HesternalEditor.Assets.AssetDatabase;
 
-import CopiumEditor.Assets.ModelImporter;
-import CopiumEditor.Assets.ShaderImporter;
-import CopiumEditor.Assets.TextureImporter;
-import CopiumEngine.Core.Object;
+import HesternalEngine.Core.Object;
+
+import HesternalEditor.Assets.ModelImporter;
+import HesternalEditor.Assets.ShaderImporter;
+import HesternalEditor.Assets.TextureImporter;
 
 import <filesystem>;
 import <vector>;
@@ -16,7 +17,7 @@ import <utility>;
 namespace fs = std::filesystem;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void AssetDatabase::Init(const std::filesystem::path& projectPath, const std::filesystem::path& shaderDirPath)
@@ -166,4 +167,4 @@ namespace Copium
         return mapIterator->second;
     }
 
-} // namespace Copium
+} // namespace Hesternal

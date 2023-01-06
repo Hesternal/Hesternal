@@ -2,15 +2,15 @@ module;
 
 #include <imgui.h>
 
-export module CopiumEditor.Editor.ControllerComponentGui;
+export module HesternalEditor.Editor.ControllerComponentGui;
 
-import CopiumEngine.ECS.Components;
+import HesternalEngine.ECS.Components;
 
-import CopiumEditor.GUI.ComponentGui;
-import CopiumEditor.GUI.EditorGui;
+import HesternalEditor.GUI.ComponentGui;
+import HesternalEditor.GUI.EditorGui;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ControllerGui : public ComponentGui
@@ -43,4 +43,4 @@ export namespace Copium
         Controller* m_controller;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,17 +1,17 @@
-export module CopiumEngine.Graphics;
+export module HesternalEngine.Graphics;
 
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Graphics.IGraphicsDevice;
-import CopiumEngine.Graphics.RenderContext;
-import CopiumEngine.Graphics.RenderData;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Graphics.IGraphicsDevice;
+import HesternalEngine.Graphics.RenderContext;
+import HesternalEngine.Graphics.RenderData;
 
 import <memory>;
 import <utility>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Graphics final
@@ -45,4 +45,4 @@ export namespace Copium
         static inline std::unique_ptr<RenderContext>   m_renderContext;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

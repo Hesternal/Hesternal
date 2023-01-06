@@ -2,12 +2,12 @@ module;
 
 #include "Copium/Core/CopiumHeaderTool.hpp"
 
-export module CopiumEngine.Utils.EnumUtils;
+export module HesternalEngine.Utils.EnumUtils;
 
 import <string_view>;
 
 
-export namespace Copium::EnumUtils
+export namespace Hesternal::EnumUtils
 {
 
     template<typename TEnum> concept CChtEnum = IsChtEnum<TEnum>::value;
@@ -32,4 +32,4 @@ export namespace Copium::EnumUtils
     //     static_assert(false && sizeof(TEnum*), "Not supported enum type");
     // }
 
-} // export namespace Copium::EnumUtils
+} // export namespace Hesternal::EnumUtils

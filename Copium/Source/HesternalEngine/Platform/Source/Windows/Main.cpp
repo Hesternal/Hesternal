@@ -1,9 +1,9 @@
-import Copium.Core;
-import CopiumEngine.Core.Application;
+import Hesternal.Core;
+import HesternalEngine.Core.Application;
 
 import <memory>;
 
-using namespace Copium;
+using namespace Hesternal;
 
 
 int32 main(int32 argc, const char* const* argv)

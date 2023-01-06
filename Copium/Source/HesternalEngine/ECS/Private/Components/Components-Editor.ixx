@@ -1,14 +1,14 @@
-export module CopiumEngine.ECS.Components:Editor;
+export module HesternalEngine.ECS.Components:Editor;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 import <string>;
 
 
-// TODO(v.matushkin): <Components/Editor> This file shouldn't be in the CopiumEngine, but I need to use it in the Scene::AddModel
+// TODO(v.matushkin): <Components/Editor> This file shouldn't be in the HesternalEngine, but I need to use it in the Scene::AddModel
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct EditorData final : IComponent
@@ -16,4 +16,4 @@ export namespace Copium
         std::string EntityName;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

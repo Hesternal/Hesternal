@@ -9,14 +9,14 @@ COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
-module CopiumEngine.Core.Application;
+module HesternalEngine.Core.Application;
 
-import Copium.Core;
+import Hesternal.Core;
 // NOTE(v.matushkin): I'm importing Event/Platform modules(c++) here in the Core.Module.cs
 //  I should either put Event/Platform modules in the Core or move back Application calss out of Core Module
-import CopiumEngine.Event.EventManager;
-import CopiumEngine.Event.EventTypes;
-import CopiumEngine.Platform.PlatformTypes;
+import HesternalEngine.Event.EventManager;
+import HesternalEngine.Event.EventTypes;
+import HesternalEngine.Platform.PlatformTypes;
 
 
 // TODO(v.matushkin): <ImGui/CustomContext>
@@ -25,10 +25,10 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
     // TODO(v.matushkin): Duplicated in Window.cpp
-    static constexpr const wchar_t* k_WindowClassName = L"CopiumWindowClass";
+    static constexpr const wchar_t* k_WindowClassName = L"HesternalWindowClass";
 
 
     [[nodiscard]] static KeyboardButton win_KeyboardButton(uint64 wParam)
@@ -178,7 +178,7 @@ COP_WARNING_POP // NOTE(v.matushkin): Realy ?
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void Application::PlatformInit()
@@ -223,4 +223,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

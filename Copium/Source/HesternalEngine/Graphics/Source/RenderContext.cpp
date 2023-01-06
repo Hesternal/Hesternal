@@ -2,15 +2,15 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Graphics.RenderContext;
+module HesternalEngine.Graphics.RenderContext;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     struct PerCamera final
@@ -38,7 +38,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     RenderContext::RenderContext()
@@ -121,4 +121,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

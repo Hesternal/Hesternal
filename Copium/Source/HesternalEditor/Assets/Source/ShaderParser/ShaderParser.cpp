@@ -2,9 +2,9 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEditor.Assets.ShaderImporter.ShaderParser;
+module HesternalEditor.Assets.ShaderImporter.ShaderParser;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
 // TODO(v.matushkin): Check for invalid State parsed values. EnumUtils doesn't check if it's a valid value.
@@ -45,7 +45,7 @@ namespace StateValueIdentifier
 } // namespace StateValueIdentifier
 
 
-namespace Copium
+namespace Hesternal
 {
 
     ParsedShaderDesc ShaderParser::Parse(std::string_view shaderCode)
@@ -350,4 +350,4 @@ namespace Copium
         return std::string(shaderProgramBegin, token.Value.data());
     }
 
-} // namespace Copium
+} // namespace Hesternal

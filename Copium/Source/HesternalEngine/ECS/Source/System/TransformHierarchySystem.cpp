@@ -3,15 +3,15 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.ECS.System.TransformHierarchy;
+module HesternalEngine.ECS.System.TransformHierarchy;
 
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.ECS;
+import Hesternal.Math;
 
-import CopiumEngine.ECS.Components;
+import HesternalEngine.ECS.Components;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void TransformHierarchySystem::OnCreate(EntityManager& entityManager)
@@ -66,4 +66,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

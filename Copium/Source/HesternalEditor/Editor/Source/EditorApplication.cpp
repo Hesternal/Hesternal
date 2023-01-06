@@ -4,30 +4,30 @@ module;
 
 #include <cxxopts.hpp>
 
-module CopiumEditor.EditorApplication;
+module HesternalEditor.EditorApplication;
 
-import CopiumEditor.Assets.AssetDatabase;
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.ECS.WorldManager;
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.EngineRenderPass;
-import CopiumEngine.Graphics.RenderGraph;
-import CopiumEngine.ImGui.ImGuiContext;
+import HesternalEditor.Assets.AssetDatabase;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.ECS.WorldManager;
+import HesternalEngine.Engine.EngineSettings;
+import HesternalEngine.Graphics;
+import HesternalEngine.Graphics.EngineRenderPass;
+import HesternalEngine.Graphics.RenderGraph;
+import HesternalEngine.ImGui.ImGuiContext;
 
-import CopiumEditor.Editor.EditorSettings;
-import CopiumEditor.Editor.ImGuiRenderPass;
-import CopiumEditor.Editor.InspectorWindow;
-import CopiumEditor.Editor.HierarchyWindow;
-import CopiumEditor.Editor.RenderStatsWindow;
-import CopiumEditor.Editor.SceneWindow;
+import HesternalEditor.Editor.EditorSettings;
+import HesternalEditor.Editor.ImGuiRenderPass;
+import HesternalEditor.Editor.InspectorWindow;
+import HesternalEditor.Editor.HierarchyWindow;
+import HesternalEditor.Editor.RenderStatsWindow;
+import HesternalEditor.Editor.SceneWindow;
 
 import <filesystem>;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     static EditorApplication s_EditorApplication;
@@ -35,7 +35,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Application* Application::Get()
@@ -112,7 +112,7 @@ namespace Copium
         engineSettings.GraphicsApi = GraphicsApi::DirectX11;
 
         EditorSettings& editorSettings = EditorSettings::Get();
-        editorSettings.WindowTitle = L"CopiumEngine";
+        editorSettings.WindowTitle = L"HesternalEngine";
         editorSettings.WindowWidth = 1920;
         editorSettings.WindowHeight = 1080;
     }
@@ -226,4 +226,4 @@ namespace Copium
     // 
     // }
 
-} // namespace Copium
+} // namespace Hesternal

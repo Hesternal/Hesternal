@@ -1,4 +1,4 @@
-export module CopiumEngine.ECS.Components;
+export module HesternalEngine.ECS.Components;
 
 export import :Editor;
 export import :Controller;

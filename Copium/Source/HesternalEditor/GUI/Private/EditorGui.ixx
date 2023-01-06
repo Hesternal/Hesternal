@@ -1,13 +1,13 @@
-export module CopiumEditor.GUI.EditorGui;
+export module HesternalEditor.GUI.EditorGui;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
 import <vector>;
 import <string_view>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EditorGui final
@@ -73,4 +73,4 @@ export namespace Copium
         return DragVector(label, reinterpret_cast<float32*>(&value), 4);
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

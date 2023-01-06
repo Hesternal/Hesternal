@@ -1,13 +1,14 @@
-export module CopiumEngine.Engine.Application;
+export module HesternalEngine.Engine.Application;
 
-import Copium.Core;
-import CopiumEngine.Core.Application;
-import CopiumEngine.Graphics.RenderContext;
+import Hesternal.Core;
+
+import HesternalEngine.Core.Application;
+import HesternalEngine.Graphics.RenderContext;
 
 import <memory>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EngineApplication : public Application
@@ -39,4 +40,4 @@ export namespace Copium
         bool m_engineClosed;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

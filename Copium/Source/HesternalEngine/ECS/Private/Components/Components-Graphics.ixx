@@ -1,15 +1,15 @@
-export module CopiumEngine.ECS.Components:Graphics;
+export module HesternalEngine.ECS.Components:Graphics;
 
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.ECS;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Material;
-import CopiumEngine.Assets.Mesh;
+import HesternalEngine.Assets.Material;
+import HesternalEngine.Assets.Mesh;
 
 import <memory>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Camera final : IComponent
@@ -25,4 +25,4 @@ export namespace Copium
         std::shared_ptr<Material> Material;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

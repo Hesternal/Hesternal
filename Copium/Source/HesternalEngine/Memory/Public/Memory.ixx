@@ -3,13 +3,13 @@ module;
 // #include "Copium/Core/Debug.hpp"
 #include "Copium/Core/Defines.hpp"
 
-export module CopiumEngine.Memory;
+export module HesternalEngine.Memory;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Memory final
@@ -32,4 +32,4 @@ export namespace Copium
         return (unalignedSize + alignment - 1) & ~(alignment - 1);
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

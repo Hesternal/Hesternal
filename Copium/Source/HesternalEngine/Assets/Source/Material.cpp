@@ -1,9 +1,9 @@
-module CopiumEngine.Assets.Material;
+module HesternalEngine.Assets.Material;
 
 import <string>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Material::Material(std::string&& materialName, const std::shared_ptr<Shader>& shader)
@@ -49,4 +49,4 @@ namespace Copium
     {
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -1,10 +1,10 @@
-export module CopiumEditor.Editor.ImGuiRenderPass;
+export module HesternalEditor.Editor.ImGuiRenderPass;
 
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.RenderGraph;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.RenderGraph;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ImGuiRenderPass final : public IRenderPass
@@ -30,4 +30,4 @@ export namespace Copium
         RenderTextureHandle  m_editorColorHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

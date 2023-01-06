@@ -1,12 +1,12 @@
-export module Copium.Math:Float3;
+export module Hesternal.Math:Float3;
 
 import :Float2;
 import :Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Float3 final
@@ -67,4 +67,4 @@ export namespace Copium
         [[nodiscard]] static constexpr Float3 One() noexcept { return Float3(1.0f); }
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

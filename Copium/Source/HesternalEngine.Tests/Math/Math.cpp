@@ -1,10 +1,10 @@
-import Copium.Math;
+import Hesternal.Math;
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 using namespace Catch;
-using namespace Copium;
+using namespace Hesternal;
 
 
 TEST_CASE("Math::Float3", "[Math]")

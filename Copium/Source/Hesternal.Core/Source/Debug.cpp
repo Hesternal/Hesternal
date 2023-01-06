@@ -7,7 +7,7 @@
 #include <utility>
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void Debug::Init()
@@ -24,6 +24,6 @@ namespace Copium
         Logger.reset();
     }
 
-} // namespace Copium
+} // namespace Hesternal
 
 #endif // COP_ENABLE_LOGGING

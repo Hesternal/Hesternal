@@ -1,4 +1,4 @@
-export module Copium.Math:VectorFunctions;
+export module Hesternal.Math:VectorFunctions;
 
 import :Float2;
 import :Float3;
@@ -6,12 +6,12 @@ import :Float4;
 import :Functions;
 import :Int2;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <utility>;
 
 
-export namespace Copium::Math
+export namespace Hesternal::Math
 {
 
     [[nodiscard]] constexpr Float2 ToRadians(Float2 degrees)        noexcept { return degrees * Float32::Deg2Rad; }
@@ -49,7 +49,7 @@ export namespace Copium::Math
                       lhs.X * rhs.Y - lhs.Y * rhs.X);
     }
 
-} // export namespace Copium::Math
+} // export namespace Hesternal::Math
 
 
 // NOTE(v.matushkin): Not gonna work because need to pass T::BaseType to MathTypeArgument<>

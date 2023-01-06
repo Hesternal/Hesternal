@@ -1,9 +1,9 @@
-export module CopiumEngine.ECS.System.Camera;
+export module HesternalEngine.ECS.System.Camera;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class CameraSystem final : public ISystem
@@ -22,4 +22,4 @@ export namespace Copium
         //> ISystem Interface Public
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

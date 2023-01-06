@@ -1,12 +1,12 @@
-export module Copium.Math:Float4x4;
+export module Hesternal.Math:Float4x4;
 
 import :Float4;
 import :Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Float4x4 final
@@ -202,4 +202,4 @@ export namespace Copium
                            0.0f,    0.0f,    0.0f, 1.0f);
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

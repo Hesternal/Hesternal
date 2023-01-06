@@ -1,9 +1,9 @@
-export module CopiumEngine.Utils.Time;
+export module HesternalEngine.Utils.Time;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Time final
@@ -20,4 +20,4 @@ export namespace Copium
         static inline float64 m_deltaTime   = 0;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

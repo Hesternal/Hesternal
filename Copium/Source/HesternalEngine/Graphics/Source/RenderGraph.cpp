@@ -2,12 +2,12 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Graphics.RenderGraph;
+module HesternalEngine.Graphics.RenderGraph;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     RenderGraph::RenderGraph(SwapchainHandle swapchainHandle)
@@ -169,4 +169,4 @@ namespace Copium
         return m_graphicsDevice->CreateRenderPass(renderPassDesc);
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -1,9 +1,9 @@
-module CopiumEngine.Assets.AssetManager;
+module HesternalEngine.Assets.AssetManager;
 
-import CopiumEngine.Graphics;
+import HesternalEngine.Graphics;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     ShaderHandle AssetManager::CreateGpuResource(const ShaderDesc& shaderDesc)
@@ -27,4 +27,4 @@ namespace Copium
         Graphics::GetGraphicsDevice()->DestroyTexture2D(textureHandle);
     }
 
-} // namespace Copium
+} // namespace Hesternal

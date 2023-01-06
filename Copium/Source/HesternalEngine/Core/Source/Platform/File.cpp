@@ -2,7 +2,7 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Core.Platform.File;
+module HesternalEngine.Core.Platform.File;
 
 import <filesystem>;
 import <fstream>;
@@ -24,10 +24,10 @@ namespace
         return fileContent.str();
     }
 
-}
+} // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     FileReader::FileReader(const std::string& filePath, bool binary /*= false*/)
@@ -76,4 +76,4 @@ namespace Copium
         return ReadAllTextInternal(std::ifstream(filePath));
     }
 
-} // namespace Copium
+} // namespace Hesternal

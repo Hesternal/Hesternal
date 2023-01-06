@@ -1,10 +1,10 @@
-export module CopiumEngine.Assets.Model;
+export module HesternalEngine.Assets.Model;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Material;
-import CopiumEngine.Assets.Mesh;
+import HesternalEngine.Assets.Material;
+import HesternalEngine.Assets.Mesh;
 
 import <memory>;
 import <optional>;
@@ -12,7 +12,7 @@ import <string>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct ModelMesh final
@@ -44,4 +44,4 @@ export namespace Copium
         std::unique_ptr<ModelNode>             RootNode;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

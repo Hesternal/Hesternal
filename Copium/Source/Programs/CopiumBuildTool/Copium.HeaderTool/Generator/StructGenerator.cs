@@ -4,6 +4,8 @@
     {
         private static StructGeneratorConfig s_Config;
 
+        public static string[] HppImports => s_Config.Hpp.Imports;
+
         public static string[] CppImports => s_Config.Cpp.Imports;
 
 

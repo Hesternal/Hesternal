@@ -1,9 +1,9 @@
-export module Copium.Core:FundamentalTypes;
+export module Hesternal.Core:FundamentalTypes;
 
 import <cstdint>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     using int8  = std::int8_t;
@@ -19,4 +19,4 @@ export namespace Copium
     using float32 = float;
     using float64 = double;
 
-} // export namespace Copium
+} // export namespace Hesternal

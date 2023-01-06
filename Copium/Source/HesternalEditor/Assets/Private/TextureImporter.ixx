@@ -1,11 +1,11 @@
-export module CopiumEditor.Assets.TextureImporter;
+export module HesternalEditor.Assets.TextureImporter;
 
-import CopiumEngine.Assets.Texture;
+import HesternalEngine.Assets.Texture;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class TextureImporter final
@@ -14,4 +14,4 @@ export namespace Copium
         [[nodiscard]] static Texture Import(const std::string& texturePath);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

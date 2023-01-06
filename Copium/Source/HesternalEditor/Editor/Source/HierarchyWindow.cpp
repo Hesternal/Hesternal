@@ -6,16 +6,16 @@ module;
 #include <imgui.h>
 #include <fmt/format.h>
 
-module CopiumEditor.Editor.HierarchyWindow;
+module HesternalEditor.Editor.HierarchyWindow;
 
-import Copium.Core;
-import Copium.ECS;
+import Hesternal.Core;
+import Hesternal.ECS;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.World;
-import CopiumEngine.ECS.WorldManager;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.ECS.World;
+import HesternalEngine.ECS.WorldManager;
 
-import CopiumEditor.GUI.Selection;
+import HesternalEditor.GUI.Selection;
 
 import <stack>;
 import <utility>;
@@ -24,7 +24,7 @@ import <vector>;
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     static constexpr ImGuiTreeNodeFlags k_TreeNodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
@@ -123,7 +123,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     HierarchyWindow::HierarchyWindow()
@@ -146,4 +146,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

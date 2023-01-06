@@ -1,9 +1,9 @@
-module CopiumEngine.Core.Serialization.ObjectSerializationContext;
+module HesternalEngine.Core.Serialization.ObjectSerializationContext;
 
-import CopiumEngine.Core.Object;
+import HesternalEngine.Core.Object;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     ObjectSerializationContext::ObjectSerializationContext(bool initAfterDeserialize)
@@ -29,4 +29,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

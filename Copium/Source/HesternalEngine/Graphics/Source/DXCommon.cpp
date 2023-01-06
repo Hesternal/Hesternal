@@ -4,16 +4,16 @@ module;
 
 #include <dxgiformat.h>
 
-module CopiumEngine.Graphics.DXCommon;
+module HesternalEngine.Graphics.DXCommon;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     DXGI_FORMAT dx_RenderTextureFormat(RenderTextureFormat renderTextureFormat)
@@ -143,4 +143,4 @@ namespace Copium
         return dxgiFormat;
     }
 
-} // namespace Copium
+} // namespace Hesternal

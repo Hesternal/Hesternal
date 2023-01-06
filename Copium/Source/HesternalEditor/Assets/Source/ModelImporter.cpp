@@ -6,20 +6,20 @@ module;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-module CopiumEditor.Assets.ModelImporter;
+module HesternalEditor.Assets.ModelImporter;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Material;
-import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Assets.Model;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Graphics;
-import CopiumEngine.Memory;
+import HesternalEngine.Assets.Material;
+import HesternalEngine.Assets.Mesh;
+import HesternalEngine.Assets.Model;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Graphics;
+import HesternalEngine.Memory;
 
-import CopiumEditor.Assets.AssetDatabase;
+import HesternalEditor.Assets.AssetDatabase;
 
 import <filesystem>;
 import <memory>;
@@ -35,7 +35,7 @@ namespace fs = std::filesystem;
 
 namespace AssimpConstants
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     // Index
@@ -68,7 +68,7 @@ namespace AssimpConstants
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     [[nodiscard]] static std::string ToString(const aiString& assimpString)
@@ -440,7 +440,7 @@ namespace
     {
         static const auto DecomposeNodeTransform = [](const aiNode& assimpNode, ModelNode& modelNode)
         {
-            // TODO(v.matushkin): Add Decompose method to Copium.Math?
+            // TODO(v.matushkin): Add Decompose method to Hesternal.Math?
             // NOTE(v.matushkin): Fix negative zeroes?
             aiVector3D position;
             aiQuaternion rotation;
@@ -516,7 +516,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     ModelScene ModelImporter::Import(const std::string& modelPath)
@@ -614,4 +614,4 @@ namespace Copium
         };
     }
 
-} // namespace Copium
+} // namespace Hesternal

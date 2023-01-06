@@ -88,7 +88,7 @@ namespace Copium.HeaderTool.Generator
         }
 
 
-        public void WriteFileHeader_Hpp(string[] includes)
+        public void WriteFileHeader_Hpp(string[] includes, string[] moduleImports)
         {
             WriteLine("#pragma once");
             WriteLine();
@@ -96,6 +96,12 @@ namespace Copium.HeaderTool.Generator
             if (includes != null && includes.Length != 0)
             {
                 _WriteIncludes(includes, bExternal: false);
+                WriteLine();
+            }
+
+            if (moduleImports != null && moduleImports.Length != 0)
+            {
+                _WriteImports(moduleImports);
                 WriteLine();
             }
 

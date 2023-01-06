@@ -1,13 +1,13 @@
-export module CopiumEngine.Assets.Mesh;
+export module HesternalEngine.Assets.Mesh;
 
-import CopiumEngine.Graphics.GraphicsBuffer;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsBuffer;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <string>;
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Mesh final
@@ -37,4 +37,4 @@ export namespace Copium
         , m_vertexBuffer(std::move(other.m_vertexBuffer))
     {}
 
-} // export namespace Copium
+} // export namespace Hesternal

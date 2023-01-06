@@ -2,7 +2,7 @@
 
 //#include <fmt/format.h>
 
-//export module Copium.Math:Format;
+//export module Hesternal.Math:Format;
 
 //import :Float3x3;
 //import :Float4x4;
@@ -12,7 +12,7 @@
 
 
 //export template<>
-//struct fmt::formatter<Copium::Float4x4>
+//struct fmt::formatter<Hesternal::Float4x4>
 //{
 //    //template<typename ParseContext>
 //    //constexpr auto parse(ParseContext& ctx)
@@ -54,7 +54,7 @@
 //    // Formats the point p using the parsed format specification (presentation)
 //    // stored in this formatter.
 //    template <typename FormatContext>
-//    auto format(const Copium::Float4x4& m, FormatContext& ctx) const -> decltype(ctx.out())
+//    auto format(const Hesternal::Float4x4& m, FormatContext& ctx) const -> decltype(ctx.out())
 //    {
 //        //// ctx.out() is an output iterator to write to.
 //        //return presentation == 'f'
@@ -73,10 +73,10 @@
 //
 //
 //export template<>
-//struct fmt::formatter<Copium::Float3x3>
+//struct fmt::formatter<Hesternal::Float3x3>
 //{
 //    template <typename FormatContext>
-//    auto format(const Copium::Float3x3& m, FormatContext& ctx) const -> decltype(ctx.out())
+//    auto format(const Hesternal::Float3x3& m, FormatContext& ctx) const -> decltype(ctx.out())
 //    {
 //        return fmt::format_to(ctx.out(),
 //            "(({:f}, {:f}, {:f}), ({:f}, {:f}, {:f}), ({:f}, {:f}, {:f}))",

@@ -11,11 +11,11 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-module CopiumEngine.Graphics.DX11GraphicsDevice;
+module HesternalEngine.Graphics.DX11GraphicsDevice;
 COP_WARNING_POP
 
-import CopiumEngine.Graphics.DX11Conversion;
-import CopiumEngine.Graphics.DXCommon;
+import HesternalEngine.Graphics.DX11Conversion;
+import HesternalEngine.Graphics.DXCommon;
 
 import <cstring>;
 import <memory>;
@@ -43,7 +43,7 @@ import <utility>;
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
 #if COP_ENABLE_GRAPHICS_API_DEBUG
@@ -73,7 +73,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void DX11GraphicsBuffer::Release()
@@ -1013,4 +1013,4 @@ namespace Copium
 
 #endif // COP_ENABLE_GRAPHICS_API_DEBUG
 
-} // namespace Copium
+} // namespace Hesternal

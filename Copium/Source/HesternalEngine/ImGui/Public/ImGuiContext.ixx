@@ -1,11 +1,12 @@
-export module CopiumEngine.ImGui.ImGuiContext;
+export module HesternalEngine.ImGui.ImGuiContext;
 
-import Copium.Core;
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Graphics.CommandBuffer;
-import CopiumEngine.Graphics.GraphicsBuffer;
-import CopiumEngine.Platform.PlatformTypes;
+import Hesternal.Core;
+
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Graphics.CommandBuffer;
+import HesternalEngine.Graphics.GraphicsBuffer;
+import HesternalEngine.Platform.PlatformTypes;
 
 import <memory>;
 
@@ -13,7 +14,7 @@ import <memory>;
 //  But right now ImGuiContext creation is not controlled in any way
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     // NOTE(v.matushkin): Need to distinguish handle types between Texture/RenderTexture for IGraphicsDevice
@@ -53,4 +54,4 @@ export namespace Copium
         static inline std::unique_ptr<GraphicsBuffer> m_cameraBuffer;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

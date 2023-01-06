@@ -2,17 +2,17 @@ module;
 
 #include "Copium/Core/Defines.hpp"
 
-export module CopiumEngine.Graphics.CommandBuffer;
+export module HesternalEngine.Graphics.CommandBuffer;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Assets.Mesh;
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Graphics.ICommandBuffer;
-import CopiumEngine.Graphics.GraphicsBuffer;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Assets.Mesh;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Graphics.ICommandBuffer;
+import HesternalEngine.Graphics.GraphicsBuffer;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <memory>;
 import <span>;
@@ -29,7 +29,7 @@ import <utility>;
 #endif
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class CommandBuffer final
@@ -210,4 +210,4 @@ export namespace Copium
     }
 #endif
 
-} // export namespace CopiumEngine
+} // export namespace Hesternal

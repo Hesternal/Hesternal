@@ -8,16 +8,16 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-module CopiumEngine.Graphics.DX11GraphicsDevice;
+module HesternalEngine.Graphics.DX11GraphicsDevice;
 
-import CopiumEngine.Core.Platform;
-import CopiumEngine.Graphics.DX11Conversion;
+import HesternalEngine.Core.Platform;
+import HesternalEngine.Graphics.DX11Conversion;
 COP_WARNING_POP
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     static constexpr float32 k_ViewportMinDepth = 0.0f;
@@ -26,7 +26,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     DX11CommandBuffer::DX11CommandBuffer(ID3D11DeviceContext4* deviceContext, DX11GraphicsDevice* graphicsDevice)
@@ -264,4 +264,4 @@ namespace Copium
     }
 #endif
 
-} // namespace Copium
+} // namespace Hesternal

@@ -1,4 +1,4 @@
-export module Copium.Math;
+export module Hesternal.Math;
 
 export import :Float2;
 export import :Float3;

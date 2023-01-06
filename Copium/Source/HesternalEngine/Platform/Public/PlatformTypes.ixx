@@ -1,13 +1,13 @@
-export module CopiumEngine.Platform.PlatformTypes;
+export module HesternalEngine.Platform.PlatformTypes;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <string>;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     inline constexpr uint64 k_InvalidHandle = UInt64::Max;
@@ -15,7 +15,7 @@ namespace
 } // namespace
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     enum class WindowHandle : uint64 { Invalid = k_InvalidHandle };
@@ -28,4 +28,4 @@ export namespace Copium
         uint16       Height;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

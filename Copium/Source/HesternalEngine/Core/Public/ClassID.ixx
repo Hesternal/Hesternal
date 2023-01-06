@@ -1,9 +1,9 @@
-export module CopiumEngine.Core.ClassID;
+export module HesternalEngine.Core.ClassID;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     enum class ClassID : uint8
@@ -15,4 +15,4 @@ export namespace Copium
         Entity    = 5,
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

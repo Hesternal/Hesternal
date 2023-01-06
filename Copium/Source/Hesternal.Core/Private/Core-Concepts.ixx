@@ -1,4 +1,4 @@
-export module Copium.Core:Concepts;
+export module Hesternal.Core:Concepts;
 
 import :FundamentalTypes;
 
@@ -15,7 +15,7 @@ namespace
 } // namespace
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     template<typename T> concept CSignedIntegralType   = IsAnyOf<std::remove_cv_t<T>,  int8,  int16,  int32,  int64>;
@@ -32,4 +32,4 @@ export namespace Copium
     //   from std::is_arithmetic_v
     template<typename T> concept CArithmeticType = CIntegralType<T> || CFloatingType<T>;
 
-} // export namespace Copium
+} // export namespace Hesternal

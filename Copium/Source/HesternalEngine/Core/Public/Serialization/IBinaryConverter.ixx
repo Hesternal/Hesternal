@@ -1,9 +1,9 @@
-export module CopiumEngine.Core.Serialization.IBinaryConverter;
+export module HesternalEngine.Core.Serialization.IBinaryConverter;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Core.ForwardDeclaration;
-import CopiumEngine.Core.Serialization.ObjectSerializationContext;
+import HesternalEngine.Core.ForwardDeclaration;
+import HesternalEngine.Core.Serialization.ObjectSerializationContext;
 
 import <string>;
 import <type_traits>;
@@ -15,7 +15,7 @@ import <vector>;
 // TODO(v.matushkin): Need type trait for CHT_STRUCT
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct IBinaryConverter
@@ -179,4 +179,4 @@ export namespace Copium
         ObjectSerializationContext* m_objectSerializationContext;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

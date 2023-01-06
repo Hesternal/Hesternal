@@ -1,9 +1,9 @@
-export module CopiumEngine.ECS.System.Input;
+export module HesternalEngine.ECS.System.Input;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class InputSystem final : public ISystem
@@ -22,4 +22,4 @@ export namespace Copium
         //> ISystem Interface Public
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,11 +1,11 @@
-export module CopiumEditor.Assets.ShaderImporter;
+export module HesternalEditor.Assets.ShaderImporter;
 
-import CopiumEngine.Assets.Shader;
+import HesternalEngine.Assets.Shader;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ShaderImporter final
@@ -14,4 +14,4 @@ export namespace Copium
         [[nodiscard]] static Shader Import(const std::string& shaderPath);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

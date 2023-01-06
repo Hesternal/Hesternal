@@ -1,4 +1,4 @@
-export module Copium.Math:Quaternion;
+export module Hesternal.Math:Quaternion;
 
 import :Float3;
 import :Float3x3;
@@ -6,10 +6,10 @@ import :Float4;
 import :Functions;
 import :VectorFunctions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Quaternion final
@@ -132,4 +132,4 @@ export namespace Copium
                           cos.X * cos.Y * cos.Z + sin.Y * sin.Z * sin.X);
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

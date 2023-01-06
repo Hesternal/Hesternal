@@ -1,9 +1,9 @@
-module CopiumEngine.Utils.Time;
+module HesternalEngine.Utils.Time;
 
 import <chrono>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     using Clock    = std::chrono::high_resolution_clock;
@@ -22,4 +22,4 @@ namespace Copium
         m_currentTime = now;
     }
 
-} // namespace Copium
+} // namespace Hesternal

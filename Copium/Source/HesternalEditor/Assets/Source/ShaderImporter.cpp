@@ -2,21 +2,21 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEditor.Assets.ShaderImporter;
+module HesternalEditor.Assets.ShaderImporter;
 
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Core.Platform.File;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Core.Platform.File;
 
-import CopiumEditor.Assets.DX11ShaderCompiler;
-import CopiumEditor.Assets.ParsedShaderDesc;
-import CopiumEditor.Assets.ShaderImporter.ParserError;
-import CopiumEditor.Assets.ShaderImporter.ShaderParser;
+import HesternalEditor.Assets.DX11ShaderCompiler;
+import HesternalEditor.Assets.ParsedShaderDesc;
+import HesternalEditor.Assets.ShaderImporter.ParserError;
+import HesternalEditor.Assets.ShaderImporter.ShaderParser;
 
 import <string>;
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Shader ShaderImporter::Import(const std::string& shaderPath)
@@ -46,4 +46,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

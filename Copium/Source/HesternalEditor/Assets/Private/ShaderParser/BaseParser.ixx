@@ -3,17 +3,17 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "EditorCht/BaseParser.cht.hpp"
 
-export module CopiumEditor.Assets.ShaderImporter.BaseParser;
+export module HesternalEditor.Assets.ShaderImporter.BaseParser;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEditor.Assets.ShaderImporter.ParserError;
+import HesternalEditor.Assets.ShaderImporter.ParserError;
 
 import <optional>;
 import <string_view>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     // TODO(v.matushkin): Was defined in BaseParser as protected, but HeaderTool can't specialize type trait there,
@@ -127,4 +127,4 @@ export namespace Copium
         bool                 m_endOfStream;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

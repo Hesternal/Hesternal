@@ -1,13 +1,13 @@
-export module CopiumEngine.ECS.Components:Transform;
+export module HesternalEngine.ECS.Components:Transform;
 
-import Copium.Core;
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.ECS;
+import Hesternal.Math;
 
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Transform final : IComponent
@@ -54,4 +54,4 @@ export namespace Copium
         std::vector<Entity> Children;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

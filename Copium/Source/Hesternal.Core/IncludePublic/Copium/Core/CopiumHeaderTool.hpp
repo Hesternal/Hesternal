@@ -3,10 +3,10 @@
 #include <type_traits>
 
 
-namespace Copium
+namespace Hesternal
 {
 
     template<class TEnum>
     struct IsChtEnum : std::false_type {};
 
-} // namespace Copium
+} // namespace Hesternal

@@ -150,11 +150,8 @@ namespace Copium.HeaderTool
             using (var headerWriter = new CppWriter(generatedHppFile))
             {
                 string[] includes = cppHeaderDesc.HasEnums ? EnumGenerator.HppIncludes : null;
-                headerWriter.WriteFileHeader_Hpp(includes);
-
-                headerWriter.Write("#define CHT_FILE_PATH ");
-                headerWriter.WriteLine(chtFilePathMacro);
-                headerWriter.WriteLine();
+                string[] moduleImports = cppHeaderDesc.HasStructsOrClasses ? StructGenerator.HppImports: null;
+                headerWriter.WriteFileHeader_Hpp(includes, moduleImports);
 
                 if (cppHeaderDesc.HasStructsOrClasses)
                 {
@@ -165,9 +162,12 @@ namespace Copium.HeaderTool
 //  Exporting forward declaration will break if module consumer also imports IBinaryConverter module.
 //  So importing IBinaryConverter in the header seems like my only choice, although this potentially lead to
 //   circular dependencies. Especially if I add something more than just serialization.");
-                    headerWriter.WriteLine("import CopiumEngine.Core.Serialization.IBinaryConverter;");
                     headerWriter.WriteLine();
                 }
+
+                headerWriter.Write($"#define {s_Config.FilePathMacro} ");
+                headerWriter.WriteLine(chtFilePathMacro);
+                headerWriter.WriteLine();
 
                 ClassGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
                 StructGenerator.WriteHpp(cppHeaderDesc, headerWriter, chtFilePathMacro);
@@ -196,7 +196,7 @@ namespace Copium.HeaderTool
                 Array.Sort(moduleImportsArray);
 
                 cppWriter.WriteFileHeader_ModuleImplementation(cppHeaderDesc.Module, null, stdIncludesArray, moduleImportsArray);
-                cppWriter.BeginNamespace("Copium");
+                cppWriter.BeginNamespace(s_Config.Namespace);
 
                 ClassGenerator.WriteCpp(cppHeaderDesc, cppWriter);
                 StructGenerator.WriteCpp(cppHeaderDesc, cppWriter);

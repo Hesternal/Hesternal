@@ -1,11 +1,11 @@
-export module CopiumEditor.Editor.SceneWindow;
+export module HesternalEditor.Editor.SceneWindow;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
-import CopiumEditor.GUI.EditorWindow;
+import HesternalEditor.GUI.EditorWindow;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class SceneWindow final : public EditorWindow
@@ -26,4 +26,4 @@ export namespace Copium
         RenderTextureHandle m_engineOutputHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

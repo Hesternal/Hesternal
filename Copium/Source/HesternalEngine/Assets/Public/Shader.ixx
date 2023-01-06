@@ -1,12 +1,12 @@
-export module CopiumEngine.Assets.Shader;
+export module HesternalEngine.Assets.Shader;
 
-import CopiumEngine.Core.Object;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Core.Object;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Shader final : public Object
@@ -38,4 +38,4 @@ export namespace Copium
         ShaderHandle m_shaderHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

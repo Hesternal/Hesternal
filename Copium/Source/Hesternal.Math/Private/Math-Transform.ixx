@@ -1,4 +1,4 @@
-export module Copium.Math:Transform;
+export module Hesternal.Math:Transform;
 
 import :Float3;
 import :Float4;
@@ -7,10 +7,10 @@ import :Float4x4;
 import :Mul;
 import :Quaternion;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium::Math
+export namespace Hesternal::Math
 {
 
     // NOTE(v.matushkin): Probably doesn't belong here, just don't know where to put these
@@ -93,4 +93,4 @@ export namespace Copium::Math
                                   0.0f,           0.0f,           0.0f,             1.0f);
     }
 
-} // export namespace Copium::Math
+} // export namespace Hesternal::Math

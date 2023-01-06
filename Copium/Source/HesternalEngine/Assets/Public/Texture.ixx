@@ -1,12 +1,12 @@
-export module CopiumEngine.Assets.Texture;
+export module HesternalEngine.Assets.Texture;
 
-import CopiumEngine.Core.Object;
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Core.Object;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Texture final : public Object
@@ -44,4 +44,4 @@ export namespace Copium
         TextureHandle m_textureHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

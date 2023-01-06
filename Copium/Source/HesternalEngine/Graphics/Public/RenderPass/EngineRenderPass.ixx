@@ -1,10 +1,10 @@
-export module CopiumEngine.Graphics.EngineRenderPass;
+export module HesternalEngine.Graphics.EngineRenderPass;
 
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.RenderGraph;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.RenderGraph;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EngineRenderPass final : public IRenderPass
@@ -32,4 +32,4 @@ export namespace Copium
         RenderTextureHandle m_engineDepthHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

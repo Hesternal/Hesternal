@@ -1,12 +1,12 @@
-module CopiumEngine.Event.EventManager;
+module HesternalEngine.Event.EventManager;
 
-import CopiumEngine.Event.Input;
+import HesternalEngine.Event.Input;
 
 import <optional>;
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void EventManager::DispatchEvents()
@@ -67,4 +67,4 @@ namespace Copium
         Input::OnKeyboard(event);
     }
 
-} // namespace Copium
+} // namespace Hesternal

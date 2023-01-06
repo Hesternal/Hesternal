@@ -1,9 +1,9 @@
-export module CopiumEngine.ECS.System.TransformHierarchy;
+export module HesternalEngine.ECS.System.TransformHierarchy;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     // NOTE(v.matushkin): This is kinda of a hack I guess, so I can edit rotation in ImGui.
@@ -24,4 +24,4 @@ export namespace Copium
         //> ISystem Interface Public
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -2,9 +2,9 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Graphics.GraphicsTypes;
+module HesternalEngine.Graphics.GraphicsTypes;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <bit>;
 import <utility>;
@@ -12,7 +12,7 @@ import <utility>;
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     // Minimal possible size
@@ -22,7 +22,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     uint8 TextureFormat_BytesPerPixel(TextureFormat textureFormat) noexcept
@@ -133,4 +133,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

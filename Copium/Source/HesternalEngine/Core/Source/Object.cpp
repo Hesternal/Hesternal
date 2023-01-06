@@ -1,9 +1,9 @@
-module CopiumEngine.Core.Object;
+module HesternalEngine.Core.Object;
 
 
-namespace Copium
+namespace Hesternal
 {
 
 
 
-} // namespace Copium
+} // namespace Hesternal

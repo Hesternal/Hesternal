@@ -1,9 +1,9 @@
-export module CopiumEditor.Assets.AssetDatabase;
+export module HesternalEditor.Assets.AssetDatabase;
 
-import CopiumEngine.Assets.Model;
-import CopiumEngine.Assets.Shader;
-import CopiumEngine.Assets.Texture;
-import CopiumEngine.Core.Object;
+import HesternalEngine.Assets.Model;
+import HesternalEngine.Assets.Shader;
+import HesternalEngine.Assets.Texture;
+import HesternalEngine.Core.Object;
 
 import <filesystem>;
 import <memory>;
@@ -11,7 +11,7 @@ import <string>;
 import <unordered_map>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class AssetDatabase final
@@ -48,4 +48,4 @@ export namespace Copium
         static inline std::unordered_map<std::string, std::shared_ptr<Texture>>    m_textures;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

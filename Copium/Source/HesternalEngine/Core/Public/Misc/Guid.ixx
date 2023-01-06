@@ -1,11 +1,11 @@
-export module CopiumEngine.Core.Misc.Guid;
+export module HesternalEngine.Core.Misc.Guid;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <functional>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Guid final
@@ -23,17 +23,17 @@ export namespace Copium
         static Guid Generate();
     };
 
-} // export namespace Copium
+} // export namespace Hesternal
 
 
 export template<>
-struct std::hash<Copium::Guid>
+struct std::hash<Hesternal::Guid>
 {
     // NOTE(v.matushkin): I'm sure this will perform well, no collisions.
     //  May be just find some hashing algorithm and use it, like microsoft stl uses FNV-1
-    std::size_t operator()(const Copium::Guid& guid) const noexcept
+    std::size_t operator()(const Hesternal::Guid& guid) const noexcept
     {
-        using namespace Copium;
+        using namespace Hesternal;
 
         std::size_t h1 = std::hash<uint64>()(static_cast<uint64>(guid.A) << 32 | guid.B);
         std::size_t h2 = std::hash<uint64>()(static_cast<uint64>(guid.C) << 32 | guid.D);

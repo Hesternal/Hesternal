@@ -1,12 +1,12 @@
-export module CopiumEditor.Assets.ShaderImporter.ParserError;
+export module HesternalEditor.Assets.ShaderImporter.ParserError;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <string>;
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ParserError final
@@ -21,4 +21,4 @@ export namespace Copium
         const std::string Message;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

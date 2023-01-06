@@ -1,14 +1,14 @@
-export module CopiumEngine.Core.Serialization.FileBinaryConverter;
+export module HesternalEngine.Core.Serialization.FileBinaryConverter;
 
-import Copium.Core;
-import CopiumEngine.Core.Platform.File;
-import CopiumEngine.Core.Serialization.IBinaryConverter;
+import Hesternal.Core;
+import HesternalEngine.Core.Platform.File;
+import HesternalEngine.Core.Serialization.IBinaryConverter;
 
 import <filesystem>;
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class FileBinarySerializer final : public IBinaryConverter
@@ -40,4 +40,4 @@ export namespace Copium
         FileReader m_fileReader;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

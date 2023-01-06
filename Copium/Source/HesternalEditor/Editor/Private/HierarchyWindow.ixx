@@ -1,9 +1,9 @@
-export module CopiumEditor.Editor.HierarchyWindow;
+export module HesternalEditor.Editor.HierarchyWindow;
 
-import CopiumEditor.GUI.EditorWindow;
+import HesternalEditor.GUI.EditorWindow;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class HierarchyWindow final : public EditorWindow
@@ -21,4 +21,4 @@ export namespace Copium
         //> EditorWindow interface protected
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,9 +1,9 @@
-export module Copium.Math:Int2;
+export module Hesternal.Math:Int2;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Int2 final
@@ -57,4 +57,4 @@ export namespace Copium
         [[nodiscard]] static constexpr Int2 One() noexcept { return Int2(1); }
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

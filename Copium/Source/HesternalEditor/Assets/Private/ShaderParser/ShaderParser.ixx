@@ -1,14 +1,14 @@
-export module CopiumEditor.Assets.ShaderImporter.ShaderParser;
+export module HesternalEditor.Assets.ShaderImporter.ShaderParser;
 
-import CopiumEngine.Utils.EnumUtils;
+import HesternalEngine.Utils.EnumUtils;
 
-import CopiumEditor.Assets.ParsedShaderDesc;
-import CopiumEditor.Assets.ShaderImporter.BaseParser;
+import HesternalEditor.Assets.ParsedShaderDesc;
+import HesternalEditor.Assets.ShaderImporter.BaseParser;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ShaderParser final : public BaseParser
@@ -40,4 +40,4 @@ export namespace Copium
         [[nodiscard]] void             _ParseBlendFactorValue(BlendStateDesc& blendStateDesc);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

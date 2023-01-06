@@ -1,15 +1,16 @@
-module CopiumEngine.Graphics;
+module HesternalEngine.Graphics;
 
-import Copium.Core;
-import CopiumEngine.Graphics.DX11GraphicsDevice;
-import CopiumEngine.Graphics.RenderContext;
+import Hesternal.Core;
+
+import HesternalEngine.Graphics.DX11GraphicsDevice;
+import HesternalEngine.Graphics.RenderContext;
 
 import <memory>;
 import <utility>;
 import <vector>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void Graphics::Init()
@@ -106,4 +107,4 @@ namespace Copium
         m_graphicsDevice.reset();
     }
 
-} // namespace Copium
+} // namespace Hesternal

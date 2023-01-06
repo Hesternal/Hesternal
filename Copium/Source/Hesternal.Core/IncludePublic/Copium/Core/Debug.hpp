@@ -22,7 +22,7 @@
 #endif // COP_ENABLE_LOGGING
 
 
-namespace Copium
+namespace Hesternal
 {
 
 #if COP_ENABLE_LOGGING
@@ -50,7 +50,7 @@ namespace Copium
 #endif // COP_ENABLE_LOGGING
     };
 
-} // namespace Copium
+} // namespace Hesternal
 
 
 #undef LOG_FUNCTION_DEFINITION
@@ -58,23 +58,23 @@ namespace Copium
 
 #if COP_ENABLE_LOGGING
 
-    #define COP_LOG_LEVEL(lvl, ...) Copium::Debug::Logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, static_cast<spdlog::level::level_enum>(lvl), __VA_ARGS__)
+    #define COP_LOG_LEVEL(lvl, ...) Hesternal::Debug::Logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, static_cast<spdlog::level::level_enum>(lvl), __VA_ARGS__)
 
-    #define COP_LOG_TRACE(...)    COP_LOG_LEVEL(Copium::LogLevel::Trace,    __VA_ARGS__)
-    #define COP_LOG_DEBUG(...)    COP_LOG_LEVEL(Copium::LogLevel::Debug,    __VA_ARGS__)
-    #define COP_LOG_INFO(...)     COP_LOG_LEVEL(Copium::LogLevel::Info,     __VA_ARGS__)
-    #define COP_LOG_WARN(...)     COP_LOG_LEVEL(Copium::LogLevel::Warn,     __VA_ARGS__)
-    #define COP_LOG_ERROR(...)    COP_LOG_LEVEL(Copium::LogLevel::Error,    __VA_ARGS__)
-    #define COP_LOG_CRITICAL(...) COP_LOG_LEVEL(Copium::LogLevel::Critical, __VA_ARGS__)
+    #define COP_LOG_TRACE(...)    COP_LOG_LEVEL(Hesternal::LogLevel::Trace,    __VA_ARGS__)
+    #define COP_LOG_DEBUG(...)    COP_LOG_LEVEL(Hesternal::LogLevel::Debug,    __VA_ARGS__)
+    #define COP_LOG_INFO(...)     COP_LOG_LEVEL(Hesternal::LogLevel::Info,     __VA_ARGS__)
+    #define COP_LOG_WARN(...)     COP_LOG_LEVEL(Hesternal::LogLevel::Warn,     __VA_ARGS__)
+    #define COP_LOG_ERROR(...)    COP_LOG_LEVEL(Hesternal::LogLevel::Error,    __VA_ARGS__)
+    #define COP_LOG_CRITICAL(...) COP_LOG_LEVEL(Hesternal::LogLevel::Critical, __VA_ARGS__)
 
     #define COP_LOG_LEVEL_COND(lvl, condition, ...) do { if (static_cast<bool>(condition)) { COP_LOG_LEVEL(lvl, __VA_ARGS__); } } while ((void)0,0)
 
-    #define COP_LOG_TRACE_COND(condition, ...)    COP_LOG_LEVEL_COND(Copium::LogLevel::Trace,    condition, __VA_ARGS__)
-    #define COP_LOG_DEBUG_COND(condition, ...)    COP_LOG_LEVEL_COND(Copium::LogLevel::Debug,    condition, __VA_ARGS__)
-    #define COP_LOG_INFO_COND(condition, ...)     COP_LOG_LEVEL_COND(Copium::LogLevel::Info,     condition, __VA_ARGS__)
-    #define COP_LOG_WARN_COND(condition, ...)     COP_LOG_LEVEL_COND(Copium::LogLevel::Warn,     condition, __VA_ARGS__)
-    #define COP_LOG_ERROR_COND(condition, ...)    COP_LOG_LEVEL_COND(Copium::LogLevel::Error,    condition, __VA_ARGS__)
-    #define COP_LOG_CRITICAL_COND(condition, ...) COP_LOG_LEVEL_COND(Copium::LogLevel::Critical, condition, __VA_ARGS__)
+    #define COP_LOG_TRACE_COND(condition, ...)    COP_LOG_LEVEL_COND(Hesternal::LogLevel::Trace,    condition, __VA_ARGS__)
+    #define COP_LOG_DEBUG_COND(condition, ...)    COP_LOG_LEVEL_COND(Hesternal::LogLevel::Debug,    condition, __VA_ARGS__)
+    #define COP_LOG_INFO_COND(condition, ...)     COP_LOG_LEVEL_COND(Hesternal::LogLevel::Info,     condition, __VA_ARGS__)
+    #define COP_LOG_WARN_COND(condition, ...)     COP_LOG_LEVEL_COND(Hesternal::LogLevel::Warn,     condition, __VA_ARGS__)
+    #define COP_LOG_ERROR_COND(condition, ...)    COP_LOG_LEVEL_COND(Hesternal::LogLevel::Error,    condition, __VA_ARGS__)
+    #define COP_LOG_CRITICAL_COND(condition, ...) COP_LOG_LEVEL_COND(Hesternal::LogLevel::Critical, condition, __VA_ARGS__)
 
 #else
 

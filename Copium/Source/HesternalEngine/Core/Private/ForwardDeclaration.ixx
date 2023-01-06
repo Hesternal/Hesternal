@@ -1,7 +1,7 @@
-export module CopiumEngine.Core.ForwardDeclaration;
+export module HesternalEngine.Core.ForwardDeclaration;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Guid;
@@ -9,4 +9,4 @@ export namespace Copium
     class Object;
     class ObjectSerializationContext;
 
-} // export namespace Copium
+} // export namespace Hesternal

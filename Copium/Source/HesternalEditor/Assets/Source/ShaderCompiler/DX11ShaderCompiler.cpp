@@ -9,10 +9,10 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-module CopiumEditor.Assets.DX11ShaderCompiler;
+module HesternalEditor.Assets.DX11ShaderCompiler;
 COP_WARNING_POP
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <memory>;
 import <string_view>;
@@ -21,7 +21,7 @@ import <string_view>;
 namespace
 {
 
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     static constexpr const char* k_ShaderEntryPoint   = "main";
@@ -75,7 +75,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void DX11ShaderCompiler::Compile(const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& shaderDesc)
@@ -84,4 +84,4 @@ namespace Copium
         shaderDesc.FragmentBlob = dx11_Compile(parsedShaderDesc.FragmentSource, parsedShaderDesc.Name.data(), k_PixelShaderTarget);
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -2,9 +2,9 @@ module;
 
 //#include <fstream>
 
-export module CopiumEngine.Core.Platform.File;
+export module HesternalEngine.Core.Platform.File;
 
-import Copium.Core;
+import Hesternal.Core;
 
 // NOTE(v.matushkin): Waiting until https://github.com/microsoft/STL/issues/3112 gets fixed
 //  Although seems like it's working without this headers anyway?
@@ -13,7 +13,7 @@ import Copium.Core;
 import <fstream>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class FileReader final
@@ -50,4 +50,4 @@ export namespace Copium
 
     }; // namespace File
 
-} // export namespace Copium
+} // export namespace Hesternal

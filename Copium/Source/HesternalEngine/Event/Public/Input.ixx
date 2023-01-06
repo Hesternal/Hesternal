@@ -1,14 +1,14 @@
-export module CopiumEngine.Event.Input;
+export module HesternalEngine.Event.Input;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Event.EventTypes;
+import HesternalEngine.Event.EventTypes;
 
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Input final
@@ -44,4 +44,4 @@ export namespace Copium
         // static inline int8 m_mouseWheelDelta;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

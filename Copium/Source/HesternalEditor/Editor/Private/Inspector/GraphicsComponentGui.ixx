@@ -1,12 +1,12 @@
-export module CopiumEditor.Editor.GraphicsComponentGui;
+export module HesternalEditor.Editor.GraphicsComponentGui;
 
-import CopiumEngine.ECS.Components;
+import HesternalEngine.ECS.Components;
 
-import CopiumEditor.GUI.ComponentGui;
-import CopiumEditor.GUI.EditorGui;
+import HesternalEditor.GUI.ComponentGui;
+import HesternalEditor.GUI.EditorGui;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class CameraGui : public ComponentGui
@@ -65,4 +65,4 @@ export namespace Copium
         RenderMesh* m_renderMesh;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

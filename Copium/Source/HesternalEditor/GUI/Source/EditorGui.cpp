@@ -2,12 +2,12 @@ module;
 
 #include <imgui.h>
 
-module CopiumEditor.GUI.EditorGui;
+module HesternalEditor.GUI.EditorGui;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     static constexpr float32 k_Indent         = 10.0f;
@@ -18,7 +18,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void EditorGui::Indent()
@@ -156,4 +156,4 @@ namespace Copium
         return changed;
     }
 
-} // namespace Copium
+} // namespace Hesternal

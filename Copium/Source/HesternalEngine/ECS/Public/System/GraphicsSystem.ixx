@@ -1,9 +1,9 @@
-export module CopiumEngine.ECS.System.Graphics;
+export module HesternalEngine.ECS.System.Graphics;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class GraphicsSystem final : public ISystem
@@ -22,4 +22,4 @@ export namespace Copium
         //> ISystem Interface Public
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

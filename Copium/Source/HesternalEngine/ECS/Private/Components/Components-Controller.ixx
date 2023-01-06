@@ -1,11 +1,11 @@
-export module CopiumEngine.ECS.Components:Controller;
+export module HesternalEngine.ECS.Components:Controller;
 
-import Copium.Core;
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.ECS;
+import Hesternal.Math;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Controller final : IComponent
@@ -18,4 +18,4 @@ export namespace Copium
         float32 Pitch;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

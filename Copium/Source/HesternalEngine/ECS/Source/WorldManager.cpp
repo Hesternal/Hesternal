@@ -1,10 +1,10 @@
-module CopiumEngine.ECS.WorldManager;
+module HesternalEngine.ECS.WorldManager;
 
-import CopiumEngine.ECS.System.Camera;
-import CopiumEngine.ECS.System.Input;
-import CopiumEngine.ECS.System.Graphics;
-import CopiumEngine.ECS.System.TransformToMatrix;
-import CopiumEngine.ECS.System.TransformHierarchy;
+import HesternalEngine.ECS.System.Camera;
+import HesternalEngine.ECS.System.Input;
+import HesternalEngine.ECS.System.Graphics;
+import HesternalEngine.ECS.System.TransformToMatrix;
+import HesternalEngine.ECS.System.TransformHierarchy;
 
 import <memory>;
 import <vector>;
@@ -13,7 +13,7 @@ import <vector>;
 // TODO(v.matushkin): Register systems statically
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void WorldManager::Init()
@@ -33,4 +33,4 @@ namespace Copium
         m_defaulWorld.reset();
     }
 
-} // namespace Copium
+} // namespace Hesternal

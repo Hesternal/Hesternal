@@ -1,13 +1,13 @@
-export module Copium.Math:Float4;
+export module Hesternal.Math:Float4;
 
 import :Float2;
 import :Float3;
 import :Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Float4 final
@@ -74,4 +74,4 @@ export namespace Copium
         [[nodiscard]] static constexpr Float4 One() noexcept { return Float4(1.0f); }
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

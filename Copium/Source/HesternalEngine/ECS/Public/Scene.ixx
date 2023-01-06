@@ -1,14 +1,14 @@
-export module CopiumEngine.ECS.Scene;
+export module HesternalEngine.ECS.Scene;
 
-import Copium.ECS;
+import Hesternal.ECS;
 
-import CopiumEngine.Assets.Model;
+import HesternalEngine.Assets.Model;
 
 import <string>;
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class Scene final
@@ -33,4 +33,4 @@ export namespace Copium
         std::vector<Entity> m_rootEntities;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

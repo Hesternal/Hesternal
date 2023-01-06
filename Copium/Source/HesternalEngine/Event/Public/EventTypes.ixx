@@ -1,10 +1,10 @@
-export module CopiumEngine.Event.EventTypes;
+export module HesternalEngine.Event.EventTypes;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct WindowResizeEvent
@@ -86,4 +86,4 @@ export namespace Copium
         bool           Pressed;
     };
 
-}
+} // export namespace Hesternal

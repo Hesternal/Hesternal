@@ -1,12 +1,12 @@
-export module CopiumEngine.Engine.SystemInfo;
+export module HesternalEngine.Engine.SystemInfo;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium::SystemInfo
+export namespace Hesternal::SystemInfo
 {
 
     // NOTE(v.matushkin): Since I only support Windows/DX11 right now, just hardcode it
     inline constexpr uint32 ConstantBufferAlignment = 256;
 
-} // export namespace Copium::SystemInfo
+} // export namespace Hesternal::SystemInfo

@@ -1,16 +1,16 @@
-export module CopiumEngine.Graphics.IGraphicsDevice;
+export module HesternalEngine.Graphics.IGraphicsDevice;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Graphics.ICommandBuffer;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.ICommandBuffer;
 
 import <memory>;
 import <span>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct IGraphicsDevice
@@ -54,4 +54,4 @@ export namespace Copium
         static constexpr bool k_IndependentBlendEnable = false;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

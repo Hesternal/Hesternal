@@ -1,9 +1,9 @@
-export module CopiumEditor.GUI.ComponentGui;
+export module HesternalEditor.GUI.ComponentGui;
 
-import CopiumEditor.GUI.EditorGui;
+import HesternalEditor.GUI.EditorGui;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ComponentGui
@@ -37,4 +37,4 @@ export namespace Copium
         const char* m_componentName;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

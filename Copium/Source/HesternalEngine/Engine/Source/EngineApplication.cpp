@@ -3,23 +3,23 @@ module;
 #include "Copium/Core/Debug.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.Engine.Application;
+module HesternalEngine.Engine.Application;
 
-import Copium.ECS;
-import Copium.Math;
+import Hesternal.ECS;
+import Hesternal.Math;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.ECS.WorldManager;
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Event.EventManager;
-import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.IGraphicsDevice;
-import CopiumEngine.Utils.Time;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.ECS.WorldManager;
+import HesternalEngine.Engine.EngineSettings;
+import HesternalEngine.Event.EventManager;
+import HesternalEngine.Graphics;
+import HesternalEngine.Graphics.IGraphicsDevice;
+import HesternalEngine.Utils.Time;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     EngineApplication::EngineApplication()
@@ -134,4 +134,4 @@ namespace Copium
         Graphics::Shutdown();
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -1,9 +1,9 @@
-module CopiumEngine.ECS.World;
+module HesternalEngine.ECS.World;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     World::World(std::vector<std::unique_ptr<ISystem>>&& systems)
@@ -34,4 +34,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

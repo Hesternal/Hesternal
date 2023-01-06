@@ -1,11 +1,11 @@
-export module CopiumEngine.Core.Serialization.ObjectSerializationContext;
+export module HesternalEngine.Core.Serialization.ObjectSerializationContext;
 
-import CopiumEngine.Core.ForwardDeclaration;
+import HesternalEngine.Core.ForwardDeclaration;
 
 import <vector>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class ObjectSerializationContext final
@@ -22,4 +22,4 @@ export namespace Copium
         const bool m_initAfterDeserialize;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

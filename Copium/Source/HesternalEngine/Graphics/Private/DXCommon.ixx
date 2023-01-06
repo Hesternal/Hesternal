@@ -4,14 +4,14 @@ module;
 
 #include <dxgiformat.h>
 
-export module CopiumEngine.Graphics.DXCommon;
+export module HesternalEngine.Graphics.DXCommon;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     //- Texture
@@ -26,4 +26,4 @@ export namespace Copium
         return triangleFrontFace == TriangleFrontFace::CounterClockwise;
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

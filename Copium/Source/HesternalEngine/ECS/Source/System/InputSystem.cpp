@@ -3,19 +3,19 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.ECS.System.Input;
+module HesternalEngine.ECS.System.Input;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.ECS.Components;
-import CopiumEngine.Event.Input;
-import CopiumEngine.Utils.Time;
+import HesternalEngine.ECS.Components;
+import HesternalEngine.Event.Input;
+import HesternalEngine.Utils.Time;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     [[nodiscard]] static Float3 GetCameraTranslation(float32 cameraSpeed, float32 cameraBoost)
@@ -60,7 +60,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void InputSystem::OnCreate(EntityManager& entityManager)
@@ -102,4 +102,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

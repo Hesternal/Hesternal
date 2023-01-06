@@ -1,11 +1,11 @@
-module CopiumEngine.Assets.Shader;
+module HesternalEngine.Assets.Shader;
 
-import CopiumEngine.Assets.AssetManager;
+import HesternalEngine.Assets.AssetManager;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Shader::Shader(ShaderDesc&& shaderDesc)
@@ -52,4 +52,4 @@ namespace Copium
         m_shaderHandle = AssetManager::CreateGpuResource(m_shaderDesc);
     }
 
-} // namespace Copium
+} // namespace Hesternal

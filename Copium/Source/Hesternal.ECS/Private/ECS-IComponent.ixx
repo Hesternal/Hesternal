@@ -1,9 +1,9 @@
-export module Copium.ECS:IComponent;
+export module Hesternal.ECS:IComponent;
 
 import <concepts>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct IComponent
@@ -14,4 +14,4 @@ export namespace Copium
     template<typename T>
     concept CComponent = std::derived_from<T, IComponent>;
 
-} // export namespace Copium
+} // export namespace Hesternal

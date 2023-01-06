@@ -1,8 +1,8 @@
-export module CopiumEngine.Graphics.GraphicsBuffer;
+export module HesternalEngine.Graphics.GraphicsBuffer;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <memory>;
 import <span>;
@@ -14,7 +14,7 @@ import <span>;
 //   Although I'm far from solving this kind of problems anyway.
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class GraphicsBuffer final
@@ -40,4 +40,4 @@ export namespace Copium
         GraphicsBufferHandle m_graphicsBufferHandle;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

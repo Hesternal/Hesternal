@@ -1,12 +1,12 @@
-export module Copium.Math:Projection;
+export module Hesternal.Math:Projection;
 
 import :Float4x4;
 import :Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium::Math
+export namespace Hesternal::Math
 {
 
     // TODO(v.matushkin): <ReverseZ> HOW TO DO IT HERE?
@@ -47,4 +47,4 @@ export namespace Copium::Math
         //                0.0f,      0.0f,  1.0f, 0.0f);
     }
 
-} // export namespace Copium::Math
+} // export namespace Hesternal::Math

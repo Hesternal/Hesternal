@@ -2,10 +2,10 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Core.Application;
+module HesternalEngine.Core.Application;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Application::Application()
@@ -68,4 +68,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

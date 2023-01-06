@@ -2,12 +2,12 @@ module;
 
 #include <imgui.h>
 
-module CopiumEditor.GUI.EditorWindow;
+module HesternalEditor.GUI.EditorWindow;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     EditorWindow::EditorWindow(std::string&& windowTitle)
@@ -25,4 +25,4 @@ namespace Copium
         ImGui::End();
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -1,11 +1,11 @@
-export module Copium.Math:Float2;
+export module Hesternal.Math:Float2;
 
 import :Functions;
 
-import Copium.Core;
+import Hesternal.Core;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct Float2 final
@@ -62,4 +62,4 @@ export namespace Copium
         [[nodiscard]] static constexpr Float2 One() noexcept { return Float2(1.0f); }
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -2,9 +2,9 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Assets.Mesh;
+module HesternalEngine.Assets.Mesh;
 
-import Copium.Core;
+import Hesternal.Core;
 
 import <span>;
 import <utility>;
@@ -13,7 +13,7 @@ import <utility>;
 // NOTE(v.matushkin): I need a way to create IMMUTABLE GraphicsBuffer (altough there is no such thing in DX11/VK ?)
 
 
-namespace Copium
+namespace Hesternal
 {
 
     Mesh::Mesh(MeshDesc&& meshDesc)
@@ -42,4 +42,4 @@ namespace Copium
         return *this;
     }
 
-} // namespace Copium
+} // namespace Hesternal

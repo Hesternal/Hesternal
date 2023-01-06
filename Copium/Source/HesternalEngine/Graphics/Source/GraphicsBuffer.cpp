@@ -2,17 +2,17 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Graphics.GraphicsBuffer;
+module HesternalEngine.Graphics.GraphicsBuffer;
 
-import CopiumEngine.Engine.SystemInfo;
-import CopiumEngine.Graphics;
-import CopiumEngine.Graphics.GraphicsTypes;
-import CopiumEngine.Memory;
+import HesternalEngine.Engine.SystemInfo;
+import HesternalEngine.Graphics;
+import HesternalEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Memory;
 
 import <utility>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     GraphicsBuffer::GraphicsBuffer(const GraphicsBufferDesc& graphicsBufferDesc, std::span<const uint8> initialData)
@@ -77,4 +77,4 @@ namespace Copium
         return *this;
     }
 
-} // namespace Copium
+} // namespace Hesternal

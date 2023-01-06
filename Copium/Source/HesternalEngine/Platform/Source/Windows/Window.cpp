@@ -9,22 +9,22 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-module CopiumEngine.Platform.Window;
+module HesternalEngine.Platform.Window;
 COP_WARNING_POP
 
-import CopiumEngine.Event.EventManager;
-import CopiumEngine.Graphics;
+import HesternalEngine.Event.EventManager;
+import HesternalEngine.Graphics;
 
 import <utility>;
 
 
 namespace
 {
-    using namespace Copium;
+    using namespace Hesternal;
 
 
     // TODO(v.matushkin): Duplicated in WindowsApplication.cpp
-    static constexpr const wchar_t* k_WindowClassName = L"CopiumWindowClass";
+    static constexpr const wchar_t* k_WindowClassName = L"HesternalWindowClass";
 
     static constexpr uint8               k_SwapchainBufferCount = 3;
     static constexpr RenderTextureFormat k_SwapchainFormat      = RenderTextureFormat::BGRA8;
@@ -32,7 +32,7 @@ namespace
 } // namespace
 
 
-namespace Copium
+namespace Hesternal
 {
 
     // struct Window::PlatformData
@@ -117,4 +117,4 @@ namespace Copium
         Graphics::GetGraphicsDevice()->ResizeSwapchain(m_swapchainHandle, evt.Width, evt.Height);
     }
 
-} // namespace Copium
+} // namespace Hesternal

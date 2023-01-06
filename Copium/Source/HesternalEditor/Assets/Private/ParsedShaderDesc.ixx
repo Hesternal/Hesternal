@@ -1,11 +1,11 @@
-export module CopiumEditor.Assets.ParsedShaderDesc;
+export module HesternalEditor.Assets.ParsedShaderDesc;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <string>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     struct ParsedShaderDesc final
@@ -18,4 +18,4 @@ export namespace Copium
         std::string           FragmentSource;
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

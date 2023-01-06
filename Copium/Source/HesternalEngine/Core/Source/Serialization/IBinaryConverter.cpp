@@ -2,12 +2,12 @@ module;
 
 #include "Copium/Core/Debug.hpp"
 
-module CopiumEngine.Core.Serialization.IBinaryConverter;
+module HesternalEngine.Core.Serialization.IBinaryConverter;
 
-import CopiumEngine.Core.Object;
+import HesternalEngine.Core.Object;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     IBinaryConverter& IBinaryConverter::operator<<(Object& object)
@@ -18,4 +18,4 @@ namespace Copium
         return *this;
     }
 
-} // namespace Copium
+} // namespace Hesternal

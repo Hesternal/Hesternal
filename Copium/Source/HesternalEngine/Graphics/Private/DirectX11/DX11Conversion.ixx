@@ -8,11 +8,11 @@ module;
 COP_WARNING_PUSH
 COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-export module CopiumEngine.Graphics.DX11Conversion;
+export module HesternalEngine.Graphics.DX11Conversion;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 import <utility>;
 COP_WARNING_POP
@@ -33,7 +33,7 @@ COP_WARNING_POP
 #endif
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     //- GraphicsBuffer
@@ -198,4 +198,4 @@ export namespace Copium
         return d3dBlendLogicOp[std::to_underlying(blendLogicOp)];
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

@@ -1,12 +1,12 @@
-export module CopiumEngine.Graphics.RenderPassNames;
+export module HesternalEngine.Graphics.RenderPassNames;
 
 import <string>;
 
 
-export namespace Copium::RenderPassNames
+export namespace Hesternal::RenderPassNames
 {
 
     inline std::string EngineColor = "EngineColor";
     inline std::string EngineDepth = "EngineDepth";
 
-} // export namespace Copium
+} // export namespace Hesternal

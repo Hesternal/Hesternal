@@ -3,15 +3,15 @@ module;
 #include "Copium/Core/Defines.hpp"
 #include "Copium/ECS/EnttErrorsWorkaround.hpp"
 
-module CopiumEngine.ECS.System.TransformToMatrix;
+module HesternalEngine.ECS.System.TransformToMatrix;
 
-import Copium.Core;
-import Copium.Math;
+import Hesternal.Core;
+import Hesternal.Math;
 
-import CopiumEngine.ECS.Components;
+import HesternalEngine.ECS.Components;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     void TransformToMatrixSystem::OnCreate(EntityManager& entityManager)
@@ -34,4 +34,4 @@ namespace Copium
         }
     }
 
-} // namespace Copium
+} // namespace Hesternal

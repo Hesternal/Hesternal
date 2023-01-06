@@ -11,7 +11,7 @@ COP_WARNING_DISABLE_MSVC(4996)
 #include <entt/entity/view.hpp>
 COP_WARNING_POP
 
-export module Copium.ECS:EntityManager;
+export module Hesternal.ECS:EntityManager;
 
 import :Entity;
 import :IComponent;
@@ -19,7 +19,7 @@ import :IComponent;
 import <utility>;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class EntityManager final
@@ -83,4 +83,4 @@ export namespace Copium
     {
     }
 
-} // export namespace Copium
+} // export namespace Hesternal

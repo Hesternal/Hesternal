@@ -2,15 +2,15 @@ module;
 
 #include <imgui.h>
 
-module CopiumEditor.Editor.SceneWindow;
+module HesternalEditor.Editor.SceneWindow;
 
-import Copium.Core;
+import Hesternal.Core;
 
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.ImGui.ImGuiContext; // For ImGuiTexture
+import HesternalEngine.Engine.EngineSettings;
+import HesternalEngine.ImGui.ImGuiContext; // For ImGuiTexture
 
 
-namespace Copium
+namespace Hesternal
 {
 
     SceneWindow::SceneWindow(RenderTextureHandle engineOutputHandle)
@@ -37,4 +37,4 @@ namespace Copium
         ImGui::EndChild();
     }
 
-} // namespace Copium
+} // namespace Hesternal

@@ -4,16 +4,16 @@ module;
 
 #include <imgui.h>
 
-module CopiumEditor.Editor.ImGuiRenderPass;
+module HesternalEditor.Editor.ImGuiRenderPass;
 
-import CopiumEngine.Engine.EngineSettings;
-import CopiumEngine.Graphics.RenderPassNames;
-import CopiumEngine.ImGui.ImGuiContext;
+import HesternalEngine.Engine.EngineSettings;
+import HesternalEngine.Graphics.RenderPassNames;
+import HesternalEngine.ImGui.ImGuiContext;
 
-import CopiumEditor.Editor.EditorSettings;
+import HesternalEditor.Editor.EditorSettings;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     ImGuiRenderPass::ImGuiRenderPass()
@@ -70,4 +70,4 @@ namespace Copium
         cmd.EndSample();
     }
 
-} // namespace Copium
+} // namespace Hesternal

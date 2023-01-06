@@ -1,9 +1,9 @@
-export module CopiumEngine.Assets.AssetManager;
+export module HesternalEngine.Assets.AssetManager;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class AssetManager final
@@ -16,4 +16,4 @@ export namespace Copium
         static void DestroyGpuResource(TextureHandle textureHandle);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal

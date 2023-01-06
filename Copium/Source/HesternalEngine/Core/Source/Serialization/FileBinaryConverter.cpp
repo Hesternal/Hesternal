@@ -1,12 +1,12 @@
-module CopiumEngine.Core.Serialization.FileBinaryConverter;
+module HesternalEngine.Core.Serialization.FileBinaryConverter;
 
-import CopiumEngine.Core.Platform.File;
+import HesternalEngine.Core.Platform.File;
 
 import <filesystem>;
 import <string>;
 
 
-namespace Copium
+namespace Hesternal
 {
 
     FileBinarySerializer::FileBinarySerializer(const std::string& filePath)
@@ -40,4 +40,4 @@ namespace Copium
         m_fileReader.Read(data, length);
     }
 
-} // namespace Copium
+} // namespace Hesternal

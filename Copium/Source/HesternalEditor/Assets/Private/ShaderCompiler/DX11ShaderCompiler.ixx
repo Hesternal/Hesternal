@@ -1,11 +1,11 @@
-export module CopiumEditor.Assets.DX11ShaderCompiler;
+export module HesternalEditor.Assets.DX11ShaderCompiler;
 
-import CopiumEngine.Graphics.GraphicsTypes;
+import HesternalEngine.Graphics.GraphicsTypes;
 
-import CopiumEditor.Assets.ParsedShaderDesc;
+import HesternalEditor.Assets.ParsedShaderDesc;
 
 
-export namespace Copium
+export namespace Hesternal
 {
 
     class DX11ShaderCompiler final
@@ -23,4 +23,4 @@ export namespace Copium
         void Compile(const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& shaderDesc);
     };
 
-} // export namespace Copium
+} // export namespace Hesternal
