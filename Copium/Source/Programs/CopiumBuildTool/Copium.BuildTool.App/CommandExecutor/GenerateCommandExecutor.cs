@@ -47,7 +47,7 @@ internal sealed class GenerateCommandExecutor : ICommandExecutor
 
     private static FileItem[] _FindProjectFiles(DirectoryItem dir)
     {
-        const string searchPattern = "*.cbt.cs";
+        const string searchPattern = "*.hbt.cs";
 
         return dir.GetFiles(searchPattern);
     }

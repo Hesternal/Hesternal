@@ -12,11 +12,11 @@ public abstract class Project : IEquatable<Project?>, IComparable<Project?>
     public readonly DirectoryItem OutputDir;
 
     /// <summary>
-    /// .cbt.cs file
+    /// .hbt.cs file
     /// </summary>
     public readonly FileItem MakeFile;
     /// <summary>
-    /// .cbt.cs file directory
+    /// .hbt.cs file directory
     /// </summary>
     public readonly DirectoryItem MakeFileDir;
 
@@ -50,5 +50,4 @@ public abstract class Project : IEquatable<Project?>, IComparable<Project?>
     {
         return !(left == right);
     }
-
 }

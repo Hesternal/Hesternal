@@ -17,11 +17,11 @@ public abstract class Solution
 
 
     /// <summary>
-    /// .cbt.cs file
+    /// .hbt.cs file
     /// </summary>
     protected readonly FileItem MakeFile;
     /// <summary>
-    /// .cbt.cs file directory
+    /// .hbt.cs file directory
     /// </summary>
     protected readonly DirectoryItem MakeFileDir;
 
