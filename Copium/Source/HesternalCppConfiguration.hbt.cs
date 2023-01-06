@@ -15,7 +15,7 @@ internal enum BuildConfiguration
     Release,
 }
 
-internal sealed class CopiumCppConfigurationDesc : CppConfigurationDesc
+internal sealed class HesternalCppConfigurationDesc : CppConfigurationDesc
 {
     public required BuildConfiguration Configuration { get; init; }
 
@@ -26,13 +26,13 @@ internal sealed class CopiumCppConfigurationDesc : CppConfigurationDesc
     private readonly OutputType m_outputType;
 
 
-    public CopiumCppConfigurationDesc(OutputType outputType)
+    public HesternalCppConfigurationDesc(OutputType outputType)
     {
         m_outputType = outputType;
     }
 }
 
-internal sealed class CopiumCppConfigurationMatrix : ICppConfigurationMatrix
+internal sealed class HesternalCppConfigurationMatrix : ICppConfigurationMatrix
 {
     public readonly BuildOS[] OS = { BuildOS.Windows };
     public readonly BuildCompiler[] Compiler = { BuildCompiler.Msvc };
@@ -47,7 +47,7 @@ internal sealed class CopiumCppConfigurationMatrix : ICppConfigurationMatrix
     public readonly OutputType OutputType;
 
 
-    public CopiumCppConfigurationMatrix(OutputType outputType)
+    public HesternalCppConfigurationMatrix(OutputType outputType)
     {
         OutputType = outputType;
     }
@@ -83,7 +83,7 @@ internal sealed class CopiumCppConfigurationMatrix : ICppConfigurationMatrix
                 }
             }
 
-            configurations[i] = new CopiumCppConfiguration(new CopiumCppConfigurationDesc(OutputType)
+            configurations[i] = new HesternalCppConfiguration(new HesternalCppConfigurationDesc(OutputType)
             {
                 OS = OS[m_indices[0]],
                 Compiler = Compiler[m_indices[1]],
@@ -97,13 +97,12 @@ internal sealed class CopiumCppConfigurationMatrix : ICppConfigurationMatrix
 }
 
 
-
-internal sealed class CopiumCppConfiguration : CppProjectConfiguration
+internal sealed class HesternalCppConfiguration : CppProjectConfiguration
 {
     public readonly BuildConfiguration Configuration;
 
 
-    public CopiumCppConfiguration(CopiumCppConfigurationDesc desc)
+    public HesternalCppConfiguration(HesternalCppConfigurationDesc desc)
         : base(desc)
     {
         Configuration = desc.Configuration;

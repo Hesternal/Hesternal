@@ -2,16 +2,16 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal sealed class CopiumEditor : CopiumCppProject
+internal sealed class HesternalEditor : HesternalCppProject
 {
-    public CopiumEditor(DirectoryItem outputDir)
-        : base("CopiumEditor", outputDir)
+    public HesternalEditor(DirectoryItem outputDir)
+        : base("HesternalEditor", outputDir)
     {
         BaseGeneratedIncludeDir = "EditorCht";
 
-        SetConfigurationMatrix(new CopiumCppConfigurationMatrix(OutputType.Executable));
+        SetConfigurationMatrix(new HesternalCppConfigurationMatrix(OutputType.Executable));
 
-        AddPrivateProjectReference<CopiumEngine>();
+        AddPrivateProjectReference<HesternalEngine>();
 
         AddSourcesDir("Assets");
         AddSourcesDir("Editor");
@@ -19,7 +19,7 @@ internal sealed class CopiumEditor : CopiumCppProject
     }
 
 
-    protected override void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
+    protected override void OnConfigureHesternalProject(HesternalCppConfiguration configuration)
     {
         //- Assets
         configuration.PrivateConanLibs.Add(ConanLibrary.assimp);

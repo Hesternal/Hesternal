@@ -2,16 +2,16 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal sealed class CopiumSolution : Solution
+internal sealed class HesternalSolution : Solution
 {
-    public CopiumSolution()
-        : base("Copium", Globals.RootDir, Globals.Build.ProjectDir.MakeSubDirItem("vs"))
+    public HesternalSolution()
+        : base("Hesternal", Globals.RootDir, Globals.Build.ProjectDir.MakeSubDirItem("vs"))
     {
-        AddProject(new CopiumCore(OutputDir));
-        AddProject(new CopiumECS(OutputDir));
-        AddProject(new CopiumMath(OutputDir));
-        AddProject(new CopiumEngine(OutputDir));
-        AddProject(new CopiumEngineTests(OutputDir));
-        AddProject(new CopiumEditor(OutputDir));
+        AddProject(new HesternalCore(OutputDir));
+        AddProject(new HesternalECS(OutputDir));
+        AddProject(new HesternalMath(OutputDir));
+        AddProject(new HesternalEngine(OutputDir));
+        AddProject(new HesternalEngineTests(OutputDir));
+        AddProject(new HesternalEditor(OutputDir));
     }
 }

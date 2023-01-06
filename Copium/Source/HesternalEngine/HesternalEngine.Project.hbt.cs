@@ -2,18 +2,18 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal sealed class CopiumEngine : CopiumCppProject
+internal sealed class HesternalEngine : HesternalCppProject
 {
-    public CopiumEngine(DirectoryItem outputDir)
-        : base("CopiumEngine", outputDir)
+    public HesternalEngine(DirectoryItem outputDir)
+        : base("HesternalEngine", outputDir)
     {
         BaseGeneratedIncludeDir = "EngineCht";
 
-        SetConfigurationMatrix(new CopiumCppConfigurationMatrix(OutputType.StaticLib));
+        SetConfigurationMatrix(new HesternalCppConfigurationMatrix(OutputType.StaticLib));
 
-        AddPublicProjectReference<CopiumCore>();
-        AddPublicProjectReference<CopiumECS>();
-        AddPublicProjectReference<CopiumMath>();
+        AddPublicProjectReference<HesternalCore>();
+        AddPublicProjectReference<HesternalECS>();
+        AddPublicProjectReference<HesternalMath>();
 
         AddSourcesDir("Assets");
         AddSourcesDir("Core");
@@ -28,7 +28,7 @@ internal sealed class CopiumEngine : CopiumCppProject
     }
 
 
-    protected override void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
+    protected override void OnConfigureHesternalProject(HesternalCppConfiguration configuration)
     {
         //- Graphics
         if (configuration.OS == BuildOS.Windows)

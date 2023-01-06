@@ -6,7 +6,7 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal abstract class CopiumCppBaseProject : CppProject
+internal abstract class HesternalCppBaseProject : CppProject
 {
     protected static class SearchPattern
     {
@@ -16,7 +16,7 @@ internal abstract class CopiumCppBaseProject : CppProject
     }
 
 
-    protected CopiumCppBaseProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
+    protected HesternalCppBaseProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
         : base(projectName, outputDir, projectFilePath)
     {
     }
@@ -24,51 +24,51 @@ internal abstract class CopiumCppBaseProject : CppProject
 
     protected sealed override void OnConfigureProject(CppProjectConfiguration configuration)
     {
-        CopiumCppConfiguration copiumConfiguration = (CopiumCppConfiguration)configuration;
+        HesternalCppConfiguration hesternalConfiguration = (HesternalCppConfiguration)configuration;
 
-        if (copiumConfiguration.BuildSystemOptions is MSBuildOptions msbuild)
+        if (hesternalConfiguration.BuildSystemOptions is MSBuildOptions msbuild)
         {
-            copiumConfiguration.OutputDir = @"$(CopiumBinDir)\$(Configuration)\";
-            copiumConfiguration.IntermediateDir = @"$(CopiumIntermediateDir)\$(Configuration)\$(ProjectName)\";
-             _ConfigureBuildSystem(copiumConfiguration, msbuild);
+            hesternalConfiguration.OutputDir = @"$(CopiumBinDir)\$(Configuration)\";
+            hesternalConfiguration.IntermediateDir = @"$(CopiumIntermediateDir)\$(Configuration)\$(ProjectName)\";
+             _ConfigureBuildSystem(hesternalConfiguration, msbuild);
         }
         else
         {
             throw new NotSupportedException("Only MSBuild build system supported for now");
         }
 
-        if (copiumConfiguration.CompilerOptions is MsvcOptions msvc)
+        if (hesternalConfiguration.CompilerOptions is MsvcOptions msvc)
         {
-            _ConfigureCompiler(copiumConfiguration, msvc);
+            _ConfigureCompiler(hesternalConfiguration, msvc);
         }
         else
         {
             throw new NotSupportedException("Only MSVC compiler supported for now");
         }
 
-        if (copiumConfiguration.LinkerOptions is MsvcLibrarianOptions msvcLibrarian)
+        if (hesternalConfiguration.LinkerOptions is MsvcLibrarianOptions msvcLibrarian)
         {
-            _ConfigureLinker(copiumConfiguration, msvcLibrarian);
+            _ConfigureLinker(hesternalConfiguration, msvcLibrarian);
         }
-        else if (copiumConfiguration.LinkerOptions is MsvcLinkerOptions msvcLinker)
+        else if (hesternalConfiguration.LinkerOptions is MsvcLinkerOptions msvcLinker)
         {
-            _ConfigureLinker(copiumConfiguration, msvcLinker);
+            _ConfigureLinker(hesternalConfiguration, msvcLinker);
         }
         else
         {
             throw new NotSupportedException("Only MSVC linker supported for now");
         }
 
-        OnConfigureCopiumProject(copiumConfiguration);
+        OnConfigureHesternalProject(hesternalConfiguration);
     }
 
 
-    protected virtual void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
+    protected virtual void OnConfigureHesternalProject(HesternalCppConfiguration configuration)
     {
     }
 
 
-    private static void _ConfigureBuildSystem(CopiumCppConfiguration configuration, MSBuildOptions msbuild)
+    private static void _ConfigureBuildSystem(HesternalCppConfiguration configuration, MSBuildOptions msbuild)
     {
         msbuild.PreferredToolArchitecture = MSBuild.PreferredToolArchitecture.x64;
         msbuild.CharacterSet = MSBuild.CharacterSet.Unicode;
@@ -79,7 +79,7 @@ internal abstract class CopiumCppBaseProject : CppProject
         }
     }
 
-    private static void _ConfigureCompiler(CopiumCppConfiguration configuration, MsvcOptions msvc)
+    private static void _ConfigureCompiler(HesternalCppConfiguration configuration, MsvcOptions msvc)
     {
         msvc.ScanSourceForModuleDependencies = true;
         msvc.SuppressStartupBanner = true;
@@ -131,7 +131,7 @@ internal abstract class CopiumCppBaseProject : CppProject
         //}
     }
 
-    private static void _ConfigureLinker(CopiumCppConfiguration configuration, MsvcLibrarianOptions linker)
+    private static void _ConfigureLinker(HesternalCppConfiguration configuration, MsvcLibrarianOptions linker)
     {
         linker.SuppressStartupBanner = true;
         linker.LinkLibraryDependencies = false;
@@ -150,7 +150,7 @@ internal abstract class CopiumCppBaseProject : CppProject
         }
     }
 
-    private static void _ConfigureLinker(CopiumCppConfiguration configuration, MsvcLinkerOptions linker)
+    private static void _ConfigureLinker(HesternalCppConfiguration configuration, MsvcLinkerOptions linker)
     {
         linker.SuppressStartupBanner = true;
         linker.IgnoreImportLibrary = false;

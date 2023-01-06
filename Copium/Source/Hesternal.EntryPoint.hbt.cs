@@ -87,6 +87,6 @@ public static class Main
 {
     private static Solution EntryPoint()
     {
-        return new CopiumSolution();
+        return new HesternalSolution();
     }
 }

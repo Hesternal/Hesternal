@@ -7,7 +7,7 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal abstract class CopiumCppProject : CopiumCppBaseProject
+internal abstract class HesternalCppProject : HesternalCppBaseProject
 {
     private static class DirName
     {
@@ -19,7 +19,7 @@ internal abstract class CopiumCppProject : CopiumCppBaseProject
     }
 
 
-    protected CopiumCppProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
+    protected HesternalCppProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
         : base(projectName, outputDir, projectFilePath)
     {
     }

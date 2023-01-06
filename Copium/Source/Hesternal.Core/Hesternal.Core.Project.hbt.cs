@@ -2,20 +2,20 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal sealed class CopiumCore : CopiumCppProject
+internal sealed class HesternalCore : HesternalCppProject
 {
-    public CopiumCore(DirectoryItem outputDir)
-        : base("Copium.Core", outputDir)
+    public HesternalCore(DirectoryItem outputDir)
+        : base("Hesternal.Core", outputDir)
     {
-        BaseGeneratedIncludeDir = "CopiumCoreCht";
+        BaseGeneratedIncludeDir = "HesternalCoreCht";
 
-        SetConfigurationMatrix(new CopiumCppConfigurationMatrix(OutputType.StaticLib));
+        SetConfigurationMatrix(new HesternalCppConfigurationMatrix(OutputType.StaticLib));
 
         AddSourcesDir();
     }
 
 
-    protected override void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
+    protected override void OnConfigureHesternalProject(HesternalCppConfiguration configuration)
     {
         if (configuration.OS == BuildOS.Windows)
         {

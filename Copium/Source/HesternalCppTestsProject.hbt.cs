@@ -7,15 +7,15 @@ using Copium.BuildTool;
 using Copium.Core.Net7;
 
 
-internal abstract class CopiumCppTestsProject : CopiumCppBaseProject
+internal abstract class HesternalCppTestsProject : HesternalCppBaseProject
 {
-    protected CopiumCppTestsProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
+    protected HesternalCppTestsProject(string projectName, DirectoryItem outputDir, [CallerFilePath] string projectFilePath = "")
         : base(projectName, outputDir, projectFilePath)
     {
     }
 
 
-    protected sealed override void OnConfigureCopiumProject(CopiumCppConfiguration configuration)
+    protected sealed override void OnConfigureHesternalProject(HesternalCppConfiguration configuration)
     {
         configuration.PrivateConanLibs.Add(ConanLibrary.catch2);
     }
