@@ -50,7 +50,7 @@ public sealed class VsSolutionGenerator : IDisposable
         m_solutionDir.Create();
         m_solutionFile = m_solutionDir.MakeSubFileItem(solution.Name + VsFileExtension.Solution);
 
-        m_generationContext = new VsGenerationContext(m_solutionDir);
+        m_generationContext = new VsGenerationContext(solution.RootDir, m_solutionDir);
 
         m_solutionWriter = new(m_solutionFile.OpenWrite());
     }

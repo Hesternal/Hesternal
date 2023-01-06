@@ -10,6 +10,7 @@ namespace Copium.BuildTool;
 public abstract class Solution
 {
     public readonly string Name;
+    public readonly DirectoryItem RootDir; // TODO: <DirectoryBuildProps> HACK
     public readonly DirectoryItem OutputDir;
 
     public IReadOnlyCollection<CppProject> CppProjects => m_cppProjects.Values;
@@ -28,9 +29,10 @@ public abstract class Solution
     private readonly Dictionary<Type, CppProject> m_cppProjects = new();
 
 
-    protected Solution(string solutionName, DirectoryItem outputDir, [CallerFilePath] string solutionFilePath = "")
+    protected Solution(string solutionName, DirectoryItem rootDir, DirectoryItem outputDir, [CallerFilePath] string solutionFilePath = "")
     {
         Name = solutionName;
+        RootDir = rootDir;
         OutputDir = outputDir;
 
         MakeFile = new FileItem(solutionFilePath);

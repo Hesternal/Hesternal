@@ -5,7 +5,7 @@ using Copium.Core.Net7;
 internal sealed class CopiumSolution : Solution
 {
     public CopiumSolution()
-        : base("Copium", Globals.Build.ProjectDir.MakeSubDirItem("vs"))
+        : base("Copium", Globals.RootDir, Globals.Build.ProjectDir.MakeSubDirItem("vs"))
     {
         AddProject(new CopiumCore(OutputDir));
         AddProject(new CopiumECS(OutputDir));

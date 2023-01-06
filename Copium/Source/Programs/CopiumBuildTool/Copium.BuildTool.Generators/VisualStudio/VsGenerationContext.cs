@@ -11,11 +11,11 @@ internal sealed class VsGenerationContext
     public readonly DirectoryItem SolutionDir;
 
 
-    public VsGenerationContext(DirectoryItem solutionDir)
+    public VsGenerationContext(DirectoryItem rootDir, DirectoryItem solutionDir)
     {
         SolutionDir = solutionDir;
 
-        _GeneratePropsFile_DirectoryBuild(solutionDir);
+        _GeneratePropsFile_DirectoryBuild(rootDir, solutionDir);
     }
 
 
@@ -30,7 +30,8 @@ internal sealed class VsGenerationContext
     }
 
 
-    private static void _GeneratePropsFile_DirectoryBuild(DirectoryItem solutionDir)
+    // TODO(v.matushkin): I think I should generate this from "makefile"
+    private static void _GeneratePropsFile_DirectoryBuild(DirectoryItem rootDir, DirectoryItem solutionDir)
     {
         using VsXmlWriter propsFileWriter = new(solutionDir.MakeSubFileItem(k_DirectoryBuildPropsFileName));
 
@@ -38,7 +39,7 @@ internal sealed class VsGenerationContext
 
         propsFileWriter.BeginPropertyGroup();
         //propsFileWriter.Property("CopiumRootDir", CopiumGlobal.RootDir.FullPath);
-        propsFileWriter.Property("CopiumRootDir", @"D:\programming\repos\Copium"); // TODO: HARDCODED
+        propsFileWriter.Property("CopiumRootDir", rootDir.FullPath); // TODO: <DirectoryBuildProps> HACK
         //- Build dirs
         propsFileWriter.Property("CopiumBuildDir", @"$(CopiumRootDir)\build");
         propsFileWriter.Property("CopiumBinDir", @"$(CopiumBuildDir)\bin");
