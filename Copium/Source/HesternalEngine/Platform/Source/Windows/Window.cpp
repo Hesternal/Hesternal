@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 
 #include <Windows.h>
 #include <windowsx.h>

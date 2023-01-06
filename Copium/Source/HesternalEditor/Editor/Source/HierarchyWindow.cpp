@@ -1,7 +1,7 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
-#include "Copium/ECS/EnttErrorsWorkaround.hpp"
+#include "Hesternal/Core/Defines.hpp"
+#include "Hesternal/ECS/EnttErrorsWorkaround.hpp"
 
 #include <imgui.h>
 #include <fmt/format.h>

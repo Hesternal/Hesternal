@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 #include "Engine/ImGui/imgui_impl_win32.h"
 
 #include <imgui.h>

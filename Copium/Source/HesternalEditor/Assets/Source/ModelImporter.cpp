@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

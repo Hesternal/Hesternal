@@ -1,7 +1,7 @@
 module;
 
-// #include "Copium/Core/Debug.hpp"
-#include "Copium/Core/Defines.hpp"
+// #include "Hesternal/Core/Debug.hpp"
+#include "Hesternal/Core/Defines.hpp"
 
 export module HesternalEngine.Memory;
 

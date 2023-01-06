@@ -1,6 +1,6 @@
 module;
 
-#include "CopiumEngine/Engine/EngineSettings.hpp"
+#include "HesternalEngine/Engine/EngineSettings.hpp"
 
 module HesternalEngine.Engine.EngineSettings;
 

@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 
 #include <d3d11_4.h>
 #include <d3dcompiler.h>

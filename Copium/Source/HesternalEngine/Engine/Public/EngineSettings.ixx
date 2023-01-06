@@ -1,8 +1,8 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 
-#include "CopiumEngine/Engine/EngineSettings.hpp"
+#include "HesternalEngine/Engine/EngineSettings.hpp"
 
 export module HesternalEngine.Engine.EngineSettings;
 

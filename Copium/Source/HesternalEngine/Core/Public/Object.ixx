@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 // #include "EngineCht/Object.cht.hpp"
 
 export module HesternalEngine.Core.Object;

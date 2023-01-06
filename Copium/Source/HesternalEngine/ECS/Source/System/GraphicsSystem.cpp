@@ -1,7 +1,7 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
-#include "Copium/ECS/EnttErrorsWorkaround.hpp"
+#include "Hesternal/Core/Debug.hpp"
+#include "Hesternal/ECS/EnttErrorsWorkaround.hpp"
 
 module HesternalEngine.ECS.System.Graphics;
 

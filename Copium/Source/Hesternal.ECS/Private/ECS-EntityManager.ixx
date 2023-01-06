@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 
 // warning C4996: 'std::aligned_storage_t': warning STL4034: std::aligned_storage and std::aligned_storage_t are deprecated in C++23.
 //  Prefer alignas(T) std::byte t_buff[sizeof(T)].

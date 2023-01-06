@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 
 export module HesternalEngine.Graphics.ICommandBuffer;
 

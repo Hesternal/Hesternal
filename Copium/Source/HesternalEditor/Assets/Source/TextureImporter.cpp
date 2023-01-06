@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 
 // NOTE(v.matushkin): Put stb in a normal conan package? not this fucking trash that I get rn
 // NOTE(v.matushkin): It's kinda dumb that stb error checking depends on 'COP_ENABLE_ASSERTS'

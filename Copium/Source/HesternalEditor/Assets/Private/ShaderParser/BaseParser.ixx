@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 #include "EditorCht/BaseParser.cht.hpp"
 
 export module HesternalEditor.Assets.ShaderImporter.BaseParser;

@@ -1,4 +1,4 @@
-#include "Copium/Core/Debug.hpp"
+#include "Hesternal/Core/Debug.hpp"
 
 #if COP_ENABLE_LOGGING
 

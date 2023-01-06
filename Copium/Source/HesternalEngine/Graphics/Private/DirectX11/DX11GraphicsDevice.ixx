@@ -1,8 +1,8 @@
 module;
 
 // NOTE(v.matushkin): Can't use ASSERT here, because Microsoft introduced new ICE after VS 17.4 preview 3.0?
-//#include "Copium/Core/Debug.hpp"
-#include "Copium/Core/Defines.hpp"
+//#include "Hesternal/Core/Debug.hpp"
+#include "Hesternal/Core/Defines.hpp"
 
 #include <d3d11_4.h>
 #if COP_ENABLE_GRAPHICS_API_DEBUG

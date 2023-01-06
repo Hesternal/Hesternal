@@ -1,6 +1,6 @@
 module;
 
-#include "Copium/Core/Defines.hpp"
+#include "Hesternal/Core/Defines.hpp"
 #include "EngineCht/GraphicsTypes.cht.hpp"
 
 export module HesternalEngine.Graphics.GraphicsTypes;
