@@ -1,0 +1,47 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="Hesternal.HeaderTool.MSBuild.HesternalHeaderTool" AssemblyFile="$(HesternalBinDir)\dotnet\Hesternal.HeaderTool.MSBuild.dll" />
+
+  <ItemGroup>
+    <AvailableItemName Include="HesternalHeaderTool">
+      <Targets>HesternalHeaderTool</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <Target Name="HesternalHeaderTool"
+          Condition="'@(ClCompile)' != ''"
+          AfterTargets="PrepareForBuild"
+          BeforeTargets="Compile"
+          >
+
+    <!-- get .ixx modules from ClCompile -->
+    <ItemGroup>
+      <_Modules Include="@(ClCompile)" Condition="'%(Extension)' == '.ixx'" />
+    </ItemGroup>
+
+    <HesternalHeaderTool
+        HesternalConfigDir="%(HesternalHeaderTool.HesternalConfigDir)"
+        TargetName="%(HesternalHeaderTool.TargetName)"
+        TargetDir="%(HesternalHeaderTool.TargetDir)"
+        TargetGeneratedDir="%(HesternalHeaderTool.TargetGeneratedDir)"
+        BaseGeneratedIncludeDir="%(HesternalHeaderTool.BaseGeneratedIncludeDir)"
+        Headers="@(_Modules)"
+        TLogDirectory="$(TLogLocation)"
+        >
+        <Output TaskParameter="GeneratedFiles" ItemName="_ChtGeneratedFiles" />
+    </HesternalHeaderTool>
+
+    <!-- add generated .cpp files -->
+    <ItemGroup Condition="'@(_ChtGeneratedFiles)' != ''">
+      <ClCompile Include="%(_ChtGeneratedFiles.Identity)" />
+    </ItemGroup>
+
+    <!-- cleanup -->
+    <ItemGroup>
+      <_ChtGeneratedFiles Remove="@(_ChtGeneratedFiles)" />
+      <_Modules Remove="@(_Modules)" />
+    </ItemGroup>
+
+  </Target>
+
+</Project>

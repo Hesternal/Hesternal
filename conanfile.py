@@ -4,8 +4,8 @@ from conan.tools.microsoft import MSBuildDeps
 
 required_conan_version = '>=1.55.0'
 
-class Copium(ConanFile):
-    name = 'Copium'
+class Hesternal(ConanFile):
+    name = 'Hesternal'
     version = '0.1.0'
     settings = {
         'os': ['Windows'],

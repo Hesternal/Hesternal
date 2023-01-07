@@ -1,0 +1,35 @@
+{
+    "Namespace": "Hesternal",
+    "FilePathMacro": "CHT_FILE_PATH",
+    "EnumGenerator": {
+        "Hpp": {
+            "Includes": [
+                "Hesternal/Core/HesternalHeaderTool.hpp"
+            ]
+        },
+        "Cpp": {
+            "StdIncludes": [
+                "string_view",
+                "unordered_map",
+                "utility"
+            ],
+            "Imports": [
+                "HesternalEngine.Utils.EnumUtils"
+            ],
+            "ToStringMapThreshold": 4,
+            "FromStringMapThreshold": 4
+        }
+    },
+    "StructGenerator": {
+        "Hpp": {
+            "Imports": [
+                "HesternalEngine.Core.Serialization.IBinaryConverter"
+            ]
+        },
+        "Cpp": {
+            "Imports": [
+                "HesternalEngine.Core.Serialization.IBinaryConverter"
+            ]
+        }
+    }
+}

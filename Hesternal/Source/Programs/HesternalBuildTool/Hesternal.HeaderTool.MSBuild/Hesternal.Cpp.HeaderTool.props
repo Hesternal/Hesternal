@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemDefinitionGroup>
+    <HesternalHeaderTool>
+      <HesternalConfigDir Condition="'%(HesternalHeaderTool.HesternalConfigDir)' == ''">$(HesternalConfigDir)</HesternalConfigDir>
+      <TargetName         Condition="'%(HesternalHeaderTool.TargetName)'         == ''">$(HesternalTargetName)</TargetName>
+      <TargetDir          Condition="'%(HesternalHeaderTool.TargetDir)'          == ''">$(HesternalTargetSourceDir)</TargetDir>
+      <TargetGeneratedDir Condition="'%(HesternalHeaderTool.TargetGeneratedDir)' == ''">$(HesternalTargetGeneratedDir)</TargetGeneratedDir>
+    </HesternalHeaderTool>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(HesternalTargetGeneratedDir)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <HesternalHeaderTool Include="$(ProjectName)" />
+  </ItemGroup>
+
+</Project>

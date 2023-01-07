@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hesternal.Core.Net7\Hesternal.Core.Net7.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.CPPTasks.Common">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.CPPTasks.Common.Base">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.Base.dll</HintPath>
+    </Reference>
+    <!--<ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>-->
+  </ItemGroup>
+
+</Project>
