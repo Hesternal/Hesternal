@@ -6,7 +6,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <!-- Package properties-->
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Copium.HeaderTool</Title>
+    <Title>Hesternal.HeaderTool</Title>
     <!-- Tell the SDK to generate a deps.json file -->
     <GenerateDependencyFile>true</GenerateDependencyFile>
   </PropertyGroup>
@@ -17,13 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Copium.HeaderTool\Copium.HeaderTool.csproj" />
+    <ProjectReference Include="..\Copium.HeaderTool\Hesternal.HeaderTool.csproj" />
   </ItemGroup>
 
   <Target Name="CopyDLLs" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
-    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll;$(TargetDir)$(ProjectName).pdb"
-          DestinationFolder="$(CopiumBinDir)"
-          />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll;$(TargetDir)$(ProjectName).pdb" DestinationFolder="$(CopiumBinDir)" />
   </Target>
 
 </Project>

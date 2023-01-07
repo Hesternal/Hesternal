@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Copium.BuildTool\Copium.BuildTool.csproj" />
-    <ProjectReference Include="..\Copium.BuildTool.SourceGenerator\Copium.BuildTool.SourceGenerator.csproj">
+    <ProjectReference Include="..\Copium.BuildTool\Hesternal.BuildTool.csproj" />
+    <ProjectReference Include="..\Copium.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <OutputItemType>Analyzer</OutputItemType>
     </ProjectReference>

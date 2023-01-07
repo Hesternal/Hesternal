@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <UsingTask TaskName="Copium.HeaderTool.MSBuild.CopiumHeaderTool" AssemblyFile="$(CopiumBinDir)\dotnet\Copium.HeaderTool.MSBuild.dll" />
+  <UsingTask TaskName="Copium.HeaderTool.MSBuild.CopiumHeaderTool" AssemblyFile="$(CopiumBinDir)\dotnet\Hesternal.HeaderTool.MSBuild.dll" />
 
   <ItemGroup>
     <AvailableItemName Include="CopiumHeaderTool">

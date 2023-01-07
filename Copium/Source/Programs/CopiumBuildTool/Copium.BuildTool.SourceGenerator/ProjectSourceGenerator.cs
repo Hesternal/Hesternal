@@ -14,6 +14,9 @@ namespace Copium.BuildTool.SourceGenerator;
 [Generator(LanguageNames.CSharp)]
 internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 {
+    // TODO(v.matushkin): Is there a way to not hardcode this?
+    private const string k_BuildToolGeneratorsAssemblyName = "Hesternal.BuildTool.Generators";
+
     private static int s_InitCount;
     private static int s_SelectCount;
     private static int s_EmitCount;
@@ -39,7 +42,7 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 
     private static IEnumerable<INamedTypeSymbol> _GetProjectGenerators(Compilation compilation, CancellationToken _)
     {
-        if (compilation.AssemblyName == "Copium.BuildTool.Generators")
+        if (compilation.AssemblyName == k_BuildToolGeneratorsAssemblyName)
         {
             Interlocked.Increment(ref s_SelectCount);
 
