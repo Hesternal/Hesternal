@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 namespace Hesternal.BuildTool;
 

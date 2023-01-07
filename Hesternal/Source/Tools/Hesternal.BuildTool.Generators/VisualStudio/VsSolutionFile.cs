@@ -2,7 +2,7 @@
 //using System.Collections.Generic;
 //using System.Text.RegularExpressions;
 //
-//using Hesternal.Core.Net7;
+//using Hesternal.CSharp.Net7;
 //
 //namespace Hesternal.BuildTool.Generators.VisualStudio;
 //

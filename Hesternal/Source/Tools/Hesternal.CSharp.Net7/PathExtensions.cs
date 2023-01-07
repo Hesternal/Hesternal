@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Hesternal.Core.Net7;
+namespace Hesternal.CSharp.Net7;
 
 
 public static class PathExtensions

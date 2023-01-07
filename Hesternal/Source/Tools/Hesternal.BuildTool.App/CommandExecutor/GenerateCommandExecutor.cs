@@ -4,7 +4,7 @@ using System.Reflection;
 
 using Hesternal.BuildTool.Build;
 using Hesternal.BuildTool.Generators.VisualStudio;
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 using Microsoft.Extensions.Logging;
 

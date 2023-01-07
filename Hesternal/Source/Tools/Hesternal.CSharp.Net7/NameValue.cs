@@ -1,6 +1,6 @@
 //using System.Text.Json.Serialization;
 //
-//namespace Hesternal.Core.Net7;
+//namespace Hesternal.CSharp.Net7;
 //
 //
 //public readonly struct NameValue

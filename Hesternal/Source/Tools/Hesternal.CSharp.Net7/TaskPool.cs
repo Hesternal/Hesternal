@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using Hesternal.Core;
+using Hesternal.CSharp;
 
-namespace Hesternal.Core.Net7;
+namespace Hesternal.CSharp.Net7;
 
 
 public static class TaskPool

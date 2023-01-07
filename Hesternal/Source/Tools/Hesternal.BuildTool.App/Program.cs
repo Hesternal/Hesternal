@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Hesternal.BuildTool.CommandExecutor;
 using Hesternal.BuildTool.External;
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 // using Microsoft.Build.Locator;
 using Microsoft.Extensions.Logging;

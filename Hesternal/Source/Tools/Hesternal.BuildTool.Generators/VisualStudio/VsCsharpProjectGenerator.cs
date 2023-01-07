@@ -1,7 +1,7 @@
 ﻿//using System;
 //
 //using Hesternal.BuildTool.Build;
-//using Hesternal.Core.Net7;
+//using Hesternal.CSharp.Net7;
 //
 //namespace Hesternal.BuildTool.Generators.VisualStudio;
 //

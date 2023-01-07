@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 
 using Hesternal.BuildTool.External;
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -90,7 +90,7 @@ internal sealed class CSharpCompiler
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Collections.dll")),
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Linq.dll")),
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(typeof(DirectoryItem).Assembly.Location), // Hesternal.Core.Net7
+            MetadataReference.CreateFromFile(typeof(DirectoryItem).Assembly.Location), // Hesternal.CSharp.Net7
             MetadataReference.CreateFromFile(typeof(Project).Assembly.Location), // Hesternal.BuildTool
         };
     }

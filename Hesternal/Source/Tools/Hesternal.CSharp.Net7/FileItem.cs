@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Hesternal.Core.Net7;
+namespace Hesternal.CSharp.Net7;
 
 
 // [JsonConverter(typeof(FileItemJsonConverter))]

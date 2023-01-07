@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 using Microsoft.Extensions.Logging;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
-using Hesternal.Core;
+
+using Hesternal.CSharp;
 
 // TODO(v.matushkin): Not all changes were transfered from C++ version of BaseParser class
 

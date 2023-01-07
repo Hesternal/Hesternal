@@ -16,9 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.Generat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.SourceGenerator", "Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj", "{D85AB119-960A-44AF-81C8-F69821B6F90B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core", "Hesternal.Core\Hesternal.Core.csproj", "{77560C01-3905-4EB3-8DDA-1067AA5FA535}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.CSharp", "Hesternal.CSharp\Hesternal.CSharp.csproj", "{77560C01-3905-4EB3-8DDA-1067AA5FA535}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core.Net7", "Hesternal.Core.Net7\Hesternal.Core.Net7.csproj", "{36CFBA55-6AF2-462C-92CD-4DB1A09A3B96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.CSharp.Net7", "Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj", "{36CFBA55-6AF2-462C-92CD-4DB1A09A3B96}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool", "Hesternal.HeaderTool\Hesternal.HeaderTool.csproj", "{39A7250D-259C-4284-AF5C-F6080D9DB75B}"
 EndProject

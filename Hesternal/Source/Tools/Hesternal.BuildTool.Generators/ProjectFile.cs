@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 namespace Hesternal.BuildTool.Generators;
 

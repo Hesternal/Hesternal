@@ -32,10 +32,10 @@
     <ProjectReference Include="..\Hesternal.BuildTool.Generators\Hesternal.BuildTool.Generators.csproj">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </ProjectReference>
-    <ProjectReference Include="..\Hesternal.Core\Hesternal.Core.csproj">
+    <ProjectReference Include="..\Hesternal.CSharp\Hesternal.CSharp.csproj">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </ProjectReference>
-    <ProjectReference Include="..\Hesternal.Core.Net7\Hesternal.Core.Net7.csproj">
+    <ProjectReference Include="..\Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </ProjectReference>
     

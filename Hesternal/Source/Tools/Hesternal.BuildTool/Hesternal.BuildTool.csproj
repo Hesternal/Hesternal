@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hesternal.Core.Net7\Hesternal.Core.Net7.csproj" />
+    <ProjectReference Include="..\Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 using Microsoft.Extensions.Logging;
 

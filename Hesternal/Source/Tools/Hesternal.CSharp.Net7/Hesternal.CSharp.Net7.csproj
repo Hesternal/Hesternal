@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hesternal.Core\Hesternal.Core.csproj" />
+    <ProjectReference Include="..\Hesternal.CSharp\Hesternal.CSharp.csproj" />
   </ItemGroup>
 
 </Project>

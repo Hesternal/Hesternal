@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hesternal.Core.Net7;
+namespace Hesternal.CSharp.Net7;
 
 
 // TODO(v.matushkin): And why did I made this class?

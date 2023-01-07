@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 namespace Hesternal.BuildTool;
 

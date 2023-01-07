@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Hesternal.Core
+namespace Hesternal.CSharp
 {
     public static class StringBuilderExtensions
     {

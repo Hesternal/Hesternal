@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-using Hesternal.Core;
+using Hesternal.CSharp;
 
 namespace Hesternal.HeaderTool.Parser
 {

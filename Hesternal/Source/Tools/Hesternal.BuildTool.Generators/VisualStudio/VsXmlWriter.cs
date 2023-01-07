@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 namespace Hesternal.BuildTool.Generators.VisualStudio;
 
