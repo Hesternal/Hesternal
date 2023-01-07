@@ -22,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.CSharp.Net7", "He
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool", "Hesternal.HeaderTool\Hesternal.HeaderTool.csproj", "{39A7250D-259C-4284-AF5C-F6080D9DB75B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.MSBuild", "Hesternal.HeaderTool.MSBuild\Hesternal.HeaderTool.MSBuild.csproj", "{B838A045-6521-4CF3-9F91-0DB71913A81B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.App", "Hesternal.HeaderTool.App\Hesternal.HeaderTool.App.csproj", "{D43ED592-88E3-4D15-8AED-19E80CE3BE86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.Program", "Hesternal.HeaderTool.Program\Hesternal.HeaderTool.Program.csproj", "{D43ED592-88E3-4D15-8AED-19E80CE3BE86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.MSBuild", "Hesternal.HeaderTool.MSBuild\Hesternal.HeaderTool.MSBuild.csproj", "{B838A045-6521-4CF3-9F91-0DB71913A81B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.MathTool", "Hesternal.MathTool\Hesternal.MathTool.csproj", "{A3E1889C-297B-4037-9730-882CC34B661B}"
 EndProject
@@ -62,14 +62,14 @@ Global
 		{39A7250D-259C-4284-AF5C-F6080D9DB75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39A7250D-259C-4284-AF5C-F6080D9DB75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39A7250D-259C-4284-AF5C-F6080D9DB75B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D43ED592-88E3-4D15-8AED-19E80CE3BE86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B838A045-6521-4CF3-9F91-0DB71913A81B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3E1889C-297B-4037-9730-882CC34B661B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3E1889C-297B-4037-9730-882CC34B661B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3E1889C-297B-4037-9730-882CC34B661B}.Release|Any CPU.ActiveCfg = Release|Any CPU
