@@ -47,8 +47,8 @@ internal sealed class VsGenerationContext
         propsFileWriter.Property("HesternalGeneratedDir", @"$(HesternalBuildDir)\generated");
         propsFileWriter.Property("HesternalIntermediateDir", @"$(HesternalBuildDir)\intermediate\" + k_SubDirName);
         //- Source dirs
-        propsFileWriter.Property("HesternalConfigDir", @"$(HesternalRootDir)\Copium\Config");
-        propsFileWriter.Property("HesternalSourceDir", @"$(HesternalRootDir)\Copium\Source");
+        propsFileWriter.Property("HesternalConfigDir", @"$(HesternalRootDir)\Hesternal\Config");
+        propsFileWriter.Property("HesternalSourceDir", @"$(HesternalRootDir)\Hesternal\Source");
         //- Target
         propsFileWriter.Property("HesternalTargetName", "$(MSBuildProjectName)");
         propsFileWriter.Property("HesternalTargetGeneratedDir", @"$(HesternalGeneratedDir)\$(HesternalTargetName)");

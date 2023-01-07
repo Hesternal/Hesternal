@@ -35,17 +35,17 @@ internal static class Globals
 
     public sealed class HesternalDirs
     {
-        private readonly DirectoryItem m_copiumDir;
+        private readonly DirectoryItem m_hesternalDir;
 
         public readonly DirectoryItem ConfigDir;
         public readonly DirectoryItem SourceDir;
 
         public HesternalDirs(DirectoryItem rootDir)
         {
-            m_copiumDir = rootDir.MakeSubDirItem("Copium");
+            m_hesternalDir = rootDir.MakeSubDirItem("Hesternal");
 
-            ConfigDir = m_copiumDir.MakeSubDirItem("Config");
-            SourceDir = m_copiumDir.MakeSubDirItem("Source");
+            ConfigDir = m_hesternalDir.MakeSubDirItem("Config");
+            SourceDir = m_hesternalDir.MakeSubDirItem("Source");
         }
     }
 
