@@ -7,6 +7,9 @@
       <TargetDir          Condition="'%(CopiumHeaderTool.TargetDir)'          == ''">$(CopiumTargetSourceDir)</TargetDir>
       <TargetGeneratedDir Condition="'%(CopiumHeaderTool.TargetGeneratedDir)' == ''">$(CopiumTargetGeneratedDir)</TargetGeneratedDir>
     </CopiumHeaderTool>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(CopiumTargetGeneratedDir)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
 
   <ItemGroup>
