@@ -62,7 +62,7 @@ internal sealed class Conan
                     }
                     else
                     {
-                        throw new CbtException("Didn't expect to get more than one line of output for \"conan --version\" command");
+                        throw new HbtException("Didn't expect to get more than one line of output for \"conan --version\" command");
                     }
                 }
             };
@@ -82,7 +82,7 @@ internal sealed class Conan
 
         if (conanVersionOutput == null)
         {
-            throw new CbtException("\"conan --version\" output was empty");
+            throw new HbtException("\"conan --version\" output was empty");
         }
 
         string[] outputParts = conanVersionOutput.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -91,12 +91,12 @@ internal sealed class Conan
         if (outputParts.Length != 3 || outputParts[0] != "Conan" || outputParts[1] != "version"
             || Version.TryParse(outputParts[2], out conanVersion) == false)
         {
-            throw new CbtException("Couldn't parse \"conan --version\" output");
+            throw new HbtException("Couldn't parse \"conan --version\" output");
         }
 
         if (s_ConanRequiredVersion != conanVersion)
         {
-            throw new CbtException($"Required conan version is {s_ConanRequiredVersion}, found {conanVersion} instead");
+            throw new HbtException($"Required conan version is {s_ConanRequiredVersion}, found {conanVersion} instead");
         }
 
         Log.Logger.LogInformation("Found conan {version}", s_ConanRequiredVersion.ToString());

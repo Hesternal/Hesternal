@@ -70,7 +70,7 @@ internal static class Program
 
             commandExecutor.Execute();
         }
-        //catch (CbtException e)
+        //catch (HbtException e)
         //{
         //    Log.Logger.LogCritical(e.Message);
         //}
@@ -78,7 +78,7 @@ internal static class Program
         //{
         //    e.Handle(innerException =>
         //    {
-        //        if (innerException is CbtException)
+        //        if (innerException is HbtException)
         //        {
         //            Log.Logger.LogCritical(innerException.Message);
         //            return true;

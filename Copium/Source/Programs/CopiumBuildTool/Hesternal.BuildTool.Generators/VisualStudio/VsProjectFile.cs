@@ -95,7 +95,7 @@
 //        {
 //            if (projectFileReader.ReadToFollowing("ProjectGuid") == false)
 //            {
-//                throw new CbtException($"Couldn't find ProjectGuid in the \"Globals\" PropertyGroup: {ProjectFileName}");
+//                throw new HbtException($"Couldn't find ProjectGuid in the \"Globals\" PropertyGroup: {ProjectFileName}");
 //            }
 //
 //            guid = projectFileReader.ReadElementContentAsString();
@@ -104,7 +104,7 @@
 //        if (VisualStudioGuid.Validate(guid) == false)
 //        {
 //            // NOTE(v.matushkin): I can just generate new Guid a log a warning here
-//            throw new CbtException($"\"{ProjectFileName}\" had invalid Guid");
+//            throw new HbtException($"\"{ProjectFileName}\" had invalid Guid");
 //        }
 //
 //        return guid;

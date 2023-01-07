@@ -4,9 +4,9 @@ namespace Hesternal.Core.Net7;
 
 
 // TODO(v.matushkin): And why did I made this class?
-public sealed class CbtException : Exception
+public sealed class HbtException : Exception
 {
-    public CbtException(string message)
+    public HbtException(string message)
         : base(message)
     {
     }

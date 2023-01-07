@@ -54,7 +54,7 @@ internal sealed class DotnetHelper
         );
         if (RefAssembliesDir.Exists == false)
         {
-            throw new CbtException("Couldn't find dotnet ref assemblies dir");
+            throw new HbtException("Couldn't find dotnet ref assemblies dir");
         }
     }
 
@@ -138,7 +138,7 @@ internal sealed class DotnetHelper
 
         if (runtimeVersion is null || string.IsNullOrEmpty(runtimePath))
         {
-            throw new CbtException("Couldn't find any .Net 7 Sdk");
+            throw new HbtException("Couldn't find any .Net 7 Sdk");
         }
 
         // --list-runtimes returns something like "C:\Program Files\dotnet\shared\Microsoft.NETCore.App"
@@ -146,7 +146,7 @@ internal sealed class DotnetHelper
         DirectoryItem dotnetDir = new DirectoryItem(runtimePath).Parent.Parent;
         if (dotnetDir.Name != "dotnet")
         {
-            throw new CbtException("Couldn't find dotnet directory");
+            throw new HbtException("Couldn't find dotnet directory");
         }
 
         return (dotnetDir, fullVersionString);

@@ -36,8 +36,8 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
 
     private static class HeaderToolTask
     {
-        public const string PropsFileName  = "Copium.Cpp.HeaderTool.props";
-        public const string TargetFileName = "Copium.Cpp.HeaderTool.targets";
+        public const string PropsFileName  = "Hesternal.Cpp.HeaderTool.props";
+        public const string TargetFileName = "Hesternal.Cpp.HeaderTool.targets";
     }
 
     private const string k_ToolsVersion   = "Current";

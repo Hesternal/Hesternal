@@ -69,7 +69,7 @@ internal sealed class CSharpCompiler
                     }
                 }
 
-                throw new CbtException(errorString.ToString());
+                throw new HbtException(errorString.ToString());
             }
 
             byte[] assemblyBytes = dllStream.GetBuffer();
