@@ -71,13 +71,13 @@ public sealed class VsSolutionGenerator : IDisposable
 
     private void _GenerateSolutionFile()
     {
-        //string programsFolderGuid = VisualStudioGuid.Generate();
+        //string toolsFolderGuid = VisualStudioGuid.Generate();
         //string rulesFolderGuid = VisualStudioGuid.Generate();
 
         // NOTE(v.matushkin): Need a proper SolutionFolder class instead of this abomination
-        //(string FolderGuid, VsSolutionFile Solution)[] programSolutionFolders = m_generationContext.ProgramSolutions == null
+        //(string FolderGuid, VsSolutionFile Solution)[] toolsSolutionFolders = m_generationContext.ToolsSolutions == null
         //    ? Array.Empty<(string, VsSolutionFile)>()
-        //    : m_generationContext.ProgramSolutions.Select(solution => (VisualStudioGuid.Generate(), solution)).ToArray();
+        //    : m_generationContext.ToolsSolutions.Select(solution => (VisualStudioGuid.Generate(), solution)).ToArray();
 
         _Header();
 
@@ -94,9 +94,9 @@ public sealed class VsSolutionGenerator : IDisposable
         //    _WriteProject(externalCsharpProject);
         //}
         //-- Folders
-        //_WriteProjectFolder("Pograms", programsFolderGuid);
+        //_WriteProjectFolder("Pograms", toolsFolderGuid);
         //_WriteProjectFolder("Rules", rulesFolderGuid);
-        //foreach (var (FolderGuid, Solution) in programSolutionFolders)
+        //foreach (var (FolderGuid, Solution) in toolsSolutionFolders)
         //{
         //    _WriteProjectFolder(Solution.Name, FolderGuid);
         //}
@@ -172,11 +172,11 @@ public sealed class VsSolutionGenerator : IDisposable
         // EndGlobalSection
         m_solutionWriter.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
 
-        //--- Program folders
-        //foreach (var (FolderGuid, Solution) in programSolutionFolders)
+        //--- Tools folders
+        //foreach (var (FolderGuid, Solution) in toolsSolutionFolders)
         //{
-        //    // Program Solution folder -> Programs folder
-        //    _WriteNestedProject(programsFolderGuid, FolderGuid);
+        //    // Program Solution folder -> Tools folder
+        //    _WriteNestedProject(ToolsFolderGuid, FolderGuid);
         //
         //    foreach (VsCsharpProjectFile csharpProjectFile in Solution.CsharpProjectFiles)
         //    {
