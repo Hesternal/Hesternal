@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
-    <HesternalBuildDir>..\..\..\..\..\build</HesternalBuildDir>
+    <HesternalBuildDir>..\..\..\..\build</HesternalBuildDir>
     <HesternalBinDir>$(HesternalBuildDir)\bin\dotnet</HesternalBinDir>
     <HesternalDotnetIntermediateDir>$(HesternalBuildDir)\intermediate\dotnet</HesternalDotnetIntermediateDir>
 
