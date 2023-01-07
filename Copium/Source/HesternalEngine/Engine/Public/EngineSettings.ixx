@@ -14,7 +14,7 @@ export namespace Hesternal
 
     enum class GraphicsApi : uint8
     {
-// NOTE(v.matushkin): CopiumHeaderTool can't handle prerpocessor yet
+// NOTE(v.matushkin): HesternalHeaderTool can't handle prerpocessor yet
 // #if COP_PLATFORM_WINDOWS
         DirectX11,
 // #endif

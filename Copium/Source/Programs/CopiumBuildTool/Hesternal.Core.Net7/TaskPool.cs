@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using Copium.Core;
+using Hesternal.Core;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 public static class TaskPool

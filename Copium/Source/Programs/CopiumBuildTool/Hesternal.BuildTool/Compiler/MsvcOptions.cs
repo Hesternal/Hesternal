@@ -1,6 +1,6 @@
-using static Copium.BuildTool.Msvc;
+using static Hesternal.BuildTool.Msvc;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 [SupportedLinkers(typeof(MsvcLibrarianOptions), typeof(MsvcLinkerOptions))]

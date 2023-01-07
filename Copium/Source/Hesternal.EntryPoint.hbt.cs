@@ -1,8 +1,8 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 
-using Copium.BuildTool;
-using Copium.Core.Net7;
+using Hesternal.BuildTool;
+using Hesternal.Core.Net7;
 
 
 internal static class Globals
@@ -33,14 +33,14 @@ internal static class Globals
         }
     }
 
-    public sealed class CopiumDirs
+    public sealed class HesternalDirs
     {
         private readonly DirectoryItem m_copiumDir;
 
         public readonly DirectoryItem ConfigDir;
         public readonly DirectoryItem SourceDir;
 
-        public CopiumDirs(DirectoryItem rootDir)
+        public HesternalDirs(DirectoryItem rootDir)
         {
             m_copiumDir = rootDir.MakeSubDirItem("Copium");
 
@@ -52,7 +52,7 @@ internal static class Globals
 
     public static readonly DirectoryItem RootDir;
     public static readonly BuildDirs Build;
-    public static readonly CopiumDirs Copium;
+    public static readonly HesternalDirs Hesternal;
 
 
     static Globals()
@@ -60,7 +60,7 @@ internal static class Globals
         RootDir = _GetRootDir();
 
         Build = new(RootDir);
-        Copium = new(RootDir);
+        Hesternal = new(RootDir);
 
         _CreateBuildDirs();
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 public static class Log
@@ -22,7 +22,7 @@ public static class Log
                 });
         });
 
-        Logger = s_Factory.CreateLogger("CopiumBuildTool");
+        Logger = s_Factory.CreateLogger("HesternalBuildTool");
     }
 
     public static void Shutdown()

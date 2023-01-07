@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using Copium.MathTool.Cpp;
+using Hesternal.MathTool.Cpp;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 /*
 internal abstract class MathGenerator

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using Copium.BuildTool;
-using Copium.Core.Net7;
+using Hesternal.BuildTool;
+using Hesternal.Core.Net7;
 
 
 internal abstract class HesternalCppProject : HesternalCppBaseProject

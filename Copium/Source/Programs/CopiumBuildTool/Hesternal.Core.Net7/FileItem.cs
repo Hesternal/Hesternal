@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 // [JsonConverter(typeof(FileItemJsonConverter))]

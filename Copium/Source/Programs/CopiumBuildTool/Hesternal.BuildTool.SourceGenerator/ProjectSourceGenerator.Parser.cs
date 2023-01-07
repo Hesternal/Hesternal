@@ -3,14 +3,15 @@ using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
 
-namespace Copium.BuildTool.SourceGenerator;
+namespace Hesternal.BuildTool.SourceGenerator;
 
 
 internal sealed partial class ProjectSourceGenerator
 {
     private static class ProjectGeneratorName
     {
-        public const string Vcxproj = "Copium.BuildTool.Generators.VisualStudio.VsCppProjectGenerator";
+        // TODO(v.matushkin): <Hardcoded/ProjectName>
+        public const string Vcxproj = "Hesternal.BuildTool.Generators.VisualStudio.VsCppProjectGenerator";
     }
 
 

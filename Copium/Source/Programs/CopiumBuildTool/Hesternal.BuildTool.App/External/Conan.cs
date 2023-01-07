@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
 using Microsoft.Extensions.Logging;
 
-namespace Copium.BuildTool.External;
+namespace Hesternal.BuildTool.External;
 
 
 internal sealed class Conan
@@ -33,7 +33,7 @@ internal sealed class Conan
         //     conanStartIfno.UseShellExecute = false;
         //     conanStartIfno.RedirectStandardOutput = true;
         //     conanStartIfno.CreateNoWindow = false;
-        //     conanStartIfno.WorkingDirectory = CopiumGlobal.RootDir.FullPath;
+        //     conanStartIfno.WorkingDirectory = HesternalGlobal.RootDir.FullPath;
         // 
         //     return conanStartIfno;
         // }
@@ -112,7 +112,7 @@ internal sealed class Conan
     //     ProcessStartInfo processStartInfo = new();
     //     processStartInfo.UseShellExecute = true;
     //     processStartInfo.RedirectStandardError = true;
-    //     processStartInfo.WorkingDirectory = CopiumGlobal.RootDir.FullPath;
+    //     processStartInfo.WorkingDirectory = HesternalGlobal.RootDir.FullPath;
     // 
     //     using (Process conanProcess = new())
     //     {

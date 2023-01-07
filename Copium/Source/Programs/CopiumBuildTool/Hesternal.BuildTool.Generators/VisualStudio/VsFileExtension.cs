@@ -1,4 +1,4 @@
-﻿namespace Copium.BuildTool.Generators.VisualStudio;
+﻿namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 internal static class VsFileExtension

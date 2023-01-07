@@ -3,14 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Copium.BuildTool.CommandExecutor;
-using Copium.BuildTool.External;
-using Copium.Core.Net7;
+using Hesternal.BuildTool.CommandExecutor;
+using Hesternal.BuildTool.External;
+using Hesternal.Core.Net7;
 
 // using Microsoft.Build.Locator;
 using Microsoft.Extensions.Logging;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 internal static class Program
@@ -31,17 +31,17 @@ internal static class Program
         };
         generateCommand.SetHandler((projectDir) =>
             {
-                _CopiumBuildToolMain(_GenerateCommandHandler(projectDir));
+                _HesternalBuildToolMain(_GenerateCommandHandler(projectDir));
             },
             projectDirOption);
 
-        // var chtConfigFileOption = new Option<FileInfo>("--chtConfig", _ParseFileInfoOption, false, "Path to the CopiumHeaderTool config path")
+        // var chtConfigFileOption = new Option<FileInfo>("--chtConfig", _ParseFileInfoOption, false, "Path to the HesternalHeaderTool config path")
         // {
         //     Arity = ArgumentArity.ExactlyOne,
         //     IsRequired = true,
         // };
 
-        RootCommand rootCommand = new("CopiumBuildTool");
+        RootCommand rootCommand = new("HesternalBuildTool");
         rootCommand.AddCommand(generateCommand);
 
         return rootCommand.Invoke(args);
@@ -54,7 +54,7 @@ internal static class Program
     }
 
 
-    private static void _CopiumBuildToolMain(ICommandExecutor commandExecutor)
+    private static void _HesternalBuildToolMain(ICommandExecutor commandExecutor)
     {
         Log.Init(LogLevel.Trace);
         TaskPool.Init();

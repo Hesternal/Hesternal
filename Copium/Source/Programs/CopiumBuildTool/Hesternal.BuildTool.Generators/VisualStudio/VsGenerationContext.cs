@@ -1,6 +1,6 @@
-﻿using Copium.Core.Net7;
+﻿using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool.Generators.VisualStudio;
+namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 internal sealed class VsGenerationContext
@@ -23,7 +23,7 @@ internal sealed class VsGenerationContext
     {
         string conanPropsFileName = "conan_" + library.ToString();
 
-        string conanImportProject = @"$(CopiumConanDir)\" + conanPropsFileName + VsFileExtension.Props;
+        string conanImportProject = @"$(HesternalConanDir)\" + conanPropsFileName + VsFileExtension.Props;
         string conanImportCondition = $"'$({conanPropsFileName}_props_imported)' != 'True'";
 
         return (conanImportProject, conanImportCondition);
@@ -38,21 +38,21 @@ internal sealed class VsGenerationContext
         propsFileWriter.BeginProject(null, null, null, true);
 
         propsFileWriter.BeginPropertyGroup();
-        //propsFileWriter.Property("CopiumRootDir", CopiumGlobal.RootDir.FullPath);
-        propsFileWriter.Property("CopiumRootDir", rootDir.FullPath); // TODO: <DirectoryBuildProps> HACK
+        //propsFileWriter.Property("HesternalRootDir", HesternalGlobal.RootDir.FullPath);
+        propsFileWriter.Property("HesternalRootDir", rootDir.FullPath); // TODO: <DirectoryBuildProps> HACK
         //- Build dirs
-        propsFileWriter.Property("CopiumBuildDir", @"$(CopiumRootDir)\build");
-        propsFileWriter.Property("CopiumBinDir", @"$(CopiumBuildDir)\bin");
-        propsFileWriter.Property("CopiumConanDir", @"$(CopiumBuildDir)\conan\" + k_SubDirName);
-        propsFileWriter.Property("CopiumGeneratedDir", @"$(CopiumBuildDir)\generated");
-        propsFileWriter.Property("CopiumIntermediateDir", @"$(CopiumBuildDir)\intermediate\" + k_SubDirName);
+        propsFileWriter.Property("HesternalBuildDir", @"$(HesternalRootDir)\build");
+        propsFileWriter.Property("HesternalBinDir", @"$(HesternalBuildDir)\bin");
+        propsFileWriter.Property("HesternalConanDir", @"$(HesternalBuildDir)\conan\" + k_SubDirName);
+        propsFileWriter.Property("HesternalGeneratedDir", @"$(HesternalBuildDir)\generated");
+        propsFileWriter.Property("HesternalIntermediateDir", @"$(HesternalBuildDir)\intermediate\" + k_SubDirName);
         //- Source dirs
-        propsFileWriter.Property("CopiumConfigDir", @"$(CopiumRootDir)\Copium\Config");
-        propsFileWriter.Property("CopiumSourceDir", @"$(CopiumRootDir)\Copium\Source");
+        propsFileWriter.Property("HesternalConfigDir", @"$(HesternalRootDir)\Copium\Config");
+        propsFileWriter.Property("HesternalSourceDir", @"$(HesternalRootDir)\Copium\Source");
         //- Target
-        propsFileWriter.Property("CopiumTargetName", "$(MSBuildProjectName)");
-        propsFileWriter.Property("CopiumTargetGeneratedDir", @"$(CopiumGeneratedDir)\$(CopiumTargetName)");
-        propsFileWriter.Property("CopiumTargetSourceDir", @"$(CopiumSourceDir)\$(CopiumTargetName)");
+        propsFileWriter.Property("HesternalTargetName", "$(MSBuildProjectName)");
+        propsFileWriter.Property("HesternalTargetGeneratedDir", @"$(HesternalGeneratedDir)\$(HesternalTargetName)");
+        propsFileWriter.Property("HesternalTargetSourceDir", @"$(HesternalSourceDir)\$(HesternalTargetName)");
         propsFileWriter.EndElement(); // BeginPropertyGroup
 
         propsFileWriter.EndElement(); // BeginProject

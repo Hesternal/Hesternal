@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
-    <CopiumBuildDir>..\..\..\..\..\build</CopiumBuildDir>
-    <CopiumBinDir>$(CopiumBuildDir)\bin\dotnet</CopiumBinDir>
-    <CopiumDotnetIntermediateDir>$(CopiumBuildDir)\intermediate\dotnet</CopiumDotnetIntermediateDir>
+    <HesternalBuildDir>..\..\..\..\..\build</HesternalBuildDir>
+    <HesternalBinDir>$(HesternalBuildDir)\bin\dotnet</HesternalBinDir>
+    <HesternalDotnetIntermediateDir>$(HesternalBuildDir)\intermediate\dotnet</HesternalDotnetIntermediateDir>
 
-    <BaseIntermediateOutputPath>$(CopiumDotnetIntermediateDir)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(CopiumDotnetIntermediateDir)\$(MSBuildProjectName)\bin\</BaseOutputPath>
-    <PublishDir>$(CopiumBuildDir)\bin\dotnet\</PublishDir>
+    <BaseIntermediateOutputPath>$(HesternalDotnetIntermediateDir)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(HesternalDotnetIntermediateDir)\$(MSBuildProjectName)\bin\</BaseOutputPath>
+    <PublishDir>$(HesternalBuildDir)\bin\dotnet\</PublishDir>
     <!-- <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath> -->
     <!-- <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> -->
   </PropertyGroup>

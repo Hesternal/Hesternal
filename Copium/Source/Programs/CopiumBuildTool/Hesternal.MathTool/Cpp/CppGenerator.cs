@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Copium.MathTool.Cpp;
+namespace Hesternal.MathTool.Cpp;
 
 
 internal partial class CppGenerator

@@ -1,16 +1,16 @@
 ﻿//using System;
 //
-//using Copium.BuildTool.Build;
-//using Copium.Core.Net7;
+//using Hesternal.BuildTool.Build;
+//using Hesternal.Core.Net7;
 //
-//namespace Copium.BuildTool.Generators.VisualStudio;
+//namespace Hesternal.BuildTool.Generators.VisualStudio;
 //
 //
 //internal sealed class VsCsharpProjectGenerator : IDisposable
 //{
 //    private readonly RulesTarget m_rulesTarget;
 //    /// <summary>
-//    /// Copium.BuildTool.BuildRules.csproj project file
+//    /// Hesternal.BuildTool.BuildRules.csproj project file
 //    /// </summary>
 //    private readonly VsCsharpProjectFile m_projectReferenceFile;
 //
@@ -31,7 +31,7 @@
 //    {
 //        m_rulesTarget = rulesTarget;
 //        // NOTE(v.matushkin): Probably RulesTarget class should have a TargetReference field, just like CppTarget
-//        m_projectReferenceFile = generationContext.GetCsharpProject("Copium.BuildTool.BuildRules");
+//        m_projectReferenceFile = generationContext.GetCsharpProject("Hesternal.BuildTool.BuildRules");
 //
 //        m_projectFile = generationContext.GetCsharpProject(rulesTarget.TargetName);
 //

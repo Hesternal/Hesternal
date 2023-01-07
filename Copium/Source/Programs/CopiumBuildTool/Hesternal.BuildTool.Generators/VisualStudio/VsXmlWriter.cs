@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool.Generators.VisualStudio;
+namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 internal sealed class VsXmlWriter : IDisposable

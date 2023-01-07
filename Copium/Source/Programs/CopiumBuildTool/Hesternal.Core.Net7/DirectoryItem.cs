@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 public sealed class DirectoryItem

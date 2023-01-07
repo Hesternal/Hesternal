@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace Copium.HeaderTool.Generator
+namespace Hesternal.HeaderTool.Generator
 {
     internal sealed class EnumGeneratorConfig
     {
@@ -100,9 +100,9 @@ namespace Copium.HeaderTool.Generator
     }
 
 
-    internal sealed class CopiumHeaderToolConfig
+    internal sealed class HesternalHeaderToolConfig
     {
-        private const string k_ConfigFileName = "CopiumHeaderTool";
+        private const string k_ConfigFileName = "HesternalHeaderTool";
 
 
         public readonly string Namespace;
@@ -111,7 +111,7 @@ namespace Copium.HeaderTool.Generator
         public readonly StructGeneratorConfig StructGenerator;
 
 
-        public CopiumHeaderToolConfig(
+        public HesternalHeaderToolConfig(
             string @namespace, string filePathMacro,
             EnumGeneratorConfig enumGenerator,
             StructGeneratorConfig structGenerator
@@ -125,9 +125,9 @@ namespace Copium.HeaderTool.Generator
 
 
         // NOTE(v.matushkin): And why did I choose to pass the config dir instead of the config file path?
-        public static CopiumHeaderToolConfig LoadConfig(DirectoryInfo copiumConfigDir)
+        public static HesternalHeaderToolConfig LoadConfig(DirectoryInfo hesternalConfigDir)
         {
-            var configFile = new FileInfo(Path.Combine(copiumConfigDir.FullName, k_ConfigFileName + ".json"));
+            var configFile = new FileInfo(Path.Combine(hesternalConfigDir.FullName, k_ConfigFileName + ".json"));
             if (configFile.Exists == false)
             {
                 throw new ApplicationException(k_ConfigFileName + $" config doesn't exist: {configFile.FullName}");
@@ -138,10 +138,10 @@ namespace Copium.HeaderTool.Generator
                 IncludeFields = true,
             };
 
-            CopiumHeaderToolConfig config;
+            HesternalHeaderToolConfig config;
             using (FileStream fileStream = configFile.OpenRead())
             {
-                config = JsonSerializer.Deserialize<CopiumHeaderToolConfig>(fileStream, options);
+                config = JsonSerializer.Deserialize<HesternalHeaderToolConfig>(fileStream, options);
             }
 
             if (config == null)

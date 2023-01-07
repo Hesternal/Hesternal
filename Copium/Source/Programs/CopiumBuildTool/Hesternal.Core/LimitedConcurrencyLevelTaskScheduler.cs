@@ -11,7 +11,7 @@ using System.Threading;
 
 // Borrowed from dotnet/samples github
 
-namespace Copium.Core
+namespace Hesternal.Core
 {
     /// <summary>
     /// Provides a task scheduler that ensures a maximum concurrency level while

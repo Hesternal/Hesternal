@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 
-//using Copium.BuildTool;
-//using Copium.BuildTool.Core;
-using Copium.Core.Net7;
+//using Hesternal.BuildTool;
+//using Hesternal.BuildTool.Core;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool.Generators.VisualStudio;
+namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 public sealed class VsSolutionGenerator : IDisposable

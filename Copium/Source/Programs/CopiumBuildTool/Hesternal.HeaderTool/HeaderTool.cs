@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Copium.HeaderTool.Generator;
-using Copium.HeaderTool.Parser;
+using Hesternal.HeaderTool.Generator;
+using Hesternal.HeaderTool.Parser;
 
-namespace Copium.HeaderTool
+namespace Hesternal.HeaderTool
 {
     public readonly struct HeaderToolResult
     {
@@ -45,32 +45,32 @@ namespace Copium.HeaderTool
         public readonly bool bDryRun;
 
         public readonly DirectoryInfo TargetDir;
-        public readonly DirectoryInfo CopiumConfigDir;
+        public readonly DirectoryInfo HesternalConfigDir;
 
         public readonly DirectoryInfo TargetGeneratedDir;
         public readonly string BaseGeneratedIncludeDir;
 
 
-        public static HeaderToolOptions Create(DirectoryInfo targetDir, DirectoryInfo copiumConfigDir, DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir)
+        public static HeaderToolOptions Create(DirectoryInfo targetDir, DirectoryInfo hesternalConfigDir, DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir)
         {
-            return new HeaderToolOptions(false, targetDir, copiumConfigDir, targetGeneratedDir, baseGeneratedIncludeDir);
+            return new HeaderToolOptions(false, targetDir, hesternalConfigDir, targetGeneratedDir, baseGeneratedIncludeDir);
         }
 
-        public static HeaderToolOptions CreateDryRun(DirectoryInfo targetDir, DirectoryInfo copiumConfigDir)
+        public static HeaderToolOptions CreateDryRun(DirectoryInfo targetDir, DirectoryInfo hesternalConfigDir)
         {
-            return new HeaderToolOptions(true, targetDir, copiumConfigDir, null, null);
+            return new HeaderToolOptions(true, targetDir, hesternalConfigDir, null, null);
         }
 
 
         private HeaderToolOptions(
             bool dryRun,
-            DirectoryInfo targetDir, DirectoryInfo copiumConfigDir,
+            DirectoryInfo targetDir, DirectoryInfo hesternalConfigDir,
             DirectoryInfo targetGeneratedDir, string baseGeneratedIncludeDir
             )
         {
             bDryRun = dryRun;
             TargetDir = targetDir;
-            CopiumConfigDir = copiumConfigDir;
+            HesternalConfigDir = hesternalConfigDir;
             TargetGeneratedDir = targetGeneratedDir;
             BaseGeneratedIncludeDir = baseGeneratedIncludeDir;
         }
@@ -82,7 +82,7 @@ namespace Copium.HeaderTool
         private const string k_GeneratedHppExtension = ".cht.hpp";
         private const string k_GeneratedCppExtension = ".cht.cpp";
 
-        private static CopiumHeaderToolConfig s_Config;
+        private static HesternalHeaderToolConfig s_Config;
 
         private readonly bool m_bDryRun;
         private readonly DirectoryInfo m_targetDir;
@@ -106,7 +106,7 @@ namespace Copium.HeaderTool
                 GeneratedSourcesDir = new DirectoryInfo(Path.Combine(options.TargetGeneratedDir.FullName, "Source"));
             }
 
-            s_Config = CopiumHeaderToolConfig.LoadConfig(options.CopiumConfigDir);
+            s_Config = HesternalHeaderToolConfig.LoadConfig(options.HesternalConfigDir);
             EnumGenerator.SetConfig(s_Config.EnumGenerator);
             StructGenerator.SetConfig(s_Config.StructGenerator);
         }
@@ -157,7 +157,7 @@ namespace Copium.HeaderTool
                 {
                     headerWriter.WriteLine(
                         @"// NOTE(v.matushkin): Module consumer can't use serialization methods if I just forward declare IBinaryConverter.
-//  So I either need to export forward declaration ""namespace Copium { export struct IBinaryConverter; }""
+//  So I either need to export forward declaration ""namespace Hesternal { export struct IBinaryConverter; }""
 //   or import IBinaryConverter module.
 //  Exporting forward declaration will break if module consumer also imports IBinaryConverter module.
 //  So importing IBinaryConverter in the header seems like my only choice, although this potentially lead to

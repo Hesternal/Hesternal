@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 // TODO(v.matushkin): And why did I made this class?

@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
 using Microsoft.Extensions.Logging;
 
-namespace Copium.BuildTool.External;
+namespace Hesternal.BuildTool.External;
 
 
 internal sealed class DotnetHelper

@@ -1,5 +1,5 @@
-using Copium.BuildTool;
-using Copium.Core.Net7;
+using Hesternal.BuildTool;
+using Hesternal.Core.Net7;
 
 
 internal sealed class HesternalEngineTests : HesternalCppTestsProject

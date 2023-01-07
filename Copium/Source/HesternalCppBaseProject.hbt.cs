@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using Copium.BuildTool;
-using Copium.Core.Net7;
+using Hesternal.BuildTool;
+using Hesternal.Core.Net7;
 
 
 internal abstract class HesternalCppBaseProject : CppProject
@@ -28,8 +28,8 @@ internal abstract class HesternalCppBaseProject : CppProject
 
         if (hesternalConfiguration.BuildSystemOptions is MSBuildOptions msbuild)
         {
-            hesternalConfiguration.OutputDir = @"$(CopiumBinDir)\$(Configuration)\";
-            hesternalConfiguration.IntermediateDir = @"$(CopiumIntermediateDir)\$(Configuration)\$(ProjectName)\";
+            hesternalConfiguration.OutputDir = @"$(HesternalBinDir)\$(Configuration)\";
+            hesternalConfiguration.IntermediateDir = @"$(HesternalIntermediateDir)\$(Configuration)\$(ProjectName)\";
              _ConfigureBuildSystem(hesternalConfiguration, msbuild);
         }
         else

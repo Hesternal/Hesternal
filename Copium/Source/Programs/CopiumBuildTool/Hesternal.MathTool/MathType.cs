@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using Copium.MathTool.Cpp;
+using Hesternal.MathTool.Cpp;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 
 internal static class CppSystemTypeMethods

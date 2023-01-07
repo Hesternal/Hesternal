@@ -1,4 +1,4 @@
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public abstract class ProjectConfiguration

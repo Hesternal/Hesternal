@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Copium.HeaderTool
+namespace Hesternal.HeaderTool
 {
     internal class CppType
     {

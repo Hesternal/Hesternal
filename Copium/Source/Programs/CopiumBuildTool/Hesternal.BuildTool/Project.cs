@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public abstract class Project : IEquatable<Project?>, IComparable<Project?>

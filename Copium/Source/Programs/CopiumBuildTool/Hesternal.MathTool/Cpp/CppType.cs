@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Copium.MathTool.Cpp;
+namespace Hesternal.MathTool.Cpp;
 
 
 enum CppTypeKind

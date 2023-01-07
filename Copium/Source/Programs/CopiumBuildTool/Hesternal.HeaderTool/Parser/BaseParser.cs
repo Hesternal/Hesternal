@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
-using Copium.Core;
+using Hesternal.Core;
 
 // TODO(v.matushkin): Not all changes were transfered from C++ version of BaseParser class
 
-namespace Copium.HeaderTool.Parser
+namespace Hesternal.HeaderTool.Parser
 {
     internal enum TokenType
     {

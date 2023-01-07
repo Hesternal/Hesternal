@@ -1,6 +1,6 @@
-using static Copium.BuildTool.MSBuild;
+using static Hesternal.BuildTool.MSBuild;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public sealed class MSBuildOptions : IBuildSystemOptions

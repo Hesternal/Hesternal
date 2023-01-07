@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Copium.HeaderTool.Parser
+namespace Hesternal.HeaderTool.Parser
 {
     public sealed class ParserException : Exception
     {

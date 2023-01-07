@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Copium.HeaderTool.Parser
+namespace Hesternal.HeaderTool.Parser
 {
     internal sealed class ParsingContext
     {

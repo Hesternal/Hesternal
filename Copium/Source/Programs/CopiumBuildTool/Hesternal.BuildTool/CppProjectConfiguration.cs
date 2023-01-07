@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public class CppProjectConfiguration : ProjectConfiguration

@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 }
 
 
-namespace Copium.BuildTool.SourceGenerator
+namespace Hesternal.BuildTool.SourceGenerator
 {
     internal sealed class ProjectGeneratorSpec
     {

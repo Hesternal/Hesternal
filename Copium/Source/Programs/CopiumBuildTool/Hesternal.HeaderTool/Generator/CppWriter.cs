@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Copium.HeaderTool.Generator
+namespace Hesternal.HeaderTool.Generator
 {
     internal sealed class CppWriter : IDisposable
     {

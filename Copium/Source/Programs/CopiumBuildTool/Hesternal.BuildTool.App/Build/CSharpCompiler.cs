@@ -3,15 +3,15 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-using Copium.BuildTool.External;
-using Copium.Core.Net7;
+using Hesternal.BuildTool.External;
+using Hesternal.Core.Net7;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Copium.BuildTool.Build;
+namespace Hesternal.BuildTool.Build;
 
 
 internal sealed class CSharpCompiler
@@ -74,7 +74,7 @@ internal sealed class CSharpCompiler
 
             byte[] assemblyBytes = dllStream.GetBuffer();
 
-            //FileItem dllFile = CopiumGlobal.Build.BinDotnetDir.MakeSubFileItem(assemblyName + ".dll");
+            //FileItem dllFile = HesternalGlobal.Build.BinDotnetDir.MakeSubFileItem(assemblyName + ".dll");
             //dllFile.WriteAllBytes(assemblyBytes);
 
             return Assembly.Load(assemblyBytes);
@@ -90,8 +90,8 @@ internal sealed class CSharpCompiler
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Collections.dll")),
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Linq.dll")),
             MetadataReference.CreateFromFile(Path.Join(dotnetRefDirPath, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(typeof(DirectoryItem).Assembly.Location), // Copium.Core.Net7
-            MetadataReference.CreateFromFile(typeof(Project).Assembly.Location), // Copium.BuildTool
+            MetadataReference.CreateFromFile(typeof(DirectoryItem).Assembly.Location), // Hesternal.Core.Net7
+            MetadataReference.CreateFromFile(typeof(Project).Assembly.Location), // Hesternal.BuildTool
         };
     }
 }

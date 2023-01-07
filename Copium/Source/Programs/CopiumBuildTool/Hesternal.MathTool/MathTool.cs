@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using Copium.MathTool.Cpp;
+using Hesternal.MathTool.Cpp;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 /*
 internal sealed class MathTool

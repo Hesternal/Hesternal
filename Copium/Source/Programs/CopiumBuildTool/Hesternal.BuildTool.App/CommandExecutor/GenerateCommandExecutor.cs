@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.Reflection;
 
-using Copium.BuildTool.Build;
-using Copium.BuildTool.Generators.VisualStudio;
-using Copium.Core.Net7;
+using Hesternal.BuildTool.Build;
+using Hesternal.BuildTool.Generators.VisualStudio;
+using Hesternal.Core.Net7;
 
 using Microsoft.Extensions.Logging;
 
-namespace Copium.BuildTool.CommandExecutor;
+namespace Hesternal.BuildTool.CommandExecutor;
 
 
 internal sealed class GenerateCommandExecutor : ICommandExecutor
@@ -55,7 +55,7 @@ internal sealed class GenerateCommandExecutor : ICommandExecutor
     private static Assembly _CompileSolutionAssembly(FileItem[] projectFiles)
     {
         // TODO(v.matushkin): Name hardcoded
-        return new CSharpCompiler().Compile("CopiumProjects", projectFiles);
+        return new CSharpCompiler().Compile("HesternalProjects", projectFiles);
     }
 
     private static Solution _GetSolution(Assembly solutionAssembly)

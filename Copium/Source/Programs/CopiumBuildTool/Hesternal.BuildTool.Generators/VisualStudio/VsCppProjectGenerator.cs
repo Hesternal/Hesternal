@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool.Generators.VisualStudio;
+namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 [ProjectGenerator]
@@ -462,11 +462,11 @@ internal sealed partial class VsCppProjectGenerator : IDisposable
 
             m_projectWriter.BeginItemDefinitionGroup(projectConfiguration.Condition);
 
-            //- [Item] CopiumHeaderTool
+            //- [Item] HesternalHeaderTool
             if (m_project.Base.BaseGeneratedIncludeDir is not null)
             {
-                m_projectWriter.BeginItem(VcxprojItem.CopiumHeaderTool);
-                m_projectWriter.Property(VcxprojCopiumHeaderToolProperty.BaseGeneratedIncludeDir, m_project.Base.BaseGeneratedIncludeDir);
+                m_projectWriter.BeginItem(VcxprojItem.HesternalHeaderTool);
+                m_projectWriter.Property(VcxprojHesternalHeaderToolProperty.BaseGeneratedIncludeDir, m_project.Base.BaseGeneratedIncludeDir);
                 m_projectWriter.EndElement();
             }
 

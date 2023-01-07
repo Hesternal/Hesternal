@@ -1,14 +1,14 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <UsingTask TaskName="Copium.HeaderTool.MSBuild.CopiumHeaderTool" AssemblyFile="$(CopiumBinDir)\dotnet\Hesternal.HeaderTool.MSBuild.dll" />
+  <UsingTask TaskName="Hesternal.HeaderTool.MSBuild.HesternalHeaderTool" AssemblyFile="$(HesternalBinDir)\dotnet\Hesternal.HeaderTool.MSBuild.dll" />
 
   <ItemGroup>
-    <AvailableItemName Include="CopiumHeaderTool">
-      <Targets>CopiumHeaderTool</Targets>
+    <AvailableItemName Include="HesternalHeaderTool">
+      <Targets>HesternalHeaderTool</Targets>
     </AvailableItemName>
   </ItemGroup>
 
-  <Target Name="CopiumHeaderTool"
+  <Target Name="HesternalHeaderTool"
           Condition="'@(ClCompile)' != ''"
           AfterTargets="PrepareForBuild"
           BeforeTargets="Compile"
@@ -19,17 +19,17 @@
       <_Modules Include="@(ClCompile)" Condition="'%(Extension)' == '.ixx'" />
     </ItemGroup>
 
-    <CopiumHeaderTool
-        CopiumConfigDir="%(CopiumHeaderTool.CopiumConfigDir)"
-        TargetName="%(CopiumHeaderTool.TargetName)"
-        TargetDir="%(CopiumHeaderTool.TargetDir)"
-        TargetGeneratedDir="%(CopiumHeaderTool.TargetGeneratedDir)"
-        BaseGeneratedIncludeDir="%(CopiumHeaderTool.BaseGeneratedIncludeDir)"
+    <HesternalHeaderTool
+        HesternalConfigDir="%(HesternalHeaderTool.HesternalConfigDir)"
+        TargetName="%(HesternalHeaderTool.TargetName)"
+        TargetDir="%(HesternalHeaderTool.TargetDir)"
+        TargetGeneratedDir="%(HesternalHeaderTool.TargetGeneratedDir)"
+        BaseGeneratedIncludeDir="%(HesternalHeaderTool.BaseGeneratedIncludeDir)"
         Headers="@(_Modules)"
         TLogDirectory="$(TLogLocation)"
         >
         <Output TaskParameter="GeneratedFiles" ItemName="_ChtGeneratedFiles" />
-    </CopiumHeaderTool>
+    </HesternalHeaderTool>
 
     <!-- add generated .cpp files -->
     <ItemGroup Condition="'@(_ChtGeneratedFiles)' != ''">

@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <!-- General -->
-    <StartupObject>Copium.BuildTool.Program</StartupObject>
+    <StartupObject>Hesternal.BuildTool.Program</StartupObject>
     <AssemblyName>HesternalBuildTool</AssemblyName>
     <!--<PublishSingleFile>true</PublishSingleFile>-->
     <!--<PublishTrimmed>true</PublishTrimmed>-->

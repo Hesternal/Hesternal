@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 /*
 internal sealed class MatrixGenerator : MathTypeGenerator

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Copium.Core
+namespace Hesternal.Core
 {
     public static class StringBuilderExtensions
     {

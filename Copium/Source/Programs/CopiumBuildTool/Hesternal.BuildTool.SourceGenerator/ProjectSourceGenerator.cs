@@ -5,7 +5,7 @@ using System.Threading;
 
 using Microsoft.CodeAnalysis;
 
-namespace Copium.BuildTool.SourceGenerator;
+namespace Hesternal.BuildTool.SourceGenerator;
 
 
 // https://www.thinktecture.com/net/roslyn-source-generators-introduction/
@@ -14,7 +14,7 @@ namespace Copium.BuildTool.SourceGenerator;
 [Generator(LanguageNames.CSharp)]
 internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 {
-    // TODO(v.matushkin): Is there a way to not hardcode this?
+    // TODO(v.matushkin): <Hardcoded/ProjectName>
     private const string k_BuildToolGeneratorsAssemblyName = "Hesternal.BuildTool.Generators";
 
     private static int s_InitCount;
@@ -71,17 +71,17 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
     //        ;//&& _IsPartial(namedTypeSymbol, cancellationToken);
     //}
 
-//    private static IEnumerable<INamedTypeSymbol> _SelectAllAccessibleCopiumTypes(Compilation compilation, CancellationToken cancellationToken)
+//    private static IEnumerable<INamedTypeSymbol> _SelectAllAccessibleHesternalTypes(Compilation compilation, CancellationToken cancellationToken)
 //    {
 //        Interlocked.Increment(ref s_SelectCount);
 //
 //        return compilation.SourceModule.ReferencedAssemblySymbols
-//            // Filter Copium assemblies
+//            // Filter Hesternal assemblies
 //            .Where(static assemblySymbol => assemblySymbol.Name.StartsWith(k_AssemblyNameStart))
 //            // Get all namespaces
 //            .SelectMany(static assemblySymbol => assemblySymbol.GlobalNamespace.GetNamespaceMembers())
-//            // Filter Copium namespaces
-//            .Where(static namespaceSymbol => namespaceSymbol.Name.StartsWith("Copium"))
+//            // Filter Hesternal namespaces
+//            .Where(static namespaceSymbol => namespaceSymbol.Name.StartsWith("Hesternal"))
 //            .SelectMany(_SelectAllTypes)
 //            // Filter CompilerOptions types
 //            .Where(namedTypeSymbol => namedTypeSymbol is { TypeKind: TypeKind.Class, DeclaredAccessibility: Accessibility.Public or //Accessibility.Friend });
@@ -91,17 +91,17 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 //    {
 //        //Debugger.Launch();
 //
-//        //var t1 = compilation.GetTypesByMetadataName("Copium.BuildTool");
-//        //var t2 = compilation.GetTypesByMetadataName("Copium.BuildTool.CompilerOptions");
-//        //var t3 = compilation.GetTypesByMetadataName("Copium.BuildTool.CompilerOptionsAttribute");
+//        //var t1 = compilation.GetTypesByMetadataName("Hesternal.BuildTool");
+//        //var t2 = compilation.GetTypesByMetadataName("Hesternal.BuildTool.CompilerOptions");
+//        //var t3 = compilation.GetTypesByMetadataName("Hesternal.BuildTool.CompilerOptionsAttribute");
 //
 //        return compilation.SourceModule.ReferencedAssemblySymbols
-//            // Filter Copium assemblies
+//            // Filter Hesternal assemblies
 //            .Where(static assemblySymbol => assemblySymbol.Name.StartsWith(k_AssemblyNameStart))
 //            // Get all namespaces
 //            .SelectMany(static assemblySymbol => assemblySymbol.GlobalNamespace.GetNamespaceMembers())
-//            // Filter Copium namespaces
-//            .Where(static namespaceSymbol => namespaceSymbol.Name.StartsWith("Copium"))
+//            // Filter Hesternal namespaces
+//            .Where(static namespaceSymbol => namespaceSymbol.Name.StartsWith("Hesternal"))
 //            .SelectMany(_SelectAllTypes)
 //            // Filter CompilerOptions types
 //            .Where(namedTypeSymbol => _IsCompilerOptionsType(namedTypeSymbol, cancellationToken));

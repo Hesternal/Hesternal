@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Copium.HeaderTool
+namespace Hesternal.HeaderTool
 {
     internal sealed class CppEnumDesc
     {

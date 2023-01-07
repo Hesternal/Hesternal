@@ -1,4 +1,4 @@
-﻿namespace Copium.BuildTool.CommandExecutor;
+﻿namespace Hesternal.BuildTool.CommandExecutor;
 
 
 internal interface ICommandExecutor

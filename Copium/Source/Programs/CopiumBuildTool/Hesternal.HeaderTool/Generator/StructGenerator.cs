@@ -1,4 +1,4 @@
-﻿namespace Copium.HeaderTool.Generator
+﻿namespace Hesternal.HeaderTool.Generator
 {
     internal static class StructGenerator
     {

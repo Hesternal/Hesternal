@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool.Generators;
+namespace Hesternal.BuildTool.Generators;
 
 
 internal abstract class ProjectFile

@@ -4,13 +4,13 @@
 //using Microsoft.CodeAnalysis.CSharp.Syntax;
 //using Microsoft.CodeAnalysis.Diagnostics;
 //
-//namespace Copium.BuildTool.SourceGenerator;
+//namespace Hesternal.BuildTool.SourceGenerator;
 //
 //
 //[DiagnosticAnalyzer(LanguageNames.CSharp)]
-//public sealed class CopiumDiagnosticAnalyzer : DiagnosticAnalyzer
+//public sealed class HesternalDiagnosticAnalyzer : DiagnosticAnalyzer
 //{
-//    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(CopiumDiagnosticDescriptors.CompilerOptionsMustBePartial);
+//    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(HesternalDiagnosticDescriptors.CompilerOptionsMustBePartial);
 //
 //
 //    public override void Initialize(AnalysisContext context)
@@ -39,7 +39,7 @@
 //                continue;
 //            }
 //
-//            context.ReportDiagnostic(Diagnostic.Create(CopiumDiagnosticDescriptors.CompilerOptionsMustBePartial,
+//            context.ReportDiagnostic(Diagnostic.Create(HesternalDiagnosticDescriptors.CompilerOptionsMustBePartial,
 //                classDeclarationSyntax.Identifier.GetLocation(),
 //                namedTypeSymbol.Name));
 //        }

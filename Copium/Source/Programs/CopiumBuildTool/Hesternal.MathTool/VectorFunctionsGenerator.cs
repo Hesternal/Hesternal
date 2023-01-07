@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 /*
 internal sealed class VectorFunctionsGenerator : MathGenerator
@@ -143,7 +143,7 @@ internal sealed class VectorFunctionsGenerator : MathGenerator
             .Append(":Functions")
             .Append(":Constants")
             .Order()
-            .Append("CopiumEngine.Core.CoreTypes");
+            .Append("HesternalEngine.Core.CoreTypes");
     }
 }
 */

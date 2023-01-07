@@ -1,6 +1,6 @@
 using System;
 
-namespace Copium.BuildTool.Generators;
+namespace Hesternal.BuildTool.Generators;
 
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]

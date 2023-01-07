@@ -3,7 +3,7 @@ using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 
 internal static class Program
@@ -21,7 +21,7 @@ internal static class Program
             IsRequired = true,
         };
 
-        RootCommand rootCommand = new("CopiumMathTool")
+        RootCommand rootCommand = new("HesternalMathTool")
         {
             privateDirOption, publicDirOption
         };

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Copium.MathTool.Old;
+namespace Hesternal.MathTool.Old;
 
 
 internal abstract class OLD_MathTypeGenerator : OLD_MathGenerator
@@ -38,7 +38,7 @@ internal abstract class OLD_MathTypeGenerator : OLD_MathGenerator
 
     protected void Generate(string filePath, string moduleName)
     {
-        Start(moduleName, ModuleImports.Append("CopiumEngine.Core.CoreTypes"), null, MathToolSettings.Namespace);
+        Start(moduleName, ModuleImports.Append("HesternalEngine.Core.CoreTypes"), null, MathToolSettings.Namespace);
 
         m_sb.AppendFormat(Indent.Namespace + "struct {0} final", Type).AppendLine()
             .AppendLine(Indent.Namespace + "{");

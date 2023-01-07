@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Copium.Core.Net7;
+namespace Hesternal.Core.Net7;
 
 
 public static class PathExtensions

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Copium.MathTool.Old;
+namespace Hesternal.MathTool.Old;
 
 
 internal abstract class OLD_MathGenerator

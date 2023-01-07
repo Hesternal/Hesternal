@@ -1,4 +1,4 @@
-﻿namespace Copium.BuildTool.Generators.VisualStudio;
+﻿namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 internal static class VsXmlItem
@@ -44,12 +44,12 @@ internal static class CsprojProjectReferenceProperty
 
 internal static class VcxprojItem
 {
-    public const string ClCompile        = "ClCompile";
-    public const string ClInclude        = "ClInclude";
-    public const string CopiumHeaderTool = "CopiumHeaderTool";
-    public const string Lib              = "Lib";
-    public const string Link             = "Link";
-    public const string Project          = "Project";
+    public const string ClCompile           = "ClCompile";
+    public const string ClInclude           = "ClInclude";
+    public const string HesternalHeaderTool = "HesternalHeaderTool";
+    public const string Lib                 = "Lib";
+    public const string Link                = "Link";
+    public const string Project             = "Project";
 }
 
 internal static class VcxprojClCompileItem
@@ -94,7 +94,7 @@ internal static class VcxprojLinkItem
     public const string AdditionalDependencies = "AdditionalDependencies";
 }
 
-internal static class VcxprojCopiumHeaderToolProperty
+internal static class VcxprojHesternalHeaderToolProperty
 {
     public const string BaseGeneratedIncludeDir = "BaseGeneratedIncludeDir";
 }

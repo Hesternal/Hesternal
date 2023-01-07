@@ -4,9 +4,9 @@ using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 
-using Copium.HeaderTool.Parser;
+using Hesternal.HeaderTool.Parser;
 
-namespace Copium.HeaderTool.Program;
+namespace Hesternal.HeaderTool.Program;
 
 
 internal sealed class Program
@@ -29,7 +29,7 @@ internal sealed class Program
         public const string BaseGeneratedIncludeDir = "Base generated include directory";
     }
 
-    private const string k_ToolDescription = "CopiumHeaderTool";
+    private const string k_ToolDescription = "HesternalHeaderTool";
 
 
     private static int Main(string[] args)

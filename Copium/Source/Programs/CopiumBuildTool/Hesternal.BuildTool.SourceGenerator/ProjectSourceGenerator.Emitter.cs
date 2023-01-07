@@ -4,7 +4,7 @@ using System.Threading;
 
 using Microsoft.CodeAnalysis;
 
-namespace Copium.BuildTool.SourceGenerator;
+namespace Hesternal.BuildTool.SourceGenerator;
 
 
 internal sealed partial class ProjectSourceGenerator
@@ -36,7 +36,8 @@ internal sealed partial class ProjectSourceGenerator
 
         private static class OptionsInterface
         {
-            private const string k_Namespace = "global::Copium.BuildTool.";
+            // TODO(v.matushkin): <Hardcoded/ProjectName>
+            private const string k_Namespace = "global::Hesternal.BuildTool.";
 
             public const string BuildSystem = k_Namespace + "IBuildSystemOptions";
             public const string Compiler    = k_Namespace + "ICompilerOptions";
@@ -49,7 +50,7 @@ internal sealed partial class ProjectSourceGenerator
         private const string k_GeneratedSourceHeader =
 @"using System;
 
-namespace Copium.BuildTool.Generators.VisualStudio;
+namespace Hesternal.BuildTool.Generators.VisualStudio;
 
 
 internal sealed partial class VsCppProjectGenerator

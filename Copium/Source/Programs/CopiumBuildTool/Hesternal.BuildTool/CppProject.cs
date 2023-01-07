@@ -4,15 +4,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using Copium.Core.Net7;
+using Hesternal.Core.Net7;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public abstract class CppProject : Project
 {
     /// <summary>
-    /// If null -> do not run CopiumHeaderTool for this project
+    /// If null -> do not run HesternalHeaderTool for this project
     /// </summary>
     public string? BaseGeneratedIncludeDir { get; protected set; }
 
@@ -31,11 +31,11 @@ public abstract class CppProject : Project
     /// May be I'm doing something wrong, may be it's a bug, may be this is how it's supposed to be done, idk.
     ///
     /// It does work for cases like this though:
-    ///  CopiumEditor
+    ///  HesternalEditor
     ///    Some .cpp file:
     ///      import File.ixx
     ///      import FileBinaryConverter.ixx
-    ///  CopiumEngine
+    ///  HesternalEngine
     ///    PublicModuleDirectories <- vcxproj property
     ///      Public/Core
     ///      Public/Core/Serialization
@@ -47,8 +47,8 @@ public abstract class CppProject : Project
     ///          FileBinaryConverter.ixx
     ///            import File.ixx
     ///
-    /// Even though I'm not listing Public/Core/Platform dir, 'import File.ixx' works in the CopiumEditor
-    ///  because FileBinaryConverter.ixx references it in the CopiumEngine
+    /// Even though I'm not listing Public/Core/Platform dir, 'import File.ixx' works in the HesternalEditor
+    ///  because FileBinaryConverter.ixx references it in the HesternalEngine
     /// </remark>
     public readonly ReadOnlyCollection<string> PublicModuleDirs;
 

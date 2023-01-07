@@ -4,7 +4,7 @@
     "EnumGenerator": {
         "Hpp": {
             "Includes": [
-                "Hesternal/Core/CopiumHeaderTool.hpp"
+                "Hesternal/Core/HesternalHeaderTool.hpp"
             ]
         },
         "Cpp": {

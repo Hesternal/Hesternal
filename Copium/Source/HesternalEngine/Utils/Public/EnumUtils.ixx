@@ -1,6 +1,6 @@
 module;
 
-#include "Hesternal/Core/CopiumHeaderTool.hpp"
+#include "Hesternal/Core/HesternalHeaderTool.hpp"
 
 export module HesternalEngine.Utils.EnumUtils;
 

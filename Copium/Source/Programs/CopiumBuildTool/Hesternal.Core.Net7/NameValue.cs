@@ -1,6 +1,6 @@
 //using System.Text.Json.Serialization;
 //
-//namespace Copium.Core.Net7;
+//namespace Hesternal.Core.Net7;
 //
 //
 //public readonly struct NameValue

@@ -1,10 +1,10 @@
 ﻿//using System.Xml;
 //
-////using Copium.BuildTool;
-////using Copium.BuildTool.Build;
-//using Copium.Core.Net7;
+////using Hesternal.BuildTool;
+////using Hesternal.BuildTool.Build;
+//using Hesternal.Core.Net7;
 //
-//namespace Copium.BuildTool.Generators.VisualStudio;
+//namespace Hesternal.BuildTool.Generators.VisualStudio;
 //
 //
 //internal abstract class VsProjectFile : ProjectFile

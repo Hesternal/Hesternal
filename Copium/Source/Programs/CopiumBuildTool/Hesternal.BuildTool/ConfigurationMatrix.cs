@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public enum BuildOS

@@ -1,6 +1,6 @@
 using System;
 
-namespace Copium.BuildTool;
+namespace Hesternal.BuildTool;
 
 
 public interface IBuildSystemOptions

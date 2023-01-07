@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Copium.HeaderTool.Parser;
+using Hesternal.HeaderTool.Parser;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -16,9 +16,9 @@ using Microsoft.Build.Utilities;
 // NOTE(v.matushkin): Some thoughts on how to prevent MSBuild from locking this assembly when executing task
 //  https://github.com/dotnet/msbuild/issues/6461
 
-namespace Copium.HeaderTool.MSBuild
+namespace Hesternal.HeaderTool.MSBuild
 {
-    public sealed class CopiumHeaderTool : Task
+    public sealed class HesternalHeaderTool : Task
     {
         private sealed class MSBuildHeaderToolTaskItem : HeaderToolTaskItem
         {
@@ -32,11 +32,12 @@ namespace Copium.HeaderTool.MSBuild
         }
 
 
-        private const string k_TLogNamePrefix = "CopiumHeaderTool";
+        private const string k_TaskName = "HesternalHeaderTool";
+        private const string k_TLogNamePrefix = k_TaskName;
         private const string k_TLogReadFileName = k_TLogNamePrefix + ".read.1u.tlog";
         private const string k_TLogWriteFileName = k_TLogNamePrefix + ".write.1u.tlog";
 
-        private DirectoryInfo m_copiumConfigDir;
+        private DirectoryInfo m_hesternalConfigDir;
         private DirectoryInfo m_targetDir;
         private DirectoryInfo m_targetGeneratedDir;
 
@@ -48,7 +49,7 @@ namespace Copium.HeaderTool.MSBuild
         private FileInfo m_msbuildDummyCppFile;
 
 
-        [Required] public string CopiumConfigDir { get; set; }
+        [Required] public string HesternalConfigDir { get; set; }
         [Required] public string TargetName { get; set; }
         [Required] public string TargetDir { get; set; }
         [Required] public string TargetGeneratedDir { get; set; }
@@ -65,12 +66,12 @@ namespace Copium.HeaderTool.MSBuild
         {
             try
             {
-                _LogImportantMessage("Running CopiumHeaderTool for {0}", TargetName);
+                _LogImportantMessage("Running " + k_TaskName + " for {0}", TargetName);
 
-                m_copiumConfigDir = new DirectoryInfo(CopiumConfigDir);
-                if (m_copiumConfigDir.Exists == false)
+                m_hesternalConfigDir = new DirectoryInfo(HesternalConfigDir);
+                if (m_hesternalConfigDir.Exists == false)
                 {
-                    Log.LogError("TargetDir doesn't exist: {0}", CopiumConfigDir);
+                    Log.LogError("TargetDir doesn't exist: {0}", HesternalConfigDir);
                     return false;
                 }
 
@@ -118,7 +119,7 @@ namespace Copium.HeaderTool.MSBuild
             }
             catch (ParserException e)
             {
-                Log.LogError("CopiumHeaderTool", string.Empty, string.Empty, e.FilePath, e.Line, e.Column, 0, 0, e.Message);
+                Log.LogError(k_TaskName, string.Empty, string.Empty, e.FilePath, e.Line, e.Column, 0, 0, e.Message);
                 // NOTE(v.matushkin): Sometimes needed for debug
                 Log.LogErrorFromException(e, true);
                 return false;
@@ -177,7 +178,7 @@ namespace Copium.HeaderTool.MSBuild
 
         private void _RunHeaderTool(MSBuildHeaderToolTaskItem[] headerTasks)
         {
-            var chtGenerator = new HeaderTool(HeaderToolOptions.Create(m_targetDir, m_copiumConfigDir, m_targetGeneratedDir, BaseGeneratedIncludeDir));
+            var chtGenerator = new HeaderTool(HeaderToolOptions.Create(m_targetDir, m_hesternalConfigDir, m_targetGeneratedDir, BaseGeneratedIncludeDir));
             chtGenerator.Generate(headerTasks);
 
             m_msbuildDummyCppFile = new FileInfo(Path.Combine(chtGenerator.GeneratedSourcesDir.FullName, m_msbuildDummyCppName));

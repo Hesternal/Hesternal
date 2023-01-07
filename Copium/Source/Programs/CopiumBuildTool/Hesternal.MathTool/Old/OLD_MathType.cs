@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Copium.MathTool.Old;
+namespace Hesternal.MathTool.Old;
 
 
 // NOTE(v.matushkin): Some of the ideas on how to improve MathType classes:

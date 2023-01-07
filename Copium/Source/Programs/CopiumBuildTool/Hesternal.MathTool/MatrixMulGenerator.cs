@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Copium.MathTool;
+namespace Hesternal.MathTool;
 
 
 // NOTE(v.matushkin): This generator is a fucking pile of shit,

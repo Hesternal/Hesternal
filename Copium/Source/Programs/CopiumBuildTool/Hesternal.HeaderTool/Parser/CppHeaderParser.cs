@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 
-using Copium.Core;
+using Hesternal.Core;
 
-namespace Copium.HeaderTool.Parser
+namespace Hesternal.HeaderTool.Parser
 {
     internal sealed class CppHeaderParser : BaseParser
     {
