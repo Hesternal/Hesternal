@@ -8,25 +8,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool", "Copium.BuildTool\Hesternal.BuildTool.csproj", "{F3751364-58DE-468A-AE19-54A8CB9F48FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool", "Hesternal.BuildTool\Hesternal.BuildTool.csproj", "{F3751364-58DE-468A-AE19-54A8CB9F48FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.App", "Copium.BuildTool.App\Hesternal.BuildTool.App.csproj", "{35E15EB9-4DCC-4DC4-A3AE-BCCF73521AE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.App", "Hesternal.BuildTool.App\Hesternal.BuildTool.App.csproj", "{35E15EB9-4DCC-4DC4-A3AE-BCCF73521AE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.Generators", "Copium.BuildTool.Generators\Hesternal.BuildTool.Generators.csproj", "{B353258D-6BB8-402E-A7C4-AFB6DBA51C46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.Generators", "Hesternal.BuildTool.Generators\Hesternal.BuildTool.Generators.csproj", "{B353258D-6BB8-402E-A7C4-AFB6DBA51C46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.SourceGenerator", "Copium.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj", "{D85AB119-960A-44AF-81C8-F69821B6F90B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.BuildTool.SourceGenerator", "Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj", "{D85AB119-960A-44AF-81C8-F69821B6F90B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core", "Copium.Core\Hesternal.Core.csproj", "{77560C01-3905-4EB3-8DDA-1067AA5FA535}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core", "Hesternal.Core\Hesternal.Core.csproj", "{77560C01-3905-4EB3-8DDA-1067AA5FA535}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core.Net7", "Copium.Core.Net7\Hesternal.Core.Net7.csproj", "{36CFBA55-6AF2-462C-92CD-4DB1A09A3B96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.Core.Net7", "Hesternal.Core.Net7\Hesternal.Core.Net7.csproj", "{36CFBA55-6AF2-462C-92CD-4DB1A09A3B96}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool", "Copium.HeaderTool\Hesternal.HeaderTool.csproj", "{39A7250D-259C-4284-AF5C-F6080D9DB75B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool", "Hesternal.HeaderTool\Hesternal.HeaderTool.csproj", "{39A7250D-259C-4284-AF5C-F6080D9DB75B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.MSBuild", "Copium.HeaderTool.MSBuild\Hesternal.HeaderTool.MSBuild.csproj", "{B838A045-6521-4CF3-9F91-0DB71913A81B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.MSBuild", "Hesternal.HeaderTool.MSBuild\Hesternal.HeaderTool.MSBuild.csproj", "{B838A045-6521-4CF3-9F91-0DB71913A81B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.Program", "Copium.HeaderTool.Program\Hesternal.HeaderTool.Program.csproj", "{D43ED592-88E3-4D15-8AED-19E80CE3BE86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.HeaderTool.Program", "Hesternal.HeaderTool.Program\Hesternal.HeaderTool.Program.csproj", "{D43ED592-88E3-4D15-8AED-19E80CE3BE86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.MathTool", "Copium.MathTool\Hesternal.MathTool.csproj", "{A3E1889C-297B-4037-9730-882CC34B661B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hesternal.MathTool", "Hesternal.MathTool\Hesternal.MathTool.csproj", "{A3E1889C-297B-4037-9730-882CC34B661B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Copium.Core\Hesternal.Core.csproj" />
+    <ProjectReference Include="..\Hesternal.Core\Hesternal.Core.csproj" />
   </ItemGroup>
 
 </Project>

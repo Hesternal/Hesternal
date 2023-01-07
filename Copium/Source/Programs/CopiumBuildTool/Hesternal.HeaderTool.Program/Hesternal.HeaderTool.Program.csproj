@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Copium.HeaderTool\Hesternal.HeaderTool.csproj">
+    <ProjectReference Include="..\Hesternal.HeaderTool\Hesternal.HeaderTool.csproj">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </ProjectReference>
   </ItemGroup>
