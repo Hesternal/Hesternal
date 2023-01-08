@@ -1,5 +1,5 @@
 using Hesternal.BuildTool;
-using Hesternal.Core.Net7;
+using Hesternal.CSharp.Net7;
 
 
 internal sealed class HesternalEditor : HesternalCppProject

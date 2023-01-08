@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <HesternalBuildDir>..\..\..\..\build</HesternalBuildDir>
+    <HesternalBinDir>$(HesternalBuildDir)\bin\dotnet</HesternalBinDir>
+    <HesternalDotnetIntermediateDir>$(HesternalBuildDir)\intermediate\dotnet</HesternalDotnetIntermediateDir>
+
+    <BaseIntermediateOutputPath>$(HesternalDotnetIntermediateDir)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(HesternalDotnetIntermediateDir)\$(MSBuildProjectName)\bin\</BaseOutputPath>
+    <PublishDir>$(HesternalBuildDir)\bin\dotnet\</PublishDir>
+    <!-- <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath> -->
+    <!-- <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> -->
+  </PropertyGroup>
+</Project>
