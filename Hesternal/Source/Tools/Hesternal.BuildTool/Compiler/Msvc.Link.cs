@@ -5,6 +5,7 @@ public static partial class Msvc
 {
     #region General
 
+    [CompilerFlag.Enum]
     public enum ShowProgress
     {
         /// <summary>
@@ -17,6 +18,7 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE")]
         LinkVerbose,
         /// <summary>
         /// Displays progress messages indicating just the libraries searched.
@@ -24,6 +26,7 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE:Lib
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE:Lib")]
         LinkVerboseLib,
         /// <summary>
         /// Displays information about COMDAT folding during optimized linking.
@@ -31,6 +34,7 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE:ICF
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE:ICF")]
         LinkVerboseICF,
         /// <summary>
         /// Displays information about functions and data removed during optimized linking.
@@ -38,6 +42,7 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE:REF
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE:REF")]
         LinkVerboseREF,
         /// <summary>
         /// Displays information about modules incompatible with Safe Exception Handling.
@@ -45,6 +50,7 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE:SAFESEH
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE:SAFESEH")]
         LinkVerboseSAFESEH,
         /// <summary>
         /// Display information about linker activity related to managed code.
@@ -52,9 +58,11 @@ public static partial class Msvc
         /// <remarks>
         /// /VERBOSE:CLR
         /// </remarks>
+        [CompilerFlag.EnumOption("/VERBOSE:CLR")]
         LinkVerboseCLR,
     }
 
+    [CompilerFlag.Enum]
     public enum ForceFileOutput
     {
         /// <summary>
@@ -63,6 +71,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FORCE
         /// </remarks>
+        [CompilerFlag.EnumOption("/FORCE")]
         Enabled,
         /// <summary>
         /// Use to create an output file whether or not LINK finds more than one definition for a symbol.
@@ -70,6 +79,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FORCE:MULTIPLE
         /// </remarks>
+        [CompilerFlag.EnumOption("/FORCE:MULTIPLE")]
         MultiplyDefinedSymbolOnly,
         /// <summary>
         /// Use to create an output file whether or not LINK finds an undefined symbol. Ignored if the entry point symbol is unresolved.
@@ -77,9 +87,11 @@ public static partial class Msvc
         /// <remarks>
         /// /FORCE:UNRESOLVED
         /// </remarks>
+        [CompilerFlag.EnumOption("/FORCE:UNRESOLVED")]
         UndefinedSymbolOnly,
     }
 
+    [CompilerFlag.Enum]
     public enum CreateHotPatchableImage
     {
         /// <summary>
@@ -88,6 +100,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FUNCTIONPADMIN
         /// </remarks>
+        [CompilerFlag.EnumOption("/FUNCTIONPADMIN")]
         Enabled,
         /// <summary>
         /// Prepares an X86 image for hotpatching.
@@ -95,6 +108,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FUNCTIONPADMIN:5
         /// </remarks>
+        [CompilerFlag.EnumOption("/FUNCTIONPADMIN:5")]
         X86Image,
         /// <summary>
         /// Prepares an X64 image for hotpatching.
@@ -102,6 +116,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FUNCTIONPADMIN:6
         /// </remarks>
+        [CompilerFlag.EnumOption("/FUNCTIONPADMIN:6")]
         X64Image,
         /// <summary>
         /// Prepares an Itanium image for hotpatching.
@@ -109,6 +124,7 @@ public static partial class Msvc
         /// <remarks>
         /// /FUNCTIONPADMIN:16
         /// </remarks>
+        [CompilerFlag.EnumOption("/FUNCTIONPADMIN:16")]
         ItaniumImage,
     }
 
@@ -117,6 +133,7 @@ public static partial class Msvc
 
     #region Debugging
 
+    [CompilerFlag.Enum]
     public enum GenerateDebugInformation
     {
         /// <summary>
@@ -129,6 +146,7 @@ public static partial class Msvc
         /// <remarks>
         /// /DEBUG
         /// </remarks>
+        [CompilerFlag.EnumOption("/DEBUG")]
         True, // NOTE(v.matushkin): Should be lower case true
         /// <summary>
         /// Generate Debug Information optimized for faster links. Produces a program database (PDB) ideal for edit-link-debug cycle.
@@ -136,6 +154,7 @@ public static partial class Msvc
         /// <remarks>
         /// /DEBUG:FASTLINK
         /// </remarks>
+        [CompilerFlag.EnumOption("/DEBUG:FASTLINK")]
         DebugFastLink,
         /// <summary>
         /// Generate Debug Information optimized for sharing and publishing. Produces a program database (PDB) ideal for edit-link-debug cycle.
@@ -143,6 +162,7 @@ public static partial class Msvc
         /// <remarks>
         /// /DEBUG:FULL
         /// </remarks>
+        [CompilerFlag.EnumOption("/DEBUG:FULL")]
         DebugFull,
     }
 
@@ -151,6 +171,7 @@ public static partial class Msvc
 
     #region System
 
+    [CompilerFlag.Enum]
     public enum SubSystem
     {
         /// <summary>
@@ -164,6 +185,7 @@ public static partial class Msvc
         /// <remarks>
         /// /SUBSYSTEM:CONSOLE
         /// </remarks>
+        [CompilerFlag.EnumOption("/SUBSYSTEM:CONSOLE")]
         Console,
         /// <summary>
         /// Application does not require a console, probably because it creates its own windows for interaction with the user.
@@ -172,6 +194,7 @@ public static partial class Msvc
         /// <remarks>
         /// /SUBSYSTEM:WINDOWS
         /// </remarks>
+        [CompilerFlag.EnumOption("/SUBSYSTEM:WINDOWS")]
         Windows,
         /// <summary>
         /// Device drivers for Windows NT. If /DRIVER:WDM is specified, NATIVE is the default.
@@ -179,29 +202,35 @@ public static partial class Msvc
         /// <remarks>
         /// /SUBSYSTEM:NATIVE
         /// </remarks>
+        [CompilerFlag.EnumOption("/SUBSYSTEM:NATIVE")]
         Native,
         /// <remarks>
         /// /SUBSYSTEM:EFI_APPLICATION
         /// </remarks>
-        // EFI Application
+        [CompilerFlag.EnumOption("/SUBSYSTEM:EFI_APPLICATION", "EFI Application")]
+        EFI_Application,
         /// <remarks>
         /// /SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER
         /// </remarks>
-        // EFI Boot
+        [CompilerFlag.EnumOption("/SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER", "EFI Boot")]
+        EFI_Boot,
         /// <remarks>
         /// /SUBSYSTEM:EFI_ROM
         /// </remarks>
-        // EFI ROM
+        [CompilerFlag.EnumOption("/SUBSYSTEM:EFI_ROM", "EFI ROM")]
+        EFI_ROM,
         /// <remarks>
         /// /SUBSYSTEM:EFI_RUNTIME_DRIVER
         /// </remarks>
-        // EFI Runtime
+        [CompilerFlag.EnumOption("/SUBSYSTEM:EFI_RUNTIME_DRIVER", "EFI Runtime")]
+        EFI_Runtime,
         /// <summary>
         /// Application that runs on a Windows CE device.
         /// </summary>
         /// <remarks>
         /// /SUBSYSTEM:WINDOWSCE
         /// </remarks>
+        [CompilerFlag.EnumOption("/SUBSYSTEM:WINDOWSCE")]
         WindowsCE,
         /// <summary>
         /// Application that runs with the POSIX subsystem in Windows NT.
@@ -209,6 +238,7 @@ public static partial class Msvc
         /// <remarks>
         /// /SUBSYSTEM:POSIX
         /// </remarks>
+        [CompilerFlag.EnumOption("/SUBSYSTEM:POSIX")]
         POSIX,
     }
 
@@ -217,6 +247,7 @@ public static partial class Msvc
 
     #region Optimization
 
+    [CompilerFlag.Enum]
     public enum LinkTimeCodeGeneration
     {
         /// <summary>
@@ -229,6 +260,7 @@ public static partial class Msvc
         /// <remarks>
         /// /LTCG:incremental
         /// </remarks>
+        [CompilerFlag.EnumOption("/LTCG:incremental")]
         UseFastLinkTimeCodeGeneration,
         /// <summary>
         /// Use Link Time Code Generation.
@@ -236,6 +268,7 @@ public static partial class Msvc
         /// <remarks>
         /// /LTCG
         /// </remarks>
+        [CompilerFlag.EnumOption("/LTCG")]
         UseLinkTimeCodeGeneration,
         /// <summary>
         /// Profile Guided Optimization - Instrument. Specifies link-time code generation.
@@ -243,6 +276,7 @@ public static partial class Msvc
         /// <remarks>
         /// /LTCG:PGInstrument
         /// </remarks>
+        [CompilerFlag.EnumOption("/LTCG:PGInstrument")]
         PGInstrument,
         /// <summary>
         /// Profile Guided Optimization - Optimization.
@@ -251,6 +285,7 @@ public static partial class Msvc
         /// <remarks>
         /// /LTCG:PGOptimize
         /// </remarks>
+        [CompilerFlag.EnumOption("/LTCG:PGOptimize")]
         PGOptimization,
         /// <summary>
         /// Profile Guided Optimization - Update.
@@ -259,6 +294,7 @@ public static partial class Msvc
         /// <remarks>
         /// /LTCG:PGUpdate
         /// </remarks>
+        [CompilerFlag.EnumOption("/LTCG:PGUpdate")]
         PGUpdate,
     }
 
@@ -267,6 +303,7 @@ public static partial class Msvc
 
     #region Windows Metadata
 
+    [CompilerFlag.Enum]
     public enum GenerateWindowsMetadata
     {
         /// <summary>
@@ -276,6 +313,7 @@ public static partial class Msvc
         /// <remarks>
         /// /WINMD
         /// </remarks>
+        [CompilerFlag.EnumOption("/WINMD")]
         True, // NOTE(v.matushkin): Should be lower case true
         /// <summary>
         /// The linker generates only the binary executable file, but not a .winmd file.
@@ -283,6 +321,7 @@ public static partial class Msvc
         /// <remarks>
         /// /WINMD:NO
         /// </remarks>
+        [CompilerFlag.EnumOption("/WINMD:NO")]
         False, // NOTE(v.matushkin): Should be lower case false
         /// <summary>
         /// The linker generates only the .winmd file, but not the binary executable file.
@@ -290,6 +329,7 @@ public static partial class Msvc
         /// <remarks>
         /// /WINMD:ONLY
         /// </remarks>
+        [CompilerFlag.EnumOption("/WINMD:ONLY")]
         Only,
     }
 
@@ -298,64 +338,79 @@ public static partial class Msvc
 
     #region Advanced
 
+    [CompilerFlag.Enum]
     public enum TargetMachine
     {
         NotSet, // NOTE(v.matushkin): Librarian doesn't have this
         /// <remarks>
         /// /MACHINE:ARM
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:ARM")]
         MachineARM,
         /// <remarks>
         /// /MACHINE:ARM64
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:ARM64")]
         MachineARM64,
         /// <remarks>
         /// /MACHINE:ARM64EC
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:ARM64EC")]
         MachineARM64EC, // NOTE(v.matushkin): Librarian doesn't have this
         /// <remarks>
         /// /MACHINE:ARM64X
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:ARM64X")]
         MachineARM64X,
         /// <remarks>
         /// /MACHINE:EBC
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:EBC")]
         MachineEBC,
         /// <remarks>
         /// /MACHINE:IA64
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:IA64")]
         MachineIA64,
         /// <remarks>
         /// /MACHINE:MIPS
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:MIPS")]
         MachineMIPS,
         /// <remarks>
         /// /MACHINE:MIPS16
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:MIPS16")]
         MachineMIPS16,
         /// <remarks>
         /// /MACHINE:MIPSFPU
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:MIPSFPU")]
         MachineMIPSFPU,
         /// <remarks>
         /// /MACHINE:MIPSFPU16
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:MIPSFPU16")]
         MachineMIPSFPU16,
         /// <remarks>
         /// /MACHINE:SH4
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:SH4")]
         MachineSH4,
         /// <remarks>
         /// /MACHINE:THUMB
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:THUMB")]
         MachineTHUMB,
         /// <remarks>
         /// /MACHINE:X64
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:X64")]
         MachineX64,
         /// <remarks>
         /// /MACHINE:X86
         /// </remarks>
+        [CompilerFlag.EnumOption("/MACHINE:X86")]
         MachineX86,
     }
 

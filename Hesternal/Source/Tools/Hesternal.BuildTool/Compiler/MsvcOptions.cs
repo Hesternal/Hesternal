@@ -12,16 +12,18 @@ public sealed class MsvcOptions : ICompilerOptions
     /// Makes the build scan all c++ sources, not just module interface and header unit sources, for module and header units dependencies and build the full dependencies graph.
     /// </summary>
     /// <remarks>
-    /// /scanDependencies
+    /// <see langword="true"/> /scanDependencies
     /// </remarks>
+    [CompilerFlag.Bool("/scanDependencies")]
     public bool ScanSourceForModuleDependencies = false;
 
     /// <summary>
     /// Enables the compiler to translate #include directives into import directives for the available header units.
     /// </summary>
     /// <remarks>
-    /// /translateInclude
+    /// <see langword="true"/> /translateInclude
     /// </remarks>
+    [CompilerFlag.Bool("/translateInclude")]
     public bool TranslateIncludesToImports = false;
 
     // NOTE(v.matushkin): While doc says that there is /JMC- flag, in Microsoft.Build.CPPTasks.Common it only takes /JMC ?
@@ -31,6 +33,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /JMC, <see langword="false"/> /JMC-
     /// </remarks>
+    [CompilerFlag.Bool("/JMC", "/JMC-")]
     public bool SupportJustMyCode = true;
 
     /// <summary>
@@ -43,8 +46,9 @@ public sealed class MsvcOptions : ICompilerOptions
     /// Suppresses the display of the sign-on banner when the compiler starts up and display of informational messages during compiling.
     /// </summary>
     /// <remarks>
-    /// /nologo
+    /// <see langword="true"/> /nologo
     /// </remarks>
+    [CompilerFlag.Bool("/nologo")]
     public bool SuppressStartupBanner = true;
 
     /// <summary>
@@ -58,6 +62,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /WX, <see langword="false"/> /WX-
     /// </remarks>
+    [CompilerFlag.Bool("/WX", "/WX-")]
     public bool TreatWarningAsError = false;
 
     /// <summary>
@@ -72,11 +77,13 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /sdl, <see langword="false"/> /sdl-
     /// </remarks>
+    [CompilerFlag.Bool("/sdl", "/sdl-")]
     public bool SDLCheck = false;
 
     /// <remarks>
     /// <see langword="true"/> /MP
     /// </remarks>
+    [CompilerFlag.Bool("/MP")]
     public bool MultiProcessorCompilation = true;
 
     /// <summary>
@@ -85,6 +92,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /fsanitize=address
     /// </remarks>
+    [CompilerFlag.Bool("/fsanitize=address")]
     public bool EnableASAN = false;
 
     /// <summary>
@@ -93,6 +101,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /fsanitize=fuzzer
     /// </remarks>
+    [CompilerFlag.Bool("/fsanitize=fuzzer")]
     public bool EnableFuzzer = false;
 
     #endregion General
@@ -116,6 +125,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Oi
     /// </remarks>
+    [CompilerFlag.Bool("/Oi")]
     public bool IntrinsicFunctions = false;
 
     /// <summary>
@@ -129,6 +139,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Oy, <see langword="false"/> /Oy-
     /// </remarks>
+    [CompilerFlag.Bool("/Oy", "Oy-")]
     public bool OmitFramePointers = false;
 
     /// <summary>
@@ -137,6 +148,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /GT
     /// </remarks>
+    [CompilerFlag.Bool("/GT")]
     public bool EnableFiberSafeOptimizations = false;
 
     /// <summary>
@@ -145,6 +157,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /GL
     /// </remarks>
+    [CompilerFlag.Bool("/GL")]
     public bool WholeProgramOptimization = false;
 
     #endregion Optimization
@@ -160,6 +173,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /u
     /// </remarks>
+    [CompilerFlag.Bool("/u")]
     public bool UndefineAllPreprocessorDefinitions = false;
 
     /// <summary>
@@ -168,6 +182,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /X
     /// </remarks>
+    [CompilerFlag.Bool("/X")]
     public bool IgnoreStandardIncludePath = false;
 
     /// <summary>
@@ -176,6 +191,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /P
     /// </remarks>
+    [CompilerFlag.Bool("/P")]
     public bool PreprocessToFile = false;
 
     // public string PreprocessOutputPath
@@ -186,6 +202,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /EP
     /// </remarks>
+    [CompilerFlag.Bool("/EP")]
     public bool PreprocessSuppressLineNumbers = false;
 
     /// <summary>
@@ -194,6 +211,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /C
     /// </remarks>
+    [CompilerFlag.Bool("/C")]
     public bool PreprocessKeepComments = false;
 
     /// <summary>
@@ -202,6 +220,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zc:preprocessor, <see langword="false"/> /Zc:preprocessor-
     /// </remarks>
+    [CompilerFlag.Bool("/Zc:preprocessor", "/Zc:preprocessor-")]
     public bool UseStandardPreprocessor = false;
 
     #endregion Preprocessor
@@ -216,6 +235,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /GF, <see langword="false"/> /GF-
     /// </remarks>
+    [CompilerFlag.Bool("/GF", "/GF-")]
     public bool? StringPooling = null;
 
     /// <summary>
@@ -224,6 +244,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Gm, <see langword="false"/> /Gm-
     /// </remarks>
+    [CompilerFlag.Bool("/Gm", "/Gm-")]
     public bool MinimalRebuild = false;
 
     /// <summary>
@@ -235,8 +256,9 @@ public sealed class MsvcOptions : ICompilerOptions
     /// Enable checking for conversion to smaller types, incompatible with any optimization type other than debug.
     /// </summary>
     /// <remarks>
-    /// /RTCc
+    /// <see langword="true"/> /RTCc
     /// </remarks>
+    [CompilerFlag.Bool("/RTCc")]
     public bool SmallerTypeCheck = false;
 
     /// <summary>
@@ -255,7 +277,7 @@ public sealed class MsvcOptions : ICompilerOptions
     public StructMemberAlignment StructMemberAlignment = StructMemberAlignment.Default;
 
     /// <summary>
-    /// Detects some buffer overruns that overwrite a function's return address, exception handler address, or certain types of parameters.
+    /// Detects some buffer overruns that overwrite a function's return address, exception handler address, or certain types of parameters.<br/>
     /// Causing a buffer overrun is a technique used by hackers to exploit code that does not enforce buffer size restrictions.
     /// </summary>
     public BufferSecurityCheck BufferSecurityCheck = BufferSecurityCheck.True;
@@ -271,6 +293,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Gy, <see langword="false"/> /Gy-
     /// </remarks>
+    [CompilerFlag.Bool("/Gy", "/Gy-")]
     public bool? FunctionLevelLinking = null;
 
     /// <summary>
@@ -279,11 +302,12 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Qpar, <see langword="false"/> /Qpar-
     /// </remarks>
+    [CompilerFlag.Bool("/Qpar", "/Qpar-")]
     public bool? EnableParallelCodeGeneration = null;
 
     /// <summary>
-    /// Enable use of instructions found on processors that support enhanced instruction sets, e.g., the SSE, SSE2, AVX, AVX2 and AVX-512 enhancements to IA-32;
-    /// AVX, AVX2 and AVX-512 to x64. Currently /arch:SSE and /arch:SSE2 are only available when building for the x86 architecture.
+    /// Enable use of instructions found on processors that support enhanced instruction sets, e.g., the SSE, SSE2, AVX, AVX2 and AVX-512 enhancements to IA-32;<br/>
+    /// AVX, AVX2 and AVX-512 to x64. Currently /arch:SSE and /arch:SSE2 are only available when building for the x86 architecture.<br/>
     /// If no option is specified, the compiler will use instructions found on processors that support SSE2. Use of enhanced instructions can be disabled with /arch:IA32.
     /// </summary>
     public EnableEnhancedInstructionSet EnableEnhancedInstructionSet = EnableEnhancedInstructionSet.NotSet;
@@ -299,6 +323,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /fp:except, <see langword="false"/> /fp:except-
     /// </remarks>
+    [CompilerFlag.Bool("/fp:except", "/fp:except-")]
     public bool? FloatingPointExceptions = null;
 
     /// <summary>
@@ -307,6 +332,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /hotpatch
     /// </remarks>
+    [CompilerFlag.Bool("/hotpatch")]
     public bool? CreateHotpatchableImage = null;
 
     /// <summary>
@@ -320,6 +346,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /QIntel-jcc-erratum
     /// </remarks>
+    [CompilerFlag.Bool("/QIntel-jcc-erratum")]
     public bool IntelJCCErratum = false;
 
     /// <summary>
@@ -328,6 +355,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /guard:ehcont, <see langword="false"/> /guard:ehcont-
     /// </remarks>
+    [CompilerFlag.Bool("/guard:ehcont", "/guard:ehcont-")]
     public bool? GuardEHContMetadata = null;
 
     /// <summary>
@@ -336,6 +364,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /guard:signret, <see langword="false"/> /guard:signret-
     /// </remarks>
+    [CompilerFlag.Bool("/guard:signret", "/guard:signret-")]
     public bool? GuardSignedReturns = null;
 
     #endregion Code generation
@@ -349,6 +378,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Za
     /// </remarks>
+    [CompilerFlag.Bool("/Za")]
     public bool DisableLanguageExtensions = false;
 
     /// <summary>
@@ -357,6 +387,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zc:wchar_t, <see langword="false"/> /Zc:wchar_t-
     /// </remarks>
+    [CompilerFlag.Bool("/Zc:wchar_t", "/Zc:wchar_t-")]
     public bool TreatWChar_tAsBuiltInType = true;
 
     /// <summary>
@@ -365,6 +396,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zc:forScope, <see langword="false"/> /Zc:forScope-
     /// </remarks>
+    [CompilerFlag.Bool("/Zc:forScope", "/Zc:forScope-")]
     public bool ForceConformanceInForLoopScope = true;
 
     /// <summary>
@@ -373,6 +405,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zc:inline
     /// </remarks>
+    [CompilerFlag.Bool("/Zc:inline")]
     public bool RemoveUnreferencedCodeData = true;
 
     /// <summary>
@@ -381,6 +414,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zc:rvalueCast, <see langword="false"/> /Zc:rvalueCast-
     /// </remarks>
+    [CompilerFlag.Bool("/Zc:rvalueCast", "/Zc:rvalueCast-")]
     public bool? EnforceTypeConversionRules = null;
 
     /// <summary>
@@ -389,6 +423,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /GR, <see langword="false"/> /GR-
     /// </remarks>
+    [CompilerFlag.Bool("/GR", "/GR-")]
     public bool? RuntimeTypeInfo = null;
 
     /// <summary>
@@ -397,6 +432,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /openmp, <see langword="false"/> /openmp-
     /// </remarks>
+    [CompilerFlag.Bool("/openmp", "/openmp-")]
     public bool? OpenMPSupport = null;
 
     /// <summary>
@@ -435,6 +471,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /external:anglebrackets
     /// </remarks>
+    [CompilerFlag.Bool("/external:anglebrackets")]
     public bool TreatAngleIncludeAsExternal = false;
 
     /// <summary>
@@ -448,6 +485,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /external:templates-
     /// </remarks>
+    [CompilerFlag.Bool("/external:templates-")]
     public bool? ExternalTemplatesDiagnostics = null;
 
     /// <summary>
@@ -456,6 +494,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /analyze:external-
     /// </remarks>
+    [CompilerFlag.Bool("/analyze:external-")]
     public bool DisableAnalyzeExternal = false;
 
     #endregion External Includes
@@ -474,6 +513,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /showIncludes
     /// </remarks>
+    [CompilerFlag.Bool("/showIncludes")]
     public bool ShowIncludes = false;
 
     /// <summary>
@@ -482,6 +522,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /FC
     /// </remarks>
+    [CompilerFlag.Bool("/FC")]
     public bool UseFullPaths = true;
 
     /// <summary>
@@ -491,6 +532,7 @@ public sealed class MsvcOptions : ICompilerOptions
     /// <remarks>
     /// <see langword="true"/> /Zl
     /// </remarks>
+    [CompilerFlag.Bool("/Zl")]
     public bool OmitDefaultLibName = false;
 
     #endregion Advanced

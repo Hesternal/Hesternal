@@ -11,6 +11,7 @@ public sealed class MsvcLibrarianOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /NOLOGO
     /// </remarks>
+    [CompilerFlag.Bool("/NOLOGO")]
     public bool SuppressStartupBanner = true;
 
     /// <summary>
@@ -19,6 +20,7 @@ public sealed class MsvcLibrarianOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /NODEFAULTLIB
     /// </remarks>
+    [CompilerFlag.Bool("/NODEFAULTLIB")]
     public bool? IgnoreAllDefaultLibraries = null;
 
     /// <summary>
@@ -38,6 +40,7 @@ public sealed class MsvcLibrarianOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /WX, <see langword="false"/> /WX:NO
     /// </remarks>
+    [CompilerFlag.Bool("/WX", "/WX:NO")]
     public bool? TreatLibWarningAsErrors = null;
 
     /// <summary>
@@ -59,5 +62,6 @@ public sealed class MsvcLibrarianOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /LTCG
     /// </remarks>
+    [CompilerFlag.Bool("/LTCG")]
     public bool? LinkTimeCodeGeneration = null;
 }

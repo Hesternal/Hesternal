@@ -18,6 +18,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /INCREMENTAL, <see langword="false"/> /INCREMENTAL:NO
     /// </remarks>
+    [CompilerFlag.Bool("/INCREMENTAL", "/INCREMENTAL:NO")]
     public bool LinkIncremental = false;
 
     /// <summary>
@@ -26,6 +27,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /NOLOGO
     /// </remarks>
+    [CompilerFlag.Bool("/NOLOGO")]
     public bool SuppressStartupBanner = true;
 
     /// <summary>
@@ -60,6 +62,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /LTCG:STATUS, <see langword="false"/> /LTCG:NOSTATUS
     /// </remarks>
+    [CompilerFlag.Bool("/LTCG:STATUS", "/LTCG:NOSTATUS")]
     public bool? LinkStatus = null;
 
     /// <summary>
@@ -69,6 +72,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /ALLOWBIND, <see langword="false"/> /ALLOWBIND:NO
     /// </remarks>
+    [CompilerFlag.Bool("/ALLOWBIND", "/ALLOWBIND:NO")]
     public bool? PreventDllBinding = null;
 
     /// <summary>
@@ -77,6 +81,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /WX, <see langword="false"/> /WX:NO
     /// </remarks>
+    [CompilerFlag.Bool("/WX", "/WX:NO")]
     public bool? TreatLinkerWarningAsErrors = null;
 
     /// <summary>
@@ -101,6 +106,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /NODEFAULTLIB
     /// </remarks>
+    [CompilerFlag.Bool("/NODEFAULTLIB")]
     public bool IgnoreAllDefaultLibraries = false;
 
     #endregion Input
@@ -119,6 +125,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /MAP
     /// </remarks>
+    [CompilerFlag.Bool("/MAP")]
     public bool GenerateMapFile = false;
 
     /// <summary>
@@ -128,6 +135,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /MAPINFO:EXPORTS
     /// </remarks>
+    [CompilerFlag.Bool("/MAPINFO:EXPORTS")]
     public bool MapExports = false;
 
     /// <summary>
@@ -136,6 +144,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /ASSEMBLYDEBUG, <see langword="false"/> /ASSEMBLYDEBUG:DISABLE
     /// </remarks>
+    [CompilerFlag.Bool("/ASSEMBLYDEBUG", "/ASSEMBLYDEBUG:DISABLE")]
     public bool? AssemblyDebug = null;
 
     #endregion Debugging
@@ -155,6 +164,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /LARGEADDRESSAWARE, <see langword="false"/> /LARGEADDRESSAWARE:NO
     /// </remarks>
+    [CompilerFlag.Bool("/LARGEADDRESSAWARE", "/LARGEADDRESSAWARE:NO")]
     public bool? LargeAddressAware = null;
 
     /// <summary>
@@ -164,6 +174,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /TSAWARE, <see langword="false"/> /TSAWARE:NO
     /// </remarks>
+    [CompilerFlag.Bool("/TSAWARE", "/TSAWARE:NO")]
     public bool? TerminalServerAware = null;
 
     #endregion System
@@ -177,6 +188,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /OPT:REF, <see langword="false"/> /OPT:NOREF
     /// </remarks>
+    [CompilerFlag.Bool("/OPT:REF", "/OPT:NOREF")]
     public bool OptimizeReferences = false;
 
     // NOTE(v.matushkin): While it says that I can use =iterations,
@@ -187,6 +199,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /OPT:ICF, <see langword="false"/> /OPT:NOICF
     /// </remarks>
+    [CompilerFlag.Bool("/OPT:ICF", "/OPT:NOICF")]
     public bool EnableCOMDATFolding = false;
 
     /// <summary>
@@ -210,6 +223,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// /WINMDFILE:filename
     /// </remarks>
+    [CompilerFlag.String("/WINMDFILE:")]
     public string? WindowsMetadataFile = null;
 
     /// <summary>
@@ -218,6 +232,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// /WINMDKEYFILE:filename
     /// </remarks>
+    [CompilerFlag.String("/WINMDKEYFILE:")]
     public string? WindowsMetadataLinkKeyFile = null;
 
     /// <summary>
@@ -226,6 +241,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// /WINMDKEYCONTAINER:name
     /// </remarks>
+    [CompilerFlag.String("/WINMDKEYCONTAINER:")]
     public string? WindowsMetadataKeyContainer = null;
 
     /// <summary>
@@ -234,6 +250,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /WINMDDELAYSIGN, <see langword="false"/> /WINMDDELAYSIGN:NO
     /// </remarks>
+    [CompilerFlag.Bool("/WINMDDELAYSIGN", "/WINMDDELAYSIGN:NO")]
     public bool? WindowsMetadataLinkDelaySign = null;
 
     #endregion Windows Metadata
@@ -247,6 +264,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// /ENTRY:function
     /// </remarks>
+    [CompilerFlag.String("/ENTRY:")]
     public string? EntryPointSymbol = null;
 
     /// <summary>
@@ -254,16 +272,18 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// Use this option to prevent LINK from linking a reference to _main into the DLL.
     /// </summary>
     /// <remarks>
-    /// /NOENTRY
+    /// <see langword="true"/> /NOENTRY
     /// </remarks>
+    [CompilerFlag.Bool("/NOENTRY")]
     public bool NoEntryPoint = false;
 
     /// <summary>
     /// The /RELEASE option sets the Checksum in the header of an .exe file.
     /// </summary>
     /// <remarks>
-    /// /RELEASE
+    /// <see langword="true"/> /RELEASE
     /// </remarks>
+    [CompilerFlag.Bool("/RELEASE")]
     public bool SetChecksum = false;
 
     /// <summary>
@@ -272,6 +292,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /DYNAMICBASE, <see langword="false"/> /DYNAMICBASE:NO
     /// </remarks>
+    [CompilerFlag.Bool("/DYNAMICBASE", "/DYNAMICBASE:NO")]
     public bool RandomizedBaseAddress = true;
 
     /// <summary>
@@ -280,6 +301,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /NXCOMPAT, <see langword="false"/> /NXCOMPAT:NO
     /// </remarks>
+    [CompilerFlag.Bool("/NXCOMPAT", "/NXCOMPAT:NO")]
     public bool DataExecutionPrevention = true;
 
     // NOTE(v.matushkin): Seems like SupportUnloadOfDelayLoadedDLL and SupportUnloadOfDelayLoadedDLL should be combined into one option?
@@ -291,6 +313,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /DELAY:UNLOAD
     /// </remarks>
+    [CompilerFlag.Bool("/DELAY:UNLOAD")]
     public bool? SupportUnloadOfDelayLoadedDLL = null;
 
     /// <summary>
@@ -299,6 +322,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /DELAY:NOBIND
     /// </remarks>
+    [CompilerFlag.Bool("/DELAY:NOBIND")]
     public bool? SupportNobindOfDelayLoadedDLL = null;
 
     /// <summary>
@@ -312,6 +336,7 @@ public sealed class MsvcLinkerOptions : ILinkerOptions
     /// <remarks>
     /// <see langword="true"/> /PROFILE
     /// </remarks>
+    [CompilerFlag.Bool("/PROFILE")]
     public bool Profile = false;
 
     #endregion Advanced
