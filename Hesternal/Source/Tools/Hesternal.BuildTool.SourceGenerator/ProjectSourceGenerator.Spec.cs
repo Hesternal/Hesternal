@@ -1,26 +1,21 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 
 using Microsoft.CodeAnalysis;
 
+namespace Hesternal.BuildTool.SourceGenerator;
 
-namespace System.Runtime.CompilerServices
+
+internal sealed partial class ProjectSourceGenerator
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    internal class IsExternalInit { }
-}
-
-
-namespace Hesternal.BuildTool.SourceGenerator
-{
-    internal sealed class ProjectGeneratorSpec
+    private sealed class ProjectGeneratorSpec
     {
         public readonly List<INamedTypeSymbol> BuildSystems = new();
         public readonly List<INamedTypeSymbol> Compilers = new();
         public readonly List<INamedTypeSymbol> Linkers = new();
     }
 
-    internal sealed class SourceGenerationSpec
+
+    private sealed class SourceGenerationSpec
     {
         public ProjectGeneratorSpec Vcxproj { get; init; }
     }

@@ -17,14 +17,6 @@ internal sealed partial class ProjectSourceGenerator
 
     private sealed class Parser
     {
-        private static class AttributeName
-        {
-            public const string SupportedBuildSystems = "SupportedBuildSystemsAttribute";
-            public const string SupportedCompilers    = "SupportedCompilersAttribute";
-            public const string SupportedLinkers      = "SupportedLinkersAttribute";
-        }
-
-
         public static SourceGenerationSpec GetGenerationSpec(ImmutableArray<INamedTypeSymbol> projectGenerators)
         {
             ProjectGeneratorSpec vcxproj = null!;
@@ -55,11 +47,11 @@ internal sealed partial class ProjectSourceGenerator
                 {
                     string attributeName = attributeData.AttributeClass.Name;
 
-                    if (attributeName == AttributeName.SupportedBuildSystems)
+                    if (attributeName == HesternalInfo.Attribute.SupportedBuildSystems.Name)
                     {
                         _AddAttributeConstructorTypeArguments(spec.BuildSystems, attributeData);
                     }
-                    else if (attributeName == AttributeName.SupportedCompilers)
+                    else if (attributeName == HesternalInfo.Attribute.SupportedCompilers.Name)
                     {
                         _AddAttributeConstructorTypeArguments(spec.Compilers, attributeData);
                     }
@@ -82,7 +74,7 @@ internal sealed partial class ProjectSourceGenerator
                     {
                         string attributeName = attributeData.AttributeClass.Name;
 
-                        if (attributeName == AttributeName.SupportedLinkers)
+                        if (attributeName == HesternalInfo.Attribute.SupportedLinkers.Name)
                         {
                             _AddAttributeConstructorTypeArguments(linkers, attributeData);
                         }

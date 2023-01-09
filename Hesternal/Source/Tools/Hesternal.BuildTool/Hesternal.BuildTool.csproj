@@ -5,9 +5,15 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>
     <ProjectReference Include="..\Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj" />
   </ItemGroup>
 
@@ -18,10 +24,6 @@
     <Reference Include="Microsoft.Build.CPPTasks.Common.Base">
       <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.Base.dll</HintPath>
     </Reference>
-    <!--<ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Analyzer</OutputItemType>
-    </ProjectReference>-->
   </ItemGroup>
 
 </Project>

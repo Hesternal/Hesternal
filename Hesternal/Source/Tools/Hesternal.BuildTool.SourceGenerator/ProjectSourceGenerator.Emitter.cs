@@ -129,7 +129,7 @@ internal sealed partial class VsCppProjectGenerator
             void _WriteIfBlock(INamedTypeSymbol type)
             {
                 string typeNameVariable = type.Name.ToLower();
-                string typeFullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                string typeFullName = type.ToFullyQualifiedName();
 
                 m_sb.Append("if (options is ").Append(typeFullName).Append(' ').Append(typeNameVariable).AppendLine(")")
                     .AppendLine(Indentation.Method + "{")
@@ -198,7 +198,7 @@ internal sealed partial class VsCppProjectGenerator
 
             if (fieldType == FieldType.Enum)
             {
-                m_sb.Append(".ToString()");
+                m_sb.Append("." + HesternalInfo.GeneratedMethod.CompilerFlag.EnumOption.ToVcxprojName + "()");
             }
 
             m_sb.AppendLine(");");

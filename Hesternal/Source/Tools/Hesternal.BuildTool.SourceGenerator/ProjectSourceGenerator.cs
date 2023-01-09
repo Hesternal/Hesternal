@@ -14,9 +14,6 @@ namespace Hesternal.BuildTool.SourceGenerator;
 [Generator(LanguageNames.CSharp)]
 internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 {
-    // TODO(v.matushkin): <Hardcoded/ProjectName>
-    private const string k_BuildToolGeneratorsAssemblyName = "Hesternal.BuildTool.Generators";
-
     private static int s_InitCount;
     private static int s_SelectCount;
     private static int s_EmitCount;
@@ -42,7 +39,7 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 
     private static IEnumerable<INamedTypeSymbol> _GetProjectGenerators(Compilation compilation, CancellationToken _)
     {
-        if (compilation.AssemblyName == k_BuildToolGeneratorsAssemblyName)
+        if (compilation.AssemblyName == HesternalInfo.Assembly.BuildToolGenerators)
         {
             Interlocked.Increment(ref s_SelectCount);
 
@@ -52,14 +49,12 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
 
     private static void _Execute(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> projectGenerators)
     {
-        context.ReportDiagnostic(_Diagnostic($"_Execute | {projectGenerators.Length}"));
-        if (projectGenerators.IsDefaultOrEmpty)
+        context.ReportDiagnostic(_Diagnostic($"ProjectSourceGenerator::_Execute | {projectGenerators.Length}"));
+        if (projectGenerators.IsDefaultOrEmpty == false)
         {
-            return;
+            SourceGenerationSpec spec = Parser.GetGenerationSpec(projectGenerators);
+            Emitter.Emit(context, spec);
         }
-
-        SourceGenerationSpec spec = Parser.GetGenerationSpec(projectGenerators);
-        Emitter.Emit(context, spec);
     }
 
 
