@@ -10,10 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Analyzer</OutputItemType>
-    </ProjectReference>
+    <ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj" />
   </ItemGroup>
 

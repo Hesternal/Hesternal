@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
@@ -9,7 +10,7 @@ namespace Hesternal.BuildTool.SourceGenerator;
 
 internal sealed partial class ProjectSourceGenerator
 {
-    private sealed class Emitter
+    private sealed class Emitter : IDisposable
     {
         private enum FieldType
         {
@@ -17,15 +18,6 @@ internal sealed partial class ProjectSourceGenerator
             Bool,
             Enum,
             String,
-        }
-
-        private static class Indentation
-        {
-            private const string k_OneLevel = "    ";
-
-            public const string Class  = k_OneLevel;
-            public const string Method = Class + k_OneLevel;
-            public const string If     = Method + k_OneLevel;
         }
 
         private static class MethodName
@@ -45,25 +37,19 @@ internal sealed partial class ProjectSourceGenerator
         }
 
 
-        private const int k_StringBuilderInitialCapacity = 9500;
-
-        private const string k_GeneratedSourceHeader =
-@"using System;
-
-namespace Hesternal.BuildTool.Generators.VisualStudio;
-
-
-internal sealed partial class VsCppProjectGenerator
-{";
+        private const int k_InitialCapacity = 9500;
 
         private readonly SourceProductionContext m_context;
         private readonly SourceGenerationSpec m_generationSpec;
-        private readonly StringBuilder m_sb = new(k_StringBuilderInitialCapacity);
+
+        private readonly MemoryStream m_writerStream;
+        private readonly CSharpWriter m_writer;
 
 
         public static void Emit(SourceProductionContext context, SourceGenerationSpec generationSpec)
         {
-            new Emitter(context, generationSpec)._Emit();
+            using Emitter emitter = new(context, generationSpec);
+            emitter._Emit();
         }
 
 
@@ -71,7 +57,12 @@ internal sealed partial class VsCppProjectGenerator
         {
             m_context = context;
             m_generationSpec = generationSpec;
+
+            m_writerStream = new MemoryStream(k_InitialCapacity);
+            m_writer = new CSharpWriter(m_writerStream);
         }
+
+        public void Dispose() => m_writer.Dispose();
 
 
         private void _Emit()
@@ -79,8 +70,10 @@ internal sealed partial class VsCppProjectGenerator
             Interlocked.Increment(ref s_EmitCount);
 
             _AddSource("Compiler", _EmitOptionsSource(MethodName.Compiler, OptionsInterface.Compiler, m_generationSpec.Vcxproj.Compilers, true));
-            m_sb.Clear();
+            m_writerStream.SetLength(0);
             _AddSource("Linker", _EmitOptionsSource(MethodName.Linker, OptionsInterface.Linker, m_generationSpec.Vcxproj.Linkers));
+
+            m_writer.Dispose();
 
             void _AddSource(string name, string code)
             {
@@ -93,48 +86,55 @@ internal sealed partial class VsCppProjectGenerator
         {
             if (writeStats)
             {
-                m_sb.AppendLine($"// Init: {s_InitCount}")
-                    .AppendLine($"// Select: {s_SelectCount}")
-                    .AppendLine($"// Emit: {s_EmitCount}");
+                m_writer.WriteLine("// Init: {0}", s_InitCount);
+                m_writer.WriteLine("// Select: {0}", s_SelectCount);
+                m_writer.WriteLine("// Emit: {0}", s_EmitCount);
             }
 
-            m_sb.AppendLine(k_GeneratedSourceHeader)
-                .Append(Indentation.Class + "private void _WriteOptions(").Append(optionsInterface).AppendLine(" options)")
-                .AppendLine(Indentation.Class + "{")
-                .Append(Indentation.Method);
+            m_writer.WriteUsing("System");
+            m_writer.WriteLine();
+            m_writer.WriteNamespace("Hesternal.BuildTool.Generators.VisualStudio");
+            m_writer.WriteLines(2);
+            m_writer.WriteStartClass("VsCppProjectGenerator", CSharpWriter.Visibility.Internal, CSharpWriter.ClassType.Sealed | CSharpWriter.ClassType.Partial);
+
+            m_writer.WriteLine("private void _WriteOptions({0} options)", optionsInterface);
+            m_writer.WriteStartBlock();
 
             _WriteIfBlock(optionsTypes[0]);
 
             for (int i = 1; i < optionsTypes.Count; i++)
             {
-                m_sb.Append(Indentation.Method + "else ");
+                m_writer.Write("else ");
                 _WriteIfBlock(optionsTypes[i]);
             }
 
-            m_sb.AppendLine(Indentation.Method + "else")
-                .AppendLine(Indentation.Method + "{")
-                .AppendLine(Indentation.If + "throw new ArgumentException();")
-                .AppendLine(Indentation.Method + "}")
-                .AppendLine(Indentation.Class + "}");
+            m_writer.WriteLine("else");
+            m_writer.WriteStartBlock();
+            m_writer.WriteLine("throw new ArgumentException();");
+            m_writer.WriteEndBlock();
+
+            m_writer.WriteEndBlock(); // method
 
             foreach (INamedTypeSymbol options in optionsTypes)
             {
                 _GenerateOptionsMethod(options, methodName);
             }
 
-            m_sb.AppendLine("}");
+            m_writer.WriteEndClass();
 
-            return m_sb.ToString();
+            m_writer.Flush();
+
+            return m_writerStream.ToUtf8String();
 
             void _WriteIfBlock(INamedTypeSymbol type)
             {
                 string typeNameVariable = type.Name.ToLower();
                 string typeFullName = type.ToFullyQualifiedName();
 
-                m_sb.Append("if (options is ").Append(typeFullName).Append(' ').Append(typeNameVariable).AppendLine(")")
-                    .AppendLine(Indentation.Method + "{")
-                    .Append(Indentation.If).Append(methodName).Append('(').Append(typeNameVariable).AppendLine(");")
-                    .AppendLine(Indentation.Method + "}");
+                m_writer.WriteLine("if (options is {0} {1})", typeFullName, typeNameVariable);
+                m_writer.WriteStartBlock();
+                m_writer.WriteLine("{0}({1});", methodName, typeNameVariable);
+                m_writer.WriteEndBlock();
             }
         }
 
@@ -143,8 +143,8 @@ internal sealed partial class VsCppProjectGenerator
         {
             string typeFullName = memberTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-            m_sb.Append(Indentation.Class + "private void ").Append(methodName).Append('(').Append(typeFullName).AppendLine(" options)")
-                .AppendLine(Indentation.Class + "{");
+            m_writer.WriteLine("private void {0}({1} options)", methodName, typeFullName);
+            m_writer.WriteStartBlock();
 
             foreach (ISymbol memberSymbol in memberTypeSymbol.GetMembers())
             {
@@ -155,7 +155,7 @@ internal sealed partial class VsCppProjectGenerator
                 }
             }
 
-            m_sb.AppendLine(Indentation.Class + "}");
+            m_writer.WriteEndBlock();
         }
 
         private void _GenerateField(IFieldSymbol fieldSymbol)
@@ -170,42 +170,38 @@ internal sealed partial class VsCppProjectGenerator
 
             bool needCheck = isNullable || fieldType == FieldType.String;
 
-            m_sb.Append(Indentation.Method);
-
             if (needCheck)
             {
-                m_sb.Append("if (options.").Append(fieldSymbol.Name);
-
+                m_writer.Write("if (options.{0}", fieldSymbol.Name);
                 if (isNullable)
                 {
-                    m_sb.AppendLine(".HasValue)");
+                    m_writer.Write(".HasValue");
                 }
                 else
                 {
-                    m_sb.AppendLine(" is not null)");
+                    m_writer.Write(" is not null");
                 }
-
-                m_sb.AppendLine(Indentation.Method + "{")
-                    .Append(Indentation.If);
+                m_writer.WriteLine(')');
+                m_writer.WriteStartBlock();
             }
 
-            m_sb.Append("m_projectWriter.Property(\"").Append(fieldSymbol.Name).Append("\", options.").Append(fieldSymbol.Name);
+            m_writer.Write("m_projectWriter.Property(\"{0}\", options.{0}", fieldSymbol.Name);
 
             if (isNullable)
             {
-                m_sb.Append(".Value");
+                m_writer.Write(".Value");
             }
 
             if (fieldType == FieldType.Enum)
             {
-                m_sb.Append("." + HesternalInfo.GeneratedMethod.CompilerFlag.EnumOption.ToVcxprojName + "()");
+                m_writer.Write("." + HesternalInfo.GeneratedMethod.CompilerFlag.EnumOption.ToVcxprojName + "()");
             }
 
-            m_sb.AppendLine(");");
+            m_writer.WriteLine(");");
 
             if (needCheck)
             {
-                m_sb.AppendLine(Indentation.Method + "}");
+                m_writer.WriteEndBlock();
             }
         }
 
