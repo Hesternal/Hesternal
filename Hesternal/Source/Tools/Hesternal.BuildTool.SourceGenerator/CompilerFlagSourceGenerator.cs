@@ -1,3 +1,4 @@
+/*
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
@@ -45,3 +46,4 @@ internal sealed partial class CompilerFlagSourceGenerator : IIncrementalGenerato
         return Diagnostic.Create("ID_1", "CAT_1", msg, DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 1);
     }
 }
+*/

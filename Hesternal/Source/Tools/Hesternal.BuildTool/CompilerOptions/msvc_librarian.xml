@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Linker Name="MsvcLibrarian"
+    >
+    <BoolFlag Name="SuppressStartupBanner"
+              Flag="/NOLOGO"
+              Default="true"
+              Description="The /NOLOGO option prevents display of the copyright message and version number."
+        />
+    <BoolFlag Name="IgnoreAllDefaultLibraries"
+              Flag="/NODEFAULTLIB"
+              Description="The /NODEFAULTLIB option tells the lib to remove one or more default libraries from the list of libraries it searches when resolving external references."
+        />
+    <BoolFlag Name="UseUnicodeResponseFiles"
+              Description="Use UNICODE Response Files : Instructs the project system to generate UNICODE response files when spawning the librarian. Set this property to 'Yes' when files in the project have UNICODE paths."
+        />
+    <BoolFlag Name="LinkLibraryDependencies"
+              Default="false"
+              Description="Specifies whether or not library outputs from project dependencies are automatically linked in."
+        />
+    <BoolFlag Name="TreatLibWarningAsErrors"
+              Flag="/WX"
+              ReverseFlag="/WX:NO"
+              Description="/WX causes no output file to be generated if lib generates a warning."
+        />
+    <EnumFlag Name="TargetMachine"
+              Default="MachineX64"
+              Description="The /MACHINE option specifies the target platform for the program."
+        >
+        <!-- // NOTE(v.matushkin): Librarian doesn't have NotSet option -->
+        <!-- <EnumValue Name="NotSet"
+            /> -->
+        <EnumValue Name="MachineARM"
+                   Flag="/MACHINE:ARM"
+            />
+        <EnumValue Name="MachineARM64"
+                   Flag="/MACHINE:ARM64"
+            />
+        <!-- // NOTE(v.matushkin): Librarian doesn't have MachineARM64EC option -->
+        <!-- <EnumValue Name="MachineARM64EC"
+                        Flag="/MACHINE:ARM64EC"
+            /> -->
+        <EnumValue Name="MachineARM64X"
+                   Flag="/MACHINE:ARM64X"
+            />
+        <EnumValue Name="MachineEBC"
+                   Flag="/MACHINE:EBC"
+            />
+        <EnumValue Name="MachineIA64"
+                   Flag="/MACHINE:IA64"
+            />
+        <EnumValue Name="MachineMIPS"
+                   Flag="/MACHINE:MIPS"
+            />
+        <EnumValue Name="MachineMIPS16"
+                   Flag="/MACHINE:MIPS16"
+            />
+        <EnumValue Name="MachineMIPSFPU"
+                   Flag="/MACHINE:MIPSFPU"
+            />
+        <EnumValue Name="MachineMIPSFPU16"
+                   Flag="/MACHINE:MIPSFPU16"
+            />
+        <EnumValue Name="MachineSH4"
+                   Flag="/MACHINE:SH4"
+            />
+        <EnumValue Name="MachineTHUMB"
+                   Flag="/MACHINE:THUMB"
+            />
+        <EnumValue Name="MachineX64"
+                   Flag="/MACHINE:X64"
+            />
+        <EnumValue Name="MachineX86"
+                   Flag="/MACHINE:X86"
+            />
+    </EnumFlag>
+
+    <!-- TODO: SubSystem -->
+
+    <BoolFlag Name="Verbose"
+        />
+    <BoolFlag Name="LinkTimeCodeGeneration"
+              Flag="/LTCG"
+              Description="Specifies link-time code generation."
+        />
+</Linker>

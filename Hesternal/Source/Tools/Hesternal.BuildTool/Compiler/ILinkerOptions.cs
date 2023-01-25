@@ -15,3 +15,12 @@ public sealed class SupportedLinkersAttribute : Attribute
     {
     }
 }
+
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed class LinkerOptionsAttribute : Attribute
+{
+    public LinkerOptionsAttribute(bool supportsVcxproj)
+    {
+    }
+}

@@ -15,3 +15,12 @@ public sealed class SupportedCompilersAttribute : Attribute
     {
     }
 }
+
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed class CompilerOptionsAttribute : Attribute
+{
+    public CompilerOptionsAttribute(bool supportsVcxproj)
+    {
+    }
+}

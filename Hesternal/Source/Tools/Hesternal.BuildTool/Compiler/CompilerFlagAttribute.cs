@@ -3,24 +3,13 @@ using System;
 namespace Hesternal.BuildTool;
 
 
+/*
 public static class CompilerFlag
 {
-    // NOTE(v.matushkin): May be it's better to get flag info from xml comment,
-    //   so there will be no need to repeat the same flag names for this attributes,
-    //   but at the same time seems like retrieving flag info from comment will be harder?
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class BoolAttribute : Attribute
     {
         public BoolAttribute(string? trueFlag = null, string? falseFlag = null)
-        {
-        }
-    }
-
-
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class StringAttribute : Attribute
-    {
-        public StringAttribute(string? flag)
         {
         }
     }
@@ -34,7 +23,6 @@ public static class CompilerFlag
         }
     }
 
-
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class EnumOptionAttribute : Attribute
     {
@@ -42,4 +30,23 @@ public static class CompilerFlag
         {
         }
     }
+
+
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public sealed class StringAttribute : Attribute
+    {
+        public StringAttribute(string? flag = null)
+        {
+        }
+    }
+
+
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public sealed class StringListAttribute : Attribute
+    {
+        public StringListAttribute(string? flag = null)
+        {
+        }
+    }
 }
+*/

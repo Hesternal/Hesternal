@@ -1,6 +1,6 @@
-using static Hesternal.BuildTool.Msvc;
+using static Hesternal.BuildTool.Old.Msvc;
 
-namespace Hesternal.BuildTool;
+namespace Hesternal.BuildTool.Old;
 
 
 public sealed class MsvcLinkerOptions : ILinkerOptions

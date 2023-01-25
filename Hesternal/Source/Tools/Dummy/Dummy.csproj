@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Build">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\Microsoft.Build.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.CPPTasks.Common">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.CPPTasks.Common.Base">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Microsoft\VC\v170\Microsoft.Build.CPPTasks.Common.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Engine">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\Microsoft.Build.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\Microsoft.Build.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Tasks.Core">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\Microsoft.Build.Tasks.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\Microsoft.Build.Utilities.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

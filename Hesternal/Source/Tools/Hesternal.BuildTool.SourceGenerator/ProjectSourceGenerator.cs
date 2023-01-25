@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Hesternal.BuildTool.SourceGenerator;
 
@@ -28,6 +29,34 @@ internal sealed partial class ProjectSourceGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         Interlocked.Increment(ref s_InitCount);
+
+        /*
+        var compilers = context.SyntaxProvider
+            .ForAttributeWithMetadataName(
+                HesternalInfo.Attribute.CompilerOptions.FullName,
+                OptionsPredicate,
+                OptionsTransform)
+            .Collect();
+
+        var linkers = context.SyntaxProvider
+            .ForAttributeWithMetadataName(
+                HesternalInfo.Attribute.LinkerOptions.FullName,
+                OptionsPredicate,
+                OptionsTransform)
+            .Collect();
+
+        var combined = compilers.Combine(linkers);
+
+        var projectGenerators = context.CompilationProvider
+            .SelectMany(_GetProjectGenerators);
+
+        var projectGeneratorsWithCompilers = projectGenerators.Combine(compilers);
+
+        context.RegisterSourceOutput(projectGeneratorsWithCompilers, _Execute);
+
+        static bool OptionsPredicate(SyntaxNode node, CancellationToken _) => node is ClassDeclarationSyntax;
+        static INamedTypeSymbol OptionsTransform(GeneratorAttributeSyntaxContext context, CancellationToken _) => (INamedTypeSymbol)context.TargetSymbol;
+        */
 
         var projectGenerators = context.CompilationProvider
             .SelectMany(_GetProjectGenerators)

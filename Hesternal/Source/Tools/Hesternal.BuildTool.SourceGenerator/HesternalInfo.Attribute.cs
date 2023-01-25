@@ -7,20 +7,21 @@ internal static partial class HesternalInfo
     {
         public static class CompilerFlag
         {
-            private const string k_CompilerFlagAttributeBaseName = "Hesternal.BuildTool.CompilerFlag+";
+            private const string k_BaseClass = "CompilerFlag.";
+            private const string k_FullyQualifiedBaseClass = "Hesternal.BuildTool.CompilerFlag+";
 
 
             public static class Enum
             {
-                public const string Name = "EnumAttribute";
-                public const string FullName = k_CompilerFlagAttributeBaseName + Name;
+                public const string ShortName = k_BaseClass + "Enum";
+                public const string FullName = k_FullyQualifiedBaseClass + "EnumAttribute";
             }
 
 
             public static class EnumOption
             {
-                public const string Name = "EnumOptionAttribute";
-                public const string FullName = k_CompilerFlagAttributeBaseName + Name;
+                public const string ShortName = k_BaseClass + "EnumOption";
+                public const string FullName = k_FullyQualifiedBaseClass + "EnumOptionAttribute";
 
                 public const int NumConstructorArguments = 2;
                 public const int FlagArgumentIndex = 0;
@@ -44,6 +45,18 @@ internal static partial class HesternalInfo
         public static class SupportedLinkers
         {
             public const string Name = "SupportedLinkersAttribute";
+        }
+
+
+        public static class CompilerOptions
+        {
+            public const string FullName = "Hesternal.BuildTool.CompilerOptionsAttribute";
+        }
+
+
+        public static class LinkerOptions
+        {
+            public const string FullName = "Hesternal.BuildTool.LinkerOptionsAttribute";
         }
     }
 }

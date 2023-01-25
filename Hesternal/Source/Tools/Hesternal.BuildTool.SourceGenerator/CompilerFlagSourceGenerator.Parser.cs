@@ -1,3 +1,4 @@
+/*
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -33,7 +34,7 @@ internal sealed partial class CompilerFlagSourceGenerator
         private static EnumFlagOptionSpec _GetEnumOptionSpec(ISymbol enumMemberSymbol)
         {
             AttributeData? enumOptionAttributeData = enumMemberSymbol.GetAttributes()
-                .FirstOrDefault(attributeData => attributeData.AttributeClass?.Name == HesternalInfo.Attribute.CompilerFlag.EnumOption.Name);
+                .FirstOrDefault(static attributeData => attributeData.AttributeClass?.Name == HesternalInfo.Attribute.CompilerFlag.EnumOption.Name);
 
             string? flag;
             string vcxprojName;
@@ -74,3 +75,4 @@ internal sealed partial class CompilerFlagSourceGenerator
         }
     }
 }
+*/

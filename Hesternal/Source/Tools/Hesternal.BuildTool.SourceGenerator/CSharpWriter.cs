@@ -34,6 +34,9 @@ internal sealed class CSharpWriter : CodeWriter
         Partial = 1 << 0,
         Sealed  = 1 << 1,
         Static  = 1 << 2,
+
+        SealedPartial = Partial | Sealed,
+        StaticPartial = Partial | Static,
     }
 
 
@@ -67,6 +70,8 @@ internal sealed class CSharpWriter : CodeWriter
         WriteLine(';');
     }
 
+    public void WriteNullableEnable() => m_codeWriter.WriteLine("#nullable enable");
+
 
     public void WriteStartBlock()
     {
@@ -80,6 +85,12 @@ internal sealed class CSharpWriter : CodeWriter
         WriteLine('}');
     }
 
+    public void WriteEndSwitch()
+    {
+        PopIndent();
+        WriteLine("};");
+    }
+
     public void WriteStartStruct(string @struct, string visibility)
     {
         Write(visibility);
@@ -90,7 +101,7 @@ internal sealed class CSharpWriter : CodeWriter
 
     public void WriteEndStruct() => WriteEndBlock();
 
-    public void WriteStartClass(string @class, string visibility, ClassType type)
+    public void WriteStartClass(string @class, string visibility, ClassType type, string? publicInherit = null)
     {
         Write(visibility);
 
@@ -109,7 +120,14 @@ internal sealed class CSharpWriter : CodeWriter
         }
 
         m_codeWriter.Write(" " + Keyword.Class + " ");
-        WriteLine(@class);
+        m_codeWriter.Write(@class);
+
+        if (publicInherit is not null)
+        {
+            m_codeWriter.Write(" : {0}", publicInherit);
+        }
+
+        WriteLine();
         WriteStartBlock();
     }
 

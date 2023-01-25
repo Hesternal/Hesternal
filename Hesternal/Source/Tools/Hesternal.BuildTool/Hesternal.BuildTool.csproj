@@ -10,7 +10,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CompilerOptions\msvc.xml" />
+    <None Remove="CompilerOptions\msvc_librarian.xml" />
+    <None Remove="CompilerOptions\msvc_linker.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="CompilerOptions\msvc.xml" />
+    <AdditionalFiles Include="CompilerOptions\msvc_librarian.xml" />
+    <AdditionalFiles Include="CompilerOptions\msvc_linker.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Hesternal.BuildTool.SourceGenerator\Hesternal.BuildTool.SourceGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hesternal.CSharp\Hesternal.CSharp.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Hesternal.CSharp.Net7\Hesternal.CSharp.Net7.csproj" />

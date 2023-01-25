@@ -1,4 +1,4 @@
-namespace Hesternal.BuildTool;
+namespace Hesternal.BuildTool.Old;
 
 
 public static partial class Msvc

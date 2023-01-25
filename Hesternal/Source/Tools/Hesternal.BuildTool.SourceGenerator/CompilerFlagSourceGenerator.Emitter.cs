@@ -1,3 +1,4 @@
+/*
 using System.Text;
 using System.Threading;
 
@@ -114,3 +115,4 @@ internal sealed partial class CompilerFlagSourceGenerator
         }
     }
 }
+*/

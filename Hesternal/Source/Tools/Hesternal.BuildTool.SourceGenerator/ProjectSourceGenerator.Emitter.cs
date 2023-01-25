@@ -95,7 +95,7 @@ internal sealed partial class ProjectSourceGenerator
             m_writer.WriteLine();
             m_writer.WriteNamespace("Hesternal.BuildTool.Generators.VisualStudio");
             m_writer.WriteLines(2);
-            m_writer.WriteStartClass("VsCppProjectGenerator", CSharpWriter.Visibility.Internal, CSharpWriter.ClassType.Sealed | CSharpWriter.ClassType.Partial);
+            m_writer.WriteStartClass("VsCppProjectGenerator", CSharpWriter.Visibility.Internal, CSharpWriter.ClassType.SealedPartial);
 
             m_writer.WriteLine("private void _WriteOptions({0} options)", optionsInterface);
             m_writer.WriteStartBlock();
