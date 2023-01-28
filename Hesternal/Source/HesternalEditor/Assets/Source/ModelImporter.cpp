@@ -94,11 +94,11 @@ namespace
 
         void Log() const
         {
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
             const uint64 numNotLoadedAssimpMaterials = m_assimpMaterials.size() - m_assimpToModelMaterialIndex.size();
             if (numNotLoadedAssimpMaterials != 0)
             {
-                COP_LOG_WARN("Not loaded assimp materials: {:d}", numNotLoadedAssimpMaterials);
+                HS_LOG_WARN("Not loaded assimp materials: {:d}", numNotLoadedAssimpMaterials);
             }
 #endif
         }
@@ -133,12 +133,12 @@ namespace
             
                 if (diffuseTexturesCount != 1)
                 {
-                    COP_LOG_WARN("Material has {:d} BaseColorMaps. [{:s}]", diffuseTexturesCount, materialName);
+                    HS_LOG_WARN("Material has {:d} BaseColorMaps. [{:s}]", diffuseTexturesCount, materialName);
                 }
             }
             else
             {
-                COP_LOG_WARN("Material doesn't have BaseColorMap, using default Black texture. [{:s}]", materialName);
+                HS_LOG_WARN("Material doesn't have BaseColorMap, using default Black texture. [{:s}]", materialName);
                 material->SetBaseColorMap(Graphics::GetBlackTexture());
             }
 
@@ -151,12 +151,12 @@ namespace
             
                 if (normalTexturesCount != 1)
                 {
-                    COP_LOG_WARN("Material has {:d} NormalMaps. [{:s}]", diffuseTexturesCount, materialName);
+                    HS_LOG_WARN("Material has {:d} NormalMaps. [{:s}]", diffuseTexturesCount, materialName);
                 }
             }
             else
             {
-                COP_LOG_WARN("Material doesn't have NormalMap, using default Normal texture. [{:s}]", materialName);
+                HS_LOG_WARN("Material doesn't have NormalMap, using default Normal texture. [{:s}]", materialName);
                 material->SetNormalMap(Graphics::GetNormalTexture());
             }
 
@@ -168,7 +168,7 @@ namespace
             aiString texturePath;
             // NOTE(v.matushkin): Useless method call without ASSERT
             [[maybe_unused]] const aiReturn error = material.GetTexture(textureType, 0, &texturePath);
-            COP_ASSERT_MSG(error == aiReturn::aiReturn_SUCCESS, error == aiReturn_FAILURE ? "aiReturn_FAILURE" : "aiReturn_OUTOFMEMORY");
+            HS_ASSERT_MSG(error == aiReturn::aiReturn_SUCCESS, error == aiReturn_FAILURE ? "aiReturn_FAILURE" : "aiReturn_OUTOFMEMORY");
     
             // NOTE(v.matushkin): This dances with pathes is so fucking dumb
             std::string projectDirRelativePath = (m_modelDirPath / ToString(texturePath)).string();
@@ -197,11 +197,11 @@ namespace
 
         void Log() const
         {
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
             const uint64 numNotLoadedAssimpMeshes = m_assimpMeshes.size() - m_usedMeshIndices.size();
             if (numNotLoadedAssimpMeshes != 0)
             {
-                COP_LOG_WARN("Not loaded assimp meshes: {:d}", numNotLoadedAssimpMeshes);
+                HS_LOG_WARN("Not loaded assimp meshes: {:d}", numNotLoadedAssimpMeshes);
             }
             m_materialCreationContext.Log();
 #endif
@@ -213,14 +213,14 @@ namespace
             {
                 const std::span<const uint32> subMeshIndices(assimpNode.mMeshes, assimpNode.mNumMeshes);
 
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
                 // Check that there is no mesh instancing or different nodes using the same mesh (which is kinda the same thing).
                 //   Because I'm not handling this cases right now.
                 for (const uint32 subMeshIndex : subMeshIndices)
                 {
                     if (m_usedMeshIndices.insert(subMeshIndex).second == false)
                     {
-                        COP_ASSERT_MSG(false, "Mesh was already used");
+                        HS_ASSERT_MSG(false, "Mesh was already used");
                     }
                 }
 #endif
@@ -253,7 +253,7 @@ namespace
 
                 // TODO(v.matushkin): Skip meshes that I can't handle right now.
                 [[maybe_unused]] const bool isMeshValid = _IsMeshValid(assimpMesh);
-                // COP_ASSERT(IsMeshValid(assimpMesh));
+                // HS_ASSERT(IsMeshValid(assimpMesh));
 
                 modelMesh.MaterialIndices.push_back(m_materialCreationContext.AddMaterial(assimpMesh.mMaterialIndex));
 
@@ -382,33 +382,33 @@ namespace
         {
             bool valid = true;
 
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
             const std::string_view meshName = ToStringView(assimpMesh.mName);
 #endif
 
             if (assimpMesh.mPrimitiveTypes != aiPrimitiveType::aiPrimitiveType_TRIANGLE)
             {
-                COP_LOG_WARN("Mesh topology is not triangle. [{:s}]", meshName);
+                HS_LOG_WARN("Mesh topology is not triangle. [{:s}]", meshName);
                 valid = false;
             }
             if (assimpMesh.HasFaces() == false)
             {
-                COP_LOG_WARN("Mesh doesn't have Faces. [{:s}]", meshName);
+                HS_LOG_WARN("Mesh doesn't have Faces. [{:s}]", meshName);
                 valid = false;
             }
             if (assimpMesh.HasPositions() == false)
             {
-                COP_LOG_WARN("Mesh doesn't have Positions. [{:s}]", meshName);
+                HS_LOG_WARN("Mesh doesn't have Positions. [{:s}]", meshName);
                 valid = false;
             }
             if (assimpMesh.HasNormals() == false)
             {
-                COP_LOG_WARN("Mesh doesn't have Normals. [{:s}]", meshName);
+                HS_LOG_WARN("Mesh doesn't have Normals. [{:s}]", meshName);
                 valid = false;
             }
             if (assimpMesh.HasTextureCoords(0) == false)
             {
-                COP_LOG_WARN("Mesh doesn't have UV0. [{:s}]", meshName);
+                HS_LOG_WARN("Mesh doesn't have UV0. [{:s}]", meshName);
                 valid = false;
             }
 
@@ -430,7 +430,7 @@ namespace
         MaterialCreationContext        m_materialCreationContext;
         std::span<const aiMesh* const> m_assimpMeshes;
         std::vector<ModelMesh>         m_modelMeshes;
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
         std::unordered_set<uint32>     m_usedMeshIndices;
 #endif
     };
@@ -449,7 +449,7 @@ namespace
 
             if ((Math::IsNearlyEqual(scale.x, scale.y) && Math::IsNearlyEqual(scale.x, scale.z)) == false)
             {
-                COP_LOG_WARN("Node has a non-uniform scale.");
+                HS_LOG_WARN("Node has a non-uniform scale.");
             }
 
             modelNode.Position = Float3(position.x, position.y, position.z);
@@ -466,7 +466,7 @@ namespace
 
         if (assimpRootNode.mNumChildren == 0)
         {
-            COP_LOG_WARN("Assimp root node has 0 children");
+            HS_LOG_WARN("Assimp root node has 0 children");
         }
         else
         {
@@ -489,12 +489,12 @@ namespace
 
                 if (childNumChildren == 0 && childNumMeshes == 0)
                 {
-                    COP_LOG_WARN("Skipping a node without children and meshes. [{:s}]", childrenNodeName);
+                    HS_LOG_WARN("Skipping a node without children and meshes. [{:s}]", childrenNodeName);
                     continue;
                 }
                 // if (assimpChildrenNode->mMetaData != nullptr)
                 // {
-                //     COP_LOG_WARN("Node has metadata. [{:s}] | NumProperties: {:d}", childrenNodeName, assimpChildrenNode->mMetaData->mNumProperties);
+                //     HS_LOG_WARN("Node has metadata. [{:s}] | NumProperties: {:d}", childrenNodeName, assimpChildrenNode->mMetaData->mNumProperties);
                 // }
 
                 auto modelChildrenNode = std::make_unique<ModelNode>(ModelNode{ .Name = std::string(childrenNodeName) });
@@ -528,19 +528,19 @@ namespace Hesternal
         // TODO(v.matushkin): This will break when asserts turned off
         if (assimpScene == nullptr)
         {
-            COP_LOG_CRITICAL(
+            HS_LOG_CRITICAL(
                 "Got an error while loading Mesh"
                 "\t\nPath: {:s}"
                 "\t\nAssimp error message: {:s}",
                 modelPath, assimpImporter.GetErrorString());
-            COP_ASSERT(false);
+            HS_ASSERT(false);
         }
 
         //- NOTE(v.matushkin): Hack for Sponza model
         const ai_real assimpModelGlobalScale = assimpImporter.GetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, FloatingType<ai_real>::Infinity);
         if (assimpModelGlobalScale == FloatingType<ai_real>::Infinity)
         {
-            COP_LOG_DEBUG("Applying global scale");
+            HS_LOG_DEBUG("Applying global scale");
             assimpImporter.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, static_cast<ai_real>(0.01));
         }
 
@@ -567,39 +567,39 @@ namespace Hesternal
             //
             | aiPostProcessSteps::aiProcess_GlobalScale
             ;
-        COP_ASSERT_MSG(assimpImporter.ValidateFlags(assimpPostProcessFlags), "Invalid set of Assimp PostProcess flags");
+        HS_ASSERT_MSG(assimpImporter.ValidateFlags(assimpPostProcessFlags), "Invalid set of Assimp PostProcess flags");
         // This returns the same pointer, and can only be nullptr if aiProcess_ValidateDataStructure was used
         assimpImporter.ApplyPostProcessing(assimpPostProcessFlags);
 
         if (assimpScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
         {
-            COP_ASSERT_MSG(false, "AI_SCENE_FLAGS_INCOMPLETE");
+            HS_ASSERT_MSG(false, "AI_SCENE_FLAGS_INCOMPLETE");
         }
         // This flag can be set only if aiProcess_ValidateDataStructure was used
         if (assimpScene->mFlags & AI_SCENE_FLAGS_VALIDATION_WARNING)
         {
-            COP_LOG_WARN("AI_SCENE_FLAGS_VALIDATION_WARNING");
+            HS_LOG_WARN("AI_SCENE_FLAGS_VALIDATION_WARNING");
         }
 
         if (assimpScene->HasMaterials() == false)
         {
-            COP_LOG_WARN("Model has no materials");
+            HS_LOG_WARN("Model has no materials");
         }
 
-        COP_LOG_TRACE("Meshes: {:d} | Materials: {:d} | Embeded Textures: {:d}",
+        HS_LOG_TRACE("Meshes: {:d} | Materials: {:d} | Embeded Textures: {:d}",
             assimpScene->mNumMeshes, assimpScene->mNumMaterials, assimpScene->mNumTextures);
 
         if (assimpScene->HasAnimations())
         {
-            COP_LOG_TRACE("Model has {:d} animations", assimpScene->mNumAnimations);
+            HS_LOG_TRACE("Model has {:d} animations", assimpScene->mNumAnimations);
         }
         if (assimpScene->HasCameras())
         {
-            COP_LOG_TRACE("Model has {:d} cameras", assimpScene->mNumCameras);
+            HS_LOG_TRACE("Model has {:d} cameras", assimpScene->mNumCameras);
         }
         if (assimpScene->HasLights())
         {
-            COP_LOG_TRACE("Model has {:d} lights", assimpScene->mNumLights);
+            HS_LOG_TRACE("Model has {:d} lights", assimpScene->mNumLights);
         }
 
         MeshCreationContext meshCreationContext(modelPath, assimpScene);

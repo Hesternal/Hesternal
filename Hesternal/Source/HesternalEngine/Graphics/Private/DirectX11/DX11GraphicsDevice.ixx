@@ -5,14 +5,14 @@ module;
 #include "Hesternal/Core/Defines.hpp"
 
 #include <d3d11_4.h>
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
 #include <dxgidebug.h>
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module HesternalEngine.Graphics.DX11GraphicsDevice;
 
 import Hesternal.Core;
@@ -23,7 +23,7 @@ import HesternalEngine.Graphics.IGraphicsDevice;
 
 import <unordered_map>;
 import <vector>;
-COP_WARNING_POP
+HS_WARNING_POP
 
 
 namespace Hesternal
@@ -155,7 +155,7 @@ export namespace Hesternal
         [[nodiscard]] void* MapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
         void UnmapBuffer(GraphicsBufferHandle graphicsBufferHandle) override;
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         void BeginSample(std::string_view name) override;
         void EndSample() override;
 #endif
@@ -164,7 +164,7 @@ export namespace Hesternal
         ID3D11DeviceContext4* const m_deviceContext;
         DX11GraphicsDevice*   const m_graphicsDevice;
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         ID3DUserDefinedAnnotation* m_annotation;
         bool                       m_makeAnnotationCalls;
 #endif
@@ -217,20 +217,20 @@ export namespace Hesternal
 
         void _CreateDevice();
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         void _DebugLayer_Init();
         void _DebugLayer_ReportLiveObjects();
         void _DebugLayer_LogMessages();
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
     private:
         IDXGIFactory5*        m_factory;
         ID3D11Device5*        m_device;
         ID3D11DeviceContext4* m_deviceContext;
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         IDXGIInfoQueue*       m_dxgiInfoQueue;
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
         ID3D11SamplerState*   m_renderTextureSampler;
 
@@ -247,8 +247,8 @@ export namespace Hesternal
     {
         const auto dx11GraphicsBufferIterator = m_graphicsBuffers.find(graphicsBufferHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11GraphicsBufferIterator != m_graphicsBuffers.end());
+#if HS_ENABLE_ASSERTS
         if (dx11GraphicsBufferIterator == m_graphicsBuffers.end())
         {
             std::abort();
@@ -262,8 +262,8 @@ export namespace Hesternal
     {
         const auto dx11RenderPassIterator = m_renderPasses.find(renderPassHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11RenderPassIterator != m_renderPasses.end());
+#if HS_ENABLE_ASSERTS
         if (dx11RenderPassIterator == m_renderPasses.end())
         {
             std::abort();
@@ -277,8 +277,8 @@ export namespace Hesternal
     {
         const auto dx11RenderTextureIterator = m_renderTextures.find(renderTextureHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11RenderTextureIterator != m_renderTextures.end());
+#if HS_ENABLE_ASSERTS
         if (dx11RenderTextureIterator == m_renderTextures.end())
         {
             std::abort();
@@ -292,8 +292,8 @@ export namespace Hesternal
     {
         const auto dx11ShaderIterator = m_shaders.find(shaderHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11ShaderIterator != m_shaders.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11ShaderIterator != m_shaders.end());
+#if HS_ENABLE_ASSERTS
         if (dx11ShaderIterator == m_shaders.end())
         {
             std::abort();
@@ -307,8 +307,8 @@ export namespace Hesternal
     {
         const auto dx11SwapchainIterator = m_swapchains.find(swapchainHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11SwapchainIterator != m_swapchains.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11SwapchainIterator != m_swapchains.end());
+#if HS_ENABLE_ASSERTS
         if (dx11SwapchainIterator == m_swapchains.end())
         {
             std::abort();
@@ -322,8 +322,8 @@ export namespace Hesternal
     {
         const auto dx11TextureIterator = m_textures.find(textureHandle);
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        //COP_ASSERT(dx11TextureIterator != m_textures.end());
-#if COP_ENABLE_ASSERTS
+        //HS_ASSERT(dx11TextureIterator != m_textures.end());
+#if HS_ENABLE_ASSERTS
         if (dx11TextureIterator == m_textures.end())
         {
             std::abort();

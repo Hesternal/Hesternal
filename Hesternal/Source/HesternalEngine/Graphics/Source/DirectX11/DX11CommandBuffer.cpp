@@ -5,14 +5,14 @@ module;
 #include <d3d11_4.h>
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get 'import std;'
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module HesternalEngine.Graphics.DX11GraphicsDevice;
 
 import HesternalEngine.Core.Platform;
 import HesternalEngine.Graphics.DX11Conversion;
-COP_WARNING_POP
+HS_WARNING_POP
 
 
 namespace
@@ -33,7 +33,7 @@ namespace Hesternal
         : m_deviceContext(deviceContext)
         , m_graphicsDevice(graphicsDevice)
     {
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         m_deviceContext->QueryInterface(&m_annotation);
         m_makeAnnotationCalls = m_annotation->GetStatus();
 #endif
@@ -41,7 +41,7 @@ namespace Hesternal
 
     DX11CommandBuffer::~DX11CommandBuffer()
     {
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         m_annotation->Release();
 #endif
     }
@@ -185,7 +185,7 @@ namespace Hesternal
     {
         DX11RenderTexture& dx11RenderTexture = m_graphicsDevice->_GetRenderTexture(renderTextureHandle);
         ID3D11ShaderResourceView* d3dRenderTextureSRV = dx11RenderTexture.SRV;
-        COP_ASSERT_MSG(d3dRenderTextureSRV != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
+        HS_ASSERT_MSG(d3dRenderTextureSRV != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
 
         ID3D11SamplerState* d3dRenderTextureSampler = m_graphicsDevice->GetRenderTextureSampler();
 
@@ -245,7 +245,7 @@ namespace Hesternal
     }
 
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
     void DX11CommandBuffer::BeginSample(std::string_view name)
     {
         if (m_makeAnnotationCalls)
@@ -262,6 +262,6 @@ namespace Hesternal
             m_annotation->EndEvent();
         }
     }
-#endif
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 } // namespace Hesternal

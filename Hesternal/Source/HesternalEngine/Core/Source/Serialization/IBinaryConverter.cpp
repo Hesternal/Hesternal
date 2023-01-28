@@ -12,8 +12,8 @@ namespace Hesternal
 
     IBinaryConverter& IBinaryConverter::operator<<(Object& object)
     {
-        COP_ASSERT_MSG(false, "Not implemented");
-        COP_UNUSED(object);
+        HS_ASSERT_MSG(false, "Not implemented");
+        HS_UNUSED(object);
         // object.Convert(*this);
         return *this;
     }

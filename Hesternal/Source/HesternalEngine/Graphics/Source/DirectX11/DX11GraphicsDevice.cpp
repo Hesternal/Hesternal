@@ -3,16 +3,16 @@ module;
 #include "Hesternal/Core/Debug.hpp"
 
 #include <d3d11_4.h>
-#if COP_ENABLE_GRAPHICS_API_DEBUG
-#include <dxgidebug.h>
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
+    #include <dxgidebug.h>
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get 'import std;'
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module HesternalEngine.Graphics.DX11GraphicsDevice;
-COP_WARNING_POP
+HS_WARNING_POP
 
 import HesternalEngine.Graphics.DX11Conversion;
 import HesternalEngine.Graphics.DXCommon;
@@ -34,11 +34,11 @@ import <utility>;
 // NOTE(v.matushkin): May be add macro for FAILED(HRESULT) ?
 //  Because right now I only log in EndFrame() and ~DX11GraphicsDevice()
 //  What if some d3d/dxgi call failed earlier(than EndFrame() call) and the app crashed
-#if COP_ENABLE_GRAPHICS_API_DEBUG
-#define COP_DX11_LOG_DEBUG_LAYER() _DebugLayer_LogMessages()
+#if HS_ENABLE_GRAPHICS_API_DEBUG
+    #define HS_DX11_LOG_DEBUG_LAYER() _DebugLayer_LogMessages()
 #else
-#define COP_DX11_LOG_DEBUG_LAYER() do { } while((void)0,0)
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+    #define HS_DX11_LOG_DEBUG_LAYER() do { } while((void)0,0)
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 
 namespace
@@ -46,9 +46,9 @@ namespace
     using namespace Hesternal;
 
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
     static const GUID k_DxgiDebugGuid = DXGI_DEBUG_ALL;
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 
     static constinit uint32 g_GraphicsBufferHandleWorkaround = 0;
@@ -60,7 +60,7 @@ namespace
     static constinit uint32 g_TextureHandleWorkaround        = 0;
 
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG_NAMES
+#if HS_ENABLE_GRAPHICS_API_DEBUG_NAMES
     static void SetResourceName(ID3D11DeviceChild* d3dResource, const std::string& name) noexcept
     {
         const uint32 nameLength = static_cast<uint32>(name.length());
@@ -68,7 +68,7 @@ namespace
     }
 #else
     static void SetResourceName([[maybe_unused]] ID3D11DeviceChild* d3dResource, [[maybe_unused]] const std::string& name) noexcept {}
-#endif
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG_NAMES
 
 } // namespace
 
@@ -120,15 +120,15 @@ namespace Hesternal
         : m_factory(nullptr)
         , m_device(nullptr)
         , m_deviceContext(nullptr)
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         , m_dxgiInfoQueue(nullptr)
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
         , m_renderTextureSampler(nullptr)
     {
         _CreateDevice();
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         _DebugLayer_Init();
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
         //- Create RenderTexture sampler
         {
@@ -159,33 +159,33 @@ namespace Hesternal
     DX11GraphicsDevice::~DX11GraphicsDevice()
     {
         //- GraphicsBuffers
-        COP_LOG_WARN_COND(m_graphicsBuffers.size() != 0, "{:d} GraphicsBuffer(s) were not cleaned up before DX11GraphicsDevice destruction", m_graphicsBuffers.size());
+        HS_LOG_WARN_COND(m_graphicsBuffers.size() != 0, "{:d} GraphicsBuffer(s) were not cleaned up before DX11GraphicsDevice destruction", m_graphicsBuffers.size());
         for (auto& handleAndGraphicsBuffer : m_graphicsBuffers)
         {
             handleAndGraphicsBuffer.second.Release();
         }
         //- RenderPasses
-        COP_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} RenderPass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
+        HS_LOG_WARN_COND(m_renderPasses.size() != 0, "{:d} RenderPass(es) were not cleaned up before DX11GraphicsDevice destruction", m_renderPasses.size());
         //- Swapchains (Should be destroyed before RenderTextures)
-        COP_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} Swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
+        HS_LOG_WARN_COND(m_swapchains.size() != 0, "{:d} Swapchain(s) were not cleaned up before DX11GraphicsDevice destruction", m_swapchains.size());
         for (auto& handleAndSwapchain : m_swapchains)
         {
             handleAndSwapchain.second.Release(this);
         }
         //- RenderTextures
-        COP_LOG_WARN_COND(m_renderTextures.size() != 0, "{:d} RenderTexture(s) were not cleaned up before DX11GraphicsDevice destruction", m_renderTextures.size());
+        HS_LOG_WARN_COND(m_renderTextures.size() != 0, "{:d} RenderTexture(s) were not cleaned up before DX11GraphicsDevice destruction", m_renderTextures.size());
         for (auto& handleAndRenderTexture : m_renderTextures)
         {
             handleAndRenderTexture.second.Release();
         }
         //- Shaders
-        COP_LOG_WARN_COND(m_shaders.size() != 0, "{:d} Shader(s) were not cleaned up before DX11GraphicsDevice destruction", m_shaders.size());
+        HS_LOG_WARN_COND(m_shaders.size() != 0, "{:d} Shader(s) were not cleaned up before DX11GraphicsDevice destruction", m_shaders.size());
         for (auto& handleAndShader : m_shaders)
         {
             handleAndShader.second.Release();
         }
         //- Textures
-        COP_LOG_WARN_COND(m_textures.size() != 0, "{:d} Texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
+        HS_LOG_WARN_COND(m_textures.size() != 0, "{:d} Texture(s) were not cleaned up before DX11GraphicsDevice destruction", m_textures.size());
         for (auto& handleAndTexture2D : m_textures)
         {
             handleAndTexture2D.second.Release();
@@ -199,10 +199,10 @@ namespace Hesternal
         m_deviceContext->Flush();
         RELEASE_COM_PTR(m_deviceContext);
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         _DebugLayer_ReportLiveObjects();
         RELEASE_COM_PTR(m_dxgiInfoQueue);
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
         RELEASE_COM_PTR(m_device);
         RELEASE_COM_PTR(m_factory);
@@ -234,7 +234,7 @@ namespace Hesternal
             handleAndSwapchain.second.Swapchain->Present1(0, 0, &dxgiPresentParameters);
         }
 
-        COP_DX11_LOG_DEBUG_LAYER();
+        HS_DX11_LOG_DEBUG_LAYER();
     }
 
 
@@ -332,7 +332,7 @@ namespace Hesternal
         //-- DepthStencil
         if (renderPassDesc.Subpass.UseDepthStencilAttachment)
         {
-            COP_ASSERT_MSG(depthStencilAttachment != RenderTextureHandle::Invalid, "Trying to use DepthStencilAttachment in Subpass while there is no DepthStencil RenderTexture in RenderPass");
+            HS_ASSERT_MSG(depthStencilAttachment != RenderTextureHandle::Invalid, "Trying to use DepthStencilAttachment in Subpass while there is no DepthStencil RenderTexture in RenderPass");
 
             dx11RenderPass.Subpass.DepthStencilAttachment = depthStencilAttachment;
         }
@@ -473,7 +473,7 @@ namespace Hesternal
             };
             m_device->CreateRasterizerState2(&d3dRasterizerStateDesc, &dx11Shader.RasterizerState);
 
-            COP_LOG_ERROR_COND(dx11Shader.RasterizerState == nullptr, "Failed to create ID3D11RasterizerState2 for '{}' shader", shaderDesc.Name);
+            HS_LOG_ERROR_COND(dx11Shader.RasterizerState == nullptr, "Failed to create ID3D11RasterizerState2 for '{}' shader", shaderDesc.Name);
         }
         //- Create DepthStencilState
         {
@@ -497,7 +497,7 @@ namespace Hesternal
             };
             m_device->CreateDepthStencilState(&d3dDepthStencilStateDesc, &dx11Shader.DepthStencilState);
 
-            COP_LOG_ERROR_COND(dx11Shader.DepthStencilState == nullptr, "Failed to create ID3D11DepthStencilState for '{}' shader", shaderDesc.Name);
+            HS_LOG_ERROR_COND(dx11Shader.DepthStencilState == nullptr, "Failed to create ID3D11DepthStencilState for '{}' shader", shaderDesc.Name);
         }
         //- Create BlendState
         {
@@ -531,7 +531,7 @@ namespace Hesternal
 
             m_device->CreateBlendState1(&d3dBlendStateDesc, &dx11Shader.BlendState);
 
-            COP_LOG_ERROR_COND(dx11Shader.BlendState == nullptr, "Failed to create ID3D11BlendState1 for '{}' shader", shaderDesc.Name);
+            HS_LOG_ERROR_COND(dx11Shader.BlendState == nullptr, "Failed to create ID3D11BlendState1 for '{}' shader", shaderDesc.Name);
         }
 
         //- Create InputLayout
@@ -810,7 +810,7 @@ namespace Hesternal
     void DX11GraphicsDevice::DestroyGraphicsBuffer(GraphicsBufferHandle graphicsBufferHandle)
     {
         auto graphicsBufferMapNode = m_graphicsBuffers.extract(graphicsBufferHandle);
-        COP_ASSERT(graphicsBufferMapNode.empty() == false);
+        HS_ASSERT(graphicsBufferMapNode.empty() == false);
 
         graphicsBufferMapNode.mapped().Release();
     }
@@ -818,13 +818,13 @@ namespace Hesternal
     void DX11GraphicsDevice::DestroyRenderPass(RenderPassHandle renderPassHandle)
     {
         auto renderPassesMapNode = m_renderPasses.extract(renderPassHandle);
-        COP_ASSERT(renderPassesMapNode.empty() == false);
+        HS_ASSERT(renderPassesMapNode.empty() == false);
     }
 
     void DX11GraphicsDevice::DestroyRenderTexture(RenderTextureHandle renderTextureHandle)
     {
         auto renderTexturesMapNode = m_renderTextures.extract(renderTextureHandle);
-        COP_ASSERT(renderTexturesMapNode.empty() == false);
+        HS_ASSERT(renderTexturesMapNode.empty() == false);
 
         renderTexturesMapNode.mapped().Release();
     }
@@ -832,7 +832,7 @@ namespace Hesternal
     void DX11GraphicsDevice::DestroyShader(ShaderHandle shaderHandle)
     {
         auto shadersMapNode = m_shaders.extract(shaderHandle);
-        COP_ASSERT(shadersMapNode.empty() == false);
+        HS_ASSERT(shadersMapNode.empty() == false);
 
         shadersMapNode.mapped().Release();
     }
@@ -840,7 +840,7 @@ namespace Hesternal
     void DX11GraphicsDevice::DestroySwapchain(SwapchainHandle swapchainHandle)
     {
         auto swapchainsMapNode = m_swapchains.extract(swapchainHandle);
-        COP_ASSERT(swapchainsMapNode.empty() == false);
+        HS_ASSERT(swapchainsMapNode.empty() == false);
 
         swapchainsMapNode.mapped().Release(this);
     }
@@ -848,7 +848,7 @@ namespace Hesternal
     void DX11GraphicsDevice::DestroyTexture2D(TextureHandle textureHandle)
     {
         auto texturesMapNode = m_textures.extract(textureHandle);
-        COP_ASSERT(texturesMapNode.empty() == false);
+        HS_ASSERT(texturesMapNode.empty() == false);
 
         texturesMapNode.mapped().Release();
     }
@@ -860,10 +860,10 @@ namespace Hesternal
         IDXGIAdapter3* dxgiAdapter3;
         {
             uint32 dxgiFactoryFlags = 0;
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
             // NOTE(v.matushkin): Looks like I need to set this to use IDXGIInfoQueue?
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
             IDXGIAdapter1* dxgiAdapter;
 
@@ -873,11 +873,11 @@ namespace Hesternal
             dxgiAdapter->Release();
 
             //-- Get GPU description
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
             DXGI_ADAPTER_DESC2 dxgiAdapterDesc;
             dxgiAdapter3->GetDesc2(&dxgiAdapterDesc);
-            COP_LOG_INFO(L"DirectX11 Adapter: {}", dxgiAdapterDesc.Description);
-#endif // COP_ENABLE_LOGGING
+            HS_LOG_INFO(L"DirectX11 Adapter: {}", dxgiAdapterDesc.Description);
+#endif // HS_ENABLE_LOGGING
         }
 
         //- Create Device and DeviceContext
@@ -886,9 +886,9 @@ namespace Hesternal
             //  This flag adds support for surfaces with a color-channel ordering different
             //  from the API default. It is required for compatibility with Direct2D.
             uint32 d3dDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
             d3dDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
             D3D_FEATURE_LEVEL d3dFeatureLevels[] = { D3D_FEATURE_LEVEL_11_1 };
             D3D_FEATURE_LEVEL useless_feature_level_variable;
@@ -908,7 +908,7 @@ namespace Hesternal
                 &useless_feature_level_variable,
                 &d3dDeviceContext
             );
-            COP_ASSERT(useless_feature_level_variable == D3D_FEATURE_LEVEL_11_1);
+            HS_ASSERT(useless_feature_level_variable == D3D_FEATURE_LEVEL_11_1);
 
             d3dDevice->QueryInterface(&m_device);
             d3dDeviceContext->QueryInterface(&m_deviceContext);
@@ -921,7 +921,7 @@ namespace Hesternal
     }
 
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
 
     void DX11GraphicsDevice::_DebugLayer_Init()
     {
@@ -975,7 +975,7 @@ namespace Hesternal
         dxgiDevice->ReportLiveObjects(k_DxgiDebugGuid, static_cast<DXGI_DEBUG_RLO_FLAGS>(dxgiDebugRloFlags));
         dxgiDevice->Release();
 
-        COP_DX11_LOG_DEBUG_LAYER();
+        HS_DX11_LOG_DEBUG_LAYER();
     }
 
     void DX11GraphicsDevice::_DebugLayer_LogMessages()
@@ -1003,7 +1003,7 @@ namespace Hesternal
 
             // TODO(v.matushkin): <Debug/Log/Severity> May be LOG macro should depend on d3dMessage->Severity ?
             //  May be also log category and ID as strings
-            COP_LOG_DEBUG("DX11 DEBUG: {:.{}}", dxgiMessage->pDescription, dxgiMessage->DescriptionByteLength);
+            HS_LOG_DEBUG("DX11 DEBUG: {:.{}}", dxgiMessage->pDescription, dxgiMessage->DescriptionByteLength);
         }
 
         delete[] dxgiMessageMemory;
@@ -1011,6 +1011,6 @@ namespace Hesternal
         m_dxgiInfoQueue->ClearStoredMessages(k_DxgiDebugGuid);
     }
 
-#endif // COP_ENABLE_GRAPHICS_API_DEBUG
+#endif // HS_ENABLE_GRAPHICS_API_DEBUG
 
 } // namespace Hesternal

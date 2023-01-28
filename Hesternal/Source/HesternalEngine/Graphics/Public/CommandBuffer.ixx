@@ -20,12 +20,12 @@ import <utility>;
 
 
 // https://developercommunity.visualstudio.com/t/VS-2022-1750-Preview-2-C20-modules-b/10230159
-#define _COP_NODISCARD_BUG_FIXED false
+#define _HS_NODISCARD_BUG_FIXED false
 
-#if _COP_NODISCARD_BUG_FIXED
-    #define _COP_NODISCARD_BUG_WORKAROUND(unused_variable) do { } while ((void)0,0)
+#if _HS_NODISCARD_BUG_FIXED
+    #define _HS_NODISCARD_BUG_WORKAROUND(unused_variable) do { } while ((void)0,0)
 #else
-    #define _COP_NODISCARD_BUG_WORKAROUND(unused_variable) COP_UNUSED(unused_variable)
+    #define _HS_NODISCARD_BUG_WORKAROUND(unused_variable) HS_UNUSED(unused_variable)
 #endif
 
 
@@ -73,11 +73,11 @@ export namespace Hesternal
         [[nodiscard]] std::span<uint8> MapBuffer(const GraphicsBuffer& graphicsBuffer);
         void UnmapBuffer(const GraphicsBuffer& graphicsBuffer);
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         void BeginSample(std::string_view name);
         void EndSample();
 #else
-        void BeginSample([[maybe_unused]] std::string_view name) { _COP_NODISCARD_BUG_WORKAROUND(name); }
+        void BeginSample([[maybe_unused]] std::string_view name) { _HS_NODISCARD_BUG_WORKAROUND(name); }
         void EndSample() {}
 #endif
 
@@ -198,7 +198,7 @@ export namespace Hesternal
     }
 
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
     void CommandBuffer::BeginSample(std::string_view name)
     {
         m_commandBuffer->BeginSample(name);

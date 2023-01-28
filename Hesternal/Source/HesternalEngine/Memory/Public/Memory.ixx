@@ -22,8 +22,8 @@ export namespace Hesternal
     constexpr uint32 Memory::GetAlignedSize(uint32 unalignedSize, uint32 alignment) noexcept
     {
         // TODO(v.matushkin): <ICE/MixingHeadersAndHeaderUnits>
-        // COP_ASSERT(Math::IsPowerOfTwo(alignment));
-#if COP_ENABLE_ASSERTS
+        // HS_ASSERT(Math::IsPowerOfTwo(alignment));
+#if HS_ENABLE_ASSERTS
         if (Math::IsPowerOfTwo(alignment) == false)
         {
             std::abort();

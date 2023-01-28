@@ -21,7 +21,7 @@ export namespace Hesternal
     [[nodiscard]] DXGI_FORMAT dx_VertexAttributeFormat(VertexAttributeFormat format, uint8 dimension);
 
     /// For DirectX Clockwise - false, CounterClockwise - true
-    [[nodiscard]] COP_FORCE_INLINE constexpr bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace) noexcept
+    [[nodiscard]] HS_FORCE_INLINE constexpr bool dx_TriangleFrontFace(TriangleFrontFace triangleFrontFace) noexcept
     {
         return triangleFrontFace == TriangleFrontFace::CounterClockwise;
     }

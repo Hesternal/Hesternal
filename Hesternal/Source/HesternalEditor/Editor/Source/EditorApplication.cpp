@@ -66,7 +66,7 @@ namespace Hesternal
         m_editorInitialized = true;
         m_editorClosed = false;
 
-        COP_LOG_TRACE("EditorApplication Init");
+        HS_LOG_TRACE("EditorApplication Init");
 
         // const std::string createProjectOption = "create-project";
         const std::string openProjectOption = "open-project";
@@ -85,14 +85,14 @@ namespace Hesternal
         // [[maybe_unused]] const bool usedCreateProjectOption = cmdResult.count(createProjectOption);
         [[maybe_unused]] const bool usedOpenProjectOption = cmdResult.count(openProjectOption);
 
-        COP_ASSERT_MSG(usedOpenProjectOption, "Option --open-project should be specified");
-        COP_ASSERT_MSG(cmdResult.count(shaderDirOption), "Option --shader-dir should be specified");
+        HS_ASSERT_MSG(usedOpenProjectOption, "Option --open-project should be specified");
+        HS_ASSERT_MSG(cmdResult.count(shaderDirOption), "Option --shader-dir should be specified");
 
         // Order of checks matters
-        // COP_ASSERT(usedCreateProject || usedOpenProject,
+        // HS_ASSERT(usedCreateProject || usedOpenProject,
         //            "Either '-{:s}' or '-{:s}' should be specified", argumentCreateProject, argumentOpenProject
         // );
-        // COP_ASSERT(usedCreateProject != usedOpenProject,
+        // HS_ASSERT(usedCreateProject != usedOpenProject,
         //            "Both '-{:s}' and '-{:s}' shouldn't be used at the same time",argumentCreateProject, argumentOpenProject
         // );
 
@@ -119,7 +119,7 @@ namespace Hesternal
 
     void EditorApplication::OnEngine_SystemsInit()
     {
-        COP_LOG_TRACE("EditorApplication SystemsInit"); 
+        HS_LOG_TRACE("EditorApplication SystemsInit"); 
 
         {
             EditorSettings& editorSettings = EditorSettings::Get();
@@ -173,7 +173,7 @@ namespace Hesternal
 
         m_mainWindow.reset();
 
-        COP_LOG_TRACE("EditorApplication Shutdown");
+        HS_LOG_TRACE("EditorApplication Shutdown");
     }
 
     void EditorApplication::OnEngine_Update()
@@ -205,7 +205,7 @@ namespace Hesternal
     //     if (std::filesystem::is_directory(m_projectPath))
     //     {
     //         // TODO(v.matushkin): Error
-    //         COP_LOG_CRITICAL("CreateProject: specified project path was not a path to a folder");
+    //         HS_LOG_CRITICAL("CreateProject: specified project path was not a path to a folder");
     //     }
     // 
     //     if (std::filesystem::create_directory(m_projectPath) == false)
@@ -214,7 +214,7 @@ namespace Hesternal
     //         if (std::filesystem::is_empty(m_projectPath))
     //         {
     //             // TODO(v.matushkin): Error
-    //             COP_LOG_CRITICAL("CreateProject: specified project path was not an empty folder");
+    //             HS_LOG_CRITICAL("CreateProject: specified project path was not an empty folder");
     //         }
     //     }
     // 

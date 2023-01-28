@@ -37,7 +37,7 @@ namespace Hesternal
         }
         else
         {
-            COP_ASSERT_MSG(false, "Trying to move assign to self");
+            HS_ASSERT_MSG(false, "Trying to move assign to self");
         }
         return *this;
     }

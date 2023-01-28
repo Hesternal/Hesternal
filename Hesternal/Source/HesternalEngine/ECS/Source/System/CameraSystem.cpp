@@ -16,12 +16,12 @@ namespace Hesternal
 
     void CameraSystem::OnCreate(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void CameraSystem::OnDestroy(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void CameraSystem::OnUpdate(EntityManager& entityManager)

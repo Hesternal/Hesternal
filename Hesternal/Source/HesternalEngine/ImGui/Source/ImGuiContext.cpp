@@ -160,7 +160,7 @@ namespace Hesternal
 
         imguiPlatformIo.Renderer_CreateWindow = [](ImGuiViewport* imguiViewport)
         {
-            COP_LOG_TRACE("ImGui Renderer_CreateWindow");
+            HS_LOG_TRACE("ImGui Renderer_CreateWindow");
 
             SwapchainDesc swapchainDesc = {
                 .WindowNativeHandle = reinterpret_cast<uint64>(imguiViewport->PlatformHandle),
@@ -176,7 +176,7 @@ namespace Hesternal
 
         imguiPlatformIo.Renderer_DestroyWindow = [](ImGuiViewport* imguiViewport)
         {
-            COP_LOG_TRACE("ImGui Renderer_DestroyWindow");
+            HS_LOG_TRACE("ImGui Renderer_DestroyWindow");
 
             if (imguiViewport->RendererUserData != nullptr)
             {
@@ -186,13 +186,13 @@ namespace Hesternal
             }
             else
             {
-                COP_LOG_WARN("Renderer_DestroyWindow ImGuiViewport::RendererUserData was null");
+                HS_LOG_WARN("Renderer_DestroyWindow ImGuiViewport::RendererUserData was null");
             }
         };
 
         imguiPlatformIo.Renderer_SetWindowSize = [](ImGuiViewport* imguiViewport, ImVec2 size)
         {
-            COP_LOG_TRACE("ImGui Renderer_SetWindowSize");
+            HS_LOG_TRACE("ImGui Renderer_SetWindowSize");
 
             SwapchainHandle swapchainHandle = static_cast<SwapchainHandle>(reinterpret_cast<uint64>(imguiViewport->PlatformHandle));
             Graphics::GetGraphicsDevice()->ResizeSwapchain(swapchainHandle, static_cast<uint16>(size.x), static_cast<uint16>(size.y));
@@ -233,7 +233,7 @@ namespace Hesternal
 
             if (m_indexBuffer != nullptr)
             {
-                COP_LOG_WARN("Resizing ImGui vertex buffer from {:d} to {:d}", m_vertexBuffer->GetElementCount(), newElementCount);
+                HS_LOG_WARN("Resizing ImGui vertex buffer from {:d} to {:d}", m_vertexBuffer->GetElementCount(), newElementCount);
             }
 
             m_vertexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Vertex(newElementCount, k_VertexElementSize));
@@ -244,7 +244,7 @@ namespace Hesternal
 
             if (m_indexBuffer != nullptr)
             {
-                COP_LOG_WARN("Resizing ImGui index buffer from {:d} to {:d}", m_indexBuffer->GetElementCount(), newElementCount);
+                HS_LOG_WARN("Resizing ImGui index buffer from {:d} to {:d}", m_indexBuffer->GetElementCount(), newElementCount);
             }
 
             m_indexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Index(newElementCount, k_IndexFormat));
@@ -315,7 +315,7 @@ namespace Hesternal
 
                 if (imguiDrawCommand.UserCallback != nullptr)
                 {
-                    COP_LOG_WARN("Don't care about ImGui user callbacks");
+                    HS_LOG_WARN("Don't care about ImGui user callbacks");
                 }
                 else
                 {

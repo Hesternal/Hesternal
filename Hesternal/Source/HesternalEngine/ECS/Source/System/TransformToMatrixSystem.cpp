@@ -16,12 +16,12 @@ namespace Hesternal
 
     void TransformToMatrixSystem::OnCreate(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void TransformToMatrixSystem::OnDestroy(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void TransformToMatrixSystem::OnUpdate(EntityManager& entityManager)

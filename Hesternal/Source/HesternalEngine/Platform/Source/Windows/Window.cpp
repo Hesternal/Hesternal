@@ -6,11 +6,11 @@ module;
 #include <windowsx.h>
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module HesternalEngine.Platform.Window;
-COP_WARNING_POP
+HS_WARNING_POP
 
 import HesternalEngine.Event.EventManager;
 import HesternalEngine.Graphics;
@@ -79,7 +79,7 @@ namespace Hesternal
                 hInstance,
                 nullptr
             );
-            COP_ASSERT(hwnd != nullptr);
+            HS_ASSERT(hwnd != nullptr);
         }
 
         SwapchainDesc swapchainDesc = {
@@ -93,6 +93,7 @@ namespace Hesternal
 
         // m_platformData = std::make_unique<PlatformData>(platformData);
 
+        // TODO(v.matushkin): Is c++23 bit_cast for cases like this?
         m_windowHandle = static_cast<WindowHandle>(reinterpret_cast<uint64>(hwnd));
         EventManager::RegisterWindowCloseCallback(m_windowHandle, [this]() { OnWindowClose(); });
         EventManager::RegisterWindowResizeCallback(m_windowHandle, [this](const WindowResizeEvent& evt) { OnWindowResize(evt); });
@@ -113,7 +114,7 @@ namespace Hesternal
 
     void Window::OnWindowResize(const WindowResizeEvent& evt)
     {
-        COP_LOG_INFO("Resizing swapchain, width: {:d} | height: {:d}", evt.Width, evt.Height);
+        HS_LOG_INFO("Resizing swapchain, width: {:d} | height: {:d}", evt.Width, evt.Height);
         Graphics::GetGraphicsDevice()->ResizeSwapchain(m_swapchainHandle, evt.Width, evt.Height);
     }
 

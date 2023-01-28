@@ -1,6 +1,6 @@
 #include "Hesternal/Core/Debug.hpp"
 
-#if COP_ENABLE_LOGGING
+#if HS_ENABLE_LOGGING
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -26,4 +26,4 @@ namespace Hesternal
 
 } // namespace Hesternal
 
-#endif // COP_ENABLE_LOGGING
+#endif // HS_ENABLE_LOGGING

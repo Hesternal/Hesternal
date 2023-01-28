@@ -5,9 +5,9 @@ module;
 #include <d3d11_1.h>
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get 'import std;'
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 export module HesternalEngine.Graphics.DX11Conversion;
 
 import Hesternal.Core;
@@ -15,21 +15,21 @@ import Hesternal.Core;
 import HesternalEngine.Graphics.GraphicsTypes;
 
 import <utility>;
-COP_WARNING_POP
+HS_WARNING_POP
 
 
 // https://developercommunity.visualstudio.com/t/VS-2022-1750-Preview-2-C20-modules-b/10229203
-#define _COP_STATIC_ARRAY_BUG_FIXED false
+#define _HS_STATIC_ARRAY_BUG_FIXED false
 
 // NOTE(v.matushkin): I should mark this functions as `constexpr` anyway, but then I can't mark array as `static`
 //   and I don't know how static array works in constexpr function.
 
-#if _COP_STATIC_ARRAY_BUG_FIXED
-    #define _COP_STATIC_ARRAY static constinit
-    #define _COP_FUNCTION     inline
+#if _HS_STATIC_ARRAY_BUG_FIXED
+    #define _HS_STATIC_ARRAY static constinit
+    #define _HS_FUNCTION     inline
 #else
-    #define _COP_STATIC_ARRAY constexpr
-    #define _COP_FUNCTION     constexpr
+    #define _HS_STATIC_ARRAY constexpr
+    #define _HS_FUNCTION     constexpr
 #endif
 
 
@@ -37,9 +37,9 @@ export namespace Hesternal
 {
 
     //- GraphicsBuffer
-    [[nodiscard]] _COP_FUNCTION uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
+    [[nodiscard]] _HS_FUNCTION uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_BIND_FLAG d3dBindFlags[] = {
+        _HS_STATIC_ARRAY D3D11_BIND_FLAG d3dBindFlags[] = {
             D3D11_BIND_VERTEX_BUFFER,
             D3D11_BIND_INDEX_BUFFER,
             D3D11_BIND_CONSTANT_BUFFER,
@@ -56,9 +56,9 @@ export namespace Hesternal
 
     //- RenderTexture
     #define DX11_NO_DEPTH_STENCIL 0
-    [[nodiscard]] _COP_FUNCTION uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType) noexcept
+    [[nodiscard]] _HS_FUNCTION uint32 dx11_RenderTextureTypeToClearFlags(RenderTextureType renderTextureType) noexcept
     {
-        _COP_STATIC_ARRAY uint32 d3dClearFlags[] = {
+        _HS_STATIC_ARRAY uint32 d3dClearFlags[] = {
             DX11_NO_DEPTH_STENCIL,
             D3D11_CLEAR_DEPTH,
             // D3D11_CLEAR_STENCIL,
@@ -83,9 +83,9 @@ export namespace Hesternal
         return static_cast<D3D11_FILTER>(d3dSamplerFilter);
     }
 
-    [[nodiscard]] _COP_FUNCTION D3D11_TEXTURE_ADDRESS_MODE dx11_SamplerAddressMode(SamplerAddressMode samplerAddressMode) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_TEXTURE_ADDRESS_MODE dx11_SamplerAddressMode(SamplerAddressMode samplerAddressMode) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_TEXTURE_ADDRESS_MODE d3dSamplerAddressMode[] = {
+        _HS_STATIC_ARRAY D3D11_TEXTURE_ADDRESS_MODE d3dSamplerAddressMode[] = {
             D3D11_TEXTURE_ADDRESS_CLAMP,
             D3D11_TEXTURE_ADDRESS_BORDER,
             D3D11_TEXTURE_ADDRESS_MIRROR_ONCE,
@@ -99,9 +99,9 @@ export namespace Hesternal
     //- Shader states
 
     //-- RasterizerState
-    [[nodiscard]] _COP_FUNCTION D3D11_CULL_MODE dx11_CullMode(CullMode cullMode) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_CULL_MODE dx11_CullMode(CullMode cullMode) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_CULL_MODE d3dCullMode[] = {
+        _HS_STATIC_ARRAY D3D11_CULL_MODE d3dCullMode[] = {
             D3D11_CULL_NONE,
             D3D11_CULL_FRONT,
             D3D11_CULL_BACK,
@@ -110,9 +110,9 @@ export namespace Hesternal
         return d3dCullMode[std::to_underlying(cullMode)];
     }
 
-    [[nodiscard]] _COP_FUNCTION D3D11_FILL_MODE dx11_PolygonMode(PolygonMode polygonMode) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_FILL_MODE dx11_PolygonMode(PolygonMode polygonMode) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_FILL_MODE d3dPolygonMode[] = {
+        _HS_STATIC_ARRAY D3D11_FILL_MODE d3dPolygonMode[] = {
             D3D11_FILL_SOLID,
             D3D11_FILL_WIREFRAME,
         };
@@ -121,9 +121,9 @@ export namespace Hesternal
     }
 
     //-- DepthStencilState
-    [[nodiscard]] _COP_FUNCTION D3D11_COMPARISON_FUNC dx11_CompareFunction(CompareFunction compareFunction) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_COMPARISON_FUNC dx11_CompareFunction(CompareFunction compareFunction) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_COMPARISON_FUNC d3dCompareFunction[] = {
+        _HS_STATIC_ARRAY D3D11_COMPARISON_FUNC d3dCompareFunction[] = {
             D3D11_COMPARISON_NEVER,
             D3D11_COMPARISON_LESS,
             D3D11_COMPARISON_EQUAL,
@@ -138,9 +138,9 @@ export namespace Hesternal
     }
 
     //-- BlendState
-    [[nodiscard]] _COP_FUNCTION D3D11_BLEND_OP dx11_BlendOp(BlendOp blendOp) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_BLEND_OP dx11_BlendOp(BlendOp blendOp) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_BLEND_OP d3dBlendOp[] = {
+        _HS_STATIC_ARRAY D3D11_BLEND_OP d3dBlendOp[] = {
             D3D11_BLEND_OP_ADD,
             D3D11_BLEND_OP_SUBTRACT,
             D3D11_BLEND_OP_REV_SUBTRACT,
@@ -151,9 +151,9 @@ export namespace Hesternal
         return d3dBlendOp[std::to_underlying(blendOp)];
     }
 
-    [[nodiscard]] _COP_FUNCTION D3D11_BLEND dx11_BlendFactor(BlendFactor blendFactor) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_BLEND dx11_BlendFactor(BlendFactor blendFactor) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_BLEND d3dBlendFactor[] = {
+        _HS_STATIC_ARRAY D3D11_BLEND d3dBlendFactor[] = {
             D3D11_BLEND_ZERO,
             D3D11_BLEND_ONE,
             D3D11_BLEND_SRC_COLOR,
@@ -174,9 +174,9 @@ export namespace Hesternal
         return d3dBlendFactor[std::to_underlying(blendFactor)];
     }
 
-    [[nodiscard]] _COP_FUNCTION D3D11_LOGIC_OP dx11_BlendLogicOp(BlendLogicOp blendLogicOp) noexcept
+    [[nodiscard]] _HS_FUNCTION D3D11_LOGIC_OP dx11_BlendLogicOp(BlendLogicOp blendLogicOp) noexcept
     {
-        _COP_STATIC_ARRAY D3D11_LOGIC_OP d3dBlendLogicOp[] = {
+        _HS_STATIC_ARRAY D3D11_LOGIC_OP d3dBlendLogicOp[] = {
             D3D11_LOGIC_OP_CLEAR,
             D3D11_LOGIC_OP_SET,
             D3D11_LOGIC_OP_COPY,

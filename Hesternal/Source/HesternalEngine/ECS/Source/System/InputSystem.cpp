@@ -65,12 +65,12 @@ namespace Hesternal
 
     void InputSystem::OnCreate(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void InputSystem::OnDestroy(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void InputSystem::OnUpdate(EntityManager& entityManager)

@@ -16,12 +16,12 @@ namespace Hesternal
 
     void TransformHierarchySystem::OnCreate(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void TransformHierarchySystem::OnDestroy(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void TransformHierarchySystem::OnUpdate(EntityManager& entityManager)

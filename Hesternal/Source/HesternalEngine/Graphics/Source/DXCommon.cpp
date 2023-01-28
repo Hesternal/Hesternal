@@ -136,9 +136,9 @@ namespace Hesternal
             DXGI_FORMAT_R32G32B32A32_FLOAT,
         };
 
-        COP_ASSERT_MSG(dimension >= 1 && dimension <= 4, "Vertex attribute dimension must be in [1,4] range");
+        HS_ASSERT_MSG(dimension >= 1 && dimension <= 4, "Vertex attribute dimension must be in [1,4] range");
         const DXGI_FORMAT dxgiFormat = dxgiVertexFormat[std::to_underlying(format) * 4 + dimension - 1];
-        COP_ASSERT_MSG(dxgiFormat != DXGI_FORMAT_UNKNOWN, "Unsupported vertex format/dimension combination");
+        HS_ASSERT_MSG(dxgiFormat != DXGI_FORMAT_UNKNOWN, "Unsupported vertex format/dimension combination");
 
         return dxgiFormat;
     }

@@ -3,21 +3,21 @@ module;
 #include "Hesternal/Core/Debug.hpp"
 
 // NOTE(v.matushkin): Put stb in a normal conan package? not this fucking trash that I get rn
-// NOTE(v.matushkin): It's kinda dumb that stb error checking depends on 'COP_ENABLE_ASSERTS'
-#if COP_ENABLE_ASSERTS
-#define STBI_FAILURE_USERMSG
+// NOTE(v.matushkin): It's kinda dumb that stb error checking depends on 'HS_ENABLE_ASSERTS'
+#if HS_ENABLE_ASSERTS
+    #define STBI_FAILURE_USERMSG
 #else
-#define STBI_NO_FAILURE_STRINGS
+    #define STBI_NO_FAILURE_STRINGS
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #undef STB_IMAGE_IMPLEMENTATION
 
-#ifdef COP_ENABLE_ASSERTS
-#undef STBI_FAILURE_USERMSG
+#ifdef HS_ENABLE_ASSERTS
+    #undef STBI_FAILURE_USERMSG
 #else
-#undef STBI_NO_FAILURE_STRINGS
+    #undef STBI_NO_FAILURE_STRINGS
 #endif
 
 module HesternalEditor.Assets.TextureImporter;
@@ -37,11 +37,10 @@ import <vector>;
 
 namespace
 {
-
     using namespace Hesternal;
 
 
-    [[nodiscard]] static TextureFormat NumComponentsToTextureFormat(int32 numComponents)
+    [[nodiscard]] static constexpr TextureFormat NumComponentsToTextureFormat(int32 numComponents) noexcept
     {
         if (numComponents == 1)
         {
@@ -117,12 +116,12 @@ namespace
 
                     for (uint8 byte = 0; byte < bytesPerPixel; byte++)
                     {
-                        uint32 texel00 = previousMipDataPtr[previousMipRow0 + previousMipColumn0 + byte];
-                        uint32 texel01 = previousMipDataPtr[previousMipRow0 + previousMipColumn1 + byte];
-                        uint32 texel10 = previousMipDataPtr[previousMipRow1 + previousMipColumn0 + byte];
-                        uint32 texel11 = previousMipDataPtr[previousMipRow1 + previousMipColumn1 + byte];
+                        const uint32 texel00 = previousMipDataPtr[previousMipRow0 + previousMipColumn0 + byte];
+                        const uint32 texel01 = previousMipDataPtr[previousMipRow0 + previousMipColumn1 + byte];
+                        const uint32 texel10 = previousMipDataPtr[previousMipRow1 + previousMipColumn0 + byte];
+                        const uint32 texel11 = previousMipDataPtr[previousMipRow1 + previousMipColumn1 + byte];
 
-                        uint8 result = static_cast<uint8>((texel00 + texel10 + texel01 + texel11) / 4);
+                        const uint8 result = static_cast<uint8>((texel00 + texel10 + texel01 + texel11) / 4);
 
                         textureDataPtr[y * currentMipWidth * bytesPerPixel + x * bytesPerPixel + byte] = result;
                     }
@@ -157,12 +156,12 @@ namespace Hesternal
 
         uint32 widthUnsigned = static_cast<uint32>(width);
         uint32 heightUnsigned = static_cast<uint32>(height);
-        COP_ASSERT_MSG(std::has_single_bit(widthUnsigned) && std::has_single_bit(heightUnsigned), "One of the texture dimensions is not a power of 2");
+        HS_ASSERT_MSG(std::has_single_bit(widthUnsigned) && std::has_single_bit(heightUnsigned), "One of the texture dimensions is not a power of 2");
 
         const int32 desiredComponents = numComponents == 3 ? 4 : numComponents;
 
         uint8* stbImageData = stbi_load(texturePath.c_str(), &width, &height, &numComponents, desiredComponents);
-        COP_ASSERT_MSG(stbImageData != nullptr, stbi_failure_reason());
+        HS_ASSERT_MSG(stbImageData != nullptr, stbi_failure_reason());
 
         TextureDesc textureDesc;
         textureDesc.Name   = texturePath, // TODO(v.matushkin): Name, not path

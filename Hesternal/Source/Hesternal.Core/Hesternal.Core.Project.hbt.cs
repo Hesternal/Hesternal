@@ -24,25 +24,25 @@ internal sealed class HesternalCore : HesternalCppProject
                 "UNICODE",
                 "_UNICODE",
                 "_CRT_SECURE_NO_WARNINGS",
-                "COP_PLATFORM_WINDOWS",
+                "HS_PLATFORM_WINDOWS",
             });
         }
 
         if (configuration.Compiler == BuildCompiler.Msvc)
         {
-            configuration.PublicDefines.Add("COP_COMPILER_MSVC");
+            configuration.PublicDefines.Add("HS_COMPILER_MSVC");
         }
 
         switch (configuration.Configuration)
         {
             case BuildConfiguration.Debug:
-                configuration.PublicDefines.Add("COP_CONFIGURATION_DEBUG");
+                configuration.PublicDefines.Add("HS_CONFIGURATION_DEBUG");
                 break;
             case BuildConfiguration.Development:
-                configuration.PublicDefines.Add("COP_CONFIGURATION_DEVELOPMENT");
+                configuration.PublicDefines.Add("HS_CONFIGURATION_DEVELOPMENT");
                 break;
             case BuildConfiguration.Release:
-                configuration.PublicDefines.Add("COP_CONFIGURATION_RELEASE");
+                configuration.PublicDefines.Add("HS_CONFIGURATION_RELEASE");
                 break;
         }
 

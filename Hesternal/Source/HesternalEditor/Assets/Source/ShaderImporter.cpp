@@ -41,7 +41,7 @@ namespace Hesternal
         }
         catch ([[maybe_unused]] const ParserError& e)
         {
-            COP_LOG_CRITICAL(e.Message);
+            HS_LOG_CRITICAL(e.Message);
             throw;
         }
     }

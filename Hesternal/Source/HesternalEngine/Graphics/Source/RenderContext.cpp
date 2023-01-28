@@ -60,7 +60,7 @@ namespace Hesternal
         {
             const uint32 entitiesCount = static_cast<uint32>(m_renderData.Entities.size());
 
-            COP_ASSERT(entitiesCount <= k_PerDrawElements);
+            HS_ASSERT(entitiesCount <= k_PerDrawElements);
 
             PerDraw perDraw;
             const uint32 perDrawElementSizeInBytes = m_perDrawBuffers.GetElementSize();

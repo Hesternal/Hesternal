@@ -19,18 +19,18 @@ namespace Hesternal
 
     void GraphicsSystem::OnCreate(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void GraphicsSystem::OnDestroy(EntityManager& entityManager)
     {
-        COP_UNUSED(entityManager);
+        HS_UNUSED(entityManager);
     }
 
     void GraphicsSystem::OnUpdate(EntityManager& entityManager)
     {
         const auto cameraView = entityManager.GetView<const Camera>();
-        COP_ASSERT_MSG(cameraView.size() == 1, "The scene must have exactly 1 camera");
+        HS_ASSERT_MSG(cameraView.size() == 1, "The scene must have exactly 1 camera");
         const auto [cameraEntity, camera] = *cameraView.each().begin();
 
         const auto renderMeshView = entityManager.GetView<const LocalToWorld, const RenderMesh>();

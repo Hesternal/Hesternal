@@ -5,7 +5,7 @@ module;
 module HesternalEngine.Engine.EngineSettings;
 
 
-#if _COP_STATIC_VARIABLE_BUG_FIXED == false
+#if _HS_STATIC_VARIABLE_BUG_FIXED == false
 namespace Hesternal
 {
 

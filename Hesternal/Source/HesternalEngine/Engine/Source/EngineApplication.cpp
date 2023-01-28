@@ -44,7 +44,7 @@ namespace Hesternal
         m_engineInitialized = true;
         m_engineClosed = false;
 
-        COP_LOG_TRACE("EngineApplication Init");
+        HS_LOG_TRACE("EngineApplication Init");
 
         //- Derived App Init
         OnEngine_Init(argc, argv);
@@ -67,7 +67,7 @@ namespace Hesternal
         OnEngine_Shutdown();
         _SystemsShutdown();
 
-        COP_LOG_TRACE("EngineApplication Shutdown");
+        HS_LOG_TRACE("EngineApplication Shutdown");
     }
 
     void EngineApplication::OnApplication_Update()

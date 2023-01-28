@@ -5,9 +5,9 @@ module;
 #include <Windows.h>
 #include <windowsx.h>
 
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
 module HesternalEngine.Core.Application;
 
@@ -60,7 +60,7 @@ namespace
                     .Pressed = uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN,
                 };
                 EventManager::SendKeyboardEvent(event);
-COP_WARNING_POP // NOTE(v.matushkin): Realy ?
+HS_WARNING_POP // NOTE(v.matushkin): Realy ?
 
                 // return 0;
 
@@ -143,7 +143,7 @@ COP_WARNING_POP // NOTE(v.matushkin): Realy ?
                 }
 
                 // WINDOWPOS* windowPos = reinterpret_cast<WINDOWPOS*>(lParam);
-                // COP_LOG_INFO("WM_WINDOWPOSCHANGED: windowPos({}, {}) | clientRect({}, {})", windowPos->cx, windowPos->cy, newWidth, newHeight);
+                // HS_LOG_INFO("WM_WINDOWPOSCHANGED: windowPos({}, {}) | clientRect({}, {})", windowPos->cx, windowPos->cy, newWidth, newHeight);
 
                 // WindowDesc& windowDesc = s_Window->m_desc;
                 // // windowDesc.Width  = static_cast<uint16>(windowPos->cx);
@@ -204,7 +204,7 @@ namespace Hesternal
             .hIconSm       = nullptr,
         };
         [[maybe_unused]] const ATOM classUniqueId = RegisterClassExW(&wndClassEx);
-        COP_ASSERT(classUniqueId != 0);
+        HS_ASSERT(classUniqueId != 0);
     }
 
     void Application::PumpMessages()

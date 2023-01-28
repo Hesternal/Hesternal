@@ -22,8 +22,8 @@ namespace Hesternal
         const GraphicsBufferHandle dstGraphicsBufferHandle = dstGraphicsBuffer.GetHandle();
 
         // TODO(v.matushkin): There is more conditions that I should check
-        COP_ASSERT(srcGraphicsBufferHandle != dstGraphicsBufferHandle);
-        COP_ASSERT(srcGraphicsBuffer.GetBufferSize() == dstGraphicsBuffer.GetBufferSize());
+        HS_ASSERT(srcGraphicsBufferHandle != dstGraphicsBufferHandle);
+        HS_ASSERT(srcGraphicsBuffer.GetBufferSize() == dstGraphicsBuffer.GetBufferSize());
 
         m_commandBuffer->CopyBuffer(srcGraphicsBufferHandle, dstGraphicsBufferHandle);
     }

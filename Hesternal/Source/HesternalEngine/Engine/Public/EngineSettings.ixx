@@ -15,7 +15,7 @@ export namespace Hesternal
     enum class GraphicsApi : uint8
     {
 // NOTE(v.matushkin): HesternalHeaderTool can't handle prerpocessor yet
-// #if COP_PLATFORM_WINDOWS
+// #if HS_PLATFORM_WINDOWS
         DirectX11,
 // #endif
     };
@@ -31,7 +31,7 @@ export namespace Hesternal
 
 
         [[nodiscard]] static EngineSettings& Get() noexcept
-#if _COP_STATIC_VARIABLE_BUG_FIXED == false
+#if _HS_STATIC_VARIABLE_BUG_FIXED == false
             ;
 #else
         {

@@ -5,11 +5,11 @@ module;
 // warning C4996: 'std::aligned_storage_t': warning STL4034: std::aligned_storage and std::aligned_storage_t are deprecated in C++23.
 //  Prefer alignas(T) std::byte t_buff[sizeof(T)].
 //  You can define _SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING or _SILENCE_ALL_CXX23_DEPRECATION_WARNINGS to acknowledge that you have received this warning.
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4996)
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4996)
 #include <entt/entity/registry.hpp>
 #include <entt/entity/view.hpp>
-COP_WARNING_POP
+HS_WARNING_POP
 
 export module Hesternal.ECS:EntityManager;
 

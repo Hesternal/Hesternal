@@ -33,7 +33,7 @@ namespace Hesternal
 
         //- App Init
         Debug::Init();
-        COP_LOG_TRACE("Application Init");
+        HS_LOG_TRACE("Application Init");
 
         PlatformInit();
 
@@ -54,7 +54,7 @@ namespace Hesternal
         //- Derived App Shutdown
         OnApplication_Shutdown();
 
-        COP_LOG_TRACE("Application Shutdown");
+        HS_LOG_TRACE("Application Shutdown");
     }
 
 

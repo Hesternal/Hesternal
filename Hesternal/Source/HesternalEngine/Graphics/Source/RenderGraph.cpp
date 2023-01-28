@@ -78,7 +78,7 @@ namespace Hesternal
         const RenderGraphTextureID renderTextureID = _GetRenderTextureID(renderTextureName);
 
         RenderGraphTextureInfo& textureInfo = m_renderTexturesInfo[std::to_underlying(renderTextureID)];
-        COP_ASSERT_MSG(textureInfo.CreatePass == RenderGraphPassID::Invalid, "Trying to create RenderTexture with the same name twice");
+        HS_ASSERT_MSG(textureInfo.CreatePass == RenderGraphPassID::Invalid, "Trying to create RenderTexture with the same name twice");
         textureInfo.CreatePass = m_scheduleCurrentPass;
 
         RenderGraphPassInfo& passInfo = m_renderPassesInfo[std::to_underlying(m_scheduleCurrentPass)];
@@ -92,11 +92,11 @@ namespace Hesternal
         const RenderGraphTextureID renderTextureID = _GetRenderTextureID(renderTextureName);
 
         RenderGraphTextureInfo& textureInfo = m_renderTexturesInfo[std::to_underlying(renderTextureID)];
-        COP_ASSERT_MSG(textureInfo.ReadPass == RenderGraphPassID::Invalid, "Only one RenderTexture read access is supported");
+        HS_ASSERT_MSG(textureInfo.ReadPass == RenderGraphPassID::Invalid, "Only one RenderTexture read access is supported");
         textureInfo.ReadPass = m_scheduleCurrentPass;
 
         RenderGraphPassInfo& passInfo = m_renderPassesInfo[std::to_underlying(m_scheduleCurrentPass)];
-        COP_ASSERT_MSG(passInfo.ReadTexture == RenderGraphTextureID::Invalid, "RenderPass can read only one RenderTexture");
+        HS_ASSERT_MSG(passInfo.ReadTexture == RenderGraphTextureID::Invalid, "RenderPass can read only one RenderTexture");
         passInfo.ReadTexture = renderTextureID;
 
         return renderTextureID;

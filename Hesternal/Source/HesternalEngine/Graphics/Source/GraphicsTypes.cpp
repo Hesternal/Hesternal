@@ -129,7 +129,7 @@ namespace Hesternal
         else
         {
             AnisoLevel = 0;
-            COP_LOG_WARN("No reason to set anisoLevel < 2 ? Setting filter to Trilinear");
+            HS_LOG_WARN("No reason to set anisoLevel < 2 ? Setting filter to Trilinear");
         }
     }
 

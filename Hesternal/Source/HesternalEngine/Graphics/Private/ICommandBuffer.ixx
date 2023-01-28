@@ -57,7 +57,7 @@ export namespace Hesternal
         [[nodiscard]] virtual void* MapBuffer(GraphicsBufferHandle graphicsBufferHandle) = 0;
         virtual void UnmapBuffer(GraphicsBufferHandle graphicsBufferHandle) = 0;
 
-#if COP_ENABLE_GRAPHICS_API_DEBUG
+#if HS_ENABLE_GRAPHICS_API_DEBUG
         virtual void BeginSample(std::string_view name) = 0;
         virtual void EndSample() = 0;
 #endif

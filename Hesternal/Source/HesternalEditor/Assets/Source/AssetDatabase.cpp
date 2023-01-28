@@ -36,7 +36,7 @@ namespace Hesternal
         //         fs::path assetPath = dirEntry.path();
         //         std::string assetPathStr = assetPath.string();
         //         std::string assetExtension = assetPath.extension().string();
-        //         COP_LOG_INFO(assetPathStr);
+        //         HS_LOG_INFO(assetPathStr);
         // 
         //         Guid assetGuid = Guid::Generate();
         // 

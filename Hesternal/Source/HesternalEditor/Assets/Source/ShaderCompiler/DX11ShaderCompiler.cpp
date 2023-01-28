@@ -6,11 +6,11 @@ module;
 #include <d3dcompiler.h>
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
-COP_WARNING_PUSH
-COP_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
-COP_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
+HS_WARNING_PUSH
+HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
+HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module HesternalEditor.Assets.DX11ShaderCompiler;
-COP_WARNING_POP
+HS_WARNING_POP
 
 import Hesternal.Core;
 
@@ -56,8 +56,8 @@ namespace
         {
             // TODO(v.matushkin): For D3DX11CompileFromFile, errorBlob == nullptr means shader file wasn't found,
             //  so with D3DCompile this cannot happen?
-            COP_ASSERT_MSG(d3dShaderProgramErrorBlob != nullptr, "Could this ever happen?");
-            COP_LOG_ERROR("Shader program compilation error:\n{}", (char*)d3dShaderProgramErrorBlob->GetBufferPointer());
+            HS_ASSERT_MSG(d3dShaderProgramErrorBlob != nullptr, "Could this ever happen?");
+            HS_LOG_ERROR("Shader program compilation error:\n{}", (char*)d3dShaderProgramErrorBlob->GetBufferPointer());
             d3dShaderProgramErrorBlob->Release();
         }
 
