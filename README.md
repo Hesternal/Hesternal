@@ -27,3 +27,14 @@ Commands:
 conan-init.ps1
 generate-vs.ps1
 ```
+
+## Run
+
+```
+HesternalEditor.exe --open-project=<PROJECT_DIR> --shader-dir=<SHADER_DIR>"
+```
+
+- `PROJECT_DIR` path to the project dir with the [Sponza model](https://github.com/jimmiebergmann/Sponza) in it.  
+  Since there is no "project" concept right now and no asset/project browser, the path to the `sponza.obj` is hardcoded like this  
+  `<PROJECT_DIR>\Assets\Sponza\sponza.obj`
+- `<SHADER_DIR>` path to `Hesternal\Shaders` dir, eg. `D:\dev\Hesternal\Hesternal\Shaders\`
