@@ -51,6 +51,10 @@ public abstract class Solution
     public CppProject TypeToProject(Type type) => m_cppProjects[type];
 
 
+    // TODO(v.matushkin): <SolutionPostConfigureHack>
+    public virtual void OnPostSolutionConfigure() { }
+
+
     protected void AddProject<TProject>(TProject project)
         where TProject : CppProject
     {

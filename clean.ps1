@@ -27,7 +27,7 @@ $BuildFolder_Project      = "$BuildFolder\project"
 $BuildFolder_Project_VS   = "$BuildFolder_Project\vs"
 
 [string[]] $CppOnlyExcludeList = "dotnet"
-[string[]] $KeepVSFilesExcludeList = "Hesternal.Cpp.HeaderTool.props", "Hesternal.Cpp.HeaderTool.targets", "HesternalEditor.vcxproj.user"
+[string[]] $KeepVSFilesExcludeList = "HesternalEditor.vcxproj.user"
 
 RemoveItemsExclude $BuildFolder_Project_VS $KeepVSFilesExcludeList
 

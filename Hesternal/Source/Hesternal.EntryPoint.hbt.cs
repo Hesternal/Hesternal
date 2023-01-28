@@ -40,12 +40,21 @@ internal static class Globals
         public readonly DirectoryItem ConfigDir;
         public readonly DirectoryItem SourceDir;
 
+        // TODO(v.matushkin): <SolutionPostConfigureHack>
+        public readonly FileItem HeaderToolPropsFile;
+        public readonly FileItem HeaderToolTargetFile;
+
         public HesternalDirs(DirectoryItem rootDir)
         {
             m_hesternalDir = rootDir.MakeSubDirItem("Hesternal");
 
             ConfigDir = m_hesternalDir.MakeSubDirItem("Config");
             SourceDir = m_hesternalDir.MakeSubDirItem("Source");
+
+            // TODO(v.matushkin): <SolutionPostConfigureHack>
+            DirectoryItem HeaderToolMSBuildDir = SourceDir.MakeSubDirItem("Tools", "Hesternal.HeaderTool.MSBuild");
+            HeaderToolPropsFile = HeaderToolMSBuildDir.MakeSubFileItem("Hesternal.Cpp.HeaderTool.props");
+            HeaderToolTargetFile = HeaderToolMSBuildDir.MakeSubFileItem("Hesternal.Cpp.HeaderTool.targets");
         }
     }
 

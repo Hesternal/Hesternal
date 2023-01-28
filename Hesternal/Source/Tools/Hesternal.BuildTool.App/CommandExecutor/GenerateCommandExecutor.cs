@@ -38,6 +38,7 @@ internal sealed class GenerateCommandExecutor : ICommandExecutor
         Log.Logger.LogInformation("Generating solution ...");
 
         VsSolutionGenerator.Generate(solution);
+        solution.OnPostSolutionConfigure(); // TODO(v.matushkin): <SolutionPostConfigureHack>
 
         executionTimer.Stop();
         Log.Logger.LogInformation("Done.");
