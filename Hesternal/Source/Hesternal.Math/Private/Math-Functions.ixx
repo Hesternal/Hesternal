@@ -19,7 +19,7 @@ export namespace Hesternal::Math
     [[nodiscard]] HS_FORCE_INLINE constexpr float32 Rcp(float32 x) noexcept { return 1.0f / x; }
 
 
-    // TODO(v.matushkin): std::abs is constexpr since c++23, but MSVC has not imlpemented it yet
+    // TODO(v.matushkin): std::abs is constexpr since c++23, but MSVC has not implemented it yet
     [[nodiscard]] HS_FORCE_INLINE int32   Abs(int32 x)   noexcept { return std::abs(x); }
     [[nodiscard]] HS_FORCE_INLINE int64   Abs(int64 x)   noexcept { return std::abs(x); }
     [[nodiscard]] HS_FORCE_INLINE float32 Abs(float32 x) noexcept { return std::abs(x); }
@@ -44,23 +44,33 @@ export namespace Hesternal::Math
         return Abs(x) <= epsilon;
     }
 
-    [[nodiscard]] HS_FORCE_INLINE constexpr int8   Max(int8 a, int8 b)     noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int16  Max(int16 a, int16 b)   noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int32  Max(int32 a, int32 b)   noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int64  Max(int64 a, int64 b)   noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint8  Max(uint8 a, uint8 b)   noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint16 Max(uint16 a, uint16 b) noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint32 Max(uint32 a, uint32 b) noexcept { return std::max(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint64 Max(uint64 a, uint64 b) noexcept { return std::max(a, b); }
+    // NOTE(v.matushkin): Probably should use templates, even though I'm gonna instantiate it for every ArithmeticType anyway
 
-    [[nodiscard]] HS_FORCE_INLINE constexpr int8   Min(int8 a, int8 b)     noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int16  Min(int16 a, int16 b)   noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int32  Min(int32 a, int32 b)   noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr int64  Min(int64 a, int64 b)   noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint8  Min(uint8 a, uint8 b)   noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint16 Min(uint16 a, uint16 b) noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint32 Min(uint32 a, uint32 b) noexcept { return std::min(a, b); }
-    [[nodiscard]] HS_FORCE_INLINE constexpr uint64 Min(uint64 a, uint64 b) noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int8    Max(int8 a,    int8 b)    noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int16   Max(int16 a,   int16 b)   noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int32   Max(int32 a,   int32 b)   noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int64   Max(int64 a,   int64 b)   noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint8   Max(uint8 a,   uint8 b)   noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint16  Max(uint16 a,  uint16 b)  noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint32  Max(uint32 a,  uint32 b)  noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint64  Max(uint64 a,  uint64 b)  noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr float32 Max(float32 a, float32 b) noexcept { return std::max(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr float64 Max(float64 a, float64 b) noexcept { return std::max(a, b); }
+
+    [[nodiscard]] HS_FORCE_INLINE constexpr int8    Min(int8 a,    int8 b)    noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int16   Min(int16 a,   int16 b)   noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int32   Min(int32 a,   int32 b)   noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr int64   Min(int64 a,   int64 b)   noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint8   Min(uint8 a,   uint8 b)   noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint16  Min(uint16 a,  uint16 b)  noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint32  Min(uint32 a,  uint32 b)  noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr uint64  Min(uint64 a,  uint64 b)  noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr float32 Min(float32 a, float32 b) noexcept { return std::min(a, b); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr float64 Min(float64 a, float64 b) noexcept { return std::min(a, b); }
+
+    // NOTE(v.matushkin): Why is std::clamp not noexcept ?
+    [[nodiscard]] HS_FORCE_INLINE constexpr float32 Clamp(float32 value, float32 min, float32 max) { return std::clamp(value, min, max); }
+    [[nodiscard]] HS_FORCE_INLINE constexpr float64 Clamp(float64 value, float64 min, float64 max) { return std::clamp(value, min, max); }
 
     [[nodiscard]] HS_FORCE_INLINE float32 Sqrt(float32 x) noexcept { return std::sqrt(x); }
     [[nodiscard]] HS_FORCE_INLINE float64 Sqrt(float64 x) noexcept { return std::sqrt(x); }
