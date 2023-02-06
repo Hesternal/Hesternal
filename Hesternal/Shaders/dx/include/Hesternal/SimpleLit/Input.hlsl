@@ -22,6 +22,7 @@ struct InputData
 {
     float3 PositionWS;
     float3 NormalWS;
+    float3 ViewDirWS;
     float2 UV0;
 };
 
@@ -32,6 +33,7 @@ InputData InitInputData(Varyings varyings)
 
     inputData.PositionWS = varyings.positionWS;
     inputData.NormalWS   = normalize(varyings.normalWS);
+    inputData.ViewDirWS  = GetViewDirWS(varyings.positionWS);
     inputData.UV0        = varyings.uv0;
 
     return inputData;

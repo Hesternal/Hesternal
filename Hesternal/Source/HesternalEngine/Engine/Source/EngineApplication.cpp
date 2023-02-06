@@ -99,9 +99,13 @@ namespace Hesternal
         Graphics::Init();
         WorldManager::Init();
 
-        // TODO(v.matushkin): Camera initialization shouldn't be here
+        World* const defaultWorld = WorldManager::GetDefaultWorld();
+        EntityManager& entityManager = defaultWorld->GetEntityManager();
+
+        // TODO(v.matushkin): Camera and Light initialization shouldn't be here
+        //- Camera
         {
-            EngineSettings& engineSettings = EngineSettings::Get();
+            const EngineSettings& engineSettings = EngineSettings::Get();
 
             constexpr float32 verticalFov = Math::ToRadians(90.0f);
             constexpr float32 near = 0.01f;
@@ -109,22 +113,65 @@ namespace Hesternal
             const float32 aspect = float32(engineSettings.RenderWidth) / engineSettings.RenderHeight;
             const Float4x4 cameraProjection = Math::Perspective(verticalFov, aspect, near, far);
 
-            World* const defaultWorld = WorldManager::GetDefaultWorld();
-            EntityManager& entityManager = defaultWorld->GetEntityManager();
-
             Entity cameraEntity = entityManager.CreateEntity();
             entityManager.AddComponent<Transform>(cameraEntity, Transform::Identity());
             entityManager.AddComponent<LocalToWorld>(cameraEntity, LocalToWorld{ .Value = Float4x4::Identity() });
             entityManager.AddComponent<Controller>(cameraEntity, Controller{
-                .CameraSpeed           = 2.0f,
-                .CameraBoost           = 5.0f,
-                .PreviousMousePosition = Int2::Zero(),
-                .Yaw                   = 0.0f,
-                .Pitch                 = 0.0f,
-            });
+                    .CameraSpeed           = 2.0f,
+                    .CameraBoost           = 5.0f,
+                    .PreviousMousePosition = Int2::Zero(),
+                    .Yaw                   = 0.0f,
+                    .Pitch                 = 0.0f,
+                });
             entityManager.AddComponent<Camera>(cameraEntity, Camera{ .Projection = cameraProjection });
 
             defaultWorld->GetDefaultScene()->AddEntity(cameraEntity);
+        }
+        //- Directional Light
+        {
+            Entity directionalLightEntity = entityManager.CreateEntity();
+            entityManager.AddComponent<Transform>(directionalLightEntity, Transform::Identity());
+            entityManager.AddComponent<DirectionalLight>(directionalLightEntity, DirectionalLight{ .Color = Color::Gray()});
+
+            defaultWorld->GetDefaultScene()->AddEntity(directionalLightEntity);
+        }
+        //- Point Light 1
+        {
+            Entity pointLightEntity = entityManager.CreateEntity();
+            entityManager.AddComponent<Transform>(pointLightEntity, Transform::FromPosition(Float3(-8.0f, 1.0f, 0.0f)));
+            entityManager.AddComponent<PointLight>(pointLightEntity, PointLight{
+                    .Color     = Color(0.0f, 0.3f, 0.6f),
+                    .Intensity = 2.0f,
+                    .Range     = 10.f,
+                });
+
+            defaultWorld->GetDefaultScene()->AddEntity(pointLightEntity);
+        }
+        //- Point Light 2
+        {
+            Entity pointLightEntity = entityManager.CreateEntity();
+            entityManager.AddComponent<Transform>(pointLightEntity, Transform::FromPosition(Float3(8.0f, 1.0f, 0.0f)));
+            entityManager.AddComponent<PointLight>(pointLightEntity, PointLight{
+                    .Color     = Color::Purple(),
+                    .Intensity = 2.0f,
+                    .Range     = 10.f,
+                });
+
+            defaultWorld->GetDefaultScene()->AddEntity(pointLightEntity);
+        }
+        //- Spot Light
+        {
+            Entity spotLightEntity = entityManager.CreateEntity();
+            entityManager.AddComponent<Transform>(spotLightEntity, Transform::FromPosition(Float3(0.0f, 0.05f, 0.0f)));
+            entityManager.AddComponent<SpotLight>(spotLightEntity, SpotLight{
+                    .Color            = Color(0.7f, 0.0f, 0.0f),
+                    .Intensity        = 2.0f,
+                    .Range            = 10.0f,
+                    .SpotAngle        = 90.0f,
+                    .InnerSpotPercent = 50.0f,
+                });
+
+            defaultWorld->GetDefaultScene()->AddEntity(spotLightEntity);
         }
     }
 

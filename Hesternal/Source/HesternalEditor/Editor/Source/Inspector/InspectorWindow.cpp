@@ -35,37 +35,52 @@ namespace Hesternal
         {
             EntityManager& entityManager = WorldManager::GetDefaultWorld()->GetEntityManager();
 
-            if (Transform* transform = entityManager.TryGetComponent<Transform>(entity); transform != nullptr)
+            if (Transform* const transform = entityManager.TryGetComponent<Transform>(entity))
             {
-                TransformGui(transform ).Draw();
+                TransformGui(transform).Draw();
             }
 
-            if (LocalToWorld* localToWorld = entityManager.TryGetComponent<LocalToWorld>(entity); localToWorld != nullptr)
+            if (LocalToWorld* const localToWorld = entityManager.TryGetComponent<LocalToWorld>(entity))
             {
                 LocalToWorldGui(localToWorld).Draw();
             }
 
-            if (Parent* parent = entityManager.TryGetComponent<Parent>(entity); parent != nullptr)
+            if (Parent* const parent = entityManager.TryGetComponent<Parent>(entity))
             {
                 ParentGui(parent).Draw();
             }
 
-            if (Child* child = entityManager.TryGetComponent<Child>(entity); child != nullptr)
+            if (Child* const child = entityManager.TryGetComponent<Child>(entity))
             {
                 ChildGui(child).Draw();
             }
 
-            if (Camera* camera = entityManager.TryGetComponent<Camera>(entity); camera != nullptr)
+            if (DirectionalLight* const directionalLight = entityManager.TryGetComponent<DirectionalLight>(entity))
+            {
+                DirectionalLightGui(directionalLight).Draw();
+            }
+
+            if (PointLight* const pointLight = entityManager.TryGetComponent<PointLight>(entity))
+            {
+                PointLightGui(pointLight).Draw();
+            }
+
+            if (SpotLight* const spotLight = entityManager.TryGetComponent<SpotLight>(entity))
+            {
+                SpotLightGui(spotLight).Draw();
+            }
+
+            if (Camera* const camera = entityManager.TryGetComponent<Camera>(entity))
             {
                 CameraGui(camera).Draw();
             }
 
-            if (Controller* controller = entityManager.TryGetComponent<Controller>(entity); controller != nullptr)
+            if (Controller* const controller = entityManager.TryGetComponent<Controller>(entity))
             {
                 ControllerGui(controller).Draw();
             }
 
-            if (RenderMesh* renderMesh = entityManager.TryGetComponent<RenderMesh>(entity); renderMesh != nullptr)
+            if (RenderMesh* const renderMesh = entityManager.TryGetComponent<RenderMesh>(entity))
             {
                 RenderMeshGui(renderMesh).Draw();
             }

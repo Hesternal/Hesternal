@@ -157,16 +157,16 @@ namespace
 namespace Hesternal
 {
 
-    void DX11ShaderCompiler::Compile(const std::filesystem::path* includeDir, const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& outShaderDesc)
+    void DX11ShaderCompiler::Compile(const std::filesystem::path* includeDir, const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& shaderDesc)
     {
         // HS_LOG_TRACE("DX11ShaderCompiler::Compile for {:s}", parsedShaderDesc.Name);
 
         IncludeHandler includeHandler(includeDir);
 
         // HS_LOG_TRACE("  Compiling Vertex");
-        outShaderDesc.VertexBlob = dx11_Compile(&includeHandler, parsedShaderDesc.VertexSource, parsedShaderDesc.Name.data(), k_VertexShaderTarget);
+        shaderDesc.VertexBlob = dx11_Compile(&includeHandler, parsedShaderDesc.VertexSource, parsedShaderDesc.Name.data(), k_VertexShaderTarget);
         // HS_LOG_TRACE("  Compiling Pixel");
-        outShaderDesc.FragmentBlob = dx11_Compile(&includeHandler, parsedShaderDesc.FragmentSource, parsedShaderDesc.Name.data(), k_PixelShaderTarget);
+        shaderDesc.FragmentBlob = dx11_Compile(&includeHandler, parsedShaderDesc.FragmentSource, parsedShaderDesc.Name.data(), k_PixelShaderTarget);
     }
 
 } // namespace Hesternal

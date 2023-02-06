@@ -783,8 +783,6 @@ namespace Hesternal
                 .MipLevels       = textureDesc.MipmapCount, // NOTE(v.matushkin): Can be set to uint32(-1) to use all mipmaps
                 .PlaneSlice      = 0,
             };
-            // TODO(v.matushkin): Don't know how to use ID3D11ShaderResourceView1
-            //  if m_deviceContext->PSSetShaderResources takes only ID3D11ShaderResourceView
             D3D11_SHADER_RESOURCE_VIEW_DESC1 d3dSrvDesc = {
                 .Format        = dxgiTextureFormat,
                 .ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,

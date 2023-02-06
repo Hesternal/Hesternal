@@ -44,8 +44,10 @@ Shader "Engine/SimpleLit"
 
 
         #include "Hesternal/ShaderGlobalVariables.hlsl"
+        #include "Hesternal/Light/Attenuation.hlsl"
         #include "Hesternal/SimpleLit/Input.hlsl"
         #include "Hesternal/SimpleLit/SurfaceData.hlsl"
+        #include "Hesternal/SimpleLit/Lighting.hlsl"
 
 
         float4 main(Varyings IN) : SV_TARGET
@@ -53,7 +55,8 @@ Shader "Engine/SimpleLit"
             const InputData inputData = InitInputData(IN);
             const SurfaceData surfaceData = InitSurfaceData(IN.uv0);
 
-            return float4(surfaceData.Albedo, surfaceData.Alpha);
+            const float4 outColor = BlinnPhong(inputData, surfaceData);
+            return outColor;
         }
     }
 }
