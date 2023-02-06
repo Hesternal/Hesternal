@@ -4,6 +4,8 @@ import HesternalEngine.Graphics.GraphicsTypes;
 
 import HesternalEditor.Assets.ParsedShaderDesc;
 
+import <filesystem>;
+
 
 export namespace Hesternal
 {
@@ -20,7 +22,7 @@ export namespace Hesternal
         DX11ShaderCompiler(DX11ShaderCompiler&& other) noexcept = default;
         DX11ShaderCompiler& operator=(DX11ShaderCompiler&& other) noexcept = default;
 
-        void Compile(const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& shaderDesc);
+        void Compile(const std::filesystem::path* includeDir, const ParsedShaderDesc& parsedShaderDesc, ShaderDesc& shaderDesc);
     };
 
 } // export namespace Hesternal
