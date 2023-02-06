@@ -5,6 +5,9 @@ module;
 module HesternalEditor.GUI.EditorGui;
 
 
+const std::string_view Hesternal::EditorGui::k_EmptyLabel = "";
+
+
 namespace
 {
     using namespace Hesternal;
@@ -12,8 +15,6 @@ namespace
 
     static constexpr float32 k_Indent         = 10.0f;
     static constexpr float32 k_FloatDragSpeed = 0.05f;
-
-    static constinit const std::string_view k_EmptyLabel = "";
 
 } // namespace
 
@@ -104,11 +105,6 @@ namespace Hesternal
         return changed;
     }
 
-    bool EditorGui::QuaternionField(Quaternion& value)
-    {
-        return QuaternionField(k_EmptyLabel, value);
-    }
-
     bool EditorGui::QuaternionField(std::string_view label, Quaternion& value)
     {
         ImGui::PushID(s_idStack.back()++);
@@ -130,11 +126,6 @@ namespace Hesternal
     }
 
 
-    bool EditorGui::DragScalar(float32& value)
-    {
-        return DragScalar(k_EmptyLabel, value);
-    }
-
     bool EditorGui::DragScalar(std::string_view label, float32& value)
     {
         ImGui::PushID(s_idStack.back()++);
@@ -143,15 +134,25 @@ namespace Hesternal
         return changed;
     }
 
-    bool EditorGui::DragVector(float32* value, int32 components)
-    {
-        return DragVector(k_EmptyLabel, value, components);
-    }
-
     bool EditorGui::DragVector(std::string_view label, float32* value, int32 components)
     {
         ImGui::PushID(s_idStack.back()++);
         const bool changed = ImGui::DragScalarN(label.data(), ImGuiDataType_Float, value, components, k_FloatDragSpeed);
+        ImGui::PopID();
+        return changed;
+    }
+
+
+    bool EditorGui::EditColor(std::string_view label, float32* value, bool showAlpha)
+    {
+        int32 imguiColorFlags = ImGuiColorEditFlags_Float;
+        if (showAlpha == false)
+        {
+            imguiColorFlags |= ImGuiColorEditFlags_NoAlpha;
+        }
+
+        ImGui::PushID(s_idStack.back()++);
+        const bool changed = ImGui::ColorEdit4(label.data(), value, imguiColorFlags);
         ImGui::PopID();
         return changed;
     }
