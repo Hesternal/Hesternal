@@ -30,10 +30,16 @@ export namespace Hesternal
         [[nodiscard]] const std::shared_ptr<Shader>& GetShader() const { return m_shader; }
 
         [[nodiscard]] const std::shared_ptr<Texture>& GetBaseColorMap() const { return m_baseColorMap; }
+        [[nodiscard]] const std::shared_ptr<Texture>& GetMetallicMap() const { return m_metallicMap; }
+        [[nodiscard]] const std::shared_ptr<Texture>& GetRoughnessMap() const { return m_roughnessMap; }
         [[nodiscard]] const std::shared_ptr<Texture>& GetNormalMap() const { return m_normalMap; }
 
         void SetBaseColorMap(const std::shared_ptr<Texture>& baseColorMap) { m_baseColorMap = baseColorMap; }
         void SetBaseColorMap(std::shared_ptr<Texture>&& baseColorMap) { m_baseColorMap = std::move(baseColorMap); }
+        void SetMetallicMap(const std::shared_ptr<Texture>& metallicMap) { m_metallicMap = metallicMap; }
+        void SetMetallicMap(std::shared_ptr<Texture>&& metallicMap) { m_metallicMap = std::move(metallicMap); }
+        void SetRoughnessMap(const std::shared_ptr<Texture>& roughnessMap) { m_roughnessMap = roughnessMap; }
+        void SetRoughnessMap(std::shared_ptr<Texture>&& roughnessMap) { m_roughnessMap = std::move(roughnessMap); }
         void SetNormalMap(const std::shared_ptr<Texture>& normalMap) { m_normalMap = normalMap; }
         void SetNormalMap(std::shared_ptr<Texture>&& normalMap) { m_normalMap = std::move(normalMap); }
 
@@ -49,6 +55,8 @@ export namespace Hesternal
         std::shared_ptr<Shader>  m_shader;
 
         std::shared_ptr<Texture> m_baseColorMap;
+        std::shared_ptr<Texture> m_metallicMap;
+        std::shared_ptr<Texture> m_roughnessMap;
         std::shared_ptr<Texture> m_normalMap;
     };
 

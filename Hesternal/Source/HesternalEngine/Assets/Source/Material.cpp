@@ -26,6 +26,8 @@ namespace Hesternal
         : m_materialName(std::move(other.m_materialName))
         , m_shader(std::move(other.m_shader))
         , m_baseColorMap(std::move(other.m_baseColorMap))
+        , m_metallicMap(std::move(other.m_metallicMap))
+        , m_roughnessMap(std::move(other.m_roughnessMap))
         , m_normalMap(std::move(other.m_normalMap))
     {
     }
@@ -35,6 +37,8 @@ namespace Hesternal
         m_materialName = std::move(other.m_materialName);
         m_shader = std::move(other.m_shader);
         m_baseColorMap = std::move(other.m_baseColorMap);
+        m_metallicMap = std::move(other.m_metallicMap);
+        m_roughnessMap = std::move(other.m_roughnessMap);
         m_normalMap = std::move(other.m_normalMap);
         return *this;
     }

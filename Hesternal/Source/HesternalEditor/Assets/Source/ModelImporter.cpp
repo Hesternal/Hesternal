@@ -119,48 +119,50 @@ namespace
     private:
         [[nodiscard]] std::shared_ptr<Material> _CreateMaterial(uint32 assimpMaterialIndex)
         {
+            // NOTE(v.matushkin): Assimp material has aiShadingMode property which in theory could've helped with shader selection,
+            //   but seems like it's useless because it doesn't try to guess it from the material textures and just sets it
+            //   based on the model file extension.
             const aiMaterial& assimpMaterial = *m_assimpMaterials[assimpMaterialIndex];
             const std::string_view materialName = ToStringView(assimpMaterial.GetName());
 
             auto material = std::make_shared<Material>(std::string(materialName), Graphics::GetDefaultShader());
 
-            //- Get BaseColorMap
-            const uint32 diffuseTexturesCount = assimpMaterial.GetTextureCount(aiTextureType::aiTextureType_DIFFUSE);
-            if (diffuseTexturesCount > 0)
-            {
-                const std::string texturePath = _GetAssimpMaterialTexturePath(assimpMaterial, aiTextureType::aiTextureType_DIFFUSE);
-                material->SetBaseColorMap(AssetDatabase::LoadAsset<Texture>(texturePath));
-            
-                if (diffuseTexturesCount != 1)
-                {
-                    HS_LOG_WARN("Material has {:d} BaseColorMaps. [{:s}]", diffuseTexturesCount, materialName);
-                }
-            }
-            else
-            {
-                HS_LOG_WARN("Material doesn't have BaseColorMap, using default Black texture. [{:s}]", materialName);
-                material->SetBaseColorMap(Graphics::GetBlackTexture());
-            }
+            // TODO(v.matushkin): Need to add an ability ro remap obj .mtl properties,
+            //   because people put use different properties for the same set of textures.
 
-            //- Get NormalMap
-            const uint32 normalTexturesCount = assimpMaterial.GetTextureCount(aiTextureType::aiTextureType_NORMALS);
-            if (normalTexturesCount > 0)
-            {
-                const std::string texturePath = _GetAssimpMaterialTexturePath(assimpMaterial, aiTextureType::aiTextureType_NORMALS);
-                material->SetNormalMap(AssetDatabase::LoadAsset<Texture>(texturePath));
-            
-                if (normalTexturesCount != 1)
-                {
-                    HS_LOG_WARN("Material has {:d} NormalMaps. [{:s}]", diffuseTexturesCount, materialName);
-                }
-            }
-            else
-            {
-                HS_LOG_WARN("Material doesn't have NormalMap, using default Normal texture. [{:s}]", materialName);
-                material->SetNormalMap(Graphics::GetNormalTexture());
-            }
+            material->SetBaseColorMap(_GetAssimpMaterialTextureOrDefault(assimpMaterial, aiTextureType_DIFFUSE, materialName));
+            material->SetMetallicMap(_GetAssimpMaterialTextureOrDefault(assimpMaterial, aiTextureType_METALNESS, materialName));
+            material->SetRoughnessMap(_GetAssimpMaterialTextureOrDefault(assimpMaterial, aiTextureType_DIFFUSE_ROUGHNESS, materialName));
+            material->SetNormalMap(_GetAssimpMaterialTextureOrDefault(assimpMaterial, aiTextureType_NORMALS, materialName));
 
             return material;
+        }
+
+        [[nodiscard]] std::shared_ptr<Texture> _GetAssimpMaterialTextureOrDefault(const aiMaterial& assimpMaterial, aiTextureType assimpTextureType, [[maybe_unused]] std::string_view materialName)
+        {
+            const uint32 texturesCount = assimpMaterial.GetTextureCount(assimpTextureType);
+            if (texturesCount > 0)
+            {
+                if (texturesCount != 1)
+                {
+                    // NOTE(v.matushkin): They fixed the naming for this [ai]TextureTypeToString function
+                    HS_LOG_WARN("Material has {:d} {:s}. [{:s}]", texturesCount, TextureTypeToString(assimpTextureType), materialName);
+                }
+
+                const std::string texturePath = _GetAssimpMaterialTexturePath(assimpMaterial, assimpTextureType);
+                return AssetDatabase::LoadAsset<Texture>(texturePath);
+            }
+
+            if (assimpTextureType == aiTextureType_DIFFUSE)
+            {
+                return Graphics::GetWhiteTexture();
+            }
+            if (assimpTextureType == aiTextureType_NORMALS)
+            {
+                return Graphics::GetNormalTexture();
+            }
+
+            return Graphics::GetBlackTexture();
         }
 
         [[nodiscard]] std::string _GetAssimpMaterialTexturePath(const aiMaterial& material, aiTextureType textureType)
@@ -169,10 +171,10 @@ namespace
             // NOTE(v.matushkin): Useless method call without ASSERT
             [[maybe_unused]] const aiReturn error = material.GetTexture(textureType, 0, &texturePath);
             HS_ASSERT_MSG(error == aiReturn::aiReturn_SUCCESS, error == aiReturn_FAILURE ? "aiReturn_FAILURE" : "aiReturn_OUTOFMEMORY");
-    
-            // NOTE(v.matushkin): This dances with pathes is so fucking dumb
+
+            // NOTE(v.matushkin): This dances with paths is so fucking dumb
             std::string projectDirRelativePath = (m_modelDirPath / ToString(texturePath)).string();
-    
+
             return projectDirRelativePath;
         }
 

@@ -23,6 +23,9 @@ namespace
     static constexpr float32 k_ViewportMinDepth = 0.0f;
     static constexpr float32 k_ViewportMaxDepth = 1.0f;
 
+    static constexpr uint32 k_TexturesStartSlot = 3;
+    static constexpr uint32 k_SamplersStartSlot = 0;
+
 } // namespace
 
 
@@ -201,16 +204,18 @@ namespace Hesternal
         m_deviceContext->PSSetSamplers(slot, 1, &d3dRenderTextureSampler);
     }
 
-    void DX11CommandBuffer::BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle)
+    void DX11CommandBuffer::BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle metallicTextureHandle, TextureHandle roughnessTextureHandle, TextureHandle normalTextureHandle)
     {
-        DX11Texture2D& dx11BaseColorTexture = m_graphicsDevice->_GetTexture(baseColorTextureHandle);
-        DX11Texture2D& dx11NormalTexture = m_graphicsDevice->_GetTexture(normalTextureHandle);
+        const DX11Texture2D& dx11BaseColorTexture = m_graphicsDevice->_GetTexture(baseColorTextureHandle);
+        const DX11Texture2D& dx11MetallicTexture = m_graphicsDevice->_GetTexture(metallicTextureHandle);
+        const DX11Texture2D& dx11RoughnessTexture = m_graphicsDevice->_GetTexture(roughnessTextureHandle);
+        const DX11Texture2D& dx11NormalTexture = m_graphicsDevice->_GetTexture(normalTextureHandle);
 
-        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.SRV, dx11NormalTexture.SRV };
-        ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler, dx11NormalTexture.Sampler };
+        ID3D11ShaderResourceView* materialTextures[] = { dx11BaseColorTexture.SRV, dx11MetallicTexture.SRV, dx11RoughnessTexture.SRV, dx11NormalTexture.SRV };
+        ID3D11SamplerState* textureSamplers[] = { dx11BaseColorTexture.Sampler, dx11MetallicTexture.Sampler, dx11RoughnessTexture.Sampler, dx11NormalTexture.Sampler };
 
-        m_deviceContext->PSSetShaderResources(0, 2, materialTextures);
-        m_deviceContext->PSSetSamplers(0, 2, textureSamplers);
+        m_deviceContext->PSSetShaderResources(k_TexturesStartSlot, 4, materialTextures);
+        m_deviceContext->PSSetSamplers(k_SamplersStartSlot, 4, textureSamplers);
     }
 
 

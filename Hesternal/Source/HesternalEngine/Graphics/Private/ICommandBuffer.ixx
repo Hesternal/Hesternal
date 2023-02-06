@@ -49,7 +49,7 @@ export namespace Hesternal
         // NOTE(v.matushkin): May be rework Texture/RenderTexture so that they use the same handle type?
         virtual void BindTexture(TextureHandle textureHandle, uint32 slot) = 0;
         virtual void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) = 0;
-        virtual void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) = 0;
+        virtual void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle metallicTextureHandle, TextureHandle roughnessTextureHandle, TextureHandle normalTextureHandle) = 0;
 
         //- Draw
         virtual void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) = 0;

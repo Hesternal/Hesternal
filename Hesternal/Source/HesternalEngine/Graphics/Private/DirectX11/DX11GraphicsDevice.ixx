@@ -153,7 +153,7 @@ export namespace Hesternal
         //-- Texture
         void BindTexture(TextureHandle textureHandle, uint32 slot) override;
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
-        void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;
+        void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle metallicTextureHandle, TextureHandle roughnessTextureHandle, TextureHandle normalTextureHandle) override;
 
         //- Draw
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset) override;

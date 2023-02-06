@@ -30,11 +30,17 @@ Shader "Engine/SimpleLit"
     }
     Fragment
     {
-        Texture2D _BaseColorMap        : register(t0);
+        Texture2D _BaseColorMap        : register(t3);
         sampler   sampler_BaseColorMap : register(s0);
 
-        Texture2D _NormalMap        : register(t1);
-        sampler   sampler_NormalMap : register(s1);
+        Texture2D _MetallicMap        : register(t4);
+        sampler   sampler_MetallicMap : register(s1);
+
+        Texture2D _RoughnessMap        : register(t5);
+        sampler   sampler_RoughnessMap : register(s2);
+
+        Texture2D _NormalMap        : register(t6);
+        sampler   sampler_NormalMap : register(s3);
 
 
         #include "Hesternal/ShaderGlobalVariables.hlsl"

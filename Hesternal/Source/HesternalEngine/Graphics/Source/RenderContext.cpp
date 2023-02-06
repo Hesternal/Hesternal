@@ -92,7 +92,9 @@ namespace Hesternal
     void RenderContext::DrawEntities()
     {
         TextureHandle currentBaseColorMap = TextureHandle::Invalid;
-        TextureHandle currentNormalMap = TextureHandle::Invalid;
+        TextureHandle currentMetallicMap  = TextureHandle::Invalid;
+        TextureHandle currentRoughnessMap = TextureHandle::Invalid;
+        TextureHandle currentNormalMap    = TextureHandle::Invalid;
 
         const uint32 entitiesCount = static_cast<uint32>(m_renderData.Entities.size());
 
@@ -100,20 +102,27 @@ namespace Hesternal
         {
             const EntityRenderData& entityRenderData = m_renderData.Entities[i];
 
-            const std::shared_ptr<Material>& material = m_renderData.Materials[entityRenderData.MaterialIndex];
-            const Texture* baseColorMap = material->GetBaseColorMap().get();
-            const Texture* normalMap = material->GetNormalMap().get();
+            const Material& material = *m_renderData.Materials[entityRenderData.MaterialIndex];
+            const Texture* const baseColorMap = material.GetBaseColorMap().get();
+            const Texture* const metallicMap  = material.GetMetallicMap().get();
+            const Texture* const roughnessMap = material.GetRoughnessMap().get();
+            const Texture* const normalMap    = material.GetNormalMap().get();
             const TextureHandle baseColorMapHandle = baseColorMap->GetHandle();
-            const TextureHandle normalMapHandle = normalMap->GetHandle();
+            const TextureHandle metallicHandle     = metallicMap->GetHandle();
+            const TextureHandle roughnessMapHandle = roughnessMap->GetHandle();
+            const TextureHandle normalMapHandle    = normalMap->GetHandle();
 
-            m_commandBuffer.BindShader(material->GetShader().get());
+            m_commandBuffer.BindShader(material.GetShader().get());
 
-            if (baseColorMapHandle != currentBaseColorMap || normalMapHandle != currentNormalMap)
+            if (baseColorMapHandle != currentBaseColorMap || metallicHandle != currentMetallicMap
+                || roughnessMapHandle != currentRoughnessMap || normalMapHandle != currentNormalMap)
             {
                 currentBaseColorMap = baseColorMapHandle;
-                currentNormalMap = normalMapHandle;
+                currentMetallicMap  = metallicHandle;
+                currentRoughnessMap = roughnessMapHandle;
+                currentNormalMap    = normalMapHandle;
 
-                m_commandBuffer.BindMaterial(baseColorMap, normalMap);
+                m_commandBuffer.BindMaterial(baseColorMap, metallicMap, roughnessMap, normalMap);
             }
 
             m_commandBuffer.BindConstantBuffer(&m_perDrawBuffers, k_PerDrawSlot, i);
