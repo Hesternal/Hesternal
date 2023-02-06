@@ -79,6 +79,7 @@ namespace Hesternal
     void DX11GraphicsBuffer::Release()
     {
         Buffer->Release();
+        RELEASE_COM_PTR(SRV);
     }
 
     void DX11RenderTexture::Release()
@@ -248,16 +249,24 @@ namespace Hesternal
     {
         DX11GraphicsBuffer dx11GraphicsBuffer;
 
+        //- Create Buffer
         {
+            const DX11GraphicsBufferFlags dx11GraphicsBufferFlags = dx11_GraphicsBufferFlags(graphicsBufferDesc.Usage);
+
+            // NOTE(v.matushkin): May be set it in every case?
+            const uint32 structureByteStride = graphicsBufferDesc.Usage == GraphicsBufferUsage::Structured
+                                             ? graphicsBufferDesc.ElementSize
+                                             : 0;
+
             // NOTE(v.matushkin): Hardcoding D3D11_USAGE_DYNAMIC and D3D11_CPU_ACCESS_WRITE
             //  as there is no way to tell if the buffer will be updated later or it will be IMMUTABLE
-            D3D11_BUFFER_DESC d3dBufferDesc = {
+            const D3D11_BUFFER_DESC d3dBufferDesc = {
                 .ByteWidth           = graphicsBufferDesc.SizeInBytes(),
                 .Usage               = D3D11_USAGE_DYNAMIC,
-                .BindFlags           = dx11_GraphicsBufferBindFlags(graphicsBufferDesc.Usage),
+                .BindFlags           = dx11GraphicsBufferFlags.Bind,
                 .CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE,
-                .MiscFlags           = 0,
-                .StructureByteStride = 0,
+                .MiscFlags           = dx11GraphicsBufferFlags.Misc,
+                .StructureByteStride = structureByteStride,
             };
 
             D3D11_SUBRESOURCE_DATA* d3dSubresourceDataPtr;
@@ -277,6 +286,26 @@ namespace Hesternal
             }
 
             m_device->CreateBuffer(&d3dBufferDesc, d3dSubresourceDataPtr, &dx11GraphicsBuffer.Buffer);
+        }
+        //- Create Buffer SRV
+        if (graphicsBufferDesc.Usage == GraphicsBufferUsage::Structured)
+        {
+            // NOTE(v.matushkin): Seems like you supposed to use always use FirstElement and NumElements
+            //   if this is true: https://stackoverflow.com/questions/26544489/d3d11-buffer-srv-how-do-i-use-it
+            const D3D11_BUFFER_SRV d3dBufferSrv = {
+                .FirstElement = 0,
+                .NumElements  = graphicsBufferDesc.ElementCount,
+            };
+            const D3D11_SHADER_RESOURCE_VIEW_DESC1 d3dSrvDesc = {
+                .Format        = DXGI_FORMAT_UNKNOWN,
+                .ViewDimension = D3D11_SRV_DIMENSION_BUFFER,
+                .Buffer        = d3dBufferSrv,
+            };
+            m_device->CreateShaderResourceView1(dx11GraphicsBuffer.Buffer, &d3dSrvDesc, &dx11GraphicsBuffer.SRV);
+        }
+        else
+        {
+            dx11GraphicsBuffer.SRV = nullptr;
         }
 
         const auto graphicsBufferHandle = static_cast<GraphicsBufferHandle>(g_GraphicsBufferHandleWorkaround++);

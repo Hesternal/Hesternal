@@ -37,7 +37,8 @@ namespace Hesternal
 
     struct DX11GraphicsBuffer final
     {
-        ID3D11Buffer* Buffer;
+        ID3D11Buffer*              Buffer;
+        ID3D11ShaderResourceView1* SRV;
 
         void Release();
     };
@@ -137,11 +138,19 @@ export namespace Hesternal
 
         //- Bind
         void BindShader(ShaderHandle shaderHandle) override;
+        //-- Buffer
         void BindIndexBuffer(GraphicsBufferHandle indexBufferHandle, IndexFormat indexFormat, uint32 offset) override;
         void BindVertexBuffer(GraphicsBufferHandle vertexBufferHandle, uint32 stride, uint32 offset) override;
         void BindVertexBuffers(GraphicsBufferHandle vertexBufferHandle, const uint32 strides[3], const uint32 offsets[3]) override;
+        // TODO(v.matushkin): This one sets the buffer for bot Vertex and Pixel shaders
+        //   Is it redundant to set buffer for both vertex and pixel shaders?
+        //   Should there be a way to set buffer for the specific shader?
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot) override;
+        // TODO(v.matushkin): This one sets the buffer only for Vertex shader
         void BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize) override;
+        // TODO(v.matushkin): This one sets the buffer only for Pixel shader
+        void BindStructuredBuffer(GraphicsBufferHandle structuredBufferHandle, uint32 slot) override;
+        //-- Texture
         void BindTexture(TextureHandle textureHandle, uint32 slot) override;
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot) override;
         void BindMaterial(TextureHandle baseColorTextureHandle, TextureHandle normalTextureHandle) override;

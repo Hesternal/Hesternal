@@ -53,6 +53,7 @@ export namespace Hesternal
         Vertex,
         Index,
         Constant,
+        Structured,
         Invalid = UInt8::Max,
     };
 
@@ -64,10 +65,11 @@ export namespace Hesternal
 
         [[nodiscard]] uint32 SizeInBytes() const noexcept { return ElementCount * ElementSize; }
 
-        [[nodiscard]] static GraphicsBufferDesc Vertex(uint32 elementCount, uint32 elementSize) noexcept;
-        [[nodiscard]] static GraphicsBufferDesc Index(uint32 elementCount, IndexFormat indexFormat) noexcept;
-        [[nodiscard]] static GraphicsBufferDesc Constant(uint32 elementCount, uint32 elementSize) noexcept;
-        [[nodiscard]] static GraphicsBufferDesc Invalid() noexcept;
+        [[nodiscard]] static constexpr GraphicsBufferDesc Vertex(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static constexpr GraphicsBufferDesc Index(uint32 elementCount, IndexFormat indexFormat) noexcept;
+        [[nodiscard]] static constexpr GraphicsBufferDesc Constant(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static constexpr GraphicsBufferDesc Structured(uint32 elementCount, uint32 elementSize) noexcept;
+        [[nodiscard]] static constexpr GraphicsBufferDesc Invalid() noexcept;
     };
 
 
@@ -539,12 +541,12 @@ export namespace Hesternal
     };
 
 
-    GraphicsBufferDesc GraphicsBufferDesc::Vertex(uint32 elementCount, uint32 elementSize) noexcept
+    constexpr GraphicsBufferDesc GraphicsBufferDesc::Vertex(uint32 elementCount, uint32 elementSize) noexcept
     {
         return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Vertex };
     }
 
-    GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, IndexFormat indexFormat) noexcept
+    constexpr GraphicsBufferDesc GraphicsBufferDesc::Index(uint32 elementCount, IndexFormat indexFormat) noexcept
     {
         return GraphicsBufferDesc{
             .ElementCount = elementCount,
@@ -553,12 +555,17 @@ export namespace Hesternal
         };
     }
 
-    GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
+    constexpr GraphicsBufferDesc GraphicsBufferDesc::Constant(uint32 elementCount, uint32 elementSize) noexcept
     {
         return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Constant };
     }
 
-    GraphicsBufferDesc GraphicsBufferDesc::Invalid() noexcept
+    constexpr GraphicsBufferDesc GraphicsBufferDesc::Structured(uint32 elementCount, uint32 elementSize) noexcept
+    {
+        return GraphicsBufferDesc{ .ElementCount = elementCount, .ElementSize = elementSize, .Usage = GraphicsBufferUsage::Structured };
+    }
+
+    constexpr GraphicsBufferDesc GraphicsBufferDesc::Invalid() noexcept
     {
         return GraphicsBufferDesc{ .ElementCount = 0, .ElementSize = 0, .Usage = GraphicsBufferUsage::Invalid };
     }

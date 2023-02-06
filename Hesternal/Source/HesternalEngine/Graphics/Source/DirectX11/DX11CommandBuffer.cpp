@@ -163,6 +163,7 @@ namespace Hesternal
     {
         const DX11GraphicsBuffer& dx11GraphicsBuffer = m_graphicsDevice->_GetGraphicsBuffer(constantBufferHandle);
         m_deviceContext->VSSetConstantBuffers(slot, 1, &dx11GraphicsBuffer.Buffer);
+        m_deviceContext->PSSetConstantBuffers(slot, 1, &dx11GraphicsBuffer.Buffer);
     }
 
     void DX11CommandBuffer::BindConstantBuffer(GraphicsBufferHandle constantBufferHandle, uint32 slot, uint32 elementIndex, uint32 elementSize)
@@ -173,18 +174,25 @@ namespace Hesternal
         m_deviceContext->VSSetConstantBuffers1(slot, 1, &dx11GraphicsBuffer.Buffer, &firstConstant, &numConstants);
     }
 
+    void DX11CommandBuffer::BindStructuredBuffer(GraphicsBufferHandle structuredBufferHandle, uint32 slot)
+    {
+        const DX11GraphicsBuffer& dx11GraphicsBuffer = m_graphicsDevice->_GetGraphicsBuffer(structuredBufferHandle);
+        ID3D11ShaderResourceView* const d3dBufferSRV = dx11GraphicsBuffer.SRV;
+        m_deviceContext->PSSetShaderResources(slot, 1, &d3dBufferSRV);
+    }
+
     void DX11CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)
     {
-        DX11Texture2D& dx11Texture = m_graphicsDevice->_GetTexture(textureHandle);
-        ID3D11ShaderResourceView* d3dTextureSRV = dx11Texture.SRV;
+        const DX11Texture2D& dx11Texture = m_graphicsDevice->_GetTexture(textureHandle);
+        ID3D11ShaderResourceView* const d3dTextureSRV = dx11Texture.SRV;
         m_deviceContext->PSSetShaderResources(slot, 1, &d3dTextureSRV);
         m_deviceContext->PSSetSamplers(slot, 1, &dx11Texture.Sampler);
     }
 
     void DX11CommandBuffer::BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot)
     {
-        DX11RenderTexture& dx11RenderTexture = m_graphicsDevice->_GetRenderTexture(renderTextureHandle);
-        ID3D11ShaderResourceView* d3dRenderTextureSRV = dx11RenderTexture.SRV;
+        const DX11RenderTexture& dx11RenderTexture = m_graphicsDevice->_GetRenderTexture(renderTextureHandle);
+        ID3D11ShaderResourceView* const d3dRenderTextureSRV = dx11RenderTexture.SRV;
         HS_ASSERT_MSG(d3dRenderTextureSRV != nullptr, "Trying to access nullptr DX11RenderTexture.SRV");
 
         ID3D11SamplerState* d3dRenderTextureSampler = m_graphicsDevice->GetRenderTextureSampler();

@@ -37,15 +37,38 @@ export namespace Hesternal
 {
 
     //- GraphicsBuffer
-    [[nodiscard]] _HS_FUNCTION uint32 dx11_GraphicsBufferBindFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
+    struct DX11GraphicsBufferFlags final
     {
-        _HS_STATIC_ARRAY D3D11_BIND_FLAG d3dBindFlags[] = {
-            D3D11_BIND_VERTEX_BUFFER,
-            D3D11_BIND_INDEX_BUFFER,
-            D3D11_BIND_CONSTANT_BUFFER,
-        };
+        uint32 Bind;
+        uint32 Misc;
+    };
 
-        return d3dBindFlags[std::to_underlying(graphicsBufferUsage)];
+    // NOTE(v.matushkin): Not sure if it's better to hide behind one enum two different sets of flags
+    //   or make two separate enums that will directly match the API ones,
+    //   hard to judge what's better, since in Vulkan/DX12 it will be different anyway.
+    [[nodiscard]] constexpr DX11GraphicsBufferFlags dx11_GraphicsBufferFlags(GraphicsBufferUsage graphicsBufferUsage) noexcept
+    {
+        uint32 d3dBindFlags = 0;
+        uint32 d3dMiscFlags = 0;
+
+        switch (graphicsBufferUsage)
+        {
+        case GraphicsBufferUsage::Vertex:
+            d3dBindFlags = D3D11_BIND_VERTEX_BUFFER;
+            break;
+        case GraphicsBufferUsage::Index:
+            d3dBindFlags = D3D11_BIND_INDEX_BUFFER;
+            break;
+        case GraphicsBufferUsage::Constant:
+            d3dBindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            break;
+        case GraphicsBufferUsage::Structured:
+            d3dBindFlags = D3D11_BIND_SHADER_RESOURCE;
+            d3dMiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+            break;
+        }
+
+        return DX11GraphicsBufferFlags{ .Bind = d3dBindFlags, .Misc = d3dMiscFlags };
     }
 
     //- Mesh

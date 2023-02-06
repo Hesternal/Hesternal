@@ -49,14 +49,19 @@ export namespace Hesternal
         void SetViewport(const Rect& viewportRect);
         void SetScissorRect(const RectInt& scissorRect);
 
+        // NOTE(v.matushkin): Combine this Bind*Buffer methods?
+
         //- Bind
         void BindShader(const Shader* shader);
+        //-- Buffer
         void BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat, uint32 offset);
         void BindVertexBuffer(const GraphicsBuffer& vertexBuffer, uint32 stride, uint32 offset);
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot);
-        // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters cause I don't know
+        // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters because I don't know
         //  if there are cases when you can bind like half of the buffer or break the 256 byte alignment.
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot, uint32 elementIndex);
+        void BindStructuredBuffer(const GraphicsBuffer* structuredBuffer, uint32 slot);
+        //-- Texture
         void BindTexture(TextureHandle textureHandle, uint32 slot);
         void BindTexture(const Texture* texture, uint32 slot);
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot);
@@ -132,6 +137,11 @@ export namespace Hesternal
     void CommandBuffer::BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot, uint32 elementIndex)
     {
         m_commandBuffer->BindConstantBuffer(constantBuffer->GetHandle(), slot, elementIndex, constantBuffer->GetElementSize());
+    }
+
+    void CommandBuffer::BindStructuredBuffer(const GraphicsBuffer* structuredBuffer, uint32 slot)
+    {
+        m_commandBuffer->BindStructuredBuffer(structuredBuffer->GetHandle(), slot);
     }
 
     void CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)
