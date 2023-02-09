@@ -66,17 +66,32 @@ void EvaluateLight(inout LightingData lightingData, InputData inputData, Surface
     //- Ambient
     // NOTE(v.matushkin): This can probably explode if there are a lot of lights
     lightingData.Ambient += attenuatedLightColor * k_AmbientStrength;
+
     //- Diffuse
     const float NdotL = dot(inputData.NormalWS, light.Direction);
     const float diffuseStrength = max(NdotL, 0.0f);
     lightingData.Diffuse += attenuatedLightColor * diffuseStrength;
+
     //- Specular
+    // NOTE(v.matushkin): I have some doubts about this energy conservation thing, but without live shader reload it's hard to play with this
+    // - http://disq.us/p/1010r8y
+    // - https://www.rorydriscoll.com/2009/01/25/energy-conservation-in-games/
+    const float kPi = 3.14159265; // TODO(v.matushkin): Make it a global constant
+    const float kShininess = 16.0;
+
+#if 0 // Phong
+    const float energyConservation = (2.0f + kShininess) / (2.0f * kPi);
     const float3 reflectDirWS = reflect(-light.Direction, inputData.NormalWS);
-    lightingData.Specular += attenuatedLightColor * surfaceData.Metallic * pow(max(dot(inputData.ViewDirWS, reflectDirWS), 0.0f), 32);
+    const float specularStrength = energyConservation * pow(max(dot(inputData.ViewDirWS, reflectDirWS), 0.0f), 8);
+#else // Blinn-Phong
+    const float energyConservation = (8.0f + kShininess) / (8.0f * kPi);
+    const float3 halfwayDirWS = normalize(light.Direction + inputData.ViewDirWS);
+    const float specularStrength = energyConservation * pow(max(dot(inputData.NormalWS, halfwayDirWS), 0.0f), kShininess);
+#endif
+    lightingData.Specular += attenuatedLightColor * surfaceData.Metallic * specularStrength;
 }
 
 
-// TODO(v.matushkin): It's not Blinn-Phong yet
 float4 BlinnPhong(InputData inputData, SurfaceData surfaceData)
 {
     LightingData lightingData;
