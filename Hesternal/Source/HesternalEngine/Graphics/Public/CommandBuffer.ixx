@@ -49,18 +49,24 @@ export namespace Hesternal
         void SetViewport(const Rect& viewportRect);
         void SetScissorRect(const RectInt& scissorRect);
 
+        // NOTE(v.matushkin): Can this Bind*Buffer methods be combined or something
+
         //- Bind
         void BindShader(const Shader* shader);
+        //-- Buffer
         void BindIndexBuffer(const GraphicsBuffer& indexBuffer, IndexFormat indexFormat, uint32 offset);
         void BindVertexBuffer(const GraphicsBuffer& vertexBuffer, uint32 stride, uint32 offset);
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot);
-        // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters cause I don't know
+        // NOTE(v.matushkin): Not sure about elementIndex param, I've hid the actual parameters because I don't know
         //  if there are cases when you can bind like half of the buffer or break the 256 byte alignment.
         void BindConstantBuffer(const GraphicsBuffer* constantBuffer, uint32 slot, uint32 elementIndex);
+        void BindStructuredBuffer(const GraphicsBuffer* structuredBuffer, uint32 slot);
+        //-- Texture
         void BindTexture(TextureHandle textureHandle, uint32 slot);
         void BindTexture(const Texture* texture, uint32 slot);
         void BindTexture(RenderTextureHandle renderTextureHandle, uint32 slot);
-        void BindMaterial(const Texture* baseColorTexture, const Texture* normalTexture);
+        // NOTE(v.matushkin): What am I gonna add some 10 arguments more before I decide to refactor it?
+        void BindMaterial(const Texture* baseColorTexture, const Texture* metallicTexture, const Texture* roughnessTexture, const Texture* normalTexture);
 
         //- Draw
         void DrawIndexed(uint32 indexCount, uint32 firstIndex, uint32 vertexOffset);
@@ -134,6 +140,11 @@ export namespace Hesternal
         m_commandBuffer->BindConstantBuffer(constantBuffer->GetHandle(), slot, elementIndex, constantBuffer->GetElementSize());
     }
 
+    void CommandBuffer::BindStructuredBuffer(const GraphicsBuffer* structuredBuffer, uint32 slot)
+    {
+        m_commandBuffer->BindStructuredBuffer(structuredBuffer->GetHandle(), slot);
+    }
+
     void CommandBuffer::BindTexture(TextureHandle textureHandle, uint32 slot)
     {
         m_commandBuffer->BindTexture(textureHandle, slot);
@@ -149,9 +160,9 @@ export namespace Hesternal
         m_commandBuffer->BindTexture(renderTextureHandle, slot);
     }
 
-    void CommandBuffer::BindMaterial(const Texture* baseColorTexture, const Texture* normalTexture)
+    void CommandBuffer::BindMaterial(const Texture* baseColorTexture, const Texture* metallicTexture, const Texture* roughnessTexture, const Texture* normalTexture)
     {
-        m_commandBuffer->BindMaterial(baseColorTexture->GetHandle(), normalTexture->GetHandle());
+        m_commandBuffer->BindMaterial(baseColorTexture->GetHandle(), metallicTexture->GetHandle(), roughnessTexture->GetHandle(), normalTexture->GetHandle());
     }
 
 

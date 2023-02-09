@@ -23,8 +23,10 @@ namespace Hesternal
     void AssetDatabase::Init(const std::filesystem::path& projectPath, const std::filesystem::path& shaderDirPath)
     {
         fs::current_path(projectPath);
-        // TODO(v.matushkin): I shouldn't handle shader pathes like this, but there is no other way right now.
+
+        // TODO(v.matushkin): I shouldn't handle shader paths like this, but there is no other way right now.
         m_shaderDirPath = shaderDirPath / "dx";
+        m_shaderIncludeDirPath = m_shaderDirPath / "include";
 
         // std::vector<fs::path> assetsToImport;
 
@@ -149,7 +151,7 @@ namespace Hesternal
         if (mapIterator == m_shaders.end())
         {
             const std::string actualShaderPath = (m_shaderDirPath / assetPath).string();
-            mapIterator = m_shaders.emplace(assetPath, std::make_shared<Shader>(ShaderImporter::Import(actualShaderPath))).first;
+            mapIterator = m_shaders.emplace(assetPath, std::make_shared<Shader>(ShaderImporter::Import(&m_shaderIncludeDirPath, actualShaderPath))).first;
         }
 
         return mapIterator->second;

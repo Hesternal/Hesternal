@@ -1,5 +1,6 @@
 export module Hesternal.Math;
 
+export import :Color;
 export import :Float2;
 export import :Float3;
 export import :Float3x3;

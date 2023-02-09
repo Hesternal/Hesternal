@@ -13,14 +13,13 @@ import HesternalEditor.GUI.EditorGui;
 export namespace Hesternal
 {
 
-    class ControllerGui : public ComponentGui
+    class ControllerGui final : public ComponentGui
     {
     public:
         ControllerGui(Controller* controller)
             : ComponentGui("Controller")
             , m_controller(controller)
-        {
-        }
+        {}
 
         ~ControllerGui() = default;
 
@@ -30,12 +29,12 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::FloatField("CameraSpeed", m_controller->CameraSpeed);
-            EditorGui::FloatField("CameraBoost", m_controller->CameraBoost);
+            EditorGui::FieldScalar("CameraSpeed", m_controller->CameraSpeed, 0.0f);
+            EditorGui::FieldScalar("CameraBoost", m_controller->CameraBoost, 0.0f);
 
             ImGui::BeginDisabled(true);
-            EditorGui::FloatField("Yaw", m_controller->Yaw);
-            EditorGui::FloatField("Pitch", m_controller->Pitch);
+            EditorGui::FieldScalar("Yaw", m_controller->Yaw);
+            EditorGui::FieldScalar("Pitch", m_controller->Pitch);
             ImGui::EndDisabled();
         }
 

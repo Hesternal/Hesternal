@@ -41,7 +41,7 @@ namespace
                                               // | ImGuiConfigFlags_ViewportsEnable;
     static constexpr int32 k_ImGuiBackendFlags = ImGuiBackendFlags_RendererHasVtxOffset;
                                                // | ImGuiBackendFlags_RendererHasViewports;
-    static const char* k_ImGuiBackendRendererName = "HesternalRenderer";
+    static constexpr const char* k_ImGuiBackendRendererName = "HesternalRenderer";
 
 
     static_assert(sizeof(ImGuiTexture) == 8);
@@ -236,6 +236,7 @@ namespace Hesternal
                 HS_LOG_WARN("Resizing ImGui vertex buffer from {:d} to {:d}", m_vertexBuffer->GetElementCount(), newElementCount);
             }
 
+            // NOTE(v.matushkin): In place new ?
             m_vertexBuffer = std::make_unique<GraphicsBuffer>(GraphicsBufferDesc::Vertex(newElementCount, k_VertexElementSize));
         }
         if (const uint32 totalIndexCount = imguiDrawData->TotalIdxCount; m_indexBuffer == nullptr || totalIndexCount > m_indexBuffer->GetElementCount())

@@ -42,6 +42,8 @@ export namespace Hesternal
         // static inline std::unordered_map<Guid, std::string> m_guidToArtifactPath;
 
         static inline std::filesystem::path m_shaderDirPath;
+        // NOTE(v.matushkin): Careful! I pass a pointer to this variable to DX11ShaderCompiler
+        static inline std::filesystem::path m_shaderIncludeDirPath;
 
         static inline std::unordered_map<std::string, std::shared_ptr<ModelScene>> m_models;
         static inline std::unordered_map<std::string, std::shared_ptr<Shader>>     m_shaders;

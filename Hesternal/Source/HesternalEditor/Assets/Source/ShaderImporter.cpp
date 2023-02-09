@@ -19,7 +19,7 @@ import <utility>;
 namespace Hesternal
 {
 
-    Shader ShaderImporter::Import(const std::string& shaderPath)
+    Shader ShaderImporter::Import(const std::filesystem::path* includeDir, const std::string& shaderPath)
     {
         const std::string shaderFileContent = File::ReadAllText(shaderPath);
 
@@ -33,7 +33,7 @@ namespace Hesternal
             };
 
             DX11ShaderCompiler dx11ShaderCompiler;
-            dx11ShaderCompiler.Compile(parsedShaderDesc, shaderDesc);
+            dx11ShaderCompiler.Compile(includeDir, parsedShaderDesc, shaderDesc);
 
             shaderDesc.Name = std::move(parsedShaderDesc.Name);
 

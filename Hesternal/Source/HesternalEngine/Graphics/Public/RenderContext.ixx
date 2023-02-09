@@ -35,8 +35,12 @@ export namespace Hesternal
     private:
         RenderData     m_renderData;
         CommandBuffer  m_commandBuffer;
+        GraphicsBuffer m_perFrameBuffer;
         GraphicsBuffer m_perCameraBuffer;
         GraphicsBuffer m_perDrawBuffers;
+        GraphicsBuffer m_directionalLightsBuffer;
+        GraphicsBuffer m_pointLightsBuffer;
+        GraphicsBuffer m_spotLightsBuffer;
     };
 
 } // export namespace Hesternal

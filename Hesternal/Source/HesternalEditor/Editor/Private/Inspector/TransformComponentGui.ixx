@@ -13,14 +13,13 @@ import HesternalEditor.GUI.EditorGui;
 export namespace Hesternal
 {
 
-    class TransformGui : public ComponentGui
+    class TransformGui final : public ComponentGui
     {
     public:
         TransformGui(Transform* transform)
             : ComponentGui("Transform")
             , m_transform(transform)
-        {
-        }
+        {}
 
         ~TransformGui() = default;
 
@@ -30,9 +29,9 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::VectorField("Position", m_transform->Position);
-            EditorGui::QuaternionField("Rotation", m_transform->Rotation);
-            EditorGui::FloatField("Scale", m_transform->Scale);
+            EditorGui::FieldVector("Position", m_transform->Position);
+            EditorGui::FieldQuaternion("Rotation", m_transform->Rotation);
+            EditorGui::FieldScalar("Scale", m_transform->Scale);
         }
 
     private:
@@ -40,14 +39,13 @@ export namespace Hesternal
     };
 
 
-    class LocalToWorldGui : public ComponentGui
+    class LocalToWorldGui final : public ComponentGui
     {
     public:
         LocalToWorldGui(LocalToWorld* localToWorld)
             : ComponentGui("LocalToWorld")
             , m_localToWorld(localToWorld)
-        {
-        }
+        {}
 
         ~LocalToWorldGui() = default;
 
@@ -57,7 +55,7 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::MatrixField(m_localToWorld->Value);
+            EditorGui::FieldMatrix(m_localToWorld->Value);
         }
 
     private:
@@ -65,14 +63,13 @@ export namespace Hesternal
     };
 
 
-    class ParentGui : public ComponentGui
+    class ParentGui final : public ComponentGui
     {
     public:
         ParentGui(Parent* parent)
             : ComponentGui("Parent")
             , m_parent(parent)
-        {
-        }
+        {}
 
         ~ParentGui() = default;
 
@@ -90,14 +87,13 @@ export namespace Hesternal
     };
 
 
-    class ChildGui : public ComponentGui
+    class ChildGui final : public ComponentGui
     {
     public:
         ChildGui(Child* child)
             : ComponentGui("Child")
             , m_child(child)
-        {
-        }
+        {}
 
         ~ChildGui() = default;
 

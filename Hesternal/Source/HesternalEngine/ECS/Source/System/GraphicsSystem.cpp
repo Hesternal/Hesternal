@@ -6,12 +6,44 @@ module;
 module HesternalEngine.ECS.System.Graphics;
 
 import Hesternal.Core;
+import Hesternal.Math;
 
 import HesternalEngine.ECS.Components;
 import HesternalEngine.Graphics;
 import HesternalEngine.Graphics.RenderData;
 
 import <unordered_map>;
+import <utility>;
+
+
+namespace
+{
+    using namespace Hesternal;
+
+
+    // NOTE(v.matushkin): Probably should move this functions to something like LightUtils or Math::Light
+
+    [[nodiscard]] static constexpr float32 DistanceAttenuationScale(float32 lightRange) noexcept
+    {
+        return 1.0f / (lightRange * lightRange);
+    }
+
+    /// <returns>{angleAttenuationScale, angleAttenuationOffset}</returns>
+    [[nodiscard]] static std::pair<float32, float32> AngleAttenuation(float32 spotAngle, float32 innerSpotPercent) noexcept
+    {
+        const float32 innerSpotAngle = spotAngle * (innerSpotPercent / 100.0f);
+
+        // NOTE(v.matushkin): Should I clamp these or at least use abs?
+        const float32 cosOuterConeHalfAngle = Math::Cos(Math::ToRadians(spotAngle * 0.5f));
+        const float32 cosInnerConeHalfAngle = Math::Cos(Math::ToRadians(innerSpotAngle * 0.5f));
+
+        const float32 angleAttenuationScale = 1.0f / Math::Max(0.0001f, cosInnerConeHalfAngle - cosOuterConeHalfAngle);
+        const float32 angleAttenuationOffset = -cosOuterConeHalfAngle * angleAttenuationScale;
+
+        return { angleAttenuationScale, angleAttenuationOffset };
+    }
+
+} // namespace
 
 
 namespace Hesternal
@@ -29,21 +61,69 @@ namespace Hesternal
 
     void GraphicsSystem::OnUpdate(EntityManager& entityManager)
     {
-        const auto cameraView = entityManager.GetView<const Camera>();
-        HS_ASSERT_MSG(cameraView.size() == 1, "The scene must have exactly 1 camera");
-        const auto [cameraEntity, camera] = *cameraView.each().begin();
+        RenderData renderData;
+
+        //- Get Camera
+        {
+            const auto cameraView = entityManager.GetView<const Transform, const Camera>();
+            HS_ASSERT_MSG(cameraView.size_hint() == 1, "The scene must have exactly 1 camera");
+            const auto [cameraEntity, cameraTransform, camera] = *cameraView.each().begin();
+
+            renderData.Camera = CameraRenderData{
+                .View           = camera.View,
+                .Projection     = camera.Projection,
+                .ViewProjection = camera.ViewProjection,
+                .Position       = cameraTransform.Position,
+            };
+        }
+
+        //- Get DirectionalLights
+        {
+            const auto directionalLightView = entityManager.GetView<const Transform, const DirectionalLight>();
+
+            for (const auto [directionalLightEntity, directionalLightTransform, directionalLight] : directionalLightView.each())
+            {
+                renderData.DirectionalLights.push_back(DirectionalLightRenderData{
+                        .Forward = Quaternion::Mul(directionalLightTransform.Rotation, Math::Forward()),
+                        .Color   = Float3(directionalLight.Color),
+                    });
+            }
+        }
+        //- Get PointLights
+        {
+            const auto pointLightView = entityManager.GetView<const Transform, const PointLight>();
+
+            for (const auto [pointLightEntity, pointLightTransform, pointLight] : pointLightView.each())
+            {
+                renderData.PointLights.push_back(PointLightRenderData{
+                        .Position                 = pointLightTransform.Position,
+                        .Color                    = Float3(pointLight.Color) * pointLight.Intensity,
+                        .DistanceAttenuationScale = DistanceAttenuationScale(pointLight.Range),
+                    });
+            }
+        }
+        //- Get SpotLights
+        {
+            const auto spotLightView = entityManager.GetView<const Transform, const SpotLight>();
+
+            for (const auto [spotLightEntity, spotLightTransform, spotLight] : spotLightView.each())
+            {
+                const auto [angleAttenuationScale, angleAttenuationOffset] = AngleAttenuation(spotLight.SpotAngle, spotLight.InnerSpotPercent);
+                renderData.SpotLights.push_back(SpotLightRenderData{
+                        .Position                 = spotLightTransform.Position,
+                        .Forward                  = Quaternion::Mul(spotLightTransform.Rotation, Math::Forward()),
+                        .Color                    = Float3(spotLight.Color) * spotLight.Intensity,
+                        .DistanceAttenuationScale = DistanceAttenuationScale(spotLight.Range),
+                        .AngleAttenuationScale    = angleAttenuationScale,
+                        .AngleAttenuationOffset   = angleAttenuationOffset,
+                    });
+            }
+        }
 
         const auto renderMeshView = entityManager.GetView<const LocalToWorld, const RenderMesh>();
 
         std::unordered_map<std::shared_ptr<Material>, uint32> materialToIndex;
         std::unordered_map<std::shared_ptr<Mesh>, uint32> meshToIndex;
-
-        RenderData renderData;
-        renderData.Camera = {
-            .View           = camera.View,
-            .Projection     = camera.Projection,
-            .ViewProjection = camera.ViewProjection,
-        };
 
         for (const auto [entity, localToWorld, renderMesh] : renderMeshView.each())
         {

@@ -134,7 +134,7 @@ namespace Hesternal
         AssetDatabase::Init(m_projectPath, m_shaderDirPath);
 
         // TODO(v.matushkin): It shouldn't be set in the Editor like this, but right now I have no idea how else
-        Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("Main.shader"));
+        Graphics::SetDefaultShader(AssetDatabase::LoadAsset<Shader>("SimpleLit.shader"));
         ImGuiContext::Init(m_mainWindow->GetWindowHandle(), AssetDatabase::LoadAsset<Shader>("ImGui.shader"));
 
         const auto sponzaModel = AssetDatabase::LoadAsset<ModelScene>("Assets/Sponza/sponza.obj");

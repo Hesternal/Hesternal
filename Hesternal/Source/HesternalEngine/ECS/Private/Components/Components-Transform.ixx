@@ -16,17 +16,23 @@ export namespace Hesternal
         float32    Scale;
         Quaternion Rotation;
 
-        [[nodiscard]] static inline Transform Identity() noexcept
+        // TODO(v.matushkin): Should I mark these as inline explicitly? Does constexpr still implies inline in modules?
+        [[nodiscard]] static inline constexpr Transform Identity() noexcept
         {
             return Transform{ .Position = Float3::Zero(), .Scale = 1.0f, .Rotation = Quaternion::Identity() };
         }
 
-        [[nodiscard]] static inline Transform FromScale(float32 scale) noexcept
+        [[nodiscard]] static inline constexpr Transform FromPosition(Float3 position) noexcept
+        {
+            return Transform{ .Position = position, .Scale = 1.0f, .Rotation = Quaternion::Identity() };
+        }
+
+        [[nodiscard]] static inline constexpr Transform FromScale(float32 scale) noexcept
         {
             return Transform{ .Position = Float3::Zero(), .Scale = scale, .Rotation = Quaternion::Identity() };
         }
 
-        [[nodiscard]] static inline Transform FromPositionRotationScale(const Float3& position, const Quaternion& rotation, float32 scale) noexcept
+        [[nodiscard]] static inline constexpr Transform FromPositionRotationScale(const Float3& position, const Quaternion& rotation, float32 scale) noexcept
         {
             return Transform{ .Position = position, .Scale = scale, .Rotation = rotation };
         }
