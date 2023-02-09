@@ -1,15 +1,32 @@
 export module HesternalEditor.Editor.GraphicsComponentGui;
 
+import Hesternal.Core;
+
 import HesternalEngine.ECS.Components;
 
 import HesternalEditor.GUI.ComponentGui;
 import HesternalEditor.GUI.EditorGui;
 
 
+namespace
+{
+    using namespace Hesternal;
+
+
+    inline constexpr float32 k_PunctualLightIntensityMin = 0.0f;
+    inline constexpr float32 k_PunctualLightRangeMin     = 0.001f;
+    inline constexpr float32 k_SpotLightOuterAngleMin    = 1.0f;
+    inline constexpr float32 k_SpotLightOuterAngleMax    = 179.0f;
+    inline constexpr float32 k_SpotLightInnerPercentMin  = 1.0f;
+    inline constexpr float32 k_SpotLightInnerPercentMax  = 100.0f;
+
+} // namespace
+
+
 export namespace Hesternal
 {
 
-    class CameraGui : public ComponentGui
+    class CameraGui final : public ComponentGui
     {
     public:
         CameraGui(Camera* camera)
@@ -26,7 +43,7 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::MatrixField(m_camera->Projection);
+            EditorGui::FieldMatrix(m_camera->Projection);
         }
 
     private:
@@ -34,7 +51,7 @@ export namespace Hesternal
     };
 
 
-    class DirectionalLightGui : public ComponentGui
+    class DirectionalLightGui final : public ComponentGui
     {
     public:
         DirectionalLightGui(DirectionalLight* directionalLight)
@@ -51,7 +68,7 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::ColorField("Color", m_directionalLight->Color, false);
+            EditorGui::FieldColor("Color", m_directionalLight->Color, false);
         }
 
     private:
@@ -59,7 +76,7 @@ export namespace Hesternal
     };
 
 
-    class PointLightGui : public ComponentGui
+    class PointLightGui final : public ComponentGui
     {
     public:
         PointLightGui(PointLight* pointLight)
@@ -76,16 +93,16 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::ColorField("Color", m_pointLight->Color, false);
-            EditorGui::FloatField("Intensity", m_pointLight->Intensity);
-            EditorGui::FloatField("Range", m_pointLight->Range);
+            EditorGui::FieldColor("Color", m_pointLight->Color, false);
+            EditorGui::FieldScalar("Intensity", m_pointLight->Intensity, k_PunctualLightIntensityMin);
+            EditorGui::FieldScalar("Range", m_pointLight->Range, k_PunctualLightRangeMin);
         }
 
     private:
         PointLight* m_pointLight;
     };
 
-    class SpotLightGui : public ComponentGui
+    class SpotLightGui final : public ComponentGui
     {
     public:
         SpotLightGui(SpotLight* spotLight)
@@ -102,11 +119,11 @@ export namespace Hesternal
     protected:
         void OnComponentGui() override
         {
-            EditorGui::ColorField("Color", m_spotLight->Color, false);
-            EditorGui::FloatField("Intensity", m_spotLight->Intensity);
-            EditorGui::FloatField("Range", m_spotLight->Range);
-            EditorGui::FloatField("SpotAngle", m_spotLight->SpotAngle);
-            EditorGui::FloatField("InnerSpotPercent", m_spotLight->InnerSpotPercent);
+            EditorGui::FieldColor("Color", m_spotLight->Color, false);
+            EditorGui::FieldScalar("Intensity", m_spotLight->Intensity, k_PunctualLightIntensityMin);
+            EditorGui::FieldScalar("Range", m_spotLight->Range, k_PunctualLightRangeMin);
+            EditorGui::SliderScalar("Outer Angle", m_spotLight->SpotAngle, k_SpotLightOuterAngleMin, k_SpotLightOuterAngleMax);
+            EditorGui::SliderScalar("Inner Angle (%)", m_spotLight->InnerSpotPercent, k_SpotLightInnerPercentMin, k_SpotLightInnerPercentMax);
         }
 
     private:
@@ -114,7 +131,7 @@ export namespace Hesternal
     };
 
 
-    class RenderMeshGui : public ComponentGui
+    class RenderMeshGui final : public ComponentGui
     {
     public:
         RenderMeshGui(RenderMesh* renderMesh)
