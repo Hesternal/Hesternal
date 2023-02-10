@@ -4,8 +4,9 @@ module;
 
 module HesternalEditor.Assets.ShaderImporter;
 
+import Hesternal.Platform;
+
 import HesternalEngine.Assets.Shader;
-import HesternalEngine.Core.Platform.File;
 
 import HesternalEditor.Assets.DX11ShaderCompiler;
 import HesternalEditor.Assets.ParsedShaderDesc;

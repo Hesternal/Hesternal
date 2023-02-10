@@ -2,18 +2,15 @@ module;
 
 #include "Hesternal/Core/Defines.hpp"
 
-#include <combaseapi.h>
 #include <Windows.h>
 
 // NOTE(v.matushkin): <SAL Warnings> May be it will be fixed once we get import std;
 HS_WARNING_PUSH
 HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
-module HesternalEngine.Core.Platform;
+module Hesternal.Platform;
 
 import Hesternal.Core;
-
-import HesternalEngine.Core.Misc.Guid;
 HS_WARNING_POP
 
 
@@ -24,11 +21,6 @@ HS_WARNING_POP
 
 namespace Hesternal
 {
-
-    void Platform::GenerateGuid(Guid& guid)
-    {
-        CoCreateGuid(reinterpret_cast<GUID*>(&guid));
-    }
 
     std::wstring Platform::ToWideString(std::string_view str)
     {

@@ -10,7 +10,8 @@ HS_WARNING_DISABLE_MSVC(4005) // warning C4005: macro redefinition
 HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different parameter names
 module HesternalEngine.Graphics.DX11GraphicsDevice;
 
-import HesternalEngine.Core.Platform;
+import Hesternal.Platform;
+
 import HesternalEngine.Graphics.DX11Conversion;
 HS_WARNING_POP
 

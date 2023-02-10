@@ -12,6 +12,7 @@ internal sealed class HesternalSolution : Solution
         AddProject(new HesternalCore(OutputDir));
         AddProject(new HesternalECS(OutputDir));
         AddProject(new HesternalMath(OutputDir));
+        AddProject(new HesternalPlatform(OutputDir));
         AddProject(new HesternalEngine(OutputDir));
         AddProject(new HesternalEngineTests(OutputDir));
         AddProject(new HesternalEditor(OutputDir));

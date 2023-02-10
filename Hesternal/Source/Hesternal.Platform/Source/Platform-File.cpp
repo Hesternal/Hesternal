@@ -2,10 +2,8 @@ module;
 
 #include "Hesternal/Core/Debug.hpp"
 
-module HesternalEngine.Core.Platform.File;
+module Hesternal.Platform;
 
-import <filesystem>;
-import <fstream>;
 import <sstream>;
 
 

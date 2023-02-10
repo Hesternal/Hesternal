@@ -1,6 +1,6 @@
 module HesternalEngine.Core.Serialization.FileBinaryConverter;
 
-import HesternalEngine.Core.Platform.File;
+import Hesternal.Platform;
 
 import <filesystem>;
 import <string>;

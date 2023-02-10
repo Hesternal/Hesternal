@@ -1,16 +1,10 @@
-module;
-
-//#include <fstream>
-
-export module HesternalEngine.Core.Platform.File;
+export module Hesternal.Platform:File;
 
 import Hesternal.Core;
 
-// NOTE(v.matushkin): Waiting until https://github.com/microsoft/STL/issues/3112 gets fixed
-//  Although seems like it's working without this headers anyway?
-//import <filesystem>;
-//import <string>;
+import <filesystem>;
 import <fstream>;
+import <string>;
 
 
 export namespace Hesternal
@@ -45,6 +39,7 @@ export namespace Hesternal
     namespace File
     {
 
+        // NOTE(v.matushkin): Should I mark this as inline even when they are not defined here, probably not?
         [[nodiscard]] inline std::string ReadAllText(const std::string& filePath);
         [[nodiscard]] inline std::string ReadAllText(const std::filesystem::path& filePath);
 

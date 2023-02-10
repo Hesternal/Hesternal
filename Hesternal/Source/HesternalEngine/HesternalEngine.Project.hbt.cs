@@ -14,6 +14,7 @@ internal sealed class HesternalEngine : HesternalCppProject
         AddPublicProjectReference<HesternalCore>();
         AddPublicProjectReference<HesternalECS>();
         AddPublicProjectReference<HesternalMath>();
+        AddPublicProjectReference<HesternalPlatform>();
 
         AddSourcesDir("Assets");
         AddSourcesDir("Core");

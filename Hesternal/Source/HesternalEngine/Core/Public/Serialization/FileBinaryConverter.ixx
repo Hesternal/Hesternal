@@ -1,7 +1,8 @@
 export module HesternalEngine.Core.Serialization.FileBinaryConverter;
 
 import Hesternal.Core;
-import HesternalEngine.Core.Platform.File;
+import Hesternal.Platform;
+
 import HesternalEngine.Core.Serialization.IBinaryConverter;
 
 import <filesystem>;

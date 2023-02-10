@@ -13,8 +13,7 @@ module HesternalEditor.Assets.DX11ShaderCompiler;
 HS_WARNING_POP
 
 import Hesternal.Core;
-
-import HesternalEngine.Core.Platform.File;
+import Hesternal.Platform;
 
 import <memory>;
 import <string_view>;

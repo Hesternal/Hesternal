@@ -12,8 +12,9 @@ HS_WARNING_DISABLE_MSVC(5106) // warning C5106: macro redefined with different p
 module HesternalEngine.Core.Application;
 
 import Hesternal.Core;
+
 // NOTE(v.matushkin): I'm importing Event/Platform modules(c++) here in the Core.Module.cs
-//  I should either put Event/Platform modules in the Core or move back Application calss out of Core Module
+//  I should either put Event/Platform modules in the Core or move back Application class out of Core Module
 import HesternalEngine.Event.EventManager;
 import HesternalEngine.Event.EventTypes;
 import HesternalEngine.Platform.PlatformTypes;
@@ -26,6 +27,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 namespace
 {
     using namespace Hesternal;
+
 
     // TODO(v.matushkin): Duplicated in Window.cpp
     static constexpr const wchar_t* k_WindowClassName = L"HesternalWindowClass";
@@ -60,7 +62,7 @@ namespace
                     .Pressed = uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN,
                 };
                 EventManager::SendKeyboardEvent(event);
-HS_WARNING_POP // NOTE(v.matushkin): Realy ?
+HS_WARNING_POP // NOTE(v.matushkin): Really ?
 
                 // return 0;
 
@@ -168,7 +170,7 @@ HS_WARNING_POP // NOTE(v.matushkin): Realy ?
             {
                 // https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-erasebkgnd
                 // Seems like it should prevent flickering on resize if return nonzero?
-                return 1; // Return nonzero to intdicate that the App will handle background erase
+                return 1; // Return nonzero to indicate that the App will handle background erase
             }
         };
 

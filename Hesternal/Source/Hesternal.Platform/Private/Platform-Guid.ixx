@@ -1,4 +1,4 @@
-export module HesternalEngine.Core.Misc.Guid;
+export module Hesternal.Platform:Guid;
 
 import Hesternal.Core;
 
@@ -15,12 +15,14 @@ export namespace Hesternal
         uint32 C;
         uint32 D;
 
-        bool operator==(const Guid& guid) const
+
+        [[nodiscard]] friend bool operator==(const Guid& lhs, const Guid& rhs) noexcept
         {
-            return A == guid.A && B == guid.B && C == guid.C && D == guid.D;
+            return lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C && lhs.D == rhs.D;
         }
 
-        static Guid Generate();
+
+        [[nodiscard]] static Guid Generate();
     };
 
 } // export namespace Hesternal
@@ -30,7 +32,7 @@ export template<>
 struct std::hash<Hesternal::Guid>
 {
     // NOTE(v.matushkin): I'm sure this will perform well, no collisions.
-    //  May be just find some hashing algorithm and use it, like microsoft stl uses FNV-1
+    //   May be just find some hashing algorithm and use it, like microsoft stl uses FNV-1
     std::size_t operator()(const Hesternal::Guid& guid) const noexcept
     {
         using namespace Hesternal;

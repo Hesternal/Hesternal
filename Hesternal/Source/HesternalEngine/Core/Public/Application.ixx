@@ -29,10 +29,10 @@ export namespace Hesternal
 
         void Close() { m_shouldClose = true; }
 
-        //< Platform dependant
+        //< Platform dependent
         void PlatformInit();
         void PumpMessages();
-        //> Platform dependant
+        //> Platform dependent
 
         virtual void OnApplication_Init(int32 argc, const char* const* argv) = 0;
         virtual void OnApplication_Shutdown() = 0;
